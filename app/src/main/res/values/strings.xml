@@ -43,6 +43,35 @@
     <string name="game_snake_tagline">Klasik yılan: ye, büyü, çarpmadan hükmet</string>
     <string name="length_label">Uzunluk</string>
 
+    <!-- Sudoku -->
+    <string name="game_sudoku">Sudoku</string>
+    <string name="game_sudoku_tagline">Klasik 9×9: üç zorluk, notlar, tek çözüm garantisi</string>
+    <string name="congrats">Tebrikler! 🎉</string>
+    <string name="notes_toggle">Not modu</string>
+    <string name="erase">Sil</string>
+    <string name="solved_label">Çözülen</string>
+
+    <!-- Mayın Tarlası -->
+    <string name="game_mines">Mayın Tarlası</string>
+    <string name="game_mines_tagline">Sayıları çöz, bayrak dik, mayına basma</string>
+    <string name="mines_left_label">Mayın</string>
+    <string name="wins_label">Kazanılan</string>
+    <string name="flag_mode">Bayrak modu</string>
+    <string name="mines_won">Alan temizlendi! 🎉</string>
+    <string name="mines_lost">Bum! 💥</string>
+
+    <!-- Ortak -->
+    <string name="pick_difficulty">Zorluk seç</string>
+    <string name="difficulty_easy">Kolay</string>
+    <string name="difficulty_medium">Orta</string>
+    <string name="difficulty_hard">Zor</string>
+    <string name="difficulty_label">Zorluk</string>
+    <string name="new_game">Yeni oyun</string>
+    <string name="same_difficulty">Aynı zorlukta yeni</string>
+    <string name="try_again">Yeniden dene</string>
+    <string name="time_label">Süre</string>
+    <string name="time_fmt">Süre: %1$s</string>
+
     <!-- Ses -->
     <string name="sound_on">Sesi aç</string>
     <string name="sound_off">Sesi kapat</string>

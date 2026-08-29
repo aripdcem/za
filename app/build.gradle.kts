@@ -6,6 +6,15 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+// Sürüm tek kaynaktan yönetilir: release.yml, etiketten türettiği sürümü
+// -PzaVersion=X.Y.Z olarak geçirir; yerel derlemeler alttaki varsayılanı
+// kullanır. versionCode = major*10000 + minor*100 + patch.
+val zaVersion: String = (project.findProperty("zaVersion") as? String) ?: "0.3.0"
+val zaVersionCode: Int = zaVersion.split('.').map { it.toInt() }.let { (major, minor, patch) ->
+    require(major < 214 && minor < 100 && patch < 100) { "Geçersiz sürüm: $zaVersion" }
+    major * 10_000 + minor * 100 + patch
+}
+
 android {
     namespace = "com.za.games"
     compileSdk = 35
@@ -14,8 +23,8 @@ android {
         applicationId = "com.za.games"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "0.2.0"
+        versionCode = zaVersionCode
+        versionName = zaVersion
     }
 
     // Release imzası CI'da ortam değişkenleriyle sağlanır (bkz. release.yml).

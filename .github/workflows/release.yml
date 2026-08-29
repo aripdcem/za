@@ -39,7 +39,14 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Motor birim testleri
-        run: ./gradlew :games:tetris:test :games:g2048:test :games:snake:test
+        run: ./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test
+
+      - name: Sürümü etiketten türet
+        id: version
+        run: |
+          TAG="${{ inputs.tag_name || github.ref_name }}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
 
       - name: Keystore'u çöz
         run: echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/za-release.jks"
@@ -47,25 +54,32 @@ jobs:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
 
       - name: İmzalı release APK derle
-        run: ./gradlew :app:assembleRelease
+        run: ./gradlew :app:assembleRelease -PzaVersion=${{ steps.version.outputs.version }}
         env:
           ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/za-release.jks
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
 
-      - name: APK'yı sabit adla kopyala
-        run: cp app/build/outputs/apk/release/app-release.apk za.apk
+      - name: Yayın dosyalarını hazırla (APK + kaynak arşivleri + SHA256)
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          mkdir -p dist
+          cp app/build/outputs/apk/release/app-release.apk "dist/za-$TAG.apk"
+          cp app/build/outputs/apk/release/app-release.apk dist/za.apk
+          git archive --format=zip --prefix="za-$TAG/" -o "dist/za-$TAG-source.zip" HEAD
+          git archive --format=tar.gz --prefix="za-$TAG/" -o "dist/za-$TAG-source.tar.gz" HEAD
+          cd dist && sha256sum za* > SHA256SUMS.txt && cat SHA256SUMS.txt
 
-      - name: APK'yı iş akışı çıktısı olarak yükle
+      - name: Yayın dosyalarını iş akışı çıktısı olarak yükle
         uses: actions/upload-artifact@v4
         with:
-          name: za-release-apk
-          path: za.apk
+          name: za-release-${{ steps.version.outputs.tag }}
+          path: dist/*
 
       - name: GitHub Release oluştur
         if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ inputs.tag_name || github.ref_name }}
+          tag_name: ${{ steps.version.outputs.tag }}
           target_commitish: ${{ github.sha }}
-          files: za.apk
+          files: dist/*
           generate_release_notes: true

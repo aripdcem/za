@@ -4,9 +4,13 @@ import androidx.compose.ui.graphics.Color
 import com.za.games.R
 import com.za.games.ui.g2048.G2048Screen
 import com.za.games.ui.hub.Art2048
+import com.za.games.ui.hub.MinesArt
 import com.za.games.ui.hub.SnakeArt
+import com.za.games.ui.hub.SudokuArt
 import com.za.games.ui.hub.TetrominoArt
+import com.za.games.ui.mines.MinesScreen
 import com.za.games.ui.snake.SnakeScreen
+import com.za.games.ui.sudoku.SudokuScreen
 import com.za.games.ui.tetris.TetrisScreen
 
 /**
@@ -44,6 +48,26 @@ object GameRegistry {
             art = { modifier -> SnakeArt(modifier) },
             screen = { highScore, onScore, onExit ->
                 SnakeScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "sudoku",
+            titleRes = R.string.game_sudoku,
+            taglineRes = R.string.game_sudoku_tagline,
+            accent = Color(0xFF60A5FA),
+            art = { modifier -> SudokuArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                SudokuScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "mines",
+            titleRes = R.string.game_mines,
+            taglineRes = R.string.game_mines_tagline,
+            accent = Color(0xFFF87171),
+            art = { modifier -> MinesArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                MinesScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
     )

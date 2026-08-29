@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Oyunlar: **Tetris**, **2048**, **Yılan**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Oyunlar: **Tetris**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**.
 
 ## Manifesto
 
@@ -23,12 +23,11 @@ za/
 │       ├── platform/             # Çekirdek: GameRegistry, ScoreStore, SettingsStore, SoundPlayer
 │       ├── ui/common/            # Oyunların paylaştığı bileşenler (tuşlar, katmanlar, kartlar)
 │       ├── ui/hub/               # Ana menü (oyun listesi + manifesto + ses düğmesi)
-│       ├── ui/tetris|g2048|snake # Oyunların Compose arayüzleri
+│       ├── ui/&lt;oyun&gt;/            # Oyunların Compose arayüzleri
 │       └── ui/theme/             # ZA teması
 ├── games/
-│   ├── tetris/                   # Oyun motorları: saf Kotlin/JVM, Android'e bağımsız,
-│   ├── g2048/                    # her biri kendi birim testleriyle
-│   └── snake/
+│   ├── tetris/  g2048/  snake/   # Oyun motorları: saf Kotlin/JVM, Android'e
+│   └── sudoku/  mines/           # bağımsız, her biri kendi birim testleriyle
 └── tools/gen_sfx.py              # Ses efektlerini prosedürel üreten betik (res/raw)
 ```
 
@@ -60,14 +59,27 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 - Her yem +10 puan, +1 uzunluk ve kademeli hızlanma
 - Kaydırma jestleri + yön tuşları; ters yöne dönüş engellenir
 
+### Sudoku
+- Geri izlemeli üreteç: her bulmacada **tek çözüm garantisi** (MRV'li çözüm sayacıyla doğrulanır)
+- Üç zorluk (40/32/26 ipucu), kalem notları, çakışma vurgusu, rakam başına kalan sayacı
+- Değer girilince komşu hücrelerdeki aynı rakam notları otomatik silinir
+- Rekor = toplam çözülen bulmaca sayısı
+
+### Mayın Tarlası
+- Üç zorluk: 9×12/14, 10×14/25, 12×17/40 — **ilk dokunuş her zaman güvenli** (mayınlar sonra yerleşir)
+- Sıfır hücrelerde akan açılım, uzun basış veya bayrak moduyla işaretleme, sayıya dokununca chord
+- Rekor = toplam kazanılan oyun sayısı
+
 ## Derleme
 
 Gereksinimler: JDK 17+, Android SDK (compileSdk 35). Android Studio ile açıp çalıştırabilir veya komut satırından derleyebilirsiniz:
 
 ```bash
 ./gradlew :app:assembleDebug        # APK: app/build/outputs/apk/debug/
-./gradlew :games:tetris:test :games:g2048:test :games:snake:test   # Motor testleri (Android SDK gerektirmez)
+./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test
 ```
+
+Motor testleri Android SDK gerektirmez. Sürüm `-PzaVersion=X.Y.Z` özelliğiyle geçilir; release iş akışı bunu etiketten türetir (`versionCode` = `major*10000 + minor*100 + patch`).
 
 - minSdk 26 (Android 8.0) · targetSdk 35
 - Kotlin 2.1 · Jetpack Compose (Material 3) · AGP 8.10
@@ -76,11 +88,20 @@ Gereksinimler: JDK 17+, Android SDK (compileSdk 35). Android Studio ile açıp �
 
 ### İmzalı APK (GitHub Release)
 
-`v*` etiketi push'lanınca `release.yml` iş akışı imzalı APK'yı derleyip GitHub Release'e `za.apk` adıyla ekler. En yeni sürüm her zaman şu sabit adresten inebilir:
+`v*` etiketi push'lanınca (veya iş akışı elle `tag_name` ile tetiklenince) `release.yml` sürümü etiketten türetir, testleri koşar ve şu dosyaları Release'e ekler:
+
+- `za.apk` — imzalı APK, sabit ad (site bunu kullanır)
+- `za-vX.Y.Z.apk` — sürümlü kopya
+- `za-vX.Y.Z-source.zip` / `.tar.gz` — kaynak arşivleri (`git archive`)
+- `SHA256SUMS.txt` — tüm dosyaların sağlama toplamları
+
+En yeni sürüm her zaman şu sabit adresten inebilir:
 
 ```
 https://github.com/aripdcem/za/releases/latest/download/za.apk
 ```
+
+Doğrulama: `sha256sum -c SHA256SUMS.txt`
 
 Gerekli depo secret'ları (yalnızca depo sahibi ayarlar):
 
@@ -102,9 +123,9 @@ Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
 
 ## Yol haritası
 
-- [x] Yeni oyunlar: 2048 ✓, yılan ✓
+- [x] Yeni oyunlar: 2048 ✓, yılan ✓, sudoku ✓, mayın tarlası ✓
 - [x] Ses efektleri (kapatılabilir) ve satır temizleme animasyonları
-- [ ] Sudoku, mayın tarlası…
+- [x] Sürümün etiketten türetilmesi, SHA256 sağlamaları ve kaynak arşivleri
 - [ ] Oyun içi istatistikler (toplam satır, en uzun oturum)
 - [ ] Uygulamada açık tema seçeneği (web sitesi sistem temasına uyar)
 - [ ] F-Droid / Play Store yayını

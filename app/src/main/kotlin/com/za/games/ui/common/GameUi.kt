@@ -43,6 +43,9 @@ import java.util.Locale
 fun formatScore(value: Long): String =
     String.format(Locale.getDefault(), "%,d", value)
 
+fun formatTime(totalSeconds: Int): String =
+    String.format(Locale.getDefault(), "%d:%02d", totalSeconds / 60, totalSeconds % 60)
+
 /** Oyun ekranlarının ortak üst çubuğu: geri, başlık, sağda oyuna özel aksiyon. */
 @Composable
 fun GameTopBar(
@@ -199,6 +202,28 @@ fun PausedOverlay(onResume: () -> Unit, onRestart: () -> Unit, onExit: () -> Uni
         }
         TextButton(onClick = onExit, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.exit_to_hub))
+        }
+    }
+}
+
+/** Zorluk seçimi: 0 = kolay, 1 = orta, 2 = zor. */
+@Composable
+fun DifficultyOverlay(onPick: (Int) -> Unit) {
+    OverlayCard {
+        Text(
+            text = stringResource(R.string.pick_difficulty),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+        )
+        Spacer(Modifier.height(4.dp))
+        Button(onClick = { onPick(0) }, modifier = Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.difficulty_easy))
+        }
+        Button(onClick = { onPick(1) }, modifier = Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.difficulty_medium))
+        }
+        Button(onClick = { onPick(2) }, modifier = Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.difficulty_hard))
         }
     }
 }

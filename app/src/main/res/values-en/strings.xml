@@ -43,6 +43,35 @@
     <string name="game_snake_tagline">Classic snake: eat, grow, don\'t crash</string>
     <string name="length_label">Length</string>
 
+    <!-- Sudoku -->
+    <string name="game_sudoku">Sudoku</string>
+    <string name="game_sudoku_tagline">Classic 9×9: three difficulties, notes, unique solutions</string>
+    <string name="congrats">Well done! 🎉</string>
+    <string name="notes_toggle">Notes mode</string>
+    <string name="erase">Erase</string>
+    <string name="solved_label">Solved</string>
+
+    <!-- Minesweeper -->
+    <string name="game_mines">Minesweeper</string>
+    <string name="game_mines_tagline">Read the numbers, plant flags, dodge the mines</string>
+    <string name="mines_left_label">Mines</string>
+    <string name="wins_label">Wins</string>
+    <string name="flag_mode">Flag mode</string>
+    <string name="mines_won">Field cleared! 🎉</string>
+    <string name="mines_lost">Boom! 💥</string>
+
+    <!-- Shared -->
+    <string name="pick_difficulty">Pick difficulty</string>
+    <string name="difficulty_easy">Easy</string>
+    <string name="difficulty_medium">Medium</string>
+    <string name="difficulty_hard">Hard</string>
+    <string name="difficulty_label">Difficulty</string>
+    <string name="new_game">New game</string>
+    <string name="same_difficulty">New at same difficulty</string>
+    <string name="try_again">Try again</string>
+    <string name="time_label">Time</string>
+    <string name="time_fmt">Time: %1$s</string>
+
     <!-- Sound -->
     <string name="sound_on">Turn sound on</string>
     <string name="sound_off">Turn sound off</string>

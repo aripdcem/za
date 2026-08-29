@@ -285,3 +285,66 @@ fun SnakeArt(modifier: Modifier = Modifier) {
         drawCircle(red, radius = cell * 0.3f, center = Offset(0.5f * cell, 0.5f * cell))
     }
 }
+
+/** Sudoku kartı için mini ızgara. */
+@Composable
+fun SudokuArt(modifier: Modifier = Modifier) {
+    val blue = Color(0xFF60A5FA)
+    Canvas(modifier = modifier) {
+        val cell = size.minDimension / 3f
+        val line = Color.White.copy(alpha = 0.35f)
+        for (i in 0..3) {
+            drawLine(line, Offset(i * cell, 0f), Offset(i * cell, size.minDimension), 2f)
+            drawLine(line, Offset(0f, i * cell), Offset(size.minDimension, i * cell), 2f)
+        }
+        fun dot(r: Int, c: Int, color: Color) {
+            drawRoundRect(
+                color = color,
+                topLeft = Offset(c * cell + cell * 0.22f, r * cell + cell * 0.22f),
+                size = Size(cell * 0.56f, cell * 0.56f),
+                cornerRadius = CornerRadius(cell * 0.16f, cell * 0.16f),
+            )
+        }
+        dot(0, 0, blue)
+        dot(1, 2, blue.copy(alpha = 0.7f))
+        dot(2, 1, blue.copy(alpha = 0.45f))
+    }
+}
+
+/** Mayın Tarlası kartı için mini tahta: bayrak + mayın. */
+@Composable
+fun MinesArt(modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val cell = size.minDimension / 3f
+        val corner = CornerRadius(cell * 0.2f, cell * 0.2f)
+        for (r in 0 until 3) {
+            for (c in 0 until 3) {
+                val revealed = (r + c) % 2 == 0
+                drawRoundRect(
+                    color = if (revealed) Color.White.copy(alpha = 0.07f) else Color(0xFF223049),
+                    topLeft = Offset(c * cell + 1.5f, r * cell + 1.5f),
+                    size = Size(cell - 3f, cell - 3f),
+                    cornerRadius = corner,
+                )
+            }
+        }
+        // Bayrak (sol üst)
+        val flagBase = Offset(cell * 0.5f, cell * 0.28f)
+        drawLine(Color(0xFFE4EAF5), flagBase, flagBase + Offset(0f, cell * 0.5f), 3f)
+        drawPath(
+            path = androidx.compose.ui.graphics.Path().apply {
+                moveTo(flagBase.x, flagBase.y)
+                lineTo(flagBase.x + cell * 0.4f, flagBase.y + cell * 0.14f)
+                lineTo(flagBase.x, flagBase.y + cell * 0.28f)
+                close()
+            },
+            color = Color(0xFFF87171),
+        )
+        // Mayın (sağ alt)
+        drawCircle(
+            Color(0xFF0B0F1A),
+            radius = cell * 0.26f,
+            center = Offset(2.5f * cell, 2.5f * cell),
+        )
+    }
+}
