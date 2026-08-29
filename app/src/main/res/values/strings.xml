@@ -60,6 +60,22 @@
     <string name="mines_won">Alan temizlendi! 🎉</string>
     <string name="mines_lost">Bum! 💥</string>
 
+    <!-- Beş Harf -->
+    <string name="game_besharf">Beş Harf</string>
+    <string name="game_besharf_tagline">Türkçe kelime tahmini: günlük bulmaca + serbest mod</string>
+    <string name="mode_daily">Günlük</string>
+    <string name="mode_free">Serbest</string>
+    <string name="not_in_list">Listede yok</string>
+    <string name="streak_label">Seri</string>
+    <string name="answer_was">Cevap: %1$s</string>
+    <string name="play_free">Serbest oyna</string>
+    <string name="new_word">Yeni kelime</string>
+    <string name="guesses_fmt">%1$d/%2$d tahminde bildin</string>
+    <string name="lost_title">Olmadı 😔</string>
+    <string name="tomorrow_new_word">Yarın yeni kelime!</string>
+    <string name="show_board">Tahtayı gör</string>
+    <string name="key_enter">GİR</string>
+
     <!-- Ortak -->
     <string name="pick_difficulty">Zorluk seç</string>
     <string name="difficulty_easy">Kolay</string>

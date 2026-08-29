@@ -60,6 +60,22 @@
     <string name="mines_won">Field cleared! 🎉</string>
     <string name="mines_lost">Boom! 💥</string>
 
+    <!-- Beş Harf -->
+    <string name="game_besharf">Beş Harf</string>
+    <string name="game_besharf_tagline">Turkish word guessing: daily puzzle + free play</string>
+    <string name="mode_daily">Daily</string>
+    <string name="mode_free">Free play</string>
+    <string name="not_in_list">Not in the word list</string>
+    <string name="streak_label">Streak</string>
+    <string name="answer_was">Answer: %1$s</string>
+    <string name="play_free">Play free mode</string>
+    <string name="new_word">New word</string>
+    <string name="guesses_fmt">Solved in %1$d/%2$d</string>
+    <string name="lost_title">Not this time 😔</string>
+    <string name="tomorrow_new_word">A new word tomorrow!</string>
+    <string name="show_board">Show the board</string>
+    <string name="key_enter">ENTER</string>
+
     <!-- Shared -->
     <string name="pick_difficulty">Pick difficulty</string>
     <string name="difficulty_easy">Easy</string>

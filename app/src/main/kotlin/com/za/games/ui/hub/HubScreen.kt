@@ -348,3 +348,32 @@ fun MinesArt(modifier: Modifier = Modifier) {
         )
     }
 }
+
+/** Beş Harf kartı için mini tahmin satırları. */
+@Composable
+fun BesHarfArt(modifier: Modifier = Modifier) {
+    val correct = Color(0xFF4ADE80)
+    val present = Color(0xFFFACC15)
+    val absent = Color(0xFF313A4E)
+    // Üç satırlık mini sonuç deseni: giderek çözülen bir kelime.
+    val patternRows = listOf(
+        listOf(absent, present, absent, absent, present),
+        listOf(present, correct, absent, correct, absent),
+        listOf(correct, correct, correct, correct, correct),
+    )
+    Canvas(modifier = modifier) {
+        val cell = size.minDimension / 5f
+        val corner = CornerRadius(cell * 0.22f, cell * 0.22f)
+        val originY = (size.minDimension - 3 * cell) / 2f
+        patternRows.forEachIndexed { r, colors ->
+            colors.forEachIndexed { c, color ->
+                drawRoundRect(
+                    color = color,
+                    topLeft = Offset(c * cell + 1.5f, originY + r * cell + 1.5f),
+                    size = Size(cell - 3f, cell - 3f),
+                    cornerRadius = corner,
+                )
+            }
+        }
+    }
+}

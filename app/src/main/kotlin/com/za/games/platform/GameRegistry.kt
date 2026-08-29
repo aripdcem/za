@@ -2,8 +2,10 @@ package com.za.games.platform
 
 import androidx.compose.ui.graphics.Color
 import com.za.games.R
+import com.za.games.ui.besharf.BesHarfScreen
 import com.za.games.ui.g2048.G2048Screen
 import com.za.games.ui.hub.Art2048
+import com.za.games.ui.hub.BesHarfArt
 import com.za.games.ui.hub.MinesArt
 import com.za.games.ui.hub.SnakeArt
 import com.za.games.ui.hub.SudokuArt
@@ -68,6 +70,16 @@ object GameRegistry {
             art = { modifier -> MinesArt(modifier) },
             screen = { highScore, onScore, onExit ->
                 MinesScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "besharf",
+            titleRes = R.string.game_besharf,
+            taglineRes = R.string.game_besharf_tagline,
+            accent = Color(0xFFFACC15),
+            art = { modifier -> BesHarfArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                BesHarfScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
     )
