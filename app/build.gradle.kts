@@ -74,6 +74,8 @@ dependencies {
     implementation(project(":games:tetris"))
     implementation(project(":games:g2048"))
     implementation(project(":games:snake"))
+    implementation(project(":games:sudoku"))
+    implementation(project(":games:mines"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
