@@ -1,0 +1,52 @@
+package com.za.games
+
+import androidx.activity.compose.BackHandler
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import com.za.games.platform.GameRegistry
+import com.za.games.platform.ScoreStore
+import com.za.games.ui.hub.HubScreen
+
+/**
+ * Uygulama kökü: ana menü ile oyunlar arasında geçişi ve rekor akışını yönetir.
+ */
+@Composable
+fun ZaApp() {
+    val context = LocalContext.current
+    val scoreStore = remember { ScoreStore(context) }
+    val highScores = remember {
+        mutableStateMapOf<String, Long>().apply {
+            GameRegistry.games.forEach { put(it.id, scoreStore.highScore(it.id)) }
+        }
+    }
+
+    var currentGameId by rememberSaveable { mutableStateOf<String?>(null) }
+    val currentGame = GameRegistry.games.firstOrNull { it.id == currentGameId }
+
+    BackHandler(enabled = currentGame != null) { currentGameId = null }
+
+    if (currentGame == null) {
+        HubScreen(
+            games = GameRegistry.games,
+            highScores = highScores,
+            onPlay = { currentGameId = it.id },
+        )
+    } else {
+        currentGame.screen(
+            highScores[currentGame.id] ?: 0L,
+            { score ->
+                scoreStore.submit(currentGame.id, score)
+                if (score > (highScores[currentGame.id] ?: 0L)) {
+                    highScores[currentGame.id] = score
+                }
+            },
+            { currentGameId = null },
+        )
+    }
+}

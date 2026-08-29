@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ZA Games</string>
+
+    <!-- Hub -->
+    <string name="hub_title">ZA</string>
+    <string name="hub_tagline">Zero ads. Pure play.</string>
+    <string name="chip_no_ads">0 ads</string>
+    <string name="chip_no_trackers">0 trackers</string>
+    <string name="chip_no_permissions">0 permissions</string>
+    <string name="play">Play</string>
+    <string name="high_score_fmt">Best: %1$s</string>
+    <string name="coming_soon">More games on the way…</string>
+
+    <!-- Tetris -->
+    <string name="game_tetris">Tetris</string>
+    <string name="game_tetris_tagline">The classic block puzzle: SRS rotation, hold and ghost piece</string>
+    <string name="score">Score</string>
+    <string name="high_score">Best</string>
+    <string name="level">Level</string>
+    <string name="lines">Lines</string>
+    <string name="next_label">Next</string>
+    <string name="hold_label">Hold</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="restart">Restart</string>
+    <string name="paused">Paused</string>
+    <string name="game_over">Game over</string>
+    <string name="new_record">New record! 🏆</string>
+    <string name="exit_to_hub">Back to menu</string>
+    <string name="back">Back</string>
+
+    <!-- Controls (accessibility) -->
+    <string name="ctrl_left">Move left</string>
+    <string name="ctrl_right">Move right</string>
+    <string name="ctrl_down">Soft drop</string>
+    <string name="ctrl_rotate_cw">Rotate clockwise</string>
+    <string name="ctrl_rotate_ccw">Rotate counter-clockwise</string>
+    <string name="ctrl_hard_drop">Hard drop</string>
+    <string name="ctrl_hold">Hold piece</string>
+</resources>

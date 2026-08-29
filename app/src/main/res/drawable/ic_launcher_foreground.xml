@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tetromino bloklarından oluşan "Z" harfi. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#4DE1FF"
+        android:pathData="M34,34h7.2v7.2h-7.2z M42,34h7.2v7.2h-7.2z M50,34h7.2v7.2h-7.2z M58,34h7.2v7.2h-7.2z M66,34h7.2v7.2h-7.2z M58,42h7.2v7.2h-7.2z M50,50h7.2v7.2h-7.2z M42,58h7.2v7.2h-7.2z M34,66h7.2v7.2h-7.2z M42,66h7.2v7.2h-7.2z M50,66h7.2v7.2h-7.2z M58,66h7.2v7.2h-7.2z M66,66h7.2v7.2h-7.2z" />
+</vector>

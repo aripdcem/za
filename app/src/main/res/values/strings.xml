@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ZA Games</string>
+
+    <!-- Ana menü -->
+    <string name="hub_title">ZA</string>
+    <string name="hub_tagline">Sıfır reklam. Saf oyun.</string>
+    <string name="chip_no_ads">0 reklam</string>
+    <string name="chip_no_trackers">0 izleyici</string>
+    <string name="chip_no_permissions">0 izin</string>
+    <string name="play">Oyna</string>
+    <string name="high_score_fmt">Rekor: %1$s</string>
+    <string name="coming_soon">Yeni oyunlar yolda…</string>
+
+    <!-- Tetris -->
+    <string name="game_tetris">Tetris</string>
+    <string name="game_tetris_tagline">Klasik blok bulmaca: SRS rotasyon, hold ve hayalet taş</string>
+    <string name="score">Skor</string>
+    <string name="high_score">Rekor</string>
+    <string name="level">Seviye</string>
+    <string name="lines">Satır</string>
+    <string name="next_label">Sıradaki</string>
+    <string name="hold_label">Tut</string>
+    <string name="pause">Duraklat</string>
+    <string name="resume">Devam et</string>
+    <string name="restart">Yeniden başlat</string>
+    <string name="paused">Duraklatıldı</string>
+    <string name="game_over">Oyun bitti</string>
+    <string name="new_record">Yeni rekor! 🏆</string>
+    <string name="exit_to_hub">Menüye dön</string>
+    <string name="back">Geri</string>
+
+    <!-- Kontroller (erişilebilirlik) -->
+    <string name="ctrl_left">Sola taşı</string>
+    <string name="ctrl_right">Sağa taşı</string>
+    <string name="ctrl_down">Aşağı indir</string>
+    <string name="ctrl_rotate_cw">Saat yönünde döndür</string>
+    <string name="ctrl_rotate_ccw">Saat yönünün tersine döndür</string>
+    <string name="ctrl_hard_drop">Sert bırak</string>
+    <string name="ctrl_hold">Taşı beklet</string>
+</resources>
