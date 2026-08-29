@@ -59,8 +59,9 @@ class BesHarfViewModel(application: Application) : AndroidViewModel(application)
         _state.value = after
         if (after.guesses.size == before.guesses.size) return // geçersiz gönderim
 
-        if (_mode.value == BesHarfMode.DAILY && after.dailyDay == todayEpoch()) {
-            store.saveDaily(after.dailyDay, after.guesses)
+        val day = after.dailyDay
+        if (_mode.value == BesHarfMode.DAILY && day != null && day == todayEpoch()) {
+            store.saveDaily(day, after.guesses)
         }
         if (before.status == BesHarfStatus.RUNNING) {
             when (after.status) {
