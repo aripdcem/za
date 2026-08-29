@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,6 +31,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,6 +46,8 @@ fun HubScreen(
     games: List<GameEntry>,
     highScores: Map<String, Long>,
     onPlay: (GameEntry) -> Unit,
+    soundOn: Boolean = true,
+    onToggleSound: () -> Unit = {},
 ) {
     LazyColumn(
         modifier = Modifier
@@ -52,7 +57,7 @@ fun HubScreen(
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        item { HubHeader() }
+        item { HubHeader(soundOn, onToggleSound) }
         items(games, key = { it.id }) { game ->
             GameCard(
                 game = game,
@@ -65,15 +70,27 @@ fun HubScreen(
 }
 
 @Composable
-private fun HubHeader() {
+private fun HubHeader(soundOn: Boolean, onToggleSound: () -> Unit) {
     Column(modifier = Modifier.padding(bottom = 8.dp)) {
-        Text(
-            text = stringResource(R.string.hub_title),
-            style = MaterialTheme.typography.displayLarge,
-            fontWeight = FontWeight.Black,
-            color = MaterialTheme.colorScheme.primary,
-            letterSpacing = 4.sp,
-        )
+        Row(verticalAlignment = Alignment.Top) {
+            Text(
+                text = stringResource(R.string.hub_title),
+                style = MaterialTheme.typography.displayLarge,
+                fontWeight = FontWeight.Black,
+                color = MaterialTheme.colorScheme.primary,
+                letterSpacing = 4.sp,
+                modifier = Modifier.weight(1f),
+            )
+            val toggleDescription = stringResource(
+                if (soundOn) R.string.sound_off else R.string.sound_on,
+            )
+            IconButton(
+                onClick = onToggleSound,
+                modifier = Modifier.semantics { contentDescription = toggleDescription },
+            ) {
+                Text(text = if (soundOn) "🔊" else "🔇", fontSize = 22.sp)
+            }
+        }
         Text(
             text = stringResource(R.string.hub_tagline),
             style = MaterialTheme.typography.bodyLarge,
@@ -217,5 +234,54 @@ fun TetrominoArt(modifier: Modifier = Modifier) {
         // O taşının köşesi
         block(3, 0, yellow)
         block(3, 1, yellow)
+    }
+}
+
+/** 2048 kartı için mini taş kolajı. */
+@Composable
+fun Art2048(modifier: Modifier = Modifier) {
+    val tiles = listOf(
+        Color(0xFFEEE4DA), Color(0xFFF2B179),
+        Color(0xFFEDCF72), Color(0xFFF65E3B),
+    )
+    Canvas(modifier = modifier) {
+        val cell = size.minDimension / 2f
+        val corner = CornerRadius(cell * 0.2f, cell * 0.2f)
+        tiles.forEachIndexed { i, color ->
+            val r = i / 2
+            val c = i % 2
+            drawRoundRect(
+                color = color,
+                topLeft = Offset(c * cell + 2f, r * cell + 2f),
+                size = Size(cell - 4f, cell - 4f),
+                cornerRadius = corner,
+            )
+        }
+    }
+}
+
+/** Yılan kartı için S kıvrımlı mini yılan + yem. */
+@Composable
+fun SnakeArt(modifier: Modifier = Modifier) {
+    val green = Color(0xFF4ADE80)
+    val red = Color(0xFFF87171)
+    Canvas(modifier = modifier) {
+        val cell = size.minDimension / 4f
+        val corner = CornerRadius(cell * 0.3f, cell * 0.3f)
+        fun seg(r: Int, c: Int, alpha: Float) {
+            drawRoundRect(
+                color = green.copy(alpha = alpha),
+                topLeft = Offset(c * cell + 1.5f, r * cell + 1.5f),
+                size = Size(cell - 3f, cell - 3f),
+                cornerRadius = corner,
+            )
+        }
+        seg(3, 0, 0.5f)
+        seg(3, 1, 0.62f)
+        seg(2, 1, 0.74f)
+        seg(1, 1, 0.86f)
+        seg(1, 2, 0.95f)
+        seg(0, 2, 1f) // baş
+        drawCircle(red, radius = cell * 0.3f, center = Offset(0.5f * cell, 0.5f * cell))
     }
 }

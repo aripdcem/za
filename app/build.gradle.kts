@@ -14,8 +14,8 @@ android {
         applicationId = "com.za.games"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "0.2.0"
     }
 
     // Release imzası CI'da ortam değişkenleriyle sağlanır (bkz. release.yml).
@@ -63,6 +63,8 @@ kotlin {
 
 dependencies {
     implementation(project(":games:tetris"))
+    implementation(project(":games:g2048"))
+    implementation(project(":games:snake"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

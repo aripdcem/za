@@ -30,7 +30,25 @@
     <string name="exit_to_hub">Menüye dön</string>
     <string name="back">Geri</string>
 
+    <!-- 2048 -->
+    <string name="game_2048">2048</string>
+    <string name="game_2048_tagline">Kaydır, birleştir, 2048'e ulaş</string>
+    <string name="won_2048_title">2048! 🎉</string>
+    <string name="won_2048_body">Başardın — istersen devam edip rekoru büyütebilirsin.</string>
+    <string name="keep_going">Devam et</string>
+    <string name="swipe_hint">Taşları kaydırmak için tahtayı sürükle</string>
+
+    <!-- Yılan -->
+    <string name="game_snake">Yılan</string>
+    <string name="game_snake_tagline">Klasik yılan: ye, büyü, çarpmadan hükmet</string>
+    <string name="length_label">Uzunluk</string>
+
+    <!-- Ses -->
+    <string name="sound_on">Sesi aç</string>
+    <string name="sound_off">Sesi kapat</string>
+
     <!-- Kontroller (erişilebilirlik) -->
+    <string name="ctrl_up">Yukarı</string>
     <string name="ctrl_left">Sola taşı</string>
     <string name="ctrl_right">Sağa taşı</string>
     <string name="ctrl_down">Aşağı indir</string>

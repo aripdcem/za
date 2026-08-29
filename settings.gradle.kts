@@ -24,3 +24,5 @@ rootProject.name = "za"
 
 include(":app")
 include(":games:tetris")
+include(":games:g2048")
+include(":games:snake")

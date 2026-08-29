@@ -42,6 +42,8 @@ fun BoardCanvas(
     onSoftDrop: () -> Unit,
     onRotate: () -> Unit,
     modifier: Modifier = Modifier,
+    flashRows: List<Int> = emptyList(),
+    flashAlpha: Float = 0f,
 ) {
     val boardWidth = state.width
     Canvas(
@@ -79,11 +81,15 @@ fun BoardCanvas(
                 )
             },
     ) {
-        drawTetrisBoard(state)
+        drawTetrisBoard(state, flashRows, flashAlpha)
     }
 }
 
-private fun DrawScope.drawTetrisBoard(state: TetrisState) {
+private fun DrawScope.drawTetrisBoard(
+    state: TetrisState,
+    flashRows: List<Int>,
+    flashAlpha: Float,
+) {
     val cell = size.width / state.width
 
     drawRoundRect(
@@ -137,6 +143,18 @@ private fun DrawScope.drawTetrisBoard(state: TetrisState) {
     }
 
     state.active.cells.forEach { (r, c) -> drawBlock(r, c, state.active.type.color()) }
+
+    // Satır temizleme parlaması: temizlenen satırlar kısaca beyaz yanıp söner.
+    if (flashAlpha > 0f) {
+        flashRows.forEach { r ->
+            drawRoundRect(
+                color = Color.White.copy(alpha = 0.85f * flashAlpha),
+                topLeft = Offset(0f, r * cell),
+                size = Size(size.width, cell),
+                cornerRadius = corner,
+            )
+        }
+    }
 }
 
 /** Hold ve sıradaki taşlar için küçük önizleme. */

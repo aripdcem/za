@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. İlk oyun: **Tetris**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Oyunlar: **Tetris**, **2048**, **Yılan**.
 
 ## Manifesto
 
@@ -20,13 +20,16 @@ ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen b
 za/
 ├── app/                          # Android uygulaması (Kotlin + Jetpack Compose)
 │   └── com.za.games
-│       ├── platform/             # Platform çekirdeği: GameEntry, GameRegistry, ScoreStore
-│       ├── ui/hub/               # Ana menü (oyun listesi + manifesto)
-│       ├── ui/tetris/            # Tetris'in Compose arayüzü
+│       ├── platform/             # Çekirdek: GameRegistry, ScoreStore, SettingsStore, SoundPlayer
+│       ├── ui/common/            # Oyunların paylaştığı bileşenler (tuşlar, katmanlar, kartlar)
+│       ├── ui/hub/               # Ana menü (oyun listesi + manifesto + ses düğmesi)
+│       ├── ui/tetris|g2048|snake # Oyunların Compose arayüzleri
 │       └── ui/theme/             # ZA teması
-└── games/
-    └── tetris/                   # Tetris motoru: saf Kotlin/JVM, Android'e bağımsız
-        └── com.za.games.tetris   # Değişmez durum makinesi + birim testleri
+├── games/
+│   ├── tetris/                   # Oyun motorları: saf Kotlin/JVM, Android'e bağımsız,
+│   ├── g2048/                    # her biri kendi birim testleriyle
+│   └── snake/
+└── tools/gen_sfx.py              # Ses efektlerini prosedürel üreten betik (res/raw)
 ```
 
 Temel ilke: **oyun kuralları saf Kotlin modüllerinde, arayüz `app` içinde** yaşar. Motorlar Android'e bağımlı olmadığı için cihazsız test edilir ve ileride başka platformlara taşınabilir.
@@ -37,18 +40,25 @@ Temel ilke: **oyun kuralları saf Kotlin modüllerinde, arayüz `app` içinde** 
 2. `app/src/main/kotlin/com/za/games/ui/<oyun>/` altında Compose ekranını yazın.
 3. `GameRegistry.games` listesine bir `GameEntry` ekleyin — ana menü kartı ve rekor takibi kendiliğinden çalışır.
 
-## Tetris
+## Oyunlar
 
-- 10×20 tahta, yedi standart tetromino
-- **7'li torba (7-bag)** rastgeleliği — taş kıtlığı yaşanmaz
-- **SRS rotasyon** ve tam duvar tekmesi (wall kick) tabloları
-- **Hold**, 3 taşlık **sıradaki** kuyruğu ve **hayalet taş**
-- Guideline skorlaması: 100/300/500/800 × seviye; yumuşak düşüş +1, sert düşüş +2/hücre
-- Her 10 satırda seviye atlama ve Guideline yerçekimi eğrisi
-- Kontroller: ekran tuşları (basılı tutunca tekrar eder) + tahta üstünde dokunma/sürükleme jestleri
-- Rekor cihazda saklanır; arka plana geçince oyun kendiliğinden duraklar
+Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı hamlelerle birebir aynı sonucu üretir. Rekorlar cihazda saklanır; oyunlar arka plana geçince kendiliğinden duraklar. Ses efektleri prosedürel üretilmiş küçük WAV'lardır ve ana menüden tamamen kapatılabilir.
 
-Motor deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı hamlelerle birebir aynı sonucu üretir. Bu, testleri güvenilir kılar ve ileride "yeniden oynatma" özelliğine kapı açar.
+### Tetris
+- 10×20 tahta, **7'li torba** rastgeleliği, **SRS rotasyon** + tam duvar tekmesi tabloları
+- **Hold**, 3 taşlık sıradaki kuyruğu, **hayalet taş**, satır temizlemede parlamalı animasyon + ses
+- Guideline skorlaması (100/300/500/800 × seviye; yumuşak +1, sert +2/hücre) ve yerçekimi eğrisi
+- Ekran tuşları (basılı tutunca tekrar eder) + tahtada dokunma/sürükleme jestleri
+
+### 2048
+- Klasik kurallar: taşlar hamle başına bir kez birleşir, %90/%10 oranında 2/4 doğar
+- Kaydırma jestleri, doğan ve birleşen taşlarda yaylı "pop" animasyonu
+- 2048'e ulaşınca kutlama; oyun devam eder
+
+### Yılan
+- 15×20 tahta; duvar ve gövde çarpışmaları (kuyruğun boşalttığı hücre serbesttir)
+- Her yem +10 puan, +1 uzunluk ve kademeli hızlanma
+- Kaydırma jestleri + yön tuşları; ters yöne dönüş engellenir
 
 ## Derleme
 
@@ -56,7 +66,7 @@ Gereksinimler: JDK 17+, Android SDK (compileSdk 35). Android Studio ile açıp �
 
 ```bash
 ./gradlew :app:assembleDebug        # APK: app/build/outputs/apk/debug/
-./gradlew :games:tetris:test        # Motor birim testleri (Android SDK gerektirmez)
+./gradlew :games:tetris:test :games:g2048:test :games:snake:test   # Motor testleri (Android SDK gerektirmez)
 ```
 
 - minSdk 26 (Android 8.0) · targetSdk 35
@@ -92,14 +102,15 @@ Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
 
 ## Yol haritası
 
-- [ ] Yeni oyunlar: 2048, yılan, sudoku, mayın tarlası…
-- [ ] Ses efektleri (kapatılabilir) ve satır temizleme animasyonları
+- [x] Yeni oyunlar: 2048 ✓, yılan ✓
+- [x] Ses efektleri (kapatılabilir) ve satır temizleme animasyonları
+- [ ] Sudoku, mayın tarlası…
 - [ ] Oyun içi istatistikler (toplam satır, en uzun oturum)
-- [ ] Açık tema seçeneği
+- [ ] Uygulamada açık tema seçeneği (web sitesi sistem temasına uyar)
 - [ ] F-Droid / Play Store yayını
 
 ---
 
 ### English summary
 
-**ZA** is an Android platform for truly ad-free games ("zero ad game play"): no ads, no trackers, no permissions (not even INTERNET), no purchases. Game rules live in pure Kotlin modules (`games/tetris` ships a deterministic, fully unit-tested Tetris engine with 7-bag randomizer and SRS wall kicks); the Compose UI lives in `app`. Add a game by writing an engine module, a Compose screen, and one `GameEntry` in `GameRegistry`. Build with `./gradlew :app:assembleDebug`, test the engine with `./gradlew :games:tetris:test`.
+**ZA** is an Android platform for truly ad-free games ("zero ad game play"): no ads, no trackers, no permissions (not even INTERNET), no purchases. It ships **Tetris** (SRS wall kicks, 7-bag, hold, ghost piece, line-clear flash + sound), **2048** and **Snake**. Game rules live in deterministic, fully unit-tested pure Kotlin modules under `games/`; the Compose UI lives in `app`. Sound effects are tiny procedurally generated WAVs (`tools/gen_sfx.py`) and can be muted from the hub. Add a game by writing an engine module, a Compose screen, and one `GameEntry` in `GameRegistry`. Build with `./gradlew :app:assembleDebug`, test engines with `./gradlew :games:tetris:test :games:g2048:test :games:snake:test`.

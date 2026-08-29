@@ -111,6 +111,8 @@ class TetrisStateTest {
         assertEquals(4, dropped.board.sumOf { row -> row.count { it != null } })
         assertEquals(expectedNext, dropped.active.type)
         assertEquals(-1, dropped.active.row)
+        assertEquals(1, dropped.locks)
+        assertEquals(0, dropped.clearEvents) // temizlik yoksa olay artmaz
     }
 
     @Test
@@ -146,6 +148,9 @@ class TetrisStateTest {
         assertEquals(2L * 19 + 100L, result.score)
         assertEquals(1, result.lines)
         assertEquals(1, result.lastClear)
+        assertEquals(listOf(19), result.lastClearedRows)
+        assertEquals(1, result.clearEvents)
+        assertEquals(1, result.locks)
         // Üstteki O kalıntısı bir satır aşağı kaydı.
         assertEquals(Tetromino.O, result.board[19][4])
         assertEquals(Tetromino.O, result.board[19][5])
@@ -164,6 +169,8 @@ class TetrisStateTest {
         assertEquals(2L * 16 + 800L, result.score)
         assertEquals(4, result.lines)
         assertEquals(4, result.lastClear)
+        assertEquals(listOf(16, 17, 18, 19), result.lastClearedRows)
+        assertEquals(1, result.clearEvents)
         assertTrue(result.board.all { row -> row.all { it == null } })
     }
 

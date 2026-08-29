@@ -30,7 +30,25 @@
     <string name="exit_to_hub">Back to menu</string>
     <string name="back">Back</string>
 
+    <!-- 2048 -->
+    <string name="game_2048">2048</string>
+    <string name="game_2048_tagline">Swipe, merge, reach 2048</string>
+    <string name="won_2048_title">2048! 🎉</string>
+    <string name="won_2048_body">You did it — keep going to push your record.</string>
+    <string name="keep_going">Keep going</string>
+    <string name="swipe_hint">Drag the board to slide the tiles</string>
+
+    <!-- Snake -->
+    <string name="game_snake">Snake</string>
+    <string name="game_snake_tagline">Classic snake: eat, grow, don\'t crash</string>
+    <string name="length_label">Length</string>
+
+    <!-- Sound -->
+    <string name="sound_on">Turn sound on</string>
+    <string name="sound_off">Turn sound off</string>
+
     <!-- Controls (accessibility) -->
+    <string name="ctrl_up">Up</string>
     <string name="ctrl_left">Move left</string>
     <string name="ctrl_right">Move right</string>
     <string name="ctrl_down">Soft drop</string>

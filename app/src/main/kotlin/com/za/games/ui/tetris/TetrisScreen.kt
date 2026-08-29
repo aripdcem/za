@@ -1,9 +1,9 @@
 package com.za.games.ui.tetris
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,45 +20,41 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.za.games.R
+import com.za.games.platform.LocalZaSound
+import com.za.games.platform.Sfx
 import com.za.games.tetris.TetrisState
 import com.za.games.tetris.TetrisStatus
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
+import com.za.games.ui.common.GameOverOverlay
+import com.za.games.ui.common.GameTopBar
+import com.za.games.ui.common.PadButton
+import com.za.games.ui.common.PausedOverlay
+import com.za.games.ui.common.formatScore
 import java.util.Locale
-
-private fun formatScore(value: Long): String =
-    String.format(Locale.getDefault(), "%,d", value)
 
 @Composable
 fun TetrisScreen(
@@ -69,15 +65,39 @@ fun TetrisScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val haptics = LocalHapticFeedback.current
+    val sound = LocalZaSound.current
+    val latestScore by rememberUpdatedState(state.score)
+    val latestOnScore by rememberUpdatedState(onScore)
 
-    // Oyun bitince skoru platforma bildir.
+    // Skoru oyun sonunda ve ekrandan ayrılırken platforma bildir.
     LaunchedEffect(state.status) {
-        if (state.status == TetrisStatus.OVER) onScore(state.score)
+        if (state.status == TetrisStatus.OVER) {
+            latestOnScore(state.score)
+            sound?.play(Sfx.OVER)
+        }
     }
-    // Satır temizlenince küçük bir titreşim.
-    LaunchedEffect(state.lines) {
-        if (state.lines > 0) haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+    DisposableEffect(Unit) {
+        onDispose { latestOnScore(latestScore) }
     }
+
+    // Satır temizleme: parlamalı animasyon + ses + titreşim.
+    val clearFlash = remember { Animatable(0f) }
+    var flashRows by remember { mutableStateOf<List<Int>>(emptyList()) }
+    LaunchedEffect(state.clearEvents) {
+        if (state.clearEvents > 0) {
+            sound?.play(if (state.lastClear >= 4) Sfx.BIG else Sfx.CLEAR)
+            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+            flashRows = state.lastClearedRows
+            clearFlash.snapTo(1f)
+            clearFlash.animateTo(0f, animationSpec = tween(durationMillis = 320))
+            flashRows = emptyList()
+        }
+    }
+    // Temizlik olmayan kilitlenmelerde tok bir vuruş sesi.
+    LaunchedEffect(state.locks) {
+        if (state.locks > 0 && state.lastClear == 0) sound?.play(Sfx.DROP, volume = 0.6f)
+    }
+
     // Uygulama arka plana geçince otomatik duraklat.
     LifecycleResumeEffect(Unit) {
         onPauseOrDispose { viewModel.pause() }
@@ -89,6 +109,10 @@ fun TetrisScreen(
 
     // "Yeni rekor" rozetini bu oturumun başındaki rekora göre belirle.
     val previousBest = remember { mutableLongStateOf(highScore) }
+    val restart = {
+        previousBest.longValue = maxOf(previousBest.longValue, state.score)
+        viewModel.newGame()
+    }
 
     Column(
         modifier = Modifier
@@ -96,11 +120,18 @@ fun TetrisScreen(
             .background(MaterialTheme.colorScheme.background)
             .safeDrawingPadding(),
     ) {
-        TetrisTopBar(
-            status = state.status,
-            onExit = onExit,
-            onTogglePause = viewModel::togglePause,
-        )
+        GameTopBar(title = stringResource(R.string.game_tetris), onExit = onExit) {
+            TextButton(
+                onClick = viewModel::togglePause,
+                enabled = state.status != TetrisStatus.OVER,
+            ) {
+                Text(
+                    text = stringResource(
+                        if (state.status == TetrisStatus.PAUSED) R.string.resume else R.string.pause,
+                    ),
+                )
+            }
+        }
 
         Row(
             modifier = Modifier
@@ -120,23 +151,19 @@ fun TetrisScreen(
                     onSoftDrop = viewModel::softDrop,
                     onRotate = viewModel::rotateClockwise,
                     modifier = Modifier.aspectRatio(state.width / state.height.toFloat()),
+                    flashRows = flashRows,
+                    flashAlpha = clearFlash.value,
                 )
                 when (state.status) {
                     TetrisStatus.PAUSED -> PausedOverlay(
                         onResume = viewModel::togglePause,
-                        onRestart = {
-                            previousBest.longValue = maxOf(previousBest.longValue, state.score)
-                            viewModel.newGame()
-                        },
+                        onRestart = restart,
                         onExit = onExit,
                     )
                     TetrisStatus.OVER -> GameOverOverlay(
                         score = state.score,
                         isRecord = state.score > previousBest.longValue,
-                        onRestart = {
-                            previousBest.longValue = maxOf(previousBest.longValue, state.score)
-                            viewModel.newGame()
-                        },
+                        onRestart = restart,
                         onExit = onExit,
                     )
                     TetrisStatus.RUNNING -> Unit
@@ -164,41 +191,6 @@ fun TetrisScreen(
             },
             onHold = viewModel::hold,
         )
-    }
-}
-
-@Composable
-private fun TetrisTopBar(
-    status: TetrisStatus,
-    onExit: () -> Unit,
-    onTogglePause: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 4.dp, vertical = 2.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        IconButton(onClick = onExit) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.back),
-            )
-        }
-        Text(
-            text = stringResource(R.string.game_tetris).uppercase(Locale.getDefault()),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Black,
-            letterSpacing = 3.sp,
-            modifier = Modifier.weight(1f),
-        )
-        TextButton(onClick = onTogglePause, enabled = status != TetrisStatus.OVER) {
-            Text(
-                text = stringResource(
-                    if (status == TetrisStatus.PAUSED) R.string.resume else R.string.pause,
-                ),
-            )
-        }
     }
 }
 
@@ -330,136 +322,6 @@ private fun ControlsPad(
                 accent = true,
                 onAction = onHardDrop,
             )
-        }
-    }
-}
-
-/**
- * Oyun tuşu. [repeatIntervalMs] verilirse basılı tutuldukça tekrarlar
- * (ilk tekrar 220 ms sonra başlar).
- */
-@Composable
-private fun PadButton(
-    label: String,
-    description: String,
-    modifier: Modifier = Modifier,
-    repeatIntervalMs: Long = 0L,
-    accent: Boolean = false,
-    onAction: () -> Unit,
-) {
-    val currentAction by rememberUpdatedState(onAction)
-    val interactionSource = remember { MutableInteractionSource() }
-    val repeatable = repeatIntervalMs > 0L
-
-    if (repeatable) {
-        val pressed by interactionSource.collectIsPressedAsState()
-        LaunchedEffect(pressed) {
-            if (pressed) {
-                currentAction()
-                delay(220L)
-                while (isActive) {
-                    currentAction()
-                    delay(repeatIntervalMs)
-                }
-            }
-        }
-    }
-
-    Surface(
-        onClick = { if (!repeatable) currentAction() },
-        modifier = modifier.semantics { contentDescription = description },
-        shape = RoundedCornerShape(16.dp),
-        color = if (accent) {
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.22f)
-        } else {
-            MaterialTheme.colorScheme.surfaceVariant
-        },
-        interactionSource = interactionSource,
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Text(
-                text = label,
-                fontSize = 22.sp,
-                color = if (accent) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                },
-            )
-        }
-    }
-}
-
-@Composable
-private fun OverlayCard(content: @Composable () -> Unit) {
-    Surface(
-        shape = RoundedCornerShape(24.dp),
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.96f),
-        modifier = Modifier.padding(16.dp),
-    ) {
-        Column(
-            modifier = Modifier.padding(horizontal = 28.dp, vertical = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            content()
-        }
-    }
-}
-
-@Composable
-private fun PausedOverlay(onResume: () -> Unit, onRestart: () -> Unit, onExit: () -> Unit) {
-    OverlayCard {
-        Text(
-            text = stringResource(R.string.paused),
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-        )
-        Spacer(Modifier.height(4.dp))
-        Button(onClick = onResume, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.resume))
-        }
-        OutlinedButton(onClick = onRestart, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.restart))
-        }
-        TextButton(onClick = onExit, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.exit_to_hub))
-        }
-    }
-}
-
-@Composable
-private fun GameOverOverlay(
-    score: Long,
-    isRecord: Boolean,
-    onRestart: () -> Unit,
-    onExit: () -> Unit,
-) {
-    OverlayCard {
-        Text(
-            text = stringResource(R.string.game_over),
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-        )
-        Text(
-            text = formatScore(score),
-            style = MaterialTheme.typography.displaySmall,
-            fontWeight = FontWeight.Black,
-            color = MaterialTheme.colorScheme.primary,
-        )
-        if (isRecord) {
-            Text(
-                text = stringResource(R.string.new_record),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.secondary,
-            )
-        }
-        Spacer(Modifier.height(4.dp))
-        Button(onClick = onRestart, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.restart))
-        }
-        TextButton(onClick = onExit, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.exit_to_hub))
         }
     }
 }

@@ -39,7 +39,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Motor birim testleri
-        run: ./gradlew :games:tetris:test
+        run: ./gradlew :games:tetris:test :games:g2048:test :games:snake:test
 
       - name: Keystore'u çöz
         run: echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/za-release.jks"

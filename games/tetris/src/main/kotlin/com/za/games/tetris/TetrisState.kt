@@ -35,6 +35,12 @@ data class TetrisState(
     val bagSeed: Long,
     /** Son kilitlenmede temizlenen satır sayısı (arayüz efektleri için). */
     val lastClear: Int = 0,
+    /** Son temizlikte dolan satırların (eski tahtadaki) indeksleri. */
+    val lastClearedRows: List<Int> = emptyList(),
+    /** Satır temizleme olayı sayacı; arayüz animasyonu bununla tetiklenir. */
+    val clearEvents: Int = 0,
+    /** Kilitlenme sayacı; arayüz kilit sesini bununla tetikler. */
+    val locks: Int = 0,
 ) {
 
     /** Seviye: her 10 satırda bir artar, 1'den başlar. */
@@ -130,8 +136,11 @@ data class TetrisState(
         val grid = board.map { it.toMutableList() }
         for ((r, c) in cells) grid[r][c] = active.type
 
-        val remaining = grid.filterNot { row -> row.all { it != null } }
-        val cleared = height - remaining.size
+        val fullRows = grid.withIndex()
+            .filter { (_, row) -> row.all { it != null } }
+            .map { it.index }
+        val remaining = grid.filterIndexed { index, _ -> index !in fullRows }
+        val cleared = fullRows.size
         val emptyRows = List(cleared) { List<Tetromino?>(width) { null } }
         val newBoard = emptyRows + remaining.map { it.toList() }
 
@@ -154,6 +163,9 @@ data class TetrisState(
             lines = lines + cleared,
             bagSeed = seed,
             lastClear = cleared,
+            lastClearedRows = fullRows,
+            clearEvents = clearEvents + if (cleared > 0) 1 else 0,
+            locks = locks + 1,
         )
         return if (state.fits(spawned)) state else state.copy(status = TetrisStatus.OVER)
     }
