@@ -6,7 +6,9 @@ name: Pages
 
 on:
   push:
-    branches: [main]
+    # Depo main'e taşınana kadar varsayılan dal claude/** olduğundan
+    # her iki desen de dinlenir; concurrency grubu çakışmayı önler.
+    branches: [main, 'claude/**']
     paths:
       - 'site/**'
       - '.github/workflows/pages.yml'
