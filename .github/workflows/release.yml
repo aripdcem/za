@@ -47,7 +47,7 @@ jobs:
           TAG="${{ inputs.tag_name || github.ref_name }}"
           case "$TAG" in
             v[0-9]*) ;;
-            *) TAG="v0.0.0" ;; # dal push'u = yalnızca doğrulama derlemesi
+            *) TAG="v0.0.1" ;; # dal push'u = yalnızca doğrulama derlemesi
           esac
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"

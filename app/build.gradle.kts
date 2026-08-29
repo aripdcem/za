@@ -12,7 +12,8 @@ plugins {
 val zaVersion: String = (project.findProperty("zaVersion") as? String) ?: "0.3.0"
 val zaVersionCode: Int = zaVersion.split('.').map { it.toInt() }.let { (major, minor, patch) ->
     require(major < 214 && minor < 100 && patch < 100) { "Geçersiz sürüm: $zaVersion" }
-    major * 10_000 + minor * 100 + patch
+    // AGP, versionCode için pozitif tamsayı ister.
+    (major * 10_000 + minor * 100 + patch).coerceAtLeast(1)
 }
 
 android {
