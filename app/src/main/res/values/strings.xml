@@ -32,7 +32,7 @@
 
     <!-- 2048 -->
     <string name="game_2048">2048</string>
-    <string name="game_2048_tagline">Kaydır, birleştir, 2048'e ulaş</string>
+    <string name="game_2048_tagline">Kaydır, birleştir, 2048\'e ulaş</string>
     <string name="won_2048_title">2048! 🎉</string>
     <string name="won_2048_body">Başardın — istersen devam edip rekoru büyütebilirsin.</string>
     <string name="keep_going">Devam et</string>
