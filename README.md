@@ -62,6 +62,34 @@ Gereksinimler: JDK 17+, Android SDK (compileSdk 35). Android Studio ile açıp �
 - minSdk 26 (Android 8.0) · targetSdk 35
 - Kotlin 2.1 · Jetpack Compose (Material 3) · AGP 8.10
 
+## Yayınlama
+
+### İmzalı APK (GitHub Release)
+
+`v*` etiketi push'lanınca `release.yml` iş akışı imzalı APK'yı derleyip GitHub Release'e `za.apk` adıyla ekler. En yeni sürüm her zaman şu sabit adresten inebilir:
+
+```
+https://github.com/aripdcem/za/releases/latest/download/za.apk
+```
+
+Gerekli depo secret'ları (yalnızca depo sahibi ayarlar):
+
+```bash
+keytool -genkeypair -v -keystore keys/za-release.jks -alias za -keyalg RSA -keysize 2048 -validity 10000
+base64 -w0 keys/za-release.jks | gh secret set ANDROID_KEYSTORE_BASE64 --repo aripdcem/za
+gh secret set ANDROID_KEYSTORE_PASSWORD --repo aripdcem/za
+```
+
+Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
+
+### Web sitesi (za.aripd.com)
+
+`site/` klasörü GitHub Pages ile yayınlanır (`pages.yml`). Tek seferlik kurulum:
+
+1. Depo **Settings → Pages** → Source: **GitHub Actions**
+2. Aynı sayfada Custom domain: **za.aripd.com**
+3. DNS'te `za.aripd.com` için `aripdcem.github.io` hedefli **CNAME** kaydı
+
 ## Yol haritası
 
 - [ ] Yeni oyunlar: 2048, yılan, sudoku, mayın tarlası…

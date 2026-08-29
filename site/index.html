@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZA · Zero Ad Games</title>
+<meta name="description" content="ZA: Android için sıfır reklam, sıfır izleyici, sıfır izin oyun platformu. Saf oyun.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B0F1A'/%3E%3Cg fill='%234DE1FF'%3E%3Crect x='7' y='7' width='4' height='4' rx='1'/%3E%3Crect x='12' y='7' width='4' height='4' rx='1'/%3E%3Crect x='17' y='7' width='4' height='4' rx='1'/%3E%3Crect x='22' y='7' width='4' height='4' rx='1'/%3E%3Crect x='17' y='12' width='4' height='4' rx='1'/%3E%3Crect x='12' y='16' width='4' height='4' rx='1'/%3E%3Crect x='7' y='21' width='4' height='4' rx='1'/%3E%3Crect x='12' y='21' width='4' height='4' rx='1'/%3E%3Crect x='17' y='21' width='4' height='4' rx='1'/%3E%3Crect x='22' y='21' width='4' height='4' rx='1'/%3E%3C/g%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #0B0F1A;
+    --surface: #111827;
+    --surface-2: #1B2437;
+    --text: #E4EAF5;
+    --muted: #AAB4C8;
+    --cyan: #4DE1FF;
+    --purple: #A78BFA;
+    --yellow: #FACC15;
+    --green: #4ADE80;
+    --red: #F87171;
+    --orange: #FB923C;
+    --blue: #60A5FA;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 48px 20px 64px; }
+  header h1 {
+    font-size: 64px;
+    font-weight: 900;
+    letter-spacing: 6px;
+    color: var(--cyan);
+    line-height: 1.1;
+  }
+  header p.tagline { font-size: 19px; color: var(--muted); margin-top: 4px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .chip {
+    background: var(--surface-2);
+    color: var(--muted);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  main { margin-top: 40px; display: grid; gap: 16px; }
+  .card {
+    background: var(--surface);
+    border-radius: 24px;
+    padding: 22px;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    background-image: linear-gradient(90deg, rgba(34, 211, 238, 0.12), transparent 60%);
+  }
+  .card.muted { opacity: .6; background-image: none; }
+  .art {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 14px);
+    grid-auto-rows: 14px;
+    gap: 2px;
+  }
+  .art i { border-radius: 3px; }
+  .card h2 { font-size: 22px; }
+  .card .info { flex: 1 1 auto; min-width: 0; }
+  .card .info p { color: var(--muted); font-size: 15px; margin-top: 2px; }
+  .btn {
+    flex: 0 0 auto;
+    background: var(--cyan);
+    color: #06121D;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-size: 15px;
+    white-space: nowrap;
+  }
+  .btn:hover { filter: brightness(1.1); }
+  .note {
+    margin-top: 28px;
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 16px 18px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .note strong { color: var(--text); }
+  footer {
+    margin-top: 48px;
+    color: var(--muted);
+    font-size: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+  }
+  footer a { color: var(--cyan); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  @media (max-width: 540px) {
+    header h1 { font-size: 48px; }
+    .card { flex-wrap: wrap; }
+    .btn { width: 100%; text-align: center; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>ZA</h1>
+    <p class="tagline">Sıfır reklam. Saf oyun.</p>
+    <div class="chips">
+      <span class="chip">0 reklam</span>
+      <span class="chip">0 izleyici</span>
+      <span class="chip">0 izin</span>
+      <span class="chip">0 satın alma</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="art" aria-hidden="true">
+        <i style="grid-area:1/2;background:var(--purple)"></i>
+        <i style="grid-area:2/1;background:var(--purple)"></i>
+        <i style="grid-area:2/2;background:var(--purple)"></i>
+        <i style="grid-area:2/3;background:var(--purple)"></i>
+        <i style="grid-area:3/1;background:var(--cyan)"></i>
+        <i style="grid-area:3/2;background:var(--cyan)"></i>
+        <i style="grid-area:3/3;background:var(--cyan)"></i>
+        <i style="grid-area:3/4;background:var(--cyan)"></i>
+        <i style="grid-area:4/1;background:var(--yellow)"></i>
+        <i style="grid-area:4/2;background:var(--yellow)"></i>
+      </div>
+      <div class="info">
+        <h2>Tetris</h2>
+        <p>Klasik blok bulmaca: SRS rotasyon, hold ve hayalet taş. Tamamen çevrimdışı.</p>
+      </div>
+      <a class="btn" href="https://github.com/aripdcem/za/releases/latest/download/za.apk">APK indir</a>
+    </section>
+
+    <section class="card muted">
+      <div class="info">
+        <h2>Yeni oyunlar yolda…</h2>
+        <p>2048, yılan, sudoku ve daha fazlası — hepsi aynı sözle: sıfır reklam.</p>
+      </div>
+    </section>
+  </main>
+
+  <p class="note">
+    <strong>Kurulum:</strong> APK'yı indirdikten sonra Android, Play Store dışı kaynaklara
+    izin vermenizi isteyebilir ("Bilinmeyen uygulamaları yükle"). ZA hiçbir izin istemez —
+    İNTERNET izni bile yok; oyunlar tamamen çevrimdışı çalışır. Android 8.0 ve üzeri.
+  </p>
+
+  <footer>
+    <span>ZA · zero ad game play</span>
+    <a href="https://github.com/aripdcem/za">GitHub'da kaynak kodu</a>
+  </footer>
+</div>
+</body>
+</html>

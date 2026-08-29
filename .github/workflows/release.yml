@@ -1,0 +1,60 @@
+name: Release
+
+# İmzalı APK üretimi. `v*` etiketi push'lanınca çalışır, APK'yı GitHub
+# Release'e `za.apk` adıyla ekler; Pages sitesindeki indirme bağlantısı
+# releases/latest/download/za.apk adresinden her zaman en yeni sürümü verir.
+#
+# Gerekli secret'lar (depo sahibi ayarlar):
+#   ANDROID_KEYSTORE_BASE64   — base64 kodlu za-release.jks
+#   ANDROID_KEYSTORE_PASSWORD — keystore parolası (alias: za)
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Motor birim testleri
+        run: ./gradlew :games:tetris:test
+
+      - name: Keystore'u çöz
+        run: echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/za-release.jks"
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+
+      - name: İmzalı release APK derle
+        run: ./gradlew :app:assembleRelease
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/za-release.jks
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+
+      - name: APK'yı sabit adla kopyala
+        run: cp app/build/outputs/apk/release/app-release.apk za.apk
+
+      - name: APK'yı iş akışı çıktısı olarak yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: za-release-apk
+          path: za.apk
+
+      - name: GitHub Release oluştur
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: za.apk
+          generate_release_notes: true
