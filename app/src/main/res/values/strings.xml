@@ -55,6 +55,10 @@
     <string name="sudoku_hint">✎ ile not al · rakamın altındaki sayı kaç tane kaldığını gösterir</string>
     <string name="sudoku_difficulty_desc_fmt">%1$d ipucuyla başla</string>
     <string name="sudoku_digit_desc_fmt">%1$d yaz, %2$d tane kaldı</string>
+    <string name="sudoku_cell_desc_fmt">Satır %1$d, sütun %2$d: %3$s</string>
+    <string name="sudoku_cell_empty">boş</string>
+    <string name="sudoku_cell_given_note">ipucu</string>
+    <string name="sudoku_cell_conflict_note">çakışma</string>
 
     <!-- Mayın Tarlası -->
     <string name="game_mines">Mayın Tarlası</string>

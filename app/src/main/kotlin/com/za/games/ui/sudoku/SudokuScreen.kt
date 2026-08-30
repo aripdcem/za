@@ -256,6 +256,8 @@ private fun SudokuBoard(
                     repeat(9) { c ->
                         val index = r * 9 + c
                         SudokuCell(
+                            row = r,
+                            col = c,
                             value = state.values[index],
                             notes = state.notes[index],
                             isGiven = state.given[index],
@@ -300,6 +302,8 @@ private fun sharesUnit(a: Int, b: Int): Boolean {
 
 @Composable
 private fun SudokuCell(
+    row: Int,
+    col: Int,
     value: Int,
     notes: Set<Int>,
     isGiven: Boolean,
@@ -316,6 +320,13 @@ private fun SudokuCell(
         isPeerOfSelected -> Color.White.copy(alpha = 0.045f)
         else -> Color.Transparent
     }
+    val content = if (value > 0) value.toString() else stringResource(R.string.sudoku_cell_empty)
+    val note = when {
+        isConflict -> " (${stringResource(R.string.sudoku_cell_conflict_note)})"
+        isGiven -> " (${stringResource(R.string.sudoku_cell_given_note)})"
+        else -> ""
+    }
+    val description = stringResource(R.string.sudoku_cell_desc_fmt, row + 1, col + 1, content + note)
     Box(
         modifier = modifier
             .clickable(
@@ -323,7 +334,8 @@ private fun SudokuCell(
                 indication = LocalIndication.current,
                 onClick = onClick,
             )
-            .background(background),
+            .background(background)
+            .semantics(mergeDescendants = true) { contentDescription = description },
         contentAlignment = Alignment.Center,
     ) {
         if (value > 0) {
