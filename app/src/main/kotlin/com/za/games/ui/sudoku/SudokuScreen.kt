@@ -2,6 +2,7 @@ package com.za.games.ui.sudoku
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -40,7 +41,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -52,6 +52,7 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.za.games.R
+import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
 import com.za.games.sudoku.SudokuDifficulty
@@ -81,7 +82,7 @@ fun SudokuScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val elapsed by viewModel.elapsed.collectAsStateWithLifecycle()
-    val haptics = LocalHapticFeedback.current
+    val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current
 
     var selected by rememberSaveable { mutableIntStateOf(-1) }
@@ -170,7 +171,11 @@ fun SudokuScreen(
                 )
             }
             when {
-                state == null -> DifficultyOverlay { index ->
+                state == null -> DifficultyOverlay(
+                    descriptions = SudokuDifficulty.entries.map {
+                        stringResource(R.string.sudoku_difficulty_desc_fmt, it.targetClues)
+                    },
+                ) { index ->
                     viewModel.newGame(SudokuDifficulty.entries[index])
                 }
                 state?.status == SudokuStatus.SOLVED -> SolvedOverlay(
@@ -187,6 +192,16 @@ fun SudokuScreen(
                 )
             }
         }
+
+        Text(
+            text = stringResource(R.string.sudoku_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.45f),
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+        )
 
         state?.let { puzzle ->
             SudokuPad(
@@ -299,7 +314,7 @@ private fun SudokuCell(
         modifier = modifier
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = null,
+                indication = LocalIndication.current,
                 onClick = onClick,
             )
             .background(background),
@@ -385,11 +400,14 @@ private fun DigitButton(
     onClick: () -> Unit,
 ) {
     val remaining = 9 - state.values.count { it == digit }
+    val description = stringResource(R.string.sudoku_digit_desc_fmt, digit, remaining.coerceAtLeast(0))
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = modifier.height(56.dp),
+        modifier = modifier
+            .height(56.dp)
+            .semantics { contentDescription = description },
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

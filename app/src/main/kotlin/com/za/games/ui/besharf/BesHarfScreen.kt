@@ -33,9 +33,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LifecycleResumeEffect
@@ -45,6 +45,7 @@ import com.za.games.R
 import com.za.games.besharf.BesHarfState
 import com.za.games.besharf.BesHarfStatus
 import com.za.games.besharf.LetterMark
+import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
 import com.za.games.ui.common.GameTopBar
@@ -75,7 +76,7 @@ fun BesHarfScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val mode by viewModel.mode.collectAsStateWithLifecycle()
     val streak by viewModel.streak.collectAsStateWithLifecycle()
-    val haptics = LocalHapticFeedback.current
+    val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current
     val latestOnScore by rememberUpdatedState(onScore)
 
@@ -138,6 +139,16 @@ fun BesHarfScreen(
         }
 
         ModeChips(mode = mode, onSelect = viewModel::setMode)
+
+        Text(
+            text = stringResource(R.string.besharf_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+        )
 
         Box(
             modifier = Modifier

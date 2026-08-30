@@ -21,6 +21,7 @@
     <string name="lines">Satır</string>
     <string name="next_label">Sıradaki</string>
     <string name="hold_label">Tut</string>
+    <string name="tetris_hint">Tahtaya dokunarak döndür, sürükleyerek kaydır</string>
     <string name="pause">Duraklat</string>
     <string name="resume">Devam et</string>
     <string name="restart">Yeniden başlat</string>
@@ -51,6 +52,9 @@
     <string name="notes_toggle">Not modu</string>
     <string name="erase">Sil</string>
     <string name="solved_label">Çözülen</string>
+    <string name="sudoku_hint">✎ ile not al · rakamın altındaki sayı kaç tane kaldığını gösterir</string>
+    <string name="sudoku_difficulty_desc_fmt">%1$d ipucuyla başla</string>
+    <string name="sudoku_digit_desc_fmt">%1$d yaz, %2$d tane kaldı</string>
 
     <!-- Mayın Tarlası -->
     <string name="game_mines">Mayın Tarlası</string>
@@ -60,6 +64,8 @@
     <string name="flag_mode">Bayrak modu</string>
     <string name="mines_won">Alan temizlendi! 🎉</string>
     <string name="mines_lost">Bum! 💥</string>
+    <string name="mines_hint">Basılı tutarak bayrakla · açık sayıya dokunarak komşuları aç</string>
+    <string name="mines_difficulty_desc_fmt">%1$d×%2$d · %3$d mayın</string>
 
     <!-- Beş Harf -->
     <string name="game_besharf">Beş Harf</string>
@@ -76,6 +82,7 @@
     <string name="tomorrow_new_word">Yarın yeni kelime!</string>
     <string name="show_board">Tahtayı gör</string>
     <string name="key_enter">GİR</string>
+    <string name="besharf_hint">🟩 doğru yerde  🟨 kelimede var  ⬛ yok</string>
 
     <!-- Ortak -->
     <string name="pick_difficulty">Zorluk seç</string>
@@ -92,6 +99,10 @@
     <!-- Ses -->
     <string name="sound_on">Sesi aç</string>
     <string name="sound_off">Sesi kapat</string>
+
+    <!-- Titreşim -->
+    <string name="haptics_on">Titreşimi aç</string>
+    <string name="haptics_off">Titreşimi kapat</string>
 
     <!-- Kontroller (erişilebilirlik) -->
     <string name="ctrl_up">Yukarı</string>

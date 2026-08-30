@@ -39,13 +39,13 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -54,6 +54,7 @@ import com.za.games.R
 import com.za.games.mines.MinesDifficulty
 import com.za.games.mines.MinesState
 import com.za.games.mines.MinesStatus
+import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
 import com.za.games.ui.common.DifficultyOverlay
@@ -72,7 +73,7 @@ fun MinesScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val elapsed by viewModel.elapsed.collectAsStateWithLifecycle()
-    val haptics = LocalHapticFeedback.current
+    val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current
 
     var flagMode by rememberSaveable { mutableStateOf(false) }
@@ -182,7 +183,11 @@ fun MinesScreen(
                 )
             }
             when (state?.status) {
-                null -> DifficultyOverlay { index ->
+                null -> DifficultyOverlay(
+                    descriptions = MinesDifficulty.entries.map {
+                        stringResource(R.string.mines_difficulty_desc_fmt, it.width, it.height, it.mineCount)
+                    },
+                ) { index ->
                     viewModel.newGame(MinesDifficulty.entries[index])
                 }
                 MinesStatus.WON -> ResultOverlay(
@@ -202,6 +207,16 @@ fun MinesScreen(
                 else -> Unit
             }
         }
+
+        Text(
+            text = stringResource(R.string.mines_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.45f),
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+        )
 
         Row(
             modifier = Modifier
