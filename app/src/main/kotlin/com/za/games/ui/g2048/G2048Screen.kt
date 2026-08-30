@@ -98,7 +98,9 @@ fun G2048Screen(
         if (state.moves > previous && state.lastMerged.isNotEmpty()) {
             val biggest = state.lastMerged.maxOf { state.cells[it] }
             sound?.play(Sfx.POP, rate = 0.9f + (Integer.numberOfTrailingZeros(biggest) * 0.04f))
-            if (biggest >= 512) haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+            haptics.performHapticFeedback(
+                if (biggest >= 512) HapticFeedbackType.LongPress else HapticFeedbackType.SegmentTick,
+            )
         }
     }
     // 2048 kutlaması ve katmanı: zaten kutlanmış bir oyuna geri girişte tekrar etmez.
