@@ -51,6 +51,7 @@
     <string name="congrats">Well done! 🎉</string>
     <string name="notes_toggle">Notes mode</string>
     <string name="erase">Erase</string>
+    <string name="undo">Undo</string>
     <string name="solved_label">Solved</string>
     <string name="sudoku_hint">✎ to take notes · the number under each digit shows how many remain</string>
     <string name="sudoku_difficulty_desc_fmt">Start with %1$d clues</string>
@@ -77,6 +78,7 @@
     <string name="mode_daily">Daily</string>
     <string name="mode_free">Free play</string>
     <string name="not_in_list">Not in the word list</string>
+    <string name="too_short">Enter 5 letters</string>
     <string name="streak_label">Streak</string>
     <string name="answer_was">Answer: %1$s</string>
     <string name="play_free">Play free mode</string>
