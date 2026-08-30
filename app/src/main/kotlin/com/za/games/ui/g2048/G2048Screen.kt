@@ -99,7 +99,7 @@ fun G2048Screen(
             val biggest = state.lastMerged.maxOf { state.cells[it] }
             sound?.play(Sfx.POP, rate = 0.9f + (Integer.numberOfTrailingZeros(biggest) * 0.04f))
             haptics.performHapticFeedback(
-                if (biggest >= 512) HapticFeedbackType.LongPress else HapticFeedbackType.SegmentTick,
+                if (biggest >= 512) HapticFeedbackType.LongPress else HapticFeedbackType.TextHandleMove,
             )
         }
     }
