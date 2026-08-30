@@ -180,9 +180,15 @@ fun BesHarfScreen(
 
         BesHarfKeyboard(
             keyMarks = state.keyMarks(),
-            onKey = viewModel::type,
+            onKey = {
+                haptics.performHapticFeedback(HapticFeedbackType.VirtualKey)
+                viewModel.type(it)
+            },
             onEnter = viewModel::submit,
-            onErase = viewModel::erase,
+            onErase = {
+                haptics.performHapticFeedback(HapticFeedbackType.VirtualKey)
+                viewModel.erase()
+            },
         )
     }
 }

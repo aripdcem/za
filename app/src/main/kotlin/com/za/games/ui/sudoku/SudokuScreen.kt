@@ -209,6 +209,7 @@ fun SudokuScreen(
                 notesMode = notesMode,
                 onDigit = { digit ->
                     if (selected >= 0) {
+                        haptics.performHapticFeedback(HapticFeedbackType.VirtualKey)
                         if (notesMode) {
                             viewModel.toggleNote(selected, digit)
                         } else {
@@ -217,7 +218,12 @@ fun SudokuScreen(
                         }
                     }
                 },
-                onErase = { if (selected >= 0) viewModel.clearCell(selected) },
+                onErase = {
+                    if (selected >= 0) {
+                        haptics.performHapticFeedback(HapticFeedbackType.VirtualKey)
+                        viewModel.clearCell(selected)
+                    }
+                },
                 onToggleNotes = { notesMode = !notesMode },
             )
         }
@@ -343,8 +349,8 @@ private fun SudokuCell(
                         if (row < 2) append('\n')
                     }
                 },
-                fontSize = 7.sp,
-                lineHeight = 9.sp,
+                fontSize = 8.5.sp,
+                lineHeight = 9.5.sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             )
@@ -424,7 +430,7 @@ private fun DigitButton(
             )
             Text(
                 text = remaining.coerceAtLeast(0).toString(),
-                fontSize = 10.sp,
+                fontSize = 11.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
             )
         }

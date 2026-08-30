@@ -162,6 +162,7 @@ fun MinesScreen(
                 MinesBoard(
                     state = board,
                     onCellTap = { index ->
+                        haptics.performHapticFeedback(HapticFeedbackType.ContextClick)
                         if (flagMode && index !in board.revealed) {
                             viewModel.toggleFlag(index)
                             sound?.play(Sfx.POP, volume = 0.5f)
