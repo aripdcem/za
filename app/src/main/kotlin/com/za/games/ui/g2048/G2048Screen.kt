@@ -3,8 +3,6 @@ package com.za.games.ui.g2048
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -200,23 +198,6 @@ private fun BoardGrid(
     modifier: Modifier = Modifier,
 ) {
     val currentMove by rememberUpdatedState(onMove)
-    // Sürükleme sırasında tahtayı parmağa doğru hafifçe kaydırarak anlık geri
-    // bildirim ver; bırakınca ya hamle olur ya da yaylı şekilde merkeze döner.
-    var dragging by remember { mutableStateOf(false) }
-    var liveDx by remember { mutableStateOf(0f) }
-    var liveDy by remember { mutableStateOf(0f) }
-    val snapSpec = remember { snap<Float>() }
-    val springSpec = remember { spring(stiffness = Spring.StiffnessMedium, visibilityThreshold = 0.5f) }
-    val nudgeX by animateFloatAsState(
-        targetValue = if (dragging) liveDx else 0f,
-        animationSpec = if (dragging) snapSpec else springSpec,
-        label = "boardDragOffsetX",
-    )
-    val nudgeY by animateFloatAsState(
-        targetValue = if (dragging) liveDy else 0f,
-        animationSpec = if (dragging) snapSpec else springSpec,
-        label = "boardDragOffsetY",
-    )
     Column(
         modifier = modifier
             .aspectRatio(1f)
@@ -225,22 +206,17 @@ private fun BoardGrid(
             .pointerInput(Unit) {
                 var dx = 0f
                 var dy = 0f
-                val maxNudge = 18.dp.toPx()
                 detectDragGestures(
                     onDragStart = {
                         dx = 0f
                         dy = 0f
-                        dragging = true
                     },
                     onDrag = { change, amount ->
                         change.consume()
                         dx += amount.x
                         dy += amount.y
-                        liveDx = dx.coerceIn(-maxNudge, maxNudge)
-                        liveDy = dy.coerceIn(-maxNudge, maxNudge)
                     },
                     onDragEnd = {
-                        dragging = false
                         val threshold = 40.dp.toPx()
                         if (abs(dx) > abs(dy) && abs(dx) > threshold) {
                             currentMove(if (dx > 0) MoveDir.RIGHT else MoveDir.LEFT)
@@ -248,12 +224,7 @@ private fun BoardGrid(
                             currentMove(if (dy > 0) MoveDir.DOWN else MoveDir.UP)
                         }
                     },
-                    onDragCancel = { dragging = false },
                 )
-            }
-            .graphicsLayer {
-                translationX = nudgeX
-                translationY = nudgeY
             }
             .padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
