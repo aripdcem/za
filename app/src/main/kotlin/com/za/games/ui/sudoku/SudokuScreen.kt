@@ -196,7 +196,7 @@ fun SudokuScreen(
         Text(
             text = stringResource(R.string.sudoku_hint),
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.45f),
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
@@ -349,8 +349,8 @@ private fun SudokuCell(
                         if (row < 2) append('\n')
                     }
                 },
-                fontSize = 8.5.sp,
-                lineHeight = 9.5.sp,
+                fontSize = 10.sp,
+                lineHeight = 11.sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             )

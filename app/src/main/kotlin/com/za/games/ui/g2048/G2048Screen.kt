@@ -185,7 +185,7 @@ fun G2048Screen(
             Text(
                 text = stringResource(R.string.swipe_hint),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.45f),
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             )
         }
     }
