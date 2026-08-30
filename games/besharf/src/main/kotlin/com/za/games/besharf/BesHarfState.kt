@@ -105,11 +105,24 @@ data class BesHarfState(
         /**
          * Günlük bulmaca: cevap listesi sabit tohumla bir kez karılır ve
          * epoch gününe göre sırayla gezilir — yakın günlerde tekrar olmaz.
+         *
+         * Karma, elle kodlanmış bir LCG ile yapılır: kotlin.random yalnızca
+         * aynı Kotlin sürümü içinde tekrarlanabilirlik garantiler; bu sayede
+         * günün kelimesi uygulama güncellemeleriyle değişmez.
          */
         fun daily(answers: List<String>, epochDay: Long): BesHarfState {
-            val order = answers.indices.shuffled(Random(DAILY_SEED))
-            val index = order[(epochDay % answers.size).toInt().let { if (it < 0) it + answers.size else it }]
-            return BesHarfState(answer = answers[index], dailyDay = epochDay)
+            val n = answers.size
+            val order = IntArray(n) { it }
+            var s = DAILY_SEED
+            for (i in n - 1 downTo 1) {
+                s = s * 6364136223846793005L + 1442695040888963407L
+                val j = ((s ushr 33) % (i + 1)).toInt()
+                val tmp = order[i]
+                order[i] = order[j]
+                order[j] = tmp
+            }
+            val pos = (((epochDay % n) + n) % n).toInt()
+            return BesHarfState(answer = answers[order[pos]], dailyDay = epochDay)
         }
 
         fun free(answers: List<String>, seed: Long = Random.nextLong()): BesHarfState =

@@ -87,10 +87,16 @@ fun SudokuScreen(
     var selected by rememberSaveable { mutableIntStateOf(-1) }
     var notesMode by rememberSaveable { mutableStateOf(false) }
 
-    // Rekor = toplam çözülen bulmaca sayısı.
+    // Rekor = toplam çözülen bulmaca sayısı. Sayaç, ekrana bitmiş bir
+    // tahtayla girildiğinde o oyunu yeniden saymasın diye mevcut tohumla
+    // başlatılır (yoksa her geri giriş hayalet +1 üretirdi).
     val baseline = remember { highScore }
-    var solvedSession by rememberSaveable { mutableIntStateOf(0) }
-    var countedSeed by rememberSaveable { mutableLongStateOf(Long.MIN_VALUE) }
+    var solvedSession by remember { mutableIntStateOf(0) }
+    var countedSeed by remember {
+        mutableLongStateOf(
+            state?.takeIf { it.status == SudokuStatus.SOLVED }?.seed ?: Long.MIN_VALUE,
+        )
+    }
     val latestOnScore by rememberUpdatedState(onScore)
 
     LaunchedEffect(state?.status, state?.seed) {

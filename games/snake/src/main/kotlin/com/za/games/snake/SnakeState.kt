@@ -36,6 +36,8 @@ data class SnakeState(
     val dir: SnakeDir,
     /** Bir sonraki tikte uygulanacak (tamponlanmış) yön. */
     val pending: SnakeDir,
+    /** Ondan sonraki tik için kuyruğa alınan ikinci dönüş (hızlı köşeler). */
+    val queued: SnakeDir? = null,
     val food: Cell,
     val score: Long,
     /** Yenen yem sayısı; hız bundan türetilir. */
@@ -44,15 +46,26 @@ data class SnakeState(
     val seed: Long,
 ) {
 
-    fun turn(newDir: SnakeDir): SnakeState = when {
-        status != SnakeStatus.RUNNING -> this
-        newDir == dir.opposite -> this // yılan kendi üzerine dönemez
-        else -> copy(pending = newDir)
+    /**
+     * Yön girişi. En fazla iki dönüş tamponlanır: biri sonraki tik için
+     * ([pending]), biri onun ardından ([queued]) — hızlı köşe dönüşlerinde
+     * ikinci giriş kaybolmaz. Sıradaki son yöne göre geri dönüş engellenir.
+     */
+    fun turn(newDir: SnakeDir): SnakeState {
+        if (status != SnakeStatus.RUNNING) return this
+        val last = queued ?: pending
+        if (newDir == last || newDir == last.opposite) return this
+        return when {
+            pending == dir -> copy(pending = newDir) // tampon boş
+            queued == null -> copy(queued = newDir) // ikinci dönüşü sıraya al
+            else -> this // tampon dolu
+        }
     }
 
     fun tick(): SnakeState {
         if (status != SnakeStatus.RUNNING) return this
         val d = pending
+        val nextPending = queued ?: d
         val head = body.first()
         val next = Cell(head.row + d.dRow, head.col + d.dCol)
 
@@ -66,7 +79,7 @@ data class SnakeState(
         if (next in obstacles) return copy(status = SnakeStatus.OVER, dir = d)
 
         val newBody = listOf(next) + if (ate) body else body.dropLast(1)
-        if (!ate) return copy(body = newBody, dir = d)
+        if (!ate) return copy(body = newBody, dir = d, pending = nextPending, queued = null)
 
         val rng = Random(seed)
         val empties = buildList {
@@ -80,6 +93,8 @@ data class SnakeState(
         val grown = copy(
             body = newBody,
             dir = d,
+            pending = nextPending,
+            queued = null,
             score = score + 10,
             foods = foods + 1,
             seed = rng.nextLong(),

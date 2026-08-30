@@ -29,9 +29,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -73,19 +76,29 @@ fun SnakeScreen(
     val latestScore by rememberUpdatedState(state.score)
     val latestOnScore by rememberUpdatedState(onScore)
 
+    // Bitiş efekti yalnızca canlı geçişte (ekrana geri girişte tekrar etmez).
+    var overHeard by remember { mutableStateOf(state.status == SnakeStatus.OVER) }
     LaunchedEffect(state.status) {
         if (state.status == SnakeStatus.OVER) {
             latestOnScore(state.score)
-            sound?.play(Sfx.OVER)
-            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+            if (!overHeard) {
+                overHeard = true
+                sound?.play(Sfx.OVER)
+                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+            }
+        } else {
+            overHeard = false
         }
     }
     DisposableEffect(Unit) {
         onDispose { latestOnScore(latestScore) }
     }
-    // Yem sesi: yılan uzadıkça hafifçe tizleşir.
+    // Yem sesi: yalnızca canlı yenen yemlerde, yılan uzadıkça hafifçe tizleşir.
+    var seenFoods by remember { mutableIntStateOf(state.foods) }
     LaunchedEffect(state.foods) {
-        if (state.foods > 0) {
+        val previous = seenFoods
+        seenFoods = state.foods
+        if (state.foods > previous) {
             sound?.play(Sfx.POP, rate = 1f + (state.foods % 12) * 0.03f)
         }
     }

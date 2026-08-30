@@ -105,7 +105,7 @@ data class TetrisState(
         if (status != TetrisStatus.RUNNING || holdUsed) return this
         val stored = active.type
         val held = hold
-        return if (held == null) {
+        val swapped = if (held == null) {
             val (queue, seed) = refilled(next, bagSeed)
             copy(
                 active = spawnPiece(queue.first(), width),
@@ -117,6 +117,8 @@ data class TetrisState(
         } else {
             copy(active = spawnPiece(held, width), hold = stored, holdUsed = true)
         }
+        // Doğuş noktası dolu ise oyun biter; taş yığının içine giremez.
+        return if (swapped.fits(swapped.active)) swapped else swapped.copy(status = TetrisStatus.OVER)
     }
 
     fun pause(): TetrisState =

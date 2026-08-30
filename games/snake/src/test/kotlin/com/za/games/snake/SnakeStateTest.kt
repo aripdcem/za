@@ -46,6 +46,25 @@ class SnakeStateTest {
     }
 
     @Test
+    fun `two quick turns are buffered and applied on consecutive ticks`() {
+        val state = SnakeState.newGame(2L).copy(food = farFood)
+        val cornered = state.turn(SnakeDir.UP).turn(SnakeDir.LEFT)
+        val afterFirst = cornered.tick()
+        assertEquals(Cell(9, 7), afterFirst.body.first()) // önce yukarı
+        val afterSecond = afterFirst.tick()
+        assertEquals(Cell(9, 6), afterSecond.body.first()) // sonra sola
+    }
+
+    @Test
+    fun `reversing through the buffer is also blocked`() {
+        val state = SnakeState.newGame(2L).copy(food = farFood)
+        val buffered = state.turn(SnakeDir.UP)
+        assertEquals(buffered, buffered.turn(SnakeDir.DOWN)) // sıradaki UP'ın tersi
+        val third = buffered.turn(SnakeDir.LEFT)
+        assertEquals(third, third.turn(SnakeDir.RIGHT)) // tampon doluyken de yok sayılır
+    }
+
+    @Test
     fun `eating grows the snake scores ten and respawns food`() {
         val state = SnakeState.newGame(3L).copy(food = Cell(10, 8))
         val fed = state.tick()

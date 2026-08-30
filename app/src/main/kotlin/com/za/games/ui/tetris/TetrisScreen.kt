@@ -69,11 +69,18 @@ fun TetrisScreen(
     val latestScore by rememberUpdatedState(state.score)
     val latestOnScore by rememberUpdatedState(onScore)
 
-    // Skoru oyun sonunda ve ekrandan ayrılırken platforma bildir.
+    // Skoru oyun sonunda ve ekrandan ayrılırken platforma bildir. Bitiş
+    // sesi yalnızca canlı geçişte çalar (ekrana geri girişte tekrar etmez).
+    var overHeard by remember { mutableStateOf(state.status == TetrisStatus.OVER) }
     LaunchedEffect(state.status) {
         if (state.status == TetrisStatus.OVER) {
             latestOnScore(state.score)
-            sound?.play(Sfx.OVER)
+            if (!overHeard) {
+                overHeard = true
+                sound?.play(Sfx.OVER)
+            }
+        } else {
+            overHeard = false
         }
     }
     DisposableEffect(Unit) {

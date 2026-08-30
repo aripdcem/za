@@ -40,6 +40,17 @@ class BesHarfViewModel(application: Application) : AndroidViewModel(application)
         return state
     }
 
+    /**
+     * Gün değiştiyse günlük tahtayı tazeler. ViewModel etkinlik ömrünce
+     * yaşadığından ekrana yeniden girişte/öne gelişte çağrılır; yoksa gece
+     * yarısından sonra bir önceki günün bulmacası görünmeye devam eder.
+     */
+    fun refreshDaily() {
+        if (_mode.value == BesHarfMode.DAILY && _state.value.dailyDay != todayEpoch()) {
+            _state.value = restoredDaily()
+        }
+    }
+
     fun setMode(mode: BesHarfMode) {
         if (_mode.value == mode) return
         _mode.value = mode

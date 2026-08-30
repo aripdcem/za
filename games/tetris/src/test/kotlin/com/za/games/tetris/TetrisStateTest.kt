@@ -203,6 +203,20 @@ class TetrisStateTest {
         assertEquals(first, swappedBack.active.type)
     }
 
+    @Test
+    fun `hold cannot swap a piece into a blocked spawn`() {
+        val base = TetrisState.newGame(seed = 3L)
+        val board = base.board.toMutableList()
+        board[0] = filledRowExcept(0, 1, 2, 7, 8, 9) // doğuş sütunları (3..6) dolu
+        val state = base.copy(
+            board = board,
+            active = ActivePiece(Tetromino.T, rotation = 0, row = 15, col = 3),
+            hold = Tetromino.O,
+            holdUsed = false,
+        )
+        assertEquals(TetrisStatus.OVER, state.holdPiece().status)
+    }
+
     // --- Seviye ve yerçekimi ---
 
     @Test

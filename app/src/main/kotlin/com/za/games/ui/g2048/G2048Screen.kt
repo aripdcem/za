@@ -28,11 +28,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,26 +74,43 @@ fun G2048Screen(
     val latestScore by rememberUpdatedState(state.score)
     val latestOnScore by rememberUpdatedState(onScore)
 
+    // Bitiş efekti yalnızca canlı geçişte (ekrana geri girişte tekrar etmez).
+    var overHeard by remember { mutableStateOf(state.status == G2048Status.OVER) }
     LaunchedEffect(state.status) {
         if (state.status == G2048Status.OVER) {
             latestOnScore(state.score)
-            sound?.play(Sfx.OVER)
+            if (!overHeard) {
+                overHeard = true
+                sound?.play(Sfx.OVER)
+            }
+        } else {
+            overHeard = false
         }
     }
     DisposableEffect(Unit) {
         onDispose { latestOnScore(latestScore) }
     }
-    // Birleşme sesi: büyüyen taşla hafifçe tizleşir.
+    // Birleşme sesi: yalnızca canlı hamlelerde; büyüyen taşla hafifçe tizleşir.
+    var seenMoves by remember { mutableIntStateOf(state.moves) }
     LaunchedEffect(state.moves) {
-        if (state.moves > 0 && state.lastMerged.isNotEmpty()) {
+        val previous = seenMoves
+        seenMoves = state.moves
+        if (state.moves > previous && state.lastMerged.isNotEmpty()) {
             val biggest = state.lastMerged.maxOf { state.cells[it] }
             sound?.play(Sfx.POP, rate = 0.9f + (Integer.numberOfTrailingZeros(biggest) * 0.04f))
             if (biggest >= 512) haptics.performHapticFeedback(HapticFeedbackType.LongPress)
         }
     }
-    var wonShown by rememberSaveable { mutableStateOf(false) }
+    // 2048 kutlaması ve katmanı: zaten kutlanmış bir oyuna geri girişte tekrar etmez.
+    var wonShown by remember { mutableStateOf(state.reached2048) }
+    var celebrated2048 by remember { mutableStateOf(state.reached2048) }
     LaunchedEffect(state.reached2048) {
-        if (state.reached2048) sound?.play(Sfx.BIG)
+        if (state.reached2048 && !celebrated2048) {
+            celebrated2048 = true
+            sound?.play(Sfx.BIG)
+        } else if (!state.reached2048) {
+            celebrated2048 = false
+        }
     }
     BackHandler { onExit() }
 

@@ -27,7 +27,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.za.games.R
@@ -83,25 +83,36 @@ fun BesHarfScreen(
     LaunchedEffect(streak) {
         if (streak > 0) latestOnScore(streak.toLong())
     }
-    // Bitiş sesi: aynı oyun için bir kez (geri girişte tekrar çalmasın).
-    var celebratedAnswer by rememberSaveable { mutableStateOf("") }
-    LaunchedEffect(state.status, state.answer) {
-        if (state.status != BesHarfStatus.RUNNING && celebratedAnswer != state.answer) {
-            celebratedAnswer = state.answer
+    // Ekran her öne geldiğinde gün değişmiş olabilir; günlük tahtayı tazele.
+    LifecycleResumeEffect(Unit) {
+        viewModel.refreshDaily()
+        onPauseOrDispose { }
+    }
+    // Bitiş sesi: yalnızca canlı bitişte bir kez (geri girişte, geri
+    // yüklemede veya mod geçişinde tekrar çalmasın).
+    var celebrated by remember(state.answer) {
+        mutableStateOf(state.status != BesHarfStatus.RUNNING)
+    }
+    LaunchedEffect(state.status) {
+        if (state.status != BesHarfStatus.RUNNING && !celebrated) {
+            celebrated = true
             sound?.play(if (state.status == BesHarfStatus.WON) Sfx.BIG else Sfx.OVER)
             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
         }
     }
-    // Geçerli tahmin sesi.
-    var seenGuesses by remember { mutableIntStateOf(state.guesses.size) }
+    // Geçerli tahmin sesi: yalnızca bu oyunda canlı eklenen tahminler için.
+    var seenGuesses by remember(state.answer) { mutableIntStateOf(state.guesses.size) }
     LaunchedEffect(state.guesses.size) {
         if (state.guesses.size > seenGuesses) sound?.play(Sfx.DROP, volume = 0.5f)
         seenGuesses = state.guesses.size
     }
-    // Geçersiz kelime uyarısı.
+    // Geçersiz kelime uyarısı: sayaç yalnızca arttığında (girişte tekrar etmesin).
     var showInvalid by remember { mutableStateOf(false) }
+    var seenInvalid by remember { mutableIntStateOf(state.invalidEvents) }
     LaunchedEffect(state.invalidEvents) {
-        if (state.invalidEvents > 0) {
+        val previous = seenInvalid
+        seenInvalid = state.invalidEvents
+        if (state.invalidEvents > previous) {
             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
             showInvalid = true
             delay(1400L)
@@ -119,7 +130,7 @@ fun BesHarfScreen(
     ) {
         GameTopBar(title = stringResource(R.string.game_besharf), onExit = onExit) {
             Text(
-                text = "🔥 ${maxOf(streak.toLong(), 0L)}",
+                text = "🔥 $streak",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(end = 14.dp),

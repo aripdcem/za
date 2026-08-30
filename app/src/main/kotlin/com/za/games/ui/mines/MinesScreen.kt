@@ -77,10 +77,18 @@ fun MinesScreen(
 
     var flagMode by rememberSaveable { mutableStateOf(false) }
 
-    // Rekor = toplam kazanılan oyun sayısı.
+    // Rekor = toplam kazanılan oyun sayısı. Sayaç, ekrana bitmiş bir
+    // tahtayla girildiğinde o oyunu yeniden saymasın/ses çalmasın diye
+    // mevcut tohumla başlatılır.
     val baseline = remember { highScore }
-    var winsSession by rememberSaveable { mutableIntStateOf(0) }
-    var countedSeed by rememberSaveable { mutableLongStateOf(Long.MIN_VALUE) }
+    var winsSession by remember { mutableIntStateOf(0) }
+    var countedSeed by remember {
+        mutableLongStateOf(
+            state?.takeIf {
+                it.status == MinesStatus.WON || it.status == MinesStatus.LOST
+            }?.seed ?: Long.MIN_VALUE,
+        )
+    }
     val latestOnScore by rememberUpdatedState(onScore)
 
     LaunchedEffect(state?.status, state?.seed) {
