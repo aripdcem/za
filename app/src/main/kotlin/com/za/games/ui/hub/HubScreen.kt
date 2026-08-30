@@ -86,7 +86,7 @@ private fun HubFooter() {
     Text(
         text = "ZA v$version · zero-ads games",
         style = MaterialTheme.typography.labelSmall,
-        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.35f),
+        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
         textAlign = TextAlign.Center,
         modifier = Modifier
             .fillMaxWidth()
