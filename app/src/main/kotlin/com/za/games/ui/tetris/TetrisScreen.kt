@@ -194,7 +194,7 @@ fun TetrisScreen(
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, top = 4.dp),
+                .padding(start = 16.dp, top = 4.dp, end = 16.dp),
         )
 
         ControlsPad(
