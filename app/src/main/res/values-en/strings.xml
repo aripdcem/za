@@ -42,6 +42,7 @@
     <string name="game_snake">Snake</string>
     <string name="game_snake_tagline">Classic snake: eat, grow, don\'t crash</string>
     <string name="length_label">Length</string>
+    <string name="snake_tap_hint">Tap where you want the snake to go — swiping works too</string>
 
     <!-- Sudoku -->
     <string name="game_sudoku">Sudoku</string>

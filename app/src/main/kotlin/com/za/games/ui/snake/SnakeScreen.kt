@@ -9,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,10 +19,8 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -45,6 +44,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -57,7 +57,6 @@ import com.za.games.snake.SnakeState
 import com.za.games.snake.SnakeStatus
 import com.za.games.ui.common.GameOverOverlay
 import com.za.games.ui.common.GameTopBar
-import com.za.games.ui.common.PadButton
 import com.za.games.ui.common.PausedOverlay
 import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.formatScore
@@ -168,6 +167,28 @@ fun SnakeScreen(
             SnakeBoard(
                 state = state,
                 onTurn = viewModel::turn,
+                onTapCell = { row, col ->
+                    // Dokunulan tarafa yönlen: yatay giderken üst/alt,
+                    // dikey giderken sol/sağ seçilir — her an tek anlamlı seçim.
+                    if (state.status == SnakeStatus.RUNNING) {
+                        val head = state.body.first()
+                        val heading = state.queued ?: state.pending
+                        val turn = if (heading.dRow == 0) {
+                            when {
+                                row < head.row -> SnakeDir.UP
+                                row > head.row -> SnakeDir.DOWN
+                                else -> null
+                            }
+                        } else {
+                            when {
+                                col < head.col -> SnakeDir.LEFT
+                                col > head.col -> SnakeDir.RIGHT
+                                else -> null
+                            }
+                        }
+                        turn?.let(viewModel::turn)
+                    }
+                },
                 modifier = Modifier.aspectRatio(state.width / state.height.toFloat()),
             )
             when (state.status) {
@@ -186,7 +207,15 @@ fun SnakeScreen(
             }
         }
 
-        DirectionPad(onTurn = viewModel::turn)
+        Text(
+            text = stringResource(R.string.snake_tap_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.45f),
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+        )
     }
 }
 
@@ -194,9 +223,11 @@ fun SnakeScreen(
 private fun SnakeBoard(
     state: SnakeState,
     onTurn: (SnakeDir) -> Unit,
+    onTapCell: (row: Int, col: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val currentTurn by rememberUpdatedState(onTurn)
+    val currentTapCell by rememberUpdatedState(onTapCell)
     val pulse by rememberInfiniteTransition(label = "food")
         .animateFloat(
             initialValue = 0.8f,
@@ -206,7 +237,16 @@ private fun SnakeBoard(
         )
 
     Canvas(
-        modifier = modifier.pointerInput(Unit) {
+        modifier = modifier
+            .pointerInput(Unit) {
+                detectTapGestures { offset ->
+                    val cell = size.width / state.width.toFloat()
+                    val col = (offset.x / cell).toInt().coerceIn(0, state.width - 1)
+                    val row = (offset.y / cell).toInt().coerceIn(0, state.height - 1)
+                    currentTapCell(row, col)
+                }
+            }
+            .pointerInput(Unit) {
             var dx = 0f
             var dy = 0f
             var fired = false
@@ -277,39 +317,5 @@ private fun SnakeBoard(
         val forward = Offset(state.dir.dCol * cell * 0.12f, state.dir.dRow * cell * 0.12f)
         drawCircle(Color(0xFF06121D), radius = cell * 0.08f, center = center + forward + Offset(ex, ey))
         drawCircle(Color(0xFF06121D), radius = cell * 0.08f, center = center + forward - Offset(ex, ey))
-    }
-}
-
-@Composable
-private fun DirectionPad(onTurn: (SnakeDir) -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        PadButton(
-            label = "▲",
-            description = stringResource(R.string.ctrl_up),
-            modifier = Modifier.width(88.dp).height(56.dp),
-        ) { onTurn(SnakeDir.UP) }
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            PadButton(
-                label = "◀",
-                description = stringResource(R.string.ctrl_left),
-                modifier = Modifier.width(88.dp).height(56.dp),
-            ) { onTurn(SnakeDir.LEFT) }
-            PadButton(
-                label = "▼",
-                description = stringResource(R.string.ctrl_down),
-                modifier = Modifier.width(88.dp).height(56.dp),
-            ) { onTurn(SnakeDir.DOWN) }
-            PadButton(
-                label = "▶",
-                description = stringResource(R.string.ctrl_right),
-                modifier = Modifier.width(88.dp).height(56.dp),
-            ) { onTurn(SnakeDir.RIGHT) }
-        }
     }
 }

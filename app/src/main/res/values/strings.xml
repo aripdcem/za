@@ -42,6 +42,7 @@
     <string name="game_snake">Yılan</string>
     <string name="game_snake_tagline">Klasik yılan: ye, büyü, çarpmadan hükmet</string>
     <string name="length_label">Uzunluk</string>
+    <string name="snake_tap_hint">Gitmek istediğin tarafa dokun — kaydırmak da çalışır</string>
 
     <!-- Sudoku -->
     <string name="game_sudoku">Sudoku</string>

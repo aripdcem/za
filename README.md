@@ -57,7 +57,8 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 ### Yılan
 - 15×20 tahta; duvar ve gövde çarpışmaları (kuyruğun boşalttığı hücre serbesttir)
 - Her yem +10 puan, +1 uzunluk ve kademeli hızlanma
-- Kaydırma jestleri + yön tuşları; ters yöne dönüş engellenir
+- **Dokunarak yönlendirme:** gitmek istediğin tarafa dokun (yatay giderken üst/alt, dikey giderken sol/sağ) — kaydırma jestleri de çalışır; tahta tam ekran
+- İki dönüşlük giriş tamponu; ters yöne dönüş engellenir
 
 ### Sudoku
 - Geri izlemeli üreteç: her bulmacada **tek çözüm garantisi** (MRV'li çözüm sayacıyla doğrulanır)
