@@ -82,6 +82,7 @@ fun SudokuScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val elapsed by viewModel.elapsed.collectAsStateWithLifecycle()
+    val canUndo by viewModel.canUndo.collectAsStateWithLifecycle()
     val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current
 
@@ -207,6 +208,7 @@ fun SudokuScreen(
             SudokuPad(
                 state = puzzle,
                 notesMode = notesMode,
+                canUndo = canUndo,
                 onDigit = { digit ->
                     if (selected >= 0) {
                         haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
@@ -223,6 +225,10 @@ fun SudokuScreen(
                         haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         viewModel.clearCell(selected)
                     }
+                },
+                onUndo = {
+                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    viewModel.undo()
                 },
                 onToggleNotes = { notesMode = !notesMode },
             )
@@ -374,8 +380,10 @@ private fun SudokuCell(
 private fun SudokuPad(
     state: SudokuState,
     notesMode: Boolean,
+    canUndo: Boolean,
     onDigit: (Int) -> Unit,
     onErase: () -> Unit,
+    onUndo: () -> Unit,
     onToggleNotes: () -> Unit,
 ) {
     Column(
@@ -388,6 +396,13 @@ private fun SudokuPad(
             for (digit in 1..5) {
                 DigitButton(digit, state, Modifier.weight(1f)) { onDigit(digit) }
             }
+            PadActionButton(
+                label = "↶",
+                description = stringResource(R.string.undo),
+                modifier = Modifier.weight(1f),
+                enabled = canUndo,
+                onClick = onUndo,
+            )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             for (digit in 6..9) {
@@ -455,10 +470,12 @@ private fun PadActionButton(
     description: String,
     modifier: Modifier = Modifier,
     active: Boolean = false,
+    enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
     Surface(
         onClick = onClick,
+        enabled = enabled,
         shape = RoundedCornerShape(12.dp),
         color = if (active) {
             MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
@@ -473,10 +490,10 @@ private fun PadActionButton(
             Text(
                 text = label,
                 fontSize = 20.sp,
-                color = if (active) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
+                color = when {
+                    !enabled -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+                    active -> MaterialTheme.colorScheme.primary
+                    else -> MaterialTheme.colorScheme.onSurfaceVariant
                 },
             )
         }

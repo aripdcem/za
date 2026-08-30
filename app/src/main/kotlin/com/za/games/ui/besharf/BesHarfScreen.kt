@@ -108,16 +108,21 @@ fun BesHarfScreen(
         seenGuesses = state.guesses.size
     }
     // Geçersiz kelime uyarısı: sayaç yalnızca arttığında (girişte tekrar etmesin).
-    var showInvalid by remember { mutableStateOf(false) }
+    // Eksik kelime ile listede olmayan kelime ayrı mesaj alır.
+    var invalidMessage by remember { mutableStateOf<Int?>(null) }
     var seenInvalid by remember { mutableIntStateOf(state.invalidEvents) }
     LaunchedEffect(state.invalidEvents) {
         val previous = seenInvalid
         seenInvalid = state.invalidEvents
         if (state.invalidEvents > previous) {
             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-            showInvalid = true
+            invalidMessage = if (state.current.length < BesHarfState.WORD_LENGTH) {
+                R.string.too_short
+            } else {
+                R.string.not_in_list
+            }
             delay(1400L)
-            showInvalid = false
+            invalidMessage = null
         }
     }
     var showResult by remember(state.answer, state.status) { mutableStateOf(true) }
@@ -160,7 +165,7 @@ fun BesHarfScreen(
                 GuessGrid(state)
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    text = if (showInvalid) stringResource(R.string.not_in_list) else " ",
+                    text = invalidMessage?.let { stringResource(it) } ?: " ",
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.error,
                 )

@@ -203,25 +203,31 @@ private fun BoardGrid(
             .aspectRatio(1f)
             .clip(RoundedCornerShape(20.dp))
             .background(Color(0xFF0F1628))
+            // Hamle, eşik aşılır aşılmaz tetiklenir (parmak kalkması beklenmez):
+            // oyun anında tepki verir; sürükleme başına en fazla bir hamle.
             .pointerInput(Unit) {
                 var dx = 0f
                 var dy = 0f
+                var fired = false
                 detectDragGestures(
                     onDragStart = {
                         dx = 0f
                         dy = 0f
+                        fired = false
                     },
                     onDrag = { change, amount ->
                         change.consume()
                         dx += amount.x
                         dy += amount.y
-                    },
-                    onDragEnd = {
-                        val threshold = 40.dp.toPx()
-                        if (abs(dx) > abs(dy) && abs(dx) > threshold) {
-                            currentMove(if (dx > 0) MoveDir.RIGHT else MoveDir.LEFT)
-                        } else if (abs(dy) > threshold) {
-                            currentMove(if (dy > 0) MoveDir.DOWN else MoveDir.UP)
+                        if (!fired) {
+                            val threshold = 24.dp.toPx()
+                            if (abs(dx) > abs(dy) && abs(dx) > threshold) {
+                                currentMove(if (dx > 0) MoveDir.RIGHT else MoveDir.LEFT)
+                                fired = true
+                            } else if (abs(dy) > abs(dx) && abs(dy) > threshold) {
+                                currentMove(if (dy > 0) MoveDir.DOWN else MoveDir.UP)
+                                fired = true
+                            }
                         }
                     },
                 )

@@ -51,6 +51,7 @@
     <string name="congrats">Tebrikler! 🎉</string>
     <string name="notes_toggle">Not modu</string>
     <string name="erase">Sil</string>
+    <string name="undo">Geri al</string>
     <string name="solved_label">Çözülen</string>
     <string name="sudoku_hint">✎ ile not al · rakamın altındaki sayı kaç tane kaldığını gösterir</string>
     <string name="sudoku_difficulty_desc_fmt">%1$d ipucuyla başla</string>
@@ -77,6 +78,7 @@
     <string name="mode_daily">Günlük</string>
     <string name="mode_free">Serbest</string>
     <string name="not_in_list">Listede yok</string>
+    <string name="too_short">5 harf gir</string>
     <string name="streak_label">Seri</string>
     <string name="answer_was">Cevap: %1$s</string>
     <string name="play_free">Serbest oyna</string>
