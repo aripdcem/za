@@ -234,7 +234,7 @@ private fun ModeChip(
         } else {
             MaterialTheme.colorScheme.surfaceVariant
         },
-        modifier = modifier.height(40.dp),
+        modifier = modifier.height(48.dp),
     ) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
             Text(
@@ -384,7 +384,7 @@ private fun KeyButton(
     val textColor = when {
         accent -> MaterialTheme.colorScheme.primary
         mark == LetterMark.CORRECT || mark == LetterMark.PRESENT -> OnFilledDark
-        mark == LetterMark.ABSENT -> Color.White.copy(alpha = 0.35f)
+        mark == LetterMark.ABSENT -> Color.White.copy(alpha = 0.6f)
         else -> MaterialTheme.colorScheme.onSurfaceVariant
     }
     Surface(
