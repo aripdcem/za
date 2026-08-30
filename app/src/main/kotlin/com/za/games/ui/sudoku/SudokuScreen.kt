@@ -209,7 +209,7 @@ fun SudokuScreen(
                 notesMode = notesMode,
                 onDigit = { digit ->
                     if (selected >= 0) {
-                        haptics.performHapticFeedback(HapticFeedbackType.VirtualKey)
+                        haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         if (notesMode) {
                             viewModel.toggleNote(selected, digit)
                         } else {
@@ -220,7 +220,7 @@ fun SudokuScreen(
                 },
                 onErase = {
                     if (selected >= 0) {
-                        haptics.performHapticFeedback(HapticFeedbackType.VirtualKey)
+                        haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         viewModel.clearCell(selected)
                     }
                 },

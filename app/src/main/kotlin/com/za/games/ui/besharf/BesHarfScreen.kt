@@ -181,12 +181,12 @@ fun BesHarfScreen(
         BesHarfKeyboard(
             keyMarks = state.keyMarks(),
             onKey = {
-                haptics.performHapticFeedback(HapticFeedbackType.VirtualKey)
+                haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 viewModel.type(it)
             },
             onEnter = viewModel::submit,
             onErase = {
-                haptics.performHapticFeedback(HapticFeedbackType.VirtualKey)
+                haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 viewModel.erase()
             },
         )
@@ -313,10 +313,12 @@ private fun BesHarfKeyboard(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 6.dp, vertical = 8.dp),
+            .padding(horizontal = 3.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        // Aralar dar tutulur: 29 harfli Türkçe klavyede her piksel tuş
+        // genişliğine gider (en yoğun satır 11 tuş barındırıyor).
+        Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
             KEY_ROWS[0].forEach { letter ->
                 KeyButton(
                     label = letter.upperTr(),
@@ -325,7 +327,7 @@ private fun BesHarfKeyboard(
                 ) { onKey(letter) }
             }
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
             KEY_ROWS[1].forEach { letter ->
                 KeyButton(
                     label = letter.upperTr(),
@@ -334,7 +336,7 @@ private fun BesHarfKeyboard(
                 ) { onKey(letter) }
             }
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
             KeyButton(
                 label = stringResource(R.string.key_enter),
                 mark = null,
