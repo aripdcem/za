@@ -33,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,6 +44,7 @@ import com.za.games.R
 import com.za.games.kiskac.KiskacInvalid
 import com.za.games.kiskac.KiskacState
 import com.za.games.kiskac.KiskacStatus
+import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
 import com.za.games.ui.common.GameTopBar
@@ -73,7 +73,7 @@ fun KiskacScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val mode by viewModel.mode.collectAsStateWithLifecycle()
     val streak by viewModel.streak.collectAsStateWithLifecycle()
-    val haptics = LocalHapticFeedback.current
+    val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current
     val latestOnScore by rememberUpdatedState(onScore)
 
