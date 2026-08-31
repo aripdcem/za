@@ -101,6 +101,7 @@ fun SnakeScreen(
         seenFoods = state.foods
         if (state.foods > previous) {
             sound?.play(Sfx.POP, rate = 1f + (state.foods % 12) * 0.03f)
+            haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
         }
     }
     LifecycleResumeEffect(Unit) {

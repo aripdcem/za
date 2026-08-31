@@ -406,7 +406,7 @@ private fun KeyButton(
                 fontWeight = FontWeight.Bold,
                 color = when {
                     accent -> MaterialTheme.colorScheme.primary
-                    faded -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+                    faded -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                     else -> MaterialTheme.colorScheme.onSurfaceVariant
                 },
             )

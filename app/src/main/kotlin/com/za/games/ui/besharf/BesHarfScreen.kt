@@ -300,7 +300,7 @@ private fun Tile(letter: Char?, mark: LetterMark?, active: Boolean = false) {
                 fontWeight = FontWeight.Black,
                 color = when (mark) {
                     LetterMark.CORRECT, LetterMark.PRESENT -> OnFilledDark
-                    LetterMark.ABSENT -> Color.White.copy(alpha = 0.55f)
+                    LetterMark.ABSENT -> Color.White.copy(alpha = 0.6f)
                     null -> MaterialTheme.colorScheme.onBackground
                 },
             )
