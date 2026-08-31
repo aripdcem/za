@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Oyunlar: **Tetris**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Oyunlar: **Tetris**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**.
 
 ## Manifesto
 
@@ -27,7 +27,7 @@ za/
 │       └── ui/theme/             # ZA teması
 ├── games/
 │   ├── tetris/  g2048/  snake/   # Oyun motorları: saf Kotlin/JVM, Android'e
-│   └── sudoku/  mines/  besharf/ # bağımsız, her biri kendi birim testleriyle
+│   └── sudoku/ mines/ besharf/ kiskac/ # bağımsız, her biri kendi birim testleriyle
 └── tools/                        # gen_sfx.py (sesler), gen_words.py (kelime listeleri)
 ```
 
@@ -80,13 +80,20 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   (CC-BY-SA-4.0, OpenSubtitles türevi) türetir
 - Rekor = en uzun kazanma serisi
 
+### Kıskaç
+- Gizli 5 harfli kelimeyi **alfabetik aralık daraltarak** bul: her tahmin, gizli kelimenin
+  ondan önce mi sonra mı geldiğini söyler; kelimeyi iki sınır arasında sıkıştırırsın
+- Karşılaştırma **Türk alfabesi sıralamasıyla** yapılır (c<ç, g<ğ, ı<i, o<ö, s<ş, u<ü) — Unicode değil
+- Sınırlara göre imkânsızlaşan baş harfler klavyede soluklaşır; 12 tahmin hakkı
+- Günlük + serbest mod, seri takibi; kelime listelerini Beş Harf ile paylaşır
+
 ## Derleme
 
 Gereksinimler: JDK 17+, Android SDK (compileSdk 35). Android Studio ile açıp çalıştırabilir veya komut satırından derleyebilirsiniz:
 
 ```bash
 ./gradlew :app:assembleDebug        # APK: app/build/outputs/apk/debug/
-./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test
+./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test :games:kiskac:test
 ```
 
 Motor testleri Android SDK gerektirmez. Sürüm `-PzaVersion=X.Y.Z` özelliğiyle geçilir; release iş akışı bunu etiketten türetir (`versionCode` = `major*10000 + minor*100 + patch`).

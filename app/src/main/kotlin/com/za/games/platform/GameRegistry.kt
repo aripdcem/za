@@ -6,11 +6,13 @@ import com.za.games.ui.besharf.BesHarfScreen
 import com.za.games.ui.g2048.G2048Screen
 import com.za.games.ui.hub.Art2048
 import com.za.games.ui.hub.BesHarfArt
+import com.za.games.ui.hub.KiskacArt
 import com.za.games.ui.hub.MinesArt
 import com.za.games.ui.hub.SnakeArt
 import com.za.games.ui.hub.SudokuArt
 import com.za.games.ui.hub.TetrominoArt
 import com.za.games.ui.mines.MinesScreen
+import com.za.games.ui.kiskac.KiskacScreen
 import com.za.games.ui.snake.SnakeScreen
 import com.za.games.ui.sudoku.SudokuScreen
 import com.za.games.ui.tetris.TetrisScreen
@@ -70,6 +72,16 @@ object GameRegistry {
             art = { modifier -> MinesArt(modifier) },
             screen = { highScore, onScore, onExit ->
                 MinesScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "kiskac",
+            titleRes = R.string.game_kiskac,
+            taglineRes = R.string.game_kiskac_tagline,
+            accent = Color(0xFFF472B6),
+            art = { modifier -> KiskacArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                KiskacScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
         GameEntry(

@@ -39,7 +39,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Motor birim testleri
-        run: ./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test
+        run: ./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test :games:kiskac:test
 
       - name: Sürümü etiketten türet
         id: version

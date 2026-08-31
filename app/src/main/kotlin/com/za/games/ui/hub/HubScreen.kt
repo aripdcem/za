@@ -372,6 +372,35 @@ fun MinesArt(modifier: Modifier = Modifier) {
     }
 }
 
+/** Kıskaç kartı: iki sınır çubuğu arasında sıkışan kelime kutusu. */
+@Composable
+fun KiskacArt(modifier: Modifier = Modifier) {
+    val pink = Color(0xFFF472B6)
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        val barHeight = w * 0.2f
+        val corner = CornerRadius(w * 0.07f, w * 0.07f)
+        drawRoundRect(
+            color = pink,
+            topLeft = Offset(0f, w * 0.06f),
+            size = Size(w, barHeight),
+            cornerRadius = corner,
+        )
+        drawRoundRect(
+            color = pink.copy(alpha = 0.55f),
+            topLeft = Offset(0f, w - barHeight - w * 0.06f),
+            size = Size(w, barHeight),
+            cornerRadius = corner,
+        )
+        drawRoundRect(
+            color = Color(0xFFFACC15),
+            topLeft = Offset(w * 0.33f, (w - barHeight) / 2f),
+            size = Size(w * 0.34f, barHeight),
+            cornerRadius = corner,
+        )
+    }
+}
+
 /** Beş Harf kartı için mini tahmin satırları. */
 @Composable
 fun BesHarfArt(modifier: Modifier = Modifier) {

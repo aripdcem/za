@@ -77,6 +77,14 @@
     <string name="show_board">Tahtayı gör</string>
     <string name="key_enter">GİR</string>
 
+    <!-- Kıskaç -->
+    <string name="game_kiskac">Kıskaç</string>
+    <string name="game_kiskac_tagline">Alfabetik kıskaç: kelimeyi iki sınır arasında sıkıştır</string>
+    <string name="kiskac_lower_label">Gizli kelime bundan sonra</string>
+    <string name="kiskac_upper_label">Gizli kelime bundan önce</string>
+    <string name="kiskac_attempts_fmt">Tahmin: %1$d/%2$d</string>
+    <string name="already_tried">Bunu zaten denedin</string>
+
     <!-- Ortak -->
     <string name="pick_difficulty">Zorluk seç</string>
     <string name="difficulty_easy">Kolay</string>
