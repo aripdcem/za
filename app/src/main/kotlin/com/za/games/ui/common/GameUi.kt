@@ -17,6 +17,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -206,9 +207,12 @@ fun PausedOverlay(onResume: () -> Unit, onRestart: () -> Unit, onExit: () -> Uni
     }
 }
 
-/** Zorluk seçimi: 0 = kolay, 1 = orta, 2 = zor. */
+/**
+ * Zorluk seçimi: 0 = kolay, 1 = orta, 2 = zor. [descriptions] verilirse her
+ * düğmenin altında küçük bir açıklama gösterilir (örn. ipucu/mayın sayısı).
+ */
 @Composable
-fun DifficultyOverlay(onPick: (Int) -> Unit) {
+fun DifficultyOverlay(descriptions: List<String> = emptyList(), onPick: (Int) -> Unit) {
     OverlayCard {
         Text(
             text = stringResource(R.string.pick_difficulty),
@@ -217,13 +221,27 @@ fun DifficultyOverlay(onPick: (Int) -> Unit) {
         )
         Spacer(Modifier.height(4.dp))
         Button(onClick = { onPick(0) }, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.difficulty_easy))
+            DifficultyButtonContent(stringResource(R.string.difficulty_easy), descriptions.getOrNull(0))
         }
         Button(onClick = { onPick(1) }, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.difficulty_medium))
+            DifficultyButtonContent(stringResource(R.string.difficulty_medium), descriptions.getOrNull(1))
         }
         Button(onClick = { onPick(2) }, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.difficulty_hard))
+            DifficultyButtonContent(stringResource(R.string.difficulty_hard), descriptions.getOrNull(2))
+        }
+    }
+}
+
+@Composable
+private fun DifficultyButtonContent(label: String, description: String?) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(label)
+        if (description != null) {
+            Text(
+                text = description,
+                style = MaterialTheme.typography.labelSmall,
+                color = LocalContentColor.current.copy(alpha = 0.75f),
+            )
         }
     }
 }

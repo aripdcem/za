@@ -8,8 +8,8 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,8 +41,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.changedToUpIgnoreConsumed
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -50,6 +51,7 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.za.games.R
+import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
 import com.za.games.snake.SnakeDir
@@ -70,7 +72,7 @@ fun SnakeScreen(
     viewModel: SnakeViewModel = viewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val haptics = LocalHapticFeedback.current
+    val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current
     val latestScore by rememberUpdatedState(state.score)
     val latestOnScore by rememberUpdatedState(onScore)
@@ -210,7 +212,7 @@ fun SnakeScreen(
         Text(
             text = stringResource(R.string.snake_tap_hint),
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.45f),
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
@@ -238,41 +240,45 @@ private fun SnakeBoard(
 
     Canvas(
         modifier = modifier
+            // Tek dokunma (yön seçimi) ile sürükleme aynı pointer akışını tüketiyordu;
+            // tek bir jest algılayıcısında birleştirip hızlı dokunuşla kısa sürüklemenin
+            // birbirini yutmasını önlüyoruz.
             .pointerInput(Unit) {
-                detectTapGestures { offset ->
-                    val cell = size.width / state.width.toFloat()
-                    val col = (offset.x / cell).toInt().coerceIn(0, state.width - 1)
-                    val row = (offset.y / cell).toInt().coerceIn(0, state.height - 1)
-                    currentTapCell(row, col)
-                }
-            }
-            .pointerInput(Unit) {
-            var dx = 0f
-            var dy = 0f
-            var fired = false
-            detectDragGestures(
-                onDragStart = {
-                    dx = 0f
-                    dy = 0f
-                    fired = false
-                },
-                onDrag = { change, amount ->
-                    change.consume()
-                    dx += amount.x
-                    dy += amount.y
-                    if (!fired) {
-                        val threshold = 24.dp.toPx()
-                        if (abs(dx) > abs(dy) && abs(dx) > threshold) {
-                            currentTurn(if (dx > 0) SnakeDir.RIGHT else SnakeDir.LEFT)
-                            fired = true
-                        } else if (abs(dy) > threshold) {
-                            currentTurn(if (dy > 0) SnakeDir.DOWN else SnakeDir.UP)
-                            fired = true
+                val threshold = 24.dp.toPx()
+                awaitEachGesture {
+                    val down = awaitFirstDown()
+                    var dx = 0f
+                    var dy = 0f
+                    var fired = false
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        val change = event.changes.firstOrNull { it.id == down.id } ?: break
+                        if (change.changedToUpIgnoreConsumed()) {
+                            if (!fired) {
+                                val cell = size.width / state.width.toFloat()
+                                val col = (change.position.x / cell).toInt().coerceIn(0, state.width - 1)
+                                val row = (change.position.y / cell).toInt().coerceIn(0, state.height - 1)
+                                currentTapCell(row, col)
+                            }
+                            change.consume()
+                            break
                         }
+                        val amount = change.positionChange()
+                        dx += amount.x
+                        dy += amount.y
+                        if (!fired) {
+                            if (abs(dx) > abs(dy) && abs(dx) > threshold) {
+                                currentTurn(if (dx > 0) SnakeDir.RIGHT else SnakeDir.LEFT)
+                                fired = true
+                            } else if (abs(dy) > threshold) {
+                                currentTurn(if (dy > 0) SnakeDir.DOWN else SnakeDir.UP)
+                                fired = true
+                            }
+                        }
+                        change.consume()
                     }
-                },
-            )
-        },
+                }
+            },
     ) {
         val cell = size.width / state.width
 

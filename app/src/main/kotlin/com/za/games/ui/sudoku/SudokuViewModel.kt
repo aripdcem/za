@@ -1,6 +1,7 @@
 package com.za.games.ui.sudoku
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.za.games.sudoku.SudokuDifficulty
 import com.za.games.sudoku.SudokuState
@@ -14,8 +15,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/** Sudoku sıra tabanlıdır; VM yalnızca üretimi ve süreyi yönetir. */
-class SudokuViewModel : ViewModel() {
+/** Sudoku sıra tabanlıdır; VM üretimi, süreyi ve kalıcılığı yönetir. */
+class SudokuViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val store = SudokuStore(application)
 
     /** null = henüz bulmaca yok; zorluk seçici gösterilir. */
     private val _state = MutableStateFlow<SudokuState?>(null)
@@ -24,10 +27,21 @@ class SudokuViewModel : ViewModel() {
     private val _elapsed = MutableStateFlow(0)
     val elapsed: StateFlow<Int> = _elapsed.asStateFlow()
 
+    private val history = ArrayDeque<SudokuState>()
+
+    private val _canUndo = MutableStateFlow(false)
+    val canUndo: StateFlow<Boolean> = _canUndo.asStateFlow()
+
     private var timerPaused = false
     private var lastDifficulty: SudokuDifficulty? = null
 
     init {
+        // Yarım kalmış bulmaca varsa kaldığı yerden devam et.
+        store.restore()?.let { (saved, savedElapsed) ->
+            _state.value = saved
+            _elapsed.value = savedElapsed
+            lastDifficulty = saved.difficulty
+        }
         viewModelScope.launch {
             while (true) {
                 delay(1000L)
@@ -43,8 +57,10 @@ class SudokuViewModel : ViewModel() {
         lastDifficulty = difficulty
         viewModelScope.launch {
             val fresh = withContext(Dispatchers.Default) { SudokuState.newGame(difficulty) }
+            clearHistory()
             _state.value = fresh
             _elapsed.value = 0
+            store.save(fresh, 0)
         }
     }
 
@@ -55,17 +71,54 @@ class SudokuViewModel : ViewModel() {
 
     /** Zorluk seçicisine dön. */
     fun reset() {
+        clearHistory()
         _state.value = null
         _elapsed.value = 0
+        store.clear()
     }
 
     fun setPaused(paused: Boolean) {
         timerPaused = paused
+        // Arka plana geçerken süre de kaydedilir; süreç ölse bile korunur.
+        if (paused) persist()
     }
 
-    fun setValue(index: Int, value: Int) = _state.update { it?.setValue(index, value) }
+    fun setValue(index: Int, value: Int) = mutate { it.setValue(index, value) }
 
-    fun toggleNote(index: Int, value: Int) = _state.update { it?.toggleNote(index, value) }
+    fun toggleNote(index: Int, value: Int) = mutate { it.toggleNote(index, value) }
 
-    fun clearCell(index: Int) = _state.update { it?.clearCell(index) }
+    fun clearCell(index: Int) = mutate { it.clearCell(index) }
+
+    fun undo() {
+        val previous = history.removeLastOrNull() ?: return
+        _state.value = previous
+        _canUndo.value = history.isNotEmpty()
+        persist()
+    }
+
+    /** Durumu değiştiren hamlelerde önceki durumu geri alma yığınına iter. */
+    private fun mutate(transform: (SudokuState) -> SudokuState) {
+        val before = _state.value ?: return
+        val after = transform(before)
+        if (after == before) return
+        history.addLast(before)
+        if (history.size > HISTORY_LIMIT) history.removeFirst()
+        _state.value = after
+        _canUndo.value = true
+        persist()
+    }
+
+    private fun persist() {
+        val current = _state.value ?: return
+        if (current.status == SudokuStatus.SOLVED) store.clear() else store.save(current, _elapsed.value)
+    }
+
+    private fun clearHistory() {
+        history.clear()
+        _canUndo.value = false
+    }
+
+    private companion object {
+        const val HISTORY_LIMIT = 100
+    }
 }

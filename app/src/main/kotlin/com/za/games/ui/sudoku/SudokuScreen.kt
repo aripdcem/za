@@ -2,6 +2,7 @@ package com.za.games.ui.sudoku
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -40,7 +41,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -52,6 +52,7 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.za.games.R
+import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
 import com.za.games.sudoku.SudokuDifficulty
@@ -81,7 +82,8 @@ fun SudokuScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val elapsed by viewModel.elapsed.collectAsStateWithLifecycle()
-    val haptics = LocalHapticFeedback.current
+    val canUndo by viewModel.canUndo.collectAsStateWithLifecycle()
+    val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current
 
     var selected by rememberSaveable { mutableIntStateOf(-1) }
@@ -170,7 +172,11 @@ fun SudokuScreen(
                 )
             }
             when {
-                state == null -> DifficultyOverlay { index ->
+                state == null -> DifficultyOverlay(
+                    descriptions = SudokuDifficulty.entries.map {
+                        stringResource(R.string.sudoku_difficulty_desc_fmt, it.targetClues)
+                    },
+                ) { index ->
                     viewModel.newGame(SudokuDifficulty.entries[index])
                 }
                 state?.status == SudokuStatus.SOLVED -> SolvedOverlay(
@@ -188,12 +194,24 @@ fun SudokuScreen(
             }
         }
 
+        Text(
+            text = stringResource(R.string.sudoku_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+        )
+
         state?.let { puzzle ->
             SudokuPad(
                 state = puzzle,
                 notesMode = notesMode,
+                canUndo = canUndo,
                 onDigit = { digit ->
                     if (selected >= 0) {
+                        haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         if (notesMode) {
                             viewModel.toggleNote(selected, digit)
                         } else {
@@ -202,7 +220,16 @@ fun SudokuScreen(
                         }
                     }
                 },
-                onErase = { if (selected >= 0) viewModel.clearCell(selected) },
+                onErase = {
+                    if (selected >= 0) {
+                        haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        viewModel.clearCell(selected)
+                    }
+                },
+                onUndo = {
+                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    viewModel.undo()
+                },
                 onToggleNotes = { notesMode = !notesMode },
             )
         }
@@ -235,6 +262,8 @@ private fun SudokuBoard(
                     repeat(9) { c ->
                         val index = r * 9 + c
                         SudokuCell(
+                            row = r,
+                            col = c,
                             value = state.values[index],
                             notes = state.notes[index],
                             isGiven = state.given[index],
@@ -279,6 +308,8 @@ private fun sharesUnit(a: Int, b: Int): Boolean {
 
 @Composable
 private fun SudokuCell(
+    row: Int,
+    col: Int,
     value: Int,
     notes: Set<Int>,
     isGiven: Boolean,
@@ -295,14 +326,22 @@ private fun SudokuCell(
         isPeerOfSelected -> Color.White.copy(alpha = 0.045f)
         else -> Color.Transparent
     }
+    val content = if (value > 0) value.toString() else stringResource(R.string.sudoku_cell_empty)
+    val note = when {
+        isConflict -> " (${stringResource(R.string.sudoku_cell_conflict_note)})"
+        isGiven -> " (${stringResource(R.string.sudoku_cell_given_note)})"
+        else -> ""
+    }
+    val description = stringResource(R.string.sudoku_cell_desc_fmt, row + 1, col + 1, content + note)
     Box(
         modifier = modifier
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = null,
+                indication = LocalIndication.current,
                 onClick = onClick,
             )
-            .background(background),
+            .background(background)
+            .semantics(mergeDescendants = true) { contentDescription = description },
         contentAlignment = Alignment.Center,
     ) {
         if (value > 0) {
@@ -328,8 +367,8 @@ private fun SudokuCell(
                         if (row < 2) append('\n')
                     }
                 },
-                fontSize = 7.sp,
-                lineHeight = 9.sp,
+                fontSize = 10.sp,
+                lineHeight = 11.sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             )
@@ -341,8 +380,10 @@ private fun SudokuCell(
 private fun SudokuPad(
     state: SudokuState,
     notesMode: Boolean,
+    canUndo: Boolean,
     onDigit: (Int) -> Unit,
     onErase: () -> Unit,
+    onUndo: () -> Unit,
     onToggleNotes: () -> Unit,
 ) {
     Column(
@@ -355,6 +396,13 @@ private fun SudokuPad(
             for (digit in 1..5) {
                 DigitButton(digit, state, Modifier.weight(1f)) { onDigit(digit) }
             }
+            PadActionButton(
+                label = "↶",
+                description = stringResource(R.string.undo),
+                modifier = Modifier.weight(1f),
+                enabled = canUndo,
+                onClick = onUndo,
+            )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             for (digit in 6..9) {
@@ -385,11 +433,14 @@ private fun DigitButton(
     onClick: () -> Unit,
 ) {
     val remaining = 9 - state.values.count { it == digit }
+    val description = stringResource(R.string.sudoku_digit_desc_fmt, digit, remaining.coerceAtLeast(0))
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = modifier.height(56.dp),
+        modifier = modifier
+            .height(56.dp)
+            .semantics { contentDescription = description },
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -406,7 +457,7 @@ private fun DigitButton(
             )
             Text(
                 text = remaining.coerceAtLeast(0).toString(),
-                fontSize = 10.sp,
+                fontSize = 11.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
             )
         }
@@ -419,10 +470,12 @@ private fun PadActionButton(
     description: String,
     modifier: Modifier = Modifier,
     active: Boolean = false,
+    enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
     Surface(
         onClick = onClick,
+        enabled = enabled,
         shape = RoundedCornerShape(12.dp),
         color = if (active) {
             MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
@@ -437,10 +490,10 @@ private fun PadActionButton(
             Text(
                 text = label,
                 fontSize = 20.sp,
-                color = if (active) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
+                color = when {
+                    !enabled -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+                    active -> MaterialTheme.colorScheme.primary
+                    else -> MaterialTheme.colorScheme.onSurfaceVariant
                 },
             )
         }

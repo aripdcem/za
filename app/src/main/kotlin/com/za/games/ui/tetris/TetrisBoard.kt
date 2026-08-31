@@ -1,8 +1,8 @@
 package com.za.games.ui.tetris
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
@@ -13,11 +13,14 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.changedToUpIgnoreConsumed
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.unit.dp
 import com.za.games.tetris.Tetromino
 import com.za.games.tetris.TetrisState
 import com.za.games.tetris.TetrisStatus
+import kotlin.math.abs
 import kotlin.math.min
 
 /** Taş renkleri: koyu zeminde okunaklı, klasik paletten uyarlanmış tonlar. */
@@ -48,37 +51,51 @@ fun BoardCanvas(
     val boardWidth = state.width
     Canvas(
         modifier = modifier
+            // Döndürme (tek dokunuş) ve taşıma/yumuşak düşüş (sürükleme) ayrı jest
+            // algılayıcılarındaydı ve aynı pointer akışını tüketiyorlardı; birleştirip
+            // gerçek sürükleme başlayana kadar dokunuş adayı olarak tutuyoruz.
             .pointerInput(Unit) {
-                detectTapGestures(onTap = { onRotate() })
-            }
-            .pointerInput(Unit) {
-                var accumulatedX = 0f
-                var accumulatedY = 0f
-                detectDragGestures(
-                    onDragStart = {
-                        accumulatedX = 0f
-                        accumulatedY = 0f
-                    },
-                    onDrag = { change, dragAmount ->
+                val touchSlop = viewConfiguration.touchSlop
+                awaitEachGesture {
+                    val down = awaitFirstDown()
+                    var accumulatedX = 0f
+                    var accumulatedY = 0f
+                    var dragging = false
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        val change = event.changes.firstOrNull { it.id == down.id } ?: break
+                        if (change.changedToUpIgnoreConsumed()) {
+                            if (!dragging) onRotate()
+                            change.consume()
+                            break
+                        }
+                        val delta = change.positionChange()
+                        accumulatedX += delta.x
+                        accumulatedY += delta.y
+                        if (!dragging &&
+                            (abs(accumulatedX) > touchSlop || abs(accumulatedY) > touchSlop)
+                        ) {
+                            dragging = true
+                        }
+                        if (dragging) {
+                            val cell = size.width / boardWidth.toFloat()
+                            while (accumulatedX >= cell) {
+                                onMove(1)
+                                accumulatedX -= cell
+                            }
+                            while (accumulatedX <= -cell) {
+                                onMove(-1)
+                                accumulatedX += cell
+                            }
+                            while (accumulatedY >= cell) {
+                                onSoftDrop()
+                                accumulatedY -= cell
+                            }
+                            if (accumulatedY < 0f) accumulatedY = 0f
+                        }
                         change.consume()
-                        val cell = size.width / boardWidth.toFloat()
-                        accumulatedX += dragAmount.x
-                        accumulatedY += dragAmount.y
-                        while (accumulatedX >= cell) {
-                            onMove(1)
-                            accumulatedX -= cell
-                        }
-                        while (accumulatedX <= -cell) {
-                            onMove(-1)
-                            accumulatedX += cell
-                        }
-                        while (accumulatedY >= cell) {
-                            onSoftDrop()
-                            accumulatedY -= cell
-                        }
-                        if (accumulatedY < 0f) accumulatedY = 0f
-                    },
-                )
+                    }
+                }
             },
     ) {
         drawTetrisBoard(state, flashRows, flashAlpha)

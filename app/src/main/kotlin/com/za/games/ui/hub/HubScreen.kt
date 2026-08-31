@@ -51,6 +51,8 @@ fun HubScreen(
     onPlay: (GameEntry) -> Unit,
     soundOn: Boolean = true,
     onToggleSound: () -> Unit = {},
+    hapticsOn: Boolean = true,
+    onToggleHaptics: () -> Unit = {},
 ) {
     LazyColumn(
         modifier = Modifier
@@ -60,7 +62,7 @@ fun HubScreen(
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        item { HubHeader(soundOn, onToggleSound) }
+        item { HubHeader(soundOn, onToggleSound, hapticsOn, onToggleHaptics) }
         items(games, key = { it.id }) { game ->
             GameCard(
                 game = game,
@@ -84,7 +86,7 @@ private fun HubFooter() {
     Text(
         text = "ZA v$version · zero-ads games",
         style = MaterialTheme.typography.labelSmall,
-        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.35f),
+        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
         textAlign = TextAlign.Center,
         modifier = Modifier
             .fillMaxWidth()
@@ -93,7 +95,12 @@ private fun HubFooter() {
 }
 
 @Composable
-private fun HubHeader(soundOn: Boolean, onToggleSound: () -> Unit) {
+private fun HubHeader(
+    soundOn: Boolean,
+    onToggleSound: () -> Unit,
+    hapticsOn: Boolean,
+    onToggleHaptics: () -> Unit,
+) {
     Column(modifier = Modifier.padding(bottom = 8.dp)) {
         Row(verticalAlignment = Alignment.Top) {
             Text(
@@ -104,14 +111,23 @@ private fun HubHeader(soundOn: Boolean, onToggleSound: () -> Unit) {
                 letterSpacing = 4.sp,
                 modifier = Modifier.weight(1f),
             )
-            val toggleDescription = stringResource(
+            val soundToggleDescription = stringResource(
                 if (soundOn) R.string.sound_off else R.string.sound_on,
             )
             IconButton(
                 onClick = onToggleSound,
-                modifier = Modifier.semantics { contentDescription = toggleDescription },
+                modifier = Modifier.semantics { contentDescription = soundToggleDescription },
             ) {
                 Text(text = if (soundOn) "🔊" else "🔇", fontSize = 22.sp)
+            }
+            val hapticsToggleDescription = stringResource(
+                if (hapticsOn) R.string.haptics_off else R.string.haptics_on,
+            )
+            IconButton(
+                onClick = onToggleHaptics,
+                modifier = Modifier.semantics { contentDescription = hapticsToggleDescription },
+            ) {
+                Text(text = if (hapticsOn) "📳" else "📴", fontSize = 22.sp)
             }
         }
         Text(

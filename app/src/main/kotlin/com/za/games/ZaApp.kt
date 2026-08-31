@@ -11,11 +11,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.za.games.platform.GameRegistry
+import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
 import com.za.games.platform.ScoreStore
 import com.za.games.platform.SettingsStore
 import com.za.games.platform.SoundPlayer
+import com.za.games.platform.gatedBy
 import com.za.games.ui.hub.HubScreen
 
 /**
@@ -39,12 +42,16 @@ fun ZaApp() {
         onDispose { soundPlayer.release() }
     }
 
+    var hapticsOn by remember { mutableStateOf(settings.hapticsEnabled) }
+    val systemHaptics = LocalHapticFeedback.current
+    val gatedHaptics = remember(systemHaptics) { systemHaptics.gatedBy { hapticsOn } }
+
     var currentGameId by rememberSaveable { mutableStateOf<String?>(null) }
     val currentGame = GameRegistry.games.firstOrNull { it.id == currentGameId }
 
     BackHandler(enabled = currentGame != null) { currentGameId = null }
 
-    CompositionLocalProvider(LocalZaSound provides soundPlayer) {
+    CompositionLocalProvider(LocalZaSound provides soundPlayer, LocalZaHaptics provides gatedHaptics) {
         if (currentGame == null) {
             HubScreen(
                 games = GameRegistry.games,
@@ -54,6 +61,11 @@ fun ZaApp() {
                 onToggleSound = {
                     soundOn = !soundOn
                     settings.soundEnabled = soundOn
+                },
+                hapticsOn = hapticsOn,
+                onToggleHaptics = {
+                    hapticsOn = !hapticsOn
+                    settings.hapticsEnabled = hapticsOn
                 },
             )
         } else {

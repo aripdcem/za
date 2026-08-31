@@ -33,9 +33,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LifecycleResumeEffect
@@ -45,6 +45,7 @@ import com.za.games.R
 import com.za.games.besharf.BesHarfState
 import com.za.games.besharf.BesHarfStatus
 import com.za.games.besharf.LetterMark
+import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
 import com.za.games.ui.common.GameTopBar
@@ -75,7 +76,7 @@ fun BesHarfScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val mode by viewModel.mode.collectAsStateWithLifecycle()
     val streak by viewModel.streak.collectAsStateWithLifecycle()
-    val haptics = LocalHapticFeedback.current
+    val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current
     val latestOnScore by rememberUpdatedState(onScore)
 
@@ -107,16 +108,21 @@ fun BesHarfScreen(
         seenGuesses = state.guesses.size
     }
     // Geçersiz kelime uyarısı: sayaç yalnızca arttığında (girişte tekrar etmesin).
-    var showInvalid by remember { mutableStateOf(false) }
+    // Eksik kelime ile listede olmayan kelime ayrı mesaj alır.
+    var invalidMessage by remember { mutableStateOf<Int?>(null) }
     var seenInvalid by remember { mutableIntStateOf(state.invalidEvents) }
     LaunchedEffect(state.invalidEvents) {
         val previous = seenInvalid
         seenInvalid = state.invalidEvents
         if (state.invalidEvents > previous) {
             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-            showInvalid = true
+            invalidMessage = if (state.current.length < BesHarfState.WORD_LENGTH) {
+                R.string.too_short
+            } else {
+                R.string.not_in_list
+            }
             delay(1400L)
-            showInvalid = false
+            invalidMessage = null
         }
     }
     var showResult by remember(state.answer, state.status) { mutableStateOf(true) }
@@ -139,6 +145,16 @@ fun BesHarfScreen(
 
         ModeChips(mode = mode, onSelect = viewModel::setMode)
 
+        Text(
+            text = stringResource(R.string.besharf_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+        )
+
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -149,7 +165,7 @@ fun BesHarfScreen(
                 GuessGrid(state)
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    text = if (showInvalid) stringResource(R.string.not_in_list) else " ",
+                    text = invalidMessage?.let { stringResource(it) } ?: " ",
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.error,
                 )
@@ -169,9 +185,15 @@ fun BesHarfScreen(
 
         BesHarfKeyboard(
             keyMarks = state.keyMarks(),
-            onKey = viewModel::type,
+            onKey = {
+                haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                viewModel.type(it)
+            },
             onEnter = viewModel::submit,
-            onErase = viewModel::erase,
+            onErase = {
+                haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                viewModel.erase()
+            },
         )
     }
 }
@@ -212,7 +234,7 @@ private fun ModeChip(
         } else {
             MaterialTheme.colorScheme.surfaceVariant
         },
-        modifier = modifier.height(40.dp),
+        modifier = modifier.height(48.dp),
     ) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
             Text(
@@ -296,10 +318,12 @@ private fun BesHarfKeyboard(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 6.dp, vertical = 8.dp),
+            .padding(horizontal = 3.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        // Aralar dar tutulur: 29 harfli Türkçe klavyede her piksel tuş
+        // genişliğine gider (en yoğun satır 11 tuş barındırıyor).
+        Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
             KEY_ROWS[0].forEach { letter ->
                 KeyButton(
                     label = letter.upperTr(),
@@ -308,7 +332,7 @@ private fun BesHarfKeyboard(
                 ) { onKey(letter) }
             }
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
             KEY_ROWS[1].forEach { letter ->
                 KeyButton(
                     label = letter.upperTr(),
@@ -317,7 +341,7 @@ private fun BesHarfKeyboard(
                 ) { onKey(letter) }
             }
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
             KeyButton(
                 label = stringResource(R.string.key_enter),
                 mark = null,
@@ -360,7 +384,7 @@ private fun KeyButton(
     val textColor = when {
         accent -> MaterialTheme.colorScheme.primary
         mark == LetterMark.CORRECT || mark == LetterMark.PRESENT -> OnFilledDark
-        mark == LetterMark.ABSENT -> Color.White.copy(alpha = 0.35f)
+        mark == LetterMark.ABSENT -> Color.White.copy(alpha = 0.6f)
         else -> MaterialTheme.colorScheme.onSurfaceVariant
     }
     Surface(

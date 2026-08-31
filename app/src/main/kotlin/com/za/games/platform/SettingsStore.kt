@@ -14,7 +14,14 @@ class SettingsStore(context: Context) {
             prefs.edit().putBoolean(KEY_SOUND, value).apply()
         }
 
+    var hapticsEnabled: Boolean
+        get() = prefs.getBoolean(KEY_HAPTICS, true)
+        set(value) {
+            prefs.edit().putBoolean(KEY_HAPTICS, value).apply()
+        }
+
     private companion object {
         const val KEY_SOUND = "sound_enabled"
+        const val KEY_HAPTICS = "haptics_enabled"
     }
 }

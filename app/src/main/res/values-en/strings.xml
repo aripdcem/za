@@ -21,6 +21,7 @@
     <string name="lines">Lines</string>
     <string name="next_label">Next</string>
     <string name="hold_label">Hold</string>
+    <string name="tetris_hint">Tap the board to rotate, drag to slide</string>
     <string name="pause">Pause</string>
     <string name="resume">Resume</string>
     <string name="restart">Restart</string>
@@ -50,7 +51,15 @@
     <string name="congrats">Well done! 🎉</string>
     <string name="notes_toggle">Notes mode</string>
     <string name="erase">Erase</string>
+    <string name="undo">Undo</string>
     <string name="solved_label">Solved</string>
+    <string name="sudoku_hint">✎ to take notes · the number under each digit shows how many remain</string>
+    <string name="sudoku_difficulty_desc_fmt">Start with %1$d clues</string>
+    <string name="sudoku_digit_desc_fmt">Enter %1$d, %2$d remaining</string>
+    <string name="sudoku_cell_desc_fmt">Row %1$d, column %2$d: %3$s</string>
+    <string name="sudoku_cell_empty">empty</string>
+    <string name="sudoku_cell_given_note">clue</string>
+    <string name="sudoku_cell_conflict_note">conflict</string>
 
     <!-- Minesweeper -->
     <string name="game_mines">Minesweeper</string>
@@ -60,6 +69,8 @@
     <string name="flag_mode">Flag mode</string>
     <string name="mines_won">Field cleared! 🎉</string>
     <string name="mines_lost">Boom! 💥</string>
+    <string name="mines_hint">Long-press to flag · tap an open number to reveal its neighbors</string>
+    <string name="mines_difficulty_desc_fmt">%1$d×%2$d · %3$d mines</string>
 
     <!-- Beş Harf -->
     <string name="game_besharf">Beş Harf</string>
@@ -67,6 +78,7 @@
     <string name="mode_daily">Daily</string>
     <string name="mode_free">Free play</string>
     <string name="not_in_list">Not in the word list</string>
+    <string name="too_short">Enter 5 letters</string>
     <string name="streak_label">Streak</string>
     <string name="answer_was">Answer: %1$s</string>
     <string name="play_free">Play free mode</string>
@@ -76,6 +88,7 @@
     <string name="tomorrow_new_word">A new word tomorrow!</string>
     <string name="show_board">Show the board</string>
     <string name="key_enter">ENTER</string>
+    <string name="besharf_hint">🟩 right spot  🟨 in the word  ⬛ not in the word</string>
 
     <!-- Kıskaç -->
     <string name="game_kiskac">Kıskaç</string>
@@ -100,6 +113,10 @@
     <!-- Sound -->
     <string name="sound_on">Turn sound on</string>
     <string name="sound_off">Turn sound off</string>
+
+    <!-- Haptics -->
+    <string name="haptics_on">Turn haptics on</string>
+    <string name="haptics_off">Turn haptics off</string>
 
     <!-- Controls (accessibility) -->
     <string name="ctrl_up">Up</string>

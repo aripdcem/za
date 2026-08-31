@@ -41,7 +41,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -52,6 +51,7 @@ import com.za.games.R
 import com.za.games.g2048.G2048State
 import com.za.games.g2048.G2048Status
 import com.za.games.g2048.MoveDir
+import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
 import com.za.games.ui.common.GameOverOverlay
@@ -69,7 +69,7 @@ fun G2048Screen(
     viewModel: G2048ViewModel = viewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val haptics = LocalHapticFeedback.current
+    val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current
     val latestScore by rememberUpdatedState(state.score)
     val latestOnScore by rememberUpdatedState(onScore)
@@ -98,7 +98,9 @@ fun G2048Screen(
         if (state.moves > previous && state.lastMerged.isNotEmpty()) {
             val biggest = state.lastMerged.maxOf { state.cells[it] }
             sound?.play(Sfx.POP, rate = 0.9f + (Integer.numberOfTrailingZeros(biggest) * 0.04f))
-            if (biggest >= 512) haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+            haptics.performHapticFeedback(
+                if (biggest >= 512) HapticFeedbackType.LongPress else HapticFeedbackType.TextHandleMove,
+            )
         }
     }
     // 2048 kutlaması ve katmanı: zaten kutlanmış bir oyuna geri girişte tekrar etmez.
@@ -183,7 +185,7 @@ fun G2048Screen(
             Text(
                 text = stringResource(R.string.swipe_hint),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.45f),
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             )
         }
     }
@@ -201,25 +203,31 @@ private fun BoardGrid(
             .aspectRatio(1f)
             .clip(RoundedCornerShape(20.dp))
             .background(Color(0xFF0F1628))
+            // Hamle, eşik aşılır aşılmaz tetiklenir (parmak kalkması beklenmez):
+            // oyun anında tepki verir; sürükleme başına en fazla bir hamle.
             .pointerInput(Unit) {
                 var dx = 0f
                 var dy = 0f
+                var fired = false
                 detectDragGestures(
                     onDragStart = {
                         dx = 0f
                         dy = 0f
+                        fired = false
                     },
                     onDrag = { change, amount ->
                         change.consume()
                         dx += amount.x
                         dy += amount.y
-                    },
-                    onDragEnd = {
-                        val threshold = 40.dp.toPx()
-                        if (abs(dx) > abs(dy) && abs(dx) > threshold) {
-                            currentMove(if (dx > 0) MoveDir.RIGHT else MoveDir.LEFT)
-                        } else if (abs(dy) > threshold) {
-                            currentMove(if (dy > 0) MoveDir.DOWN else MoveDir.UP)
+                        if (!fired) {
+                            val threshold = 24.dp.toPx()
+                            if (abs(dx) > abs(dy) && abs(dx) > threshold) {
+                                currentMove(if (dx > 0) MoveDir.RIGHT else MoveDir.LEFT)
+                                fired = true
+                            } else if (abs(dy) > abs(dx) && abs(dy) > threshold) {
+                                currentMove(if (dy > 0) MoveDir.DOWN else MoveDir.UP)
+                                fired = true
+                            }
                         }
                     },
                 )
