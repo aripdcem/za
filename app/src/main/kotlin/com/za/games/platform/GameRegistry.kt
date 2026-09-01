@@ -3,9 +3,11 @@ package com.za.games.platform
 import androidx.compose.ui.graphics.Color
 import com.za.games.R
 import com.za.games.ui.besharf.BesHarfScreen
+import com.za.games.ui.dizgi.DizgiScreen
 import com.za.games.ui.g2048.G2048Screen
 import com.za.games.ui.hub.Art2048
 import com.za.games.ui.hub.BesHarfArt
+import com.za.games.ui.hub.DizgiArt
 import com.za.games.ui.hub.KiskacArt
 import com.za.games.ui.hub.MinesArt
 import com.za.games.ui.hub.SnakeArt
@@ -104,6 +106,16 @@ object GameRegistry {
             art = { modifier -> TuretmeArt(modifier) },
             screen = { highScore, onScore, onExit ->
                 TuretmeScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "dizgi",
+            titleRes = R.string.game_dizgi,
+            taglineRes = R.string.game_dizgi_tagline,
+            accent = Color(0xFFFB923C),
+            art = { modifier -> DizgiArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                DizgiScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
     )

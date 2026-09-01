@@ -113,6 +113,44 @@
     <string name="turetme_give_up_yes">Give up and reveal</string>
     <string name="turetme_revealed">Words you missed are shown outlined</string>
 
+    <!-- Dizgi -->
+    <string name="game_dizgi">Dizgi</string>
+    <string name="game_dizgi_tagline">Pass-and-play word board: lay letters, cross words, score</string>
+    <string name="dizgi_players_title">How many players?</string>
+    <string name="dizgi_players_hint">Played in turns on the same phone; only the current player sees their tiles. The first word must cross the center star.</string>
+    <string name="dizgi_start">Start</string>
+    <string name="dizgi_player_n">Player %1$d</string>
+    <string name="dizgi_turn_of">Turn: %1$s</string>
+    <string name="dizgi_handover">Hand the phone to the next player; only they will see the tiles</string>
+    <string name="dizgi_ready">I\'m ready</string>
+    <string name="dizgi_bag_count">Bag: %1$d</string>
+    <string name="dizgi_confirm_move">Play</string>
+    <string name="dizgi_recall">Recall</string>
+    <string name="dizgi_pass">Pass</string>
+    <string name="dizgi_exchange">Swap</string>
+    <string name="dizgi_exchange_n">Swap (%1$d)</string>
+    <string name="dizgi_cancel">Cancel</string>
+    <string name="dizgi_joker_pick">Which letter should the joker be?</string>
+    <string name="dizgi_move_pass">%1$s passed</string>
+    <string name="dizgi_move_exchange">%1$s swapped tiles</string>
+    <string name="dizgi_move_words">%1$s: %2$s (+%3$d)</string>
+    <string name="dizgi_bingo">Bingo! +50</string>
+    <string name="dizgi_inv_empty">Place tiles on the board first</string>
+    <string name="dizgi_inv_line">Tiles must sit in a single row or column</string>
+    <string name="dizgi_inv_gap">The word cannot have gaps</string>
+    <string name="dizgi_inv_connect">New tiles must touch the existing ones</string>
+    <string name="dizgi_inv_center">The first word must cross the center star</string>
+    <string name="dizgi_inv_short">Build a word of at least two letters</string>
+    <string name="dizgi_inv_word">Not in the dictionary: %1$s</string>
+    <string name="dizgi_inv_exchange">Swapping needs at least 7 tiles in the bag</string>
+    <string name="dizgi_pass_confirm">Pass your turn?</string>
+    <string name="dizgi_pass_detail">The turn moves on. If everyone passes twice in a row, the game ends.</string>
+    <string name="dizgi_new_confirm">Start a new game?</string>
+    <string name="dizgi_new_detail">The current game will be discarded.</string>
+    <string name="dizgi_finished">Game over</string>
+    <string name="dizgi_winner">Winner: %1$s</string>
+    <string name="dizgi_draw">It\'s a draw!</string>
+
     <!-- Shared -->
     <string name="pick_difficulty">Pick difficulty</string>
     <string name="difficulty_easy">Easy</string>
