@@ -144,6 +144,7 @@
     <string name="dizgi_inv_short">Build a word of at least two letters</string>
     <string name="dizgi_inv_word">Not in the dictionary: %1$s</string>
     <string name="dizgi_inv_exchange">Swapping needs at least 7 tiles in the bag</string>
+    <string name="dizgi_exchange_hint">Tap the tiles to swap (%1$d selected), then press Swap</string>
     <string name="dizgi_pass_confirm">Pass your turn?</string>
     <string name="dizgi_pass_detail">The turn moves on. If everyone passes twice in a row, the game ends.</string>
     <string name="dizgi_new_confirm">Start a new game?</string>

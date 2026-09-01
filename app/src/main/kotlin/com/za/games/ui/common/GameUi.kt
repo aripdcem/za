@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.za.games.R
@@ -124,6 +125,7 @@ fun PadButton(
     modifier: Modifier = Modifier,
     repeatIntervalMs: Long = 0L,
     accent: Boolean = false,
+    fontSize: TextUnit = 22.sp,
     onAction: () -> Unit,
 ) {
     val currentAction by rememberUpdatedState(onAction)
@@ -158,7 +160,7 @@ fun PadButton(
         Box(contentAlignment = Alignment.Center) {
             Text(
                 text = label,
-                fontSize = 22.sp,
+                fontSize = fontSize,
                 color = if (accent) {
                     MaterialTheme.colorScheme.primary
                 } else {

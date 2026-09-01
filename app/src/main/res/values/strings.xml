@@ -144,6 +144,7 @@
     <string name="dizgi_inv_short">En az iki harfli bir kelime kur</string>
     <string name="dizgi_inv_word">Sözlükte yok: %1$s</string>
     <string name="dizgi_inv_exchange">Değişim için torbada en az 7 taş gerekir</string>
+    <string name="dizgi_exchange_hint">Değiştirilecek taşlara dokun (%1$d seçili), sonra Değiştir\'e bas</string>
     <string name="dizgi_pass_confirm">Pas geçiyor musun?</string>
     <string name="dizgi_pass_detail">Sıra rakibe geçer. Herkes üst üste iki kez pas geçerse oyun biter.</string>
     <string name="dizgi_new_confirm">Yeni oyun başlatılsın mı?</string>
