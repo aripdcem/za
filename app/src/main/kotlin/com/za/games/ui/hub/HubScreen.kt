@@ -417,6 +417,30 @@ fun KiskacArt(modifier: Modifier = Modifier) {
     }
 }
 
+/** Türetme kartı: harf çarkı — merkez ve çevresinde harf daireleri. */
+@Composable
+fun TuretmeArt(modifier: Modifier = Modifier) {
+    val purple = Color(0xFFA78BFA)
+    Canvas(modifier = modifier) {
+        val c = size.minDimension / 2f
+        val center = Offset(c, c)
+        drawCircle(purple.copy(alpha = 0.25f), radius = c * 0.95f, center = center)
+        drawCircle(purple, radius = c * 0.28f, center = center)
+        val orbit = c * 0.62f
+        repeat(6) { i ->
+            val angle = Math.toRadians(60.0 * i - 90.0)
+            drawCircle(
+                color = purple.copy(alpha = 0.75f),
+                radius = c * 0.16f,
+                center = center + Offset(
+                    (orbit * kotlin.math.cos(angle)).toFloat(),
+                    (orbit * kotlin.math.sin(angle)).toFloat(),
+                ),
+            )
+        }
+    }
+}
+
 /** Beş Harf kartı için mini tahmin satırları. */
 @Composable
 fun BesHarfArt(modifier: Modifier = Modifier) {

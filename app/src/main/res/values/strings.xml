@@ -98,6 +98,16 @@
     <string name="kiskac_attempts_fmt">Tahmin: %1$d/%2$d</string>
     <string name="already_tried">Bunu zaten denedin</string>
 
+    <!-- Türetme -->
+    <string name="game_turetme">Türetme</string>
+    <string name="game_turetme_tagline">Harflerden kelime türet — hepsini bulabilecek misin?</string>
+    <string name="turetme_hint">En az 3 harfli kelimeler kur; taban kelime bonus verir</string>
+    <string name="found_label">Bulunan</string>
+    <string name="already_found">Bunu zaten buldun</string>
+    <string name="shuffle_letters">Harfleri karıştır</string>
+    <string name="turetme_completed">Hepsini buldun! 🎉</string>
+    <string name="turetme_empty">Harflere dokunarak kelime kur, GİR ile gönder</string>
+
     <!-- Ortak -->
     <string name="pick_difficulty">Zorluk seç</string>
     <string name="difficulty_easy">Kolay</string>

@@ -11,11 +11,13 @@ import com.za.games.ui.hub.MinesArt
 import com.za.games.ui.hub.SnakeArt
 import com.za.games.ui.hub.SudokuArt
 import com.za.games.ui.hub.TetrominoArt
+import com.za.games.ui.hub.TuretmeArt
 import com.za.games.ui.mines.MinesScreen
 import com.za.games.ui.kiskac.KiskacScreen
 import com.za.games.ui.snake.SnakeScreen
 import com.za.games.ui.sudoku.SudokuScreen
 import com.za.games.ui.tetris.TetrisScreen
+import com.za.games.ui.turetme.TuretmeScreen
 
 /**
  * Platformdaki oyunların tek listesi.
@@ -92,6 +94,16 @@ object GameRegistry {
             art = { modifier -> BesHarfArt(modifier) },
             screen = { highScore, onScore, onExit ->
                 BesHarfScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "turetme",
+            titleRes = R.string.game_turetme,
+            taglineRes = R.string.game_turetme_tagline,
+            accent = Color(0xFFA78BFA),
+            art = { modifier -> TuretmeArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                TuretmeScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
     )
