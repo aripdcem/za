@@ -96,7 +96,7 @@
     <string name="kiskac_lower_label">The hidden word comes after</string>
     <string name="kiskac_upper_label">The hidden word comes before</string>
     <string name="kiskac_attempts_fmt">Guesses: %1$d/%2$d</string>
-    <string name="kiskac_hint">Each guess tells you if the hidden word comes before or after it — narrow the gap to trap it</string>
+    <string name="kiskac_hint">Each guess says before or after — narrow the gap to trap it</string>
     <string name="already_tried">Already tried that one</string>
 
     <!-- Türetme -->
