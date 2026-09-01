@@ -107,6 +107,11 @@
     <string name="shuffle_letters">Harfleri karıştır</string>
     <string name="turetme_completed">Hepsini buldun! 🎉</string>
     <string name="turetme_empty">Harflere dokunarak kelime kur, GİR ile gönder</string>
+    <string name="turetme_give_up">Pes</string>
+    <string name="turetme_give_up_confirm">Pes ediyor musun?</string>
+    <string name="turetme_give_up_detail">Tur sona erer ve bulamadığın kelimeler gösterilir.</string>
+    <string name="turetme_give_up_yes">Pes et, kelimeleri göster</string>
+    <string name="turetme_revealed">Bulamadığın kelimeler çerçeveli gösteriliyor</string>
 
     <!-- Ortak -->
     <string name="pick_difficulty">Zorluk seç</string>

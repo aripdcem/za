@@ -107,6 +107,11 @@
     <string name="shuffle_letters">Shuffle letters</string>
     <string name="turetme_completed">You found them all! 🎉</string>
     <string name="turetme_empty">Tap letters to build a word, then press ENTER</string>
+    <string name="turetme_give_up">Give up</string>
+    <string name="turetme_give_up_confirm">Give up?</string>
+    <string name="turetme_give_up_detail">The round ends and the words you missed are revealed.</string>
+    <string name="turetme_give_up_yes">Give up and reveal</string>
+    <string name="turetme_revealed">Words you missed are shown outlined</string>
 
     <!-- Shared -->
     <string name="pick_difficulty">Pick difficulty</string>

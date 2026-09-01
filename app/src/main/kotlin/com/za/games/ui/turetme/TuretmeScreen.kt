@@ -1,6 +1,7 @@
 package com.za.games.ui.turetme
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -98,14 +99,14 @@ fun TuretmeScreen(
         }
         seenFound = state.found.size
     }
-    // Tur tamamlama kutlaması: yalnızca canlı geçişte.
-    var celebrated by remember(state.base, state.dailyDay) {
-        mutableStateOf(state.status == TuretmeStatus.COMPLETED)
+    // Tur sonu geri bildirimi (tamamlama/pes): yalnızca canlı geçişte.
+    var endFeedbackDone by remember(state.base, state.dailyDay) {
+        mutableStateOf(state.status != TuretmeStatus.RUNNING)
     }
     LaunchedEffect(state.status) {
-        if (state.status == TuretmeStatus.COMPLETED && !celebrated) {
-            celebrated = true
-            sound?.play(Sfx.BIG)
+        if (state.status != TuretmeStatus.RUNNING && !endFeedbackDone) {
+            endFeedbackDone = true
+            sound?.play(if (state.status == TuretmeStatus.COMPLETED) Sfx.BIG else Sfx.OVER)
             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
         }
     }
@@ -123,6 +124,7 @@ fun TuretmeScreen(
         }
     }
     var showResult by remember(state.base, state.status) { mutableStateOf(true) }
+    var confirmGiveUp by remember(state.base, state.dailyDay) { mutableStateOf(false) }
     BackHandler { onExit() }
 
     Column(
@@ -132,6 +134,11 @@ fun TuretmeScreen(
             .safeDrawingPadding(),
     ) {
         GameTopBar(title = stringResource(R.string.game_turetme), onExit = onExit) {
+            if (state.status == TuretmeStatus.RUNNING) {
+                TextButton(onClick = { confirmGiveUp = true }) {
+                    Text(stringResource(R.string.turetme_give_up))
+                }
+            }
             if (mode == TuretmeMode.FREE) {
                 TextButton(onClick = viewModel::newFreeGame) {
                     Text(stringResource(R.string.new_word))
@@ -142,7 +149,13 @@ fun TuretmeScreen(
         ModeChips(mode = mode, onSelect = viewModel::setMode)
 
         Text(
-            text = stringResource(R.string.turetme_hint),
+            text = stringResource(
+                if (state.status == TuretmeStatus.GIVEN_UP) {
+                    R.string.turetme_revealed
+                } else {
+                    R.string.turetme_hint
+                },
+            ),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
             textAlign = TextAlign.Center,
@@ -194,6 +207,17 @@ fun TuretmeScreen(
                     )
                 }
             }
+            if (confirmGiveUp && state.status == TuretmeStatus.RUNNING) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    GiveUpConfirm(
+                        onConfirm = {
+                            confirmGiveUp = false
+                            viewModel.giveUp()
+                        },
+                        onDismiss = { confirmGiveUp = false },
+                    )
+                }
+            }
         }
 
         Text(
@@ -241,26 +265,46 @@ fun TuretmeScreen(
                 .padding(horizontal = 12.dp, vertical = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            PadButton(
-                label = "⌫",
-                description = stringResource(R.string.erase),
-                modifier = Modifier.weight(1f).height(52.dp),
-                repeatIntervalMs = 150L,
-                onAction = viewModel::erase,
-            )
-            PadButton(
-                label = "🔀",
-                description = stringResource(R.string.shuffle_letters),
-                modifier = Modifier.weight(1f).height(52.dp),
-                onAction = viewModel::shuffle,
-            )
-            PadButton(
-                label = stringResource(R.string.key_enter),
-                description = stringResource(R.string.key_enter),
-                modifier = Modifier.weight(1.6f).height(52.dp),
-                accent = true,
-                onAction = viewModel::submit,
-            )
+            if (state.status == TuretmeStatus.RUNNING) {
+                PadButton(
+                    label = "⌫",
+                    description = stringResource(R.string.erase),
+                    modifier = Modifier.weight(1f).height(52.dp),
+                    repeatIntervalMs = 150L,
+                    onAction = viewModel::erase,
+                )
+                PadButton(
+                    label = "🔀",
+                    description = stringResource(R.string.shuffle_letters),
+                    modifier = Modifier.weight(1f).height(52.dp),
+                    onAction = viewModel::shuffle,
+                )
+                PadButton(
+                    label = stringResource(R.string.key_enter),
+                    description = stringResource(R.string.key_enter),
+                    modifier = Modifier.weight(1.6f).height(52.dp),
+                    accent = true,
+                    onAction = viewModel::submit,
+                )
+            } else {
+                // Tur bitti: ölü tuşlar yerine bir sonraki adımın tuşu.
+                val nextLabel = stringResource(
+                    if (mode == TuretmeMode.DAILY) R.string.play_free else R.string.new_word,
+                )
+                PadButton(
+                    label = nextLabel,
+                    description = nextLabel,
+                    modifier = Modifier.weight(1f).height(52.dp),
+                    accent = true,
+                    onAction = {
+                        if (mode == TuretmeMode.DAILY) {
+                            viewModel.setMode(TuretmeMode.FREE)
+                        } else {
+                            viewModel.newFreeGame()
+                        }
+                    },
+                )
+            }
         }
     }
 }
@@ -321,6 +365,11 @@ private fun ModeChip(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun FoundWords(state: TuretmeState) {
+    // Pes edildiyse tüm hedefler listelenir: bulunanlar dolu,
+    // bulunamayanlar çerçeveli/soluk çiplerle.
+    val revealed = state.status == TuretmeStatus.GIVEN_UP
+    val words = (if (revealed) state.targets else state.found)
+        .sortedWith(compareBy({ it.length }, { it }))
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -330,30 +379,43 @@ private fun FoundWords(state: TuretmeState) {
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            state.found.sortedWith(compareBy({ it.length }, { it })).forEach { word ->
+            words.forEach { word ->
+                val missed = revealed && word !in state.found
                 Surface(
                     shape = RoundedCornerShape(10.dp),
-                    color = if (word == state.base) {
-                        AccentPurple.copy(alpha = 0.3f)
+                    color = when {
+                        missed -> Color.Transparent
+                        word == state.base -> AccentPurple.copy(alpha = 0.3f)
+                        else -> MaterialTheme.colorScheme.surfaceVariant
+                    },
+                    border = if (missed) {
+                        BorderStroke(
+                            width = 1.dp,
+                            color = if (word == state.base) {
+                                AccentPurple.copy(alpha = 0.6f)
+                            } else {
+                                MaterialTheme.colorScheme.outline.copy(alpha = 0.45f)
+                            },
+                        )
                     } else {
-                        MaterialTheme.colorScheme.surfaceVariant
+                        null
                     },
                 ) {
                     Text(
                         text = word.upperTr(),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold,
-                        color = if (word == state.base) {
-                            AccentPurple
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
+                        color = when {
+                            missed -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                            word == state.base -> AccentPurple
+                            else -> MaterialTheme.colorScheme.onSurfaceVariant
                         },
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                     )
                 }
             }
         }
-        if (state.found.isEmpty()) {
+        if (words.isEmpty()) {
             Text(
                 text = stringResource(R.string.turetme_empty),
                 style = MaterialTheme.typography.bodyMedium,
@@ -363,6 +425,30 @@ private fun FoundWords(state: TuretmeState) {
                     .fillMaxWidth()
                     .padding(top = 24.dp),
             )
+        }
+    }
+}
+
+@Composable
+private fun GiveUpConfirm(onConfirm: () -> Unit, onDismiss: () -> Unit) {
+    OverlayCard {
+        Text(
+            text = stringResource(R.string.turetme_give_up_confirm),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+        )
+        Text(
+            text = stringResource(R.string.turetme_give_up_detail),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+            textAlign = TextAlign.Center,
+        )
+        Spacer(Modifier.height(4.dp))
+        Button(onClick = onConfirm, modifier = Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.turetme_give_up_yes))
+        }
+        TextButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.resume))
         }
     }
 }

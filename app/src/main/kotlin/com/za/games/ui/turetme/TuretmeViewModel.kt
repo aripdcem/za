@@ -25,13 +25,16 @@ class TuretmeViewModel(application: Application) : AndroidViewModel(application)
 
     private fun todayEpoch(): Long = LocalDate.now().toEpochDay()
 
-    /** Günün turu; aynı gün içinde bulunmuş kelimeler geri oynatılır. */
+    /** Günün turu; aynı gün içinde bulunmuş kelimeler (ve pes) geri oynatılır. */
     private fun restoredDaily(): TuretmeState {
         val day = todayEpoch()
         var state = TuretmeState.daily(TuretmeWords.bases, TuretmeWords.valid, day)
         if (store.dailyDay == day) {
             for (word in store.dailyFound) {
                 state = state.restoreFound(word)
+            }
+            if (store.dailyGivenUp) {
+                state = state.giveUp()
             }
         }
         return state
@@ -70,6 +73,19 @@ class TuretmeViewModel(application: Application) : AndroidViewModel(application)
         val day = after.dailyDay
         if (_mode.value == TuretmeMode.DAILY && day != null && day == todayEpoch()) {
             store.saveDaily(day, after.found)
+        }
+    }
+
+    /** Pes: tur biter, bulunamayan kelimeler açıklanır. Günlükte kalıcıdır. */
+    fun giveUp() {
+        val before = _state.value
+        val after = before.giveUp()
+        if (after == before) return
+        _state.value = after
+
+        val day = after.dailyDay
+        if (_mode.value == TuretmeMode.DAILY && day != null && day == todayEpoch()) {
+            store.saveDaily(day, after.found, givenUp = true)
         }
     }
 
