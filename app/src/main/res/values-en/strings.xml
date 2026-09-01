@@ -98,6 +98,16 @@
     <string name="kiskac_attempts_fmt">Guesses: %1$d/%2$d</string>
     <string name="already_tried">Already tried that one</string>
 
+    <!-- Türetme -->
+    <string name="game_turetme">Türetme</string>
+    <string name="game_turetme_tagline">Build words from the letters — can you find them all?</string>
+    <string name="turetme_hint">Make words of 3+ letters; the base word earns a bonus</string>
+    <string name="found_label">Found</string>
+    <string name="already_found">Already found that one</string>
+    <string name="shuffle_letters">Shuffle letters</string>
+    <string name="turetme_completed">You found them all! 🎉</string>
+    <string name="turetme_empty">Tap letters to build a word, then press ENTER</string>
+
     <!-- Shared -->
     <string name="pick_difficulty">Pick difficulty</string>
     <string name="difficulty_easy">Easy</string>

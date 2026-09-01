@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#F3F6FB" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0B0F1A" media="(prefers-color-scheme: dark)">
 <title>ZA · zero-ads games</title>
-<meta name="description" content="ZA: Android için sıfır reklam, sıfır izleyici, sıfır izin oyun platformu. Tetris, 2048, Yılan, Sudoku ve Mayın Tarlası — saf oyun.">
+<meta name="description" content="ZA: Android için sıfır reklam, sıfır izleyici, sıfır izin oyun platformu. Tetris, 2048, Yılan, Sudoku, Mayın Tarlası ve Türkçe kelime oyunları — saf oyun.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B0F1A'/%3E%3Cg fill='%234DE1FF'%3E%3Crect x='7' y='7' width='4' height='4' rx='1'/%3E%3Crect x='12' y='7' width='4' height='4' rx='1'/%3E%3Crect x='17' y='7' width='4' height='4' rx='1'/%3E%3Crect x='22' y='7' width='4' height='4' rx='1'/%3E%3Crect x='17' y='12' width='4' height='4' rx='1'/%3E%3Crect x='12' y='16' width='4' height='4' rx='1'/%3E%3Crect x='7' y='21' width='4' height='4' rx='1'/%3E%3Crect x='12' y='21' width='4' height='4' rx='1'/%3E%3Crect x='17' y='21' width='4' height='4' rx='1'/%3E%3Crect x='22' y='21' width='4' height='4' rx='1'/%3E%3C/g%3E%3C/svg%3E">
 <style>
   /* Tema: düğme yok; sistem tercihine (prefers-color-scheme) uyulur. */
@@ -108,6 +108,7 @@
   .card.mines { background-image: linear-gradient(90deg, rgba(248, 113, 113, 0.10), transparent 60%); }
   .card.besharf { background-image: linear-gradient(90deg, rgba(250, 204, 21, 0.10), transparent 60%); }
   .card.kiskac { background-image: linear-gradient(90deg, rgba(244, 114, 182, 0.10), transparent 60%); }
+  .card.turetme { background-image: linear-gradient(90deg, rgba(167, 139, 250, 0.10), transparent 60%); }
   .card.muted { opacity: .65; }
   .art {
     flex: 0 0 auto;
@@ -289,6 +290,21 @@
       <div class="info">
         <h2>Kıskaç</h2>
         <p>Alfabetik kıskaç: her tahmin "önce mi, sonra mı?" der; kelimeyi iki sınır arasında sıkıştır.</p>
+      </div>
+    </section>
+
+    <section class="card turetme">
+      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(3,16px);grid-auto-rows:16px;gap:3px">
+        <i class="round" style="grid-area:1/2;background:#A78BFA;opacity:.85"></i>
+        <i class="round" style="grid-area:2/1;background:#A78BFA;opacity:.6"></i>
+        <i class="round" style="grid-area:2/2;background:#A78BFA"></i>
+        <i class="round" style="grid-area:2/3;background:#A78BFA;opacity:.6"></i>
+        <i class="round" style="grid-area:3/1;background:#A78BFA;opacity:.45"></i>
+        <i class="round" style="grid-area:3/3;background:#A78BFA;opacity:.45"></i>
+      </div>
+      <div class="info">
+        <h2>Türetme</h2>
+        <p>Harf çarkından kelime türet: 6-7 harfin içinde saklı tüm kelimeleri bul — günlük ve serbest mod.</p>
       </div>
     </section>
 
