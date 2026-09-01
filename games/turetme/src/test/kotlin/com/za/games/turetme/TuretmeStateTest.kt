@@ -106,6 +106,32 @@ class TuretmeStateTest {
         assertEquals(restored, restored.restoreFound("kale").restoreFound("zzz"))
     }
 
+    // --- Pes etme ---
+
+    @Test
+    fun `giving up freezes play, keeps the score and reveals the missing words`() {
+        var state = play(game(), "kal") // 30 puan
+        state = select(state, "kale").giveUp()
+        assertEquals(TuretmeStatus.GIVEN_UP, state.status)
+        assertEquals(30L, state.score)
+        assertTrue(state.usedIndices.isEmpty()) // yarım seçim temizlenir
+        assertEquals(setOf("kel", "elma", "kale", "kalem", "lam"), state.missing)
+        // Pes edildikten sonra hiçbir hamle işlemez.
+        assertEquals(state, state.pick(0))
+        assertEquals(state, state.submit())
+        assertEquals(state, state.shuffle(3L))
+        assertEquals(state, state.restoreFound("kale"))
+        assertEquals(state, state.giveUp())
+    }
+
+    @Test
+    fun `giving up after completion changes nothing`() {
+        val done = play(play(game(base = "kalem", valid = listOf("kal", "kalem")), "kal"), "kalem")
+        assertEquals(TuretmeStatus.COMPLETED, done.status)
+        assertEquals(done, done.giveUp())
+        assertTrue(done.missing.isEmpty())
+    }
+
     // --- Karıştırma ---
 
     @Test

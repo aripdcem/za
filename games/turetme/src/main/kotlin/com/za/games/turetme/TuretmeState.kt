@@ -2,7 +2,7 @@ package com.za.games.turetme
 
 import kotlin.random.Random
 
-enum class TuretmeStatus { RUNNING, COMPLETED }
+enum class TuretmeStatus { RUNNING, COMPLETED, GIVEN_UP }
 
 enum class TuretmeInvalid { TOO_SHORT, NOT_WORD, ALREADY_FOUND }
 
@@ -12,8 +12,9 @@ enum class TuretmeInvalid { TOO_SHORT, NOT_WORD, ALREADY_FOUND }
  *
  * Harf seçimi indeksle yapılır; böylece tekrarlı harfler doğru çalışır
  * (aynı harf iki kez varsa ikisi de ayrı ayrı seçilebilir). Süre yoktur;
- * tur, tüm kelimeler bulununca tamamlanır. Puan: kelime uzunluğu × 10,
- * taban kelime +50, turu tamamlama +100. Günlük mod deterministiktir.
+ * tur, tüm kelimeler bulununca tamamlanır ya da oyuncu pes eder ve kalan
+ * kelimeler açıklanır. Puan: kelime uzunluğu × 10, taban kelime +50,
+ * turu tamamlama +100. Günlük mod deterministiktir.
  */
 data class TuretmeState(
     val base: String,
@@ -35,6 +36,18 @@ data class TuretmeState(
     /** Seçili harflerden oluşan kelime adayı. */
     val current: String
         get() = buildString { usedIndices.forEach { append(letters[it]) } }
+
+    /** Henüz bulunmamış hedefler; pes edince oyuncuya gösterilir. */
+    val missing: Set<String>
+        get() = targets - found
+
+    /** Turu bitirir ve kalan kelimelerin görülmesini sağlar. Puan korunur. */
+    fun giveUp(): TuretmeState =
+        if (status != TuretmeStatus.RUNNING) {
+            this
+        } else {
+            copy(status = TuretmeStatus.GIVEN_UP, usedIndices = emptyList())
+        }
 
     fun pick(index: Int): TuretmeState = when {
         status != TuretmeStatus.RUNNING -> this

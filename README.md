@@ -92,6 +92,7 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   dokunarak kelime kur, 🔀 ile karıştır
 - Puan: kelime uzunluğu × 10; taban kelimeyi bulana +50, listeyi bitirene +100 bonus
 - Günlük mod herkese aynı harf setini verir, bulunanlar gün içinde saklanır; serbest modda sınırsız yeni set
+- Tıkandıysan **Pes** de: tur biter, bulamadığın kelimeler çerçeveli çiplerle açıklanır (günlükte kalıcıdır)
 - Sözlük gömülü ve ~115 KB: 15.235 geçerli kelime + 1.200 taban; `tools/gen_turetme.py`
   her tabanın 15-60 alt kelimesi olmasını garanti eder (kaynaklar Beş Harf ile aynı)
 - Rekor = tek tahtada toplanan en yüksek skor
