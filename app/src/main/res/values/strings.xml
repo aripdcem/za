@@ -113,6 +113,44 @@
     <string name="turetme_give_up_yes">Pes et, kelimeleri göster</string>
     <string name="turetme_revealed">Bulamadığın kelimeler çerçeveli gösteriliyor</string>
 
+    <!-- Dizgi -->
+    <string name="game_dizgi">Dizgi</string>
+    <string name="game_dizgi_tagline">Elden ele kelime tahtası: harfleri diz, kesiştir, puanla</string>
+    <string name="dizgi_players_title">Kaç oyuncu?</string>
+    <string name="dizgi_players_hint">Aynı telefonda sırayla oynanır; sıra sendeyken taşlarını yalnız sen görürsün. İlk kelime ortadaki yıldızdan geçer.</string>
+    <string name="dizgi_start">Başla</string>
+    <string name="dizgi_player_n">%1$d. Oyuncu</string>
+    <string name="dizgi_turn_of">Sıra: %1$s</string>
+    <string name="dizgi_handover">Telefonu sıradaki oyuncuya ver; taşlar yalnızca ona görünecek</string>
+    <string name="dizgi_ready">Hazırım</string>
+    <string name="dizgi_bag_count">Torba: %1$d</string>
+    <string name="dizgi_confirm_move">Onayla</string>
+    <string name="dizgi_recall">Geri al</string>
+    <string name="dizgi_pass">Pas</string>
+    <string name="dizgi_exchange">Değiş</string>
+    <string name="dizgi_exchange_n">Değiştir (%1$d)</string>
+    <string name="dizgi_cancel">Vazgeç</string>
+    <string name="dizgi_joker_pick">Joker hangi harf olsun?</string>
+    <string name="dizgi_move_pass">%1$s pas geçti</string>
+    <string name="dizgi_move_exchange">%1$s taş değiştirdi</string>
+    <string name="dizgi_move_words">%1$s: %2$s (+%3$d)</string>
+    <string name="dizgi_bingo">Yedili! +50</string>
+    <string name="dizgi_inv_empty">Önce tahtaya taş yerleştir</string>
+    <string name="dizgi_inv_line">Taşlar tek satırda ya da sütunda olmalı</string>
+    <string name="dizgi_inv_gap">Kelimede boşluk kalamaz</string>
+    <string name="dizgi_inv_connect">Yeni taşlar tahtadakilere değmeli</string>
+    <string name="dizgi_inv_center">İlk kelime ortadaki yıldızdan geçmeli</string>
+    <string name="dizgi_inv_short">En az iki harfli bir kelime kur</string>
+    <string name="dizgi_inv_word">Sözlükte yok: %1$s</string>
+    <string name="dizgi_inv_exchange">Değişim için torbada en az 7 taş gerekir</string>
+    <string name="dizgi_pass_confirm">Pas geçiyor musun?</string>
+    <string name="dizgi_pass_detail">Sıra rakibe geçer. Herkes üst üste iki kez pas geçerse oyun biter.</string>
+    <string name="dizgi_new_confirm">Yeni oyun başlatılsın mı?</string>
+    <string name="dizgi_new_detail">Mevcut oyun silinir.</string>
+    <string name="dizgi_finished">Oyun bitti</string>
+    <string name="dizgi_winner">Kazanan: %1$s</string>
+    <string name="dizgi_draw">Berabere!</string>
+
     <!-- Ortak -->
     <string name="pick_difficulty">Zorluk seç</string>
     <string name="difficulty_easy">Kolay</string>

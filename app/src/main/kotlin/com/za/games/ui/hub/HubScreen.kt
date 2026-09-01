@@ -417,6 +417,33 @@ fun KiskacArt(modifier: Modifier = Modifier) {
     }
 }
 
+/** Dizgi kartı: kesişen iki taş dizisi — mini kelime tahtası. */
+@Composable
+fun DizgiArt(modifier: Modifier = Modifier) {
+    val face = Color(0xFFEADFC8)
+    val accent = Color(0xFFFB923C)
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        val tile = w / 5f
+        val gap = tile * 0.12f
+        val corner = CornerRadius(tile * 0.2f, tile * 0.2f)
+        fun tileAt(row: Int, col: Int, color: Color) {
+            drawRoundRect(
+                color = color,
+                topLeft = Offset(col * tile + gap, row * tile + gap),
+                size = Size(tile - 2 * gap, tile - 2 * gap),
+                cornerRadius = corner,
+            )
+        }
+        // Yatay dizi (2. satır) ve onu kesen dikey dizi (2. sütun).
+        for (col in 0 until 5) tileAt(2, col, if (col == 2) accent else face)
+        tileAt(0, 2, face.copy(alpha = 0.85f))
+        tileAt(1, 2, face.copy(alpha = 0.92f))
+        tileAt(3, 2, face.copy(alpha = 0.92f))
+        tileAt(4, 2, face.copy(alpha = 0.85f))
+    }
+}
+
 /** Türetme kartı: harf çarkı — merkez ve çevresinde harf daireleri. */
 @Composable
 fun TuretmeArt(modifier: Modifier = Modifier) {

@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Oyunlar: **Tetris**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Oyunlar: **Tetris**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**.
 
 ## Manifesto
 
@@ -27,8 +27,8 @@ za/
 │       └── ui/theme/             # ZA teması
 ├── games/
 │   ├── tetris/  g2048/  snake/   # Oyun motorları: saf Kotlin/JVM, Android'e
-│   └── sudoku/ mines/ besharf/ kiskac/ turetme/ # bağımsız, her biri kendi birim testleriyle
-└── tools/                        # gen_sfx.py (sesler), gen_words.py + gen_turetme.py (kelime listeleri)
+│   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ # bağımsız, her biri kendi birim testleriyle
+└── tools/                        # gen_sfx.py (sesler), gen_words.py + gen_turetme.py + gen_dizgi.py (kelime listeleri)
 ```
 
 Temel ilke: **oyun kuralları saf Kotlin modüllerinde, arayüz `app` içinde** yaşar. Motorlar Android'e bağımlı olmadığı için cihazsız test edilir ve ileride başka platformlara taşınabilir.
@@ -97,13 +97,25 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   her tabanın 15-60 alt kelimesi olmasını garanti eder (kaynaklar Beş Harf ile aynı)
 - Rekor = tek tahtada toplanan en yüksek skor
 
+### Dizgi
+- **Elden ele kelime tahtası** (Scrabble türü, kendi tasarımımız): aynı telefonda 2-4 oyuncu,
+  15×15 tahta, 100 taş (98 harf + 2 joker), elde 7 taş
+- Harf dağılımı ve puanları `tools/gen_dizgi.py` ile **kendi derlemimizden** türetilir;
+  premium kare dizilişi de Dizgi'ye özgüdür (köşeler ve köşegenler ÇK, kenar ortaları ÜK)
+- Kurallar: ilk kelime ortadaki yıldızdan geçer, her hamle mevcut taşlara değer, ana kelime +
+  tüm çapraz kelimeler sözlükte olmalı; katlar yalnızca yeni konan taşlara işler; 7 taş birden = +50
+- Pas ve taş değişimi (torbada ≥7 taşla); herkes üst üste iki kez puansız geçerse ya da torba
+  boşken bir oyuncu elini bitirirse oyun biter (kalan taşlar düşülür/aktarılır)
+- Sıra değişiminde perde ekranı: taşları yalnızca sıradaki oyuncu görür
+- Sözlük ~170 KB gömülü: 21.752 kök (2-15 harf); rekor = kazananın skoru
+
 ## Derleme
 
 Gereksinimler: JDK 17+, Android SDK (compileSdk 35). Android Studio ile açıp çalıştırabilir veya komut satırından derleyebilirsiniz:
 
 ```bash
 ./gradlew :app:assembleDebug        # APK: app/build/outputs/apk/debug/
-./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test :games:kiskac:test :games:turetme:test
+./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test :games:kiskac:test :games:turetme:test :games:dizgi:test
 ```
 
 Motor testleri Android SDK gerektirmez. Sürüm `-PzaVersion=X.Y.Z` özelliğiyle geçilir; release iş akışı bunu etiketten türetir (`versionCode` = `major*10000 + minor*100 + patch`).
@@ -150,7 +162,7 @@ Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
 
 ## Yol haritası
 
-- [x] Yeni oyunlar: 2048 ✓, yılan ✓, sudoku ✓, mayın tarlası ✓, beş harf ✓, kıskaç ✓, türetme ✓
+- [x] Yeni oyunlar: 2048 ✓, yılan ✓, sudoku ✓, mayın tarlası ✓, beş harf ✓, kıskaç ✓, türetme ✓, dizgi ✓
 - [x] Ses efektleri (kapatılabilir) ve satır temizleme animasyonları
 - [x] Sürümün etiketten türetilmesi, SHA256 sağlamaları ve kaynak arşivleri
 - [ ] Oyun içi istatistikler (toplam satır, en uzun oturum)
