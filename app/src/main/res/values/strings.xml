@@ -96,6 +96,7 @@
     <string name="kiskac_lower_label">Gizli kelime bundan sonra</string>
     <string name="kiskac_upper_label">Gizli kelime bundan önce</string>
     <string name="kiskac_attempts_fmt">Tahmin: %1$d/%2$d</string>
+    <string name="kiskac_hint">Tahmin, kelimenin önünde mi sonrasında mı söyler; aralığı daralt</string>
     <string name="already_tried">Bunu zaten denedin</string>
 
     <!-- Türetme -->
