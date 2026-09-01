@@ -80,6 +80,7 @@ private val TileFace = Color(0xFFEADFC8)
 private val TilePendingFace = Color(0xFFFFF3D6)
 private val TileInk = Color(0xFF1F2937)
 private val JokerInk = Color(0xFF7C3AED)
+private val ActionFont = 15.sp
 
 @Composable
 fun DizgiScreen(
@@ -129,6 +130,14 @@ fun DizgiScreen(
         if (state.invalidEvents > previous) {
             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
             invalidMessage = state.lastInvalid?.let { it to state.invalidWords }
+            delay(2200L)
+            invalidMessage = null
+        }
+    }
+    // Yerel uyarılar (motor olayı olmadan): ör. torba yetersizken Değiş.
+    var flashTick by remember { mutableIntStateOf(0) }
+    LaunchedEffect(flashTick) {
+        if (flashTick > 0) {
             delay(2200L)
             invalidMessage = null
         }
@@ -212,13 +221,20 @@ fun DizgiScreen(
                 onRecallAll = viewModel::recallAll,
                 onPass = { confirmPass = true },
                 onExchange = {
-                    viewModel.recallAll()
-                    selectedRack = null
-                    exchangeMode = true
+                    if (state.bag.size < DizgiState.RACK_SIZE) {
+                        invalidMessage = DizgiInvalid.EXCHANGE_UNAVAILABLE to emptyList()
+                        flashTick += 1
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    } else {
+                        viewModel.recallAll()
+                        selectedRack = null
+                        exchangeMode = true
+                    }
                 },
                 onExchangeConfirm = {
                     if (exchangePicks.isEmpty()) {
-                        exchangeMode = false
+                        // Seçim yokken çıkma; yönlendirme satırı zaten görünür.
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     } else {
                         viewModel.exchange(exchangePicks.toList())
                     }
@@ -479,8 +495,7 @@ private fun PlayPane(
             }
         }
 
-        Text(
-            text = invalidMessage?.let { (reason, words) ->
+        val invalidText = invalidMessage?.let { (reason, words) ->
                 when (reason) {
                     DizgiInvalid.EMPTY -> stringResource(R.string.dizgi_inv_empty)
                     DizgiInvalid.NOT_LINE -> stringResource(R.string.dizgi_inv_line)
@@ -494,9 +509,19 @@ private fun PlayPane(
                     )
                     DizgiInvalid.EXCHANGE_UNAVAILABLE -> stringResource(R.string.dizgi_inv_exchange)
                 }
-            } ?: " ",
+        }
+        Text(
+            text = invalidText ?: if (exchangeMode) {
+                stringResource(R.string.dizgi_exchange_hint, exchangePicks.size)
+            } else {
+                " "
+            },
             style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.error,
+            color = if (invalidText != null) {
+                MaterialTheme.colorScheme.error
+            } else {
+                MaterialTheme.colorScheme.primary
+            },
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(),
         )
@@ -521,6 +546,7 @@ private fun PlayPane(
                         label = stringResource(R.string.new_game),
                         description = stringResource(R.string.new_game),
                         modifier = Modifier.weight(1f).height(52.dp),
+                        fontSize = ActionFont,
                         accent = true,
                         onAction = onNewMatch,
                     )
@@ -530,12 +556,14 @@ private fun PlayPane(
                         label = stringResource(R.string.dizgi_cancel),
                         description = stringResource(R.string.dizgi_cancel),
                         modifier = Modifier.weight(1f).height(52.dp),
+                        fontSize = ActionFont,
                         onAction = onExchangeCancel,
                     )
                     PadButton(
                         label = stringResource(R.string.dizgi_exchange_n, exchangePicks.size),
                         description = stringResource(R.string.dizgi_exchange),
                         modifier = Modifier.weight(1.4f).height(52.dp),
+                        fontSize = ActionFont,
                         accent = true,
                         onAction = onExchangeConfirm,
                     )
@@ -545,24 +573,28 @@ private fun PlayPane(
                         label = stringResource(R.string.dizgi_recall),
                         description = stringResource(R.string.dizgi_recall),
                         modifier = Modifier.weight(1f).height(52.dp),
+                        fontSize = ActionFont,
                         onAction = onRecallAll,
                     )
                     PadButton(
                         label = stringResource(R.string.dizgi_pass),
                         description = stringResource(R.string.dizgi_pass),
                         modifier = Modifier.weight(0.8f).height(52.dp),
+                        fontSize = ActionFont,
                         onAction = onPass,
                     )
                     PadButton(
                         label = stringResource(R.string.dizgi_exchange),
                         description = stringResource(R.string.dizgi_exchange),
                         modifier = Modifier.weight(0.8f).height(52.dp),
+                        fontSize = ActionFont,
                         onAction = onExchange,
                     )
                     PadButton(
                         label = stringResource(R.string.dizgi_confirm_move),
                         description = stringResource(R.string.dizgi_confirm_move),
                         modifier = Modifier.weight(1.3f).height(52.dp),
+                        fontSize = ActionFont,
                         accent = true,
                         onAction = onSubmit,
                     )
@@ -699,6 +731,7 @@ private fun RackRow(
                 color = when {
                     placed -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
                     selected || picked -> TilePendingFace
+                    exchangeMode -> TileFace.copy(alpha = 0.55f)
                     else -> TileFace
                 },
                 modifier = Modifier
