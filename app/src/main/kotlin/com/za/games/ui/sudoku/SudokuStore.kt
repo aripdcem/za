@@ -27,15 +27,26 @@ class SudokuStore(context: Context) {
             .apply()
     }
 
+    /** Bulmacayı siler; en son oynanan zorluk (zorluk seçicide öne çıkarmak için) kalır. */
     fun clear() {
-        prefs.edit().clear().apply()
+        prefs.edit()
+            .remove(KEY_SEED)
+            .remove(KEY_SOLUTION)
+            .remove(KEY_GIVEN)
+            .remove(KEY_VALUES)
+            .remove(KEY_NOTES)
+            .remove(KEY_ELAPSED)
+            .apply()
     }
+
+    /** En son oynanan zorluk; bulmaca bitmiş/silinmiş olsa bile kalıcıdır. */
+    fun lastDifficulty(): SudokuDifficulty? =
+        prefs.getString(KEY_DIFFICULTY, null)
+            ?.let { name -> SudokuDifficulty.entries.firstOrNull { it.name == name } }
 
     /** Kayıtlı bulmaca ve geçen süre; yoksa ya da veri bozuksa null. */
     fun restore(): Pair<SudokuState, Int>? {
-        val difficulty = prefs.getString(KEY_DIFFICULTY, null)
-            ?.let { name -> SudokuDifficulty.entries.firstOrNull { it.name == name } }
-            ?: return null
+        val difficulty = lastDifficulty() ?: return null
         val solution = prefs.getString(KEY_SOLUTION, null)?.toDigits(1..9) ?: return null
         val values = prefs.getString(KEY_VALUES, null)?.toDigits(0..9) ?: return null
         val givenRaw = prefs.getString(KEY_GIVEN, null) ?: return null

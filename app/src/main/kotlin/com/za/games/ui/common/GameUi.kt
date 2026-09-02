@@ -215,9 +215,16 @@ fun PausedOverlay(onResume: () -> Unit, onRestart: () -> Unit, onExit: () -> Uni
 /**
  * Zorluk seçimi: 0 = kolay, 1 = orta, 2 = zor. [descriptions] verilirse her
  * düğmenin altında küçük bir açıklama gösterilir (örn. ipucu/mayın sayısı).
+ * [lastPicked] verilirse (cihazda saklanan bir önceki seçim), o zorluk dolu
+ * düğme olarak öne çıkar, diğerleri anahat kalır — oyuncu son seçtiği
+ * zorluğu uygulamayı kapatıp açsa bile tek bakışta tanır.
  */
 @Composable
-fun DifficultyOverlay(descriptions: List<String> = emptyList(), onPick: (Int) -> Unit) {
+fun DifficultyOverlay(
+    descriptions: List<String> = emptyList(),
+    lastPicked: Int? = null,
+    onPick: (Int) -> Unit,
+) {
     OverlayCard {
         Text(
             text = stringResource(R.string.pick_difficulty),
@@ -225,14 +232,41 @@ fun DifficultyOverlay(descriptions: List<String> = emptyList(), onPick: (Int) ->
             fontWeight = FontWeight.Bold,
         )
         Spacer(Modifier.height(4.dp))
-        Button(onClick = { onPick(0) }, modifier = Modifier.fillMaxWidth()) {
-            DifficultyButtonContent(stringResource(R.string.difficulty_easy), descriptions.getOrNull(0))
+        DifficultyButton(
+            label = stringResource(R.string.difficulty_easy),
+            description = descriptions.getOrNull(0),
+            highlighted = lastPicked == null || lastPicked == 0,
+            onClick = { onPick(0) },
+        )
+        DifficultyButton(
+            label = stringResource(R.string.difficulty_medium),
+            description = descriptions.getOrNull(1),
+            highlighted = lastPicked == null || lastPicked == 1,
+            onClick = { onPick(1) },
+        )
+        DifficultyButton(
+            label = stringResource(R.string.difficulty_hard),
+            description = descriptions.getOrNull(2),
+            highlighted = lastPicked == null || lastPicked == 2,
+            onClick = { onPick(2) },
+        )
+    }
+}
+
+@Composable
+private fun DifficultyButton(
+    label: String,
+    description: String?,
+    highlighted: Boolean,
+    onClick: () -> Unit,
+) {
+    if (highlighted) {
+        Button(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
+            DifficultyButtonContent(label, description)
         }
-        Button(onClick = { onPick(1) }, modifier = Modifier.fillMaxWidth()) {
-            DifficultyButtonContent(stringResource(R.string.difficulty_medium), descriptions.getOrNull(1))
-        }
-        Button(onClick = { onPick(2) }, modifier = Modifier.fillMaxWidth()) {
-            DifficultyButtonContent(stringResource(R.string.difficulty_hard), descriptions.getOrNull(2))
+    } else {
+        OutlinedButton(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
+            DifficultyButtonContent(label, description)
         }
     }
 }

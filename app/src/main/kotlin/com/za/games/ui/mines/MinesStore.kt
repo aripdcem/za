@@ -26,15 +26,30 @@ class MinesStore(context: Context) {
             .apply()
     }
 
-    fun clear() {
-        prefs.edit().clear().apply()
+    /** Yeni tahta kurulurken zorluk hemen kalıcı olsun — ilk hamleyi beklemeden. */
+    fun saveDifficulty(difficulty: MinesDifficulty) {
+        prefs.edit().putString(KEY_DIFFICULTY, difficulty.name).apply()
     }
+
+    /** Tahtayı siler; en son oynanan zorluk (zorluk seçicide öne çıkarmak için) kalır. */
+    fun clear() {
+        prefs.edit()
+            .remove(KEY_SEED)
+            .remove(KEY_MINES)
+            .remove(KEY_REVEALED)
+            .remove(KEY_FLAGGED)
+            .remove(KEY_ELAPSED)
+            .apply()
+    }
+
+    /** En son oynanan zorluk; tahta bitmiş/silinmiş olsa bile kalıcıdır. */
+    fun lastDifficulty(): MinesDifficulty? =
+        prefs.getString(KEY_DIFFICULTY, null)
+            ?.let { name -> MinesDifficulty.entries.firstOrNull { it.name == name } }
 
     /** Kayıtlı tahta ve geçen süre; yoksa ya da veri bozuksa null. */
     fun restore(): Pair<MinesState, Int>? {
-        val difficulty = prefs.getString(KEY_DIFFICULTY, null)
-            ?.let { name -> MinesDifficulty.entries.firstOrNull { it.name == name } }
-            ?: return null
+        val difficulty = lastDifficulty() ?: return null
         val cellCount = difficulty.width * difficulty.height
 
         val mines = prefs.getString(KEY_MINES, null)?.toIndexSet(cellCount) ?: return null
