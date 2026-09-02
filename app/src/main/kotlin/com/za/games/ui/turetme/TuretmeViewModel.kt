@@ -58,12 +58,14 @@ class TuretmeViewModel(application: Application) : AndroidViewModel(application)
         _mode.value = mode
         // Hedef kelime taraması (15k+ kelime) ana iş parçacığını tıkamasın.
         viewModelScope.launch {
-            _state.value = withContext(Dispatchers.Default) {
+            val fresh = withContext(Dispatchers.Default) {
                 when (mode) {
                     TuretmeMode.DAILY -> restoredDaily()
                     TuretmeMode.FREE -> TuretmeState.free(TuretmeWords.bases, TuretmeWords.valid)
                 }
             }
+            // Hesap sürerken mod yeniden değiştiyse bu sonuç bayattır.
+            if (_mode.value == mode) _state.value = fresh
         }
     }
 
