@@ -176,6 +176,7 @@ fun SudokuScreen(
                     descriptions = SudokuDifficulty.entries.map {
                         stringResource(R.string.sudoku_difficulty_desc_fmt, it.targetClues)
                     },
+                    lastPicked = viewModel.lastDifficulty?.let { SudokuDifficulty.entries.indexOf(it) },
                 ) { index ->
                     viewModel.newGame(SudokuDifficulty.entries[index])
                 }

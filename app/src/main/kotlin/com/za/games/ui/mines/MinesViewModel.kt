@@ -28,17 +28,22 @@ class MinesViewModel(application: Application) : AndroidViewModel(application) {
     val elapsed: StateFlow<Int> = _elapsed.asStateFlow()
 
     private val _timerPaused = MutableStateFlow(false)
-    private var lastDifficulty: MinesDifficulty? = null
+
+    /** Zorluk seçicide en son oynanan zorluğu öne çıkarmak için; cihaz yeniden açılsa da kalır. */
+    var lastDifficulty: MinesDifficulty? = null
+        private set
 
     init {
         // Yarım kalmış tahta varsa kaldığı yerden devam et.
-        store.restore()?.let { (saved, savedElapsed) ->
+        val restored = store.restore()
+        if (restored != null) {
+            val (saved, savedElapsed) = restored
             _state.value = saved
             _elapsed.value = savedElapsed
-            lastDifficulty = MinesDifficulty.entries.first {
-                it.width == saved.width && it.height == saved.height
-            }
         }
+        lastDifficulty = restored?.first?.let { saved ->
+            MinesDifficulty.entries.first { it.width == saved.width && it.height == saved.height }
+        } ?: store.lastDifficulty()
         // Sayaç yalnızca oyun koşarken tikler; aksi hâlde askıda bekler —
         // duraklatılmışken veya menüdeyken saniyede bir uyanmaz.
         viewModelScope.launch {
@@ -60,6 +65,7 @@ class MinesViewModel(application: Application) : AndroidViewModel(application) {
         _state.value = MinesState.newGame(difficulty)
         _elapsed.value = 0
         store.clear()
+        store.saveDifficulty(difficulty)
     }
 
     /** Aynı zorlukta yeni tahta. */
