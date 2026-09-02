@@ -172,9 +172,15 @@ fun KiskacScreen(
         KiskacKeyboard(
             possibleFirst = state.possibleFirstLetters(),
             typingFirstLetter = state.current.isEmpty(),
-            onKey = viewModel::type,
+            onKey = {
+                haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                viewModel.type(it)
+            },
             onEnter = viewModel::submit,
-            onErase = viewModel::erase,
+            onErase = {
+                haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                viewModel.erase()
+            },
         )
     }
 }
