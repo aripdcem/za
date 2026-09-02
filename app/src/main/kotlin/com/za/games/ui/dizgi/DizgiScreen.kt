@@ -16,10 +16,13 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -794,13 +797,16 @@ private fun JokerPicker(onPick: (Char) -> Unit, onDismiss: () -> Unit) {
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(5.dp),
             verticalArrangement = Arrangement.spacedBy(5.dp),
+            modifier = Modifier
+                .heightIn(max = 260.dp)
+                .verticalScroll(rememberScrollState()),
         ) {
             DizgiLetters.letters.forEach { letter ->
                 Surface(
                     onClick = { onPick(letter) },
                     shape = RoundedCornerShape(8.dp),
                     color = TileFace,
-                    modifier = Modifier.size(38.dp),
+                    modifier = Modifier.size(48.dp),
                 ) {
                     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                         Text(
