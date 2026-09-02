@@ -14,6 +14,7 @@ Kullanım: python3 tools/gen_turetme.py <zemberek.dict> <freq50k.txt>
 import os
 import re
 import sys
+import unicodedata
 from collections import Counter
 
 TURKISH = "abcçdefgğhıijklmnoöprsştuüvyz"
@@ -22,6 +23,10 @@ BASE_LENGTHS = (6, 7)
 MIN_SUBWORDS = 15
 MAX_SUBWORDS = 60
 BASE_COUNT = 1200
+# Zemberek bazı kelimeleri şapkalı yazar (belâ, kâğıt). Geçerli kelime listesi
+# için düzleştirilir; taban seçimi günlük diziyi belirlediğinden şapkasız
+# kaynak üzerinden yapılmaya devam eder (dizi kaymaz).
+CIRCUMFLEX = str.maketrans("âîûÂÎÛ", "aiuaiu")
 
 OUT_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
@@ -38,7 +43,7 @@ def mask(word):
     return m
 
 
-def zemberek_roots(path):
+def zemberek_roots(path, flatten=False):
     roots = set()
     with open(path, encoding="utf-8") as f:
         for line in f:
@@ -46,6 +51,8 @@ def zemberek_roots(path):
             if not line or line.startswith("#") or "Prop" in line:
                 continue
             token = line.split(" ")[0].split("[")[0].strip()
+            if flatten:
+                token = unicodedata.normalize("NFC", token).translate(CIRCUMFLEX)
             if WORD_RE.match(token):
                 roots.add(token)
     return roots
@@ -65,10 +72,11 @@ def main():
     if len(sys.argv) != 3:
         sys.exit("kullanım: gen_turetme.py <zemberek.dict> <freq50k.txt>")
 
-    valid = sorted(zemberek_roots(sys.argv[1]))
+    valid_plain = sorted(zemberek_roots(sys.argv[1]))  # taban seçimi: şapkasız, sabit
+    valid = sorted(zemberek_roots(sys.argv[1], flatten=True))  # oyunda geçerli
     rank = freq_rank(sys.argv[2])
 
-    prepared = [(w, mask(w), Counter(w)) for w in valid]
+    prepared = [(w, mask(w), Counter(w)) for w in valid_plain]
 
     def subword_count(base):
         bm = mask(base)
@@ -82,7 +90,7 @@ def main():
         return n
 
     candidates = [
-        w for w in valid
+        w for w in valid_plain
         if len(w) in BASE_LENGTHS and w in rank
     ]
     candidates.sort(key=lambda w: rank[w])
@@ -101,7 +109,7 @@ def main():
     with open(os.path.join(OUT_DIR, "bases.txt"), "w", encoding="utf-8") as f:
         f.write("\n".join(sorted(bases)) + "\n")
 
-    print(f"geçerli (3-7 harf): {len(valid)}")
+    print(f"geçerli (3-7 harf): {len(valid)} (+{len(valid) - len(valid_plain)} şapkalı düzleştirmeyle)")
     print(f"taban adayı: {len(candidates)}  seçilen: {len(bases)}")
     sample = bases[:6]
     for w in sample:
