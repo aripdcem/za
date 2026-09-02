@@ -11,6 +11,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,7 +34,7 @@ class SudokuViewModel(application: Application) : AndroidViewModel(application) 
     private val _canUndo = MutableStateFlow(false)
     val canUndo: StateFlow<Boolean> = _canUndo.asStateFlow()
 
-    private var timerPaused = false
+    private val _timerPaused = MutableStateFlow(false)
     private var lastDifficulty: SudokuDifficulty? = null
 
     init {
@@ -42,11 +44,16 @@ class SudokuViewModel(application: Application) : AndroidViewModel(application) 
             _elapsed.value = savedElapsed
             lastDifficulty = saved.difficulty
         }
+        // Sayaç yalnızca oyun koşarken tikler; aksi hâlde askıda bekler —
+        // duraklatılmışken veya menüdeyken saniyede bir uyanmaz.
         viewModelScope.launch {
             while (true) {
+                combine(_state, _timerPaused) { state, paused ->
+                    !paused && state?.status == SudokuStatus.RUNNING
+                }.first { it }
                 delay(1000L)
                 val current = _state.value
-                if (!timerPaused && current?.status == SudokuStatus.RUNNING) {
+                if (!_timerPaused.value && current?.status == SudokuStatus.RUNNING) {
                     _elapsed.update { it + 1 }
                 }
             }
@@ -78,7 +85,7 @@ class SudokuViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun setPaused(paused: Boolean) {
-        timerPaused = paused
+        _timerPaused.value = paused
         // Arka plana geçerken süre de kaydedilir; süreç ölse bile korunur.
         if (paused) persist()
     }

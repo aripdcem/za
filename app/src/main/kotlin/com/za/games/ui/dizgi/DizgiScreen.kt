@@ -121,23 +121,24 @@ fun DizgiScreen(
             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
         }
     }
-    // Geçersiz hamle uyarısı.
+    // Geçersiz hamle uyarısı. Hem motor olaylarını hem yerel uyarıları (ör.
+    // torba yetersizken Değiş) tek bir jetonla yönetir: yeni bir uyarı her
+    // zaman önceki uyarının bekleyen gizleme gecikmesini iptal eder, bu yüzden
+    // iki bağımsız zamanlayıcı birbirinin mesajını erken silemez.
     var invalidMessage by remember { mutableStateOf<Pair<DizgiInvalid, List<String>>?>(null) }
     var seenInvalid by remember { mutableIntStateOf(state.invalidEvents) }
+    var messageToken by remember { mutableIntStateOf(0) }
     LaunchedEffect(state.invalidEvents) {
         val previous = seenInvalid
         seenInvalid = state.invalidEvents
         if (state.invalidEvents > previous) {
             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
             invalidMessage = state.lastInvalid?.let { it to state.invalidWords }
-            delay(2200L)
-            invalidMessage = null
+            messageToken += 1
         }
     }
-    // Yerel uyarılar (motor olayı olmadan): ör. torba yetersizken Değiş.
-    var flashTick by remember { mutableIntStateOf(0) }
-    LaunchedEffect(flashTick) {
-        if (flashTick > 0) {
+    LaunchedEffect(messageToken) {
+        if (messageToken > 0) {
             delay(2200L)
             invalidMessage = null
         }
@@ -223,7 +224,7 @@ fun DizgiScreen(
                 onExchange = {
                     if (state.bag.size < DizgiState.RACK_SIZE) {
                         invalidMessage = DizgiInvalid.EXCHANGE_UNAVAILABLE to emptyList()
-                        flashTick += 1
+                        messageToken += 1
                         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     } else {
                         viewModel.recallAll()
