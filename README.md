@@ -107,7 +107,7 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 - Pas ve taş değişimi (torbada ≥7 taşla); herkes üst üste iki kez puansız geçerse ya da torba
   boşken bir oyuncu elini bitirirse oyun biter (kalan taşlar düşülür/aktarılır)
 - Sıra değişiminde perde ekranı: taşları yalnızca sıradaki oyuncu görür
-- Sözlük ~170 KB gömülü: 21.752 kök (2-15 harf); rekor = kazananın skoru
+- Sözlük ~180 KB gömülü: 22.569 kök (2-15 harf; şapkalı yazımlar düzleştirilir: belâ → bela); rekor = kazananın skoru
 
 ## Derleme
 
