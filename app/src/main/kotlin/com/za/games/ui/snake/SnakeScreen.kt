@@ -63,6 +63,8 @@ import com.za.games.ui.common.PausedOverlay
 import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.formatScore
 import kotlin.math.abs
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 
 @Composable
 fun SnakeScreen(
@@ -239,8 +241,10 @@ private fun SnakeBoard(
             label = "foodPulse",
         )
 
+    val boardDesc = stringResource(R.string.snake_board_desc, state.body.size, state.score)
     Canvas(
         modifier = modifier
+            .semantics { contentDescription = boardDesc }
             // Tek dokunma (yön seçimi) ile sürükleme aynı pointer akışını tüketiyordu;
             // tek bir jest algılayıcısında birleştirip hızlı dokunuşla kısa sürüklemenin
             // birbirini yutmasını önlüyoruz.

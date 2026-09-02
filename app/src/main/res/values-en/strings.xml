@@ -152,6 +152,16 @@
     <string name="dizgi_finished">Game over</string>
     <string name="dizgi_winner">Winner: %1$s</string>
     <string name="dizgi_draw">It\'s a draw!</string>
+    <string name="dizgi_legend_dl">2H double letter</string>
+    <string name="dizgi_legend_tl">3H triple letter</string>
+    <string name="dizgi_legend_dw">2K double word</string>
+    <string name="dizgi_legend_tw">3K triple word</string>
+    <string name="dizgi_board_desc">Dizgi board: %1$d tiles placed, %2$d pending</string>
+
+    <!-- Board descriptions (screen reader) -->
+    <string name="tetris_board_desc">Tetris board: level %1$d, %2$d lines, score %3$d</string>
+    <string name="snake_board_desc">Snake board: length %1$d, score %2$d</string>
+    <string name="mines_board_desc">Minefield %1$d×%2$d: %3$d mines, %4$d flags</string>
 
     <!-- Shared -->
     <string name="pick_difficulty">Pick difficulty</string>
