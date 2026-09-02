@@ -172,10 +172,14 @@ class TuretmeStateTest {
         assertTrue(TuretmeWords.bases.size >= 1000)
         assertTrue(TuretmeWords.bases.all { it.length in 6..7 })
         assertTrue(TuretmeWords.bases.all { it in TuretmeWords.valid })
+        // Şapkalı kaynak yazımları düzleştirilmiş olmalı (belâ -> bela).
+        assertTrue(listOf("bela", "kağıt", "hikaye").all { it in TuretmeWords.valid })
 
         for (base in listOf(TuretmeWords.bases.first(), TuretmeWords.bases.last())) {
             val count = TuretmeState.targetsFor(base, TuretmeWords.valid).size
-            assertTrue("$base: $count", count in 15..60)
+            // Üretici tabanları şapkasız listeye göre 15-60 alt kelimeyle seçer;
+            // düzleştirilmiş sözlükle sayı biraz artabilir (en fazla ~66).
+            assertTrue("$base: $count", count in 15..70)
         }
     }
 }

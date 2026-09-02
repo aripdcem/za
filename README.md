@@ -75,7 +75,8 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 - Türkçe kelime tahmini: 5 harf, 6 deneme; tekrarlı harflerde klasik iki geçişli işaretleme
 - **Günlük mod** epoch gününden deterministik kelime seçer — sunucu yok, herkes çevrimdışı aynı kelimeyi görür; gün içinde tahta kaldığı yerden açılır. Ayrıca serbest mod.
 - 29 tuşlu Türkçe klavye (İ/ı yerel ayar kurallarıyla), harf durumlarına göre tuş boyama
-- Sözlük gömülü ve ~60 KB: 1.684 cevap + 7.680 geçerli tahmin; `tools/gen_words.py`
+- Sözlük gömülü ve ~60 KB: 1.684 cevap + 7.797 geçerli tahmin (şapkalı yazımlar
+  düzleştirilir: kâğıt → kağıt; cevap havuzu günlük diziyi korumak için sabittir); `tools/gen_words.py`
   Zemberek NLP kök sözlüğünden (Apache-2.0) ve FrequencyWords tr_50k listesinden
   (CC-BY-SA-4.0, OpenSubtitles türevi) türetir
 - Rekor = en uzun kazanma serisi
@@ -93,8 +94,9 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 - Puan: kelime uzunluğu × 10; taban kelimeyi bulana +50, listeyi bitirene +100 bonus
 - Günlük mod herkese aynı harf setini verir, bulunanlar gün içinde saklanır; serbest modda sınırsız yeni set
 - Tıkandıysan **Pes** de: tur biter, bulamadığın kelimeler çerçeveli çiplerle açıklanır (günlükte kalıcıdır)
-- Sözlük gömülü ve ~115 KB: 15.235 geçerli kelime + 1.200 taban; `tools/gen_turetme.py`
-  her tabanın 15-60 alt kelimesi olmasını garanti eder (kaynaklar Beş Harf ile aynı)
+- Sözlük gömülü ve ~120 KB: 15.829 geçerli kelime (şapkalı yazımlar düzleştirilir) + 1.200 taban;
+  `tools/gen_turetme.py` tabanları 15-60 alt kelimeyle seçer (taban listesi günlük diziyi
+  korumak için sabittir; kaynaklar Beş Harf ile aynı)
 - Rekor = tek tahtada toplanan en yüksek skor
 
 ### Dizgi
