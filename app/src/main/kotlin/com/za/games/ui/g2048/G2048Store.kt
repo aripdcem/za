@@ -33,7 +33,7 @@ class G2048Store(context: Context) {
         val raw = prefs.getString(KEY_CELLS, null) ?: return null
         val cells = raw.split(',').mapNotNull { it.toIntOrNull() }
         if (cells.size != G2048State.SIZE * G2048State.SIZE) return null
-        if (cells.any { it < 0 || (it != 0 && Integer.bitCount(it) != 1) }) return null
+        if (cells.any { it != 0 && (it < 2 || Integer.bitCount(it) != 1) }) return null
         if (cells.count { it > 0 } < 2) return null
         return G2048State(
             size = G2048State.SIZE,

@@ -34,6 +34,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -360,6 +362,7 @@ private fun BesHarfKeyboard(
                 label = "⌫",
                 mark = null,
                 modifier = Modifier.weight(1.6f),
+                keyDescription = stringResource(R.string.erase),
                 onClick = onErase,
             )
         }
@@ -372,6 +375,7 @@ private fun KeyButton(
     mark: LetterMark?,
     modifier: Modifier = Modifier,
     accent: Boolean = false,
+    keyDescription: String? = null,
     onClick: () -> Unit,
 ) {
     val background = when {
@@ -391,7 +395,15 @@ private fun KeyButton(
         onClick = onClick,
         shape = RoundedCornerShape(8.dp),
         color = background,
-        modifier = modifier.height(48.dp),
+        modifier = modifier
+            .height(48.dp)
+            .let {
+                if (keyDescription != null) {
+                    it.semantics { contentDescription = keyDescription }
+                } else {
+                    it
+                }
+            },
     ) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
             Text(
