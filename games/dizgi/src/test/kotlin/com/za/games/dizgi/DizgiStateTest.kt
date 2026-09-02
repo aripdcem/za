@@ -231,6 +231,16 @@ class DizgiStateTest {
     }
 
     @Test
+    fun `two scoreless rounds can end the game in a tie`() {
+        var s = state(rack0 = "ab", rack1 = "ab")
+        repeat(3) { s = s.pass() }
+        s = s.pass()
+        assertEquals(DizgiStatus.FINISHED, s.status)
+        assertEquals(s.players[0].score, s.players[1].score)
+        assertEquals(-4, s.players[0].score) // a1+b3, ikisi de eşit kaybeder
+    }
+
+    @Test
     fun `no moves are accepted after the game finishes`() {
         var s = state(rack0 = "ev", rack1 = "ab")
         repeat(4) { s = s.pass() }

@@ -2,12 +2,16 @@ package com.za.games.ui.turetme
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.za.games.turetme.TuretmeState
 import com.za.games.turetme.TuretmeWords
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import kotlin.random.Random
 
@@ -42,17 +46,24 @@ class TuretmeViewModel(application: Application) : AndroidViewModel(application)
 
     /** Gün değiştiyse günlük turu tazeler (ekran öne gelişinde çağrılır). */
     fun refreshDaily() {
-        if (_mode.value == TuretmeMode.DAILY && _state.value.dailyDay != todayEpoch()) {
-            _state.value = restoredDaily()
+        if (_mode.value != TuretmeMode.DAILY || _state.value.dailyDay == todayEpoch()) return
+        viewModelScope.launch {
+            val fresh = withContext(Dispatchers.Default) { restoredDaily() }
+            if (_mode.value == TuretmeMode.DAILY) _state.value = fresh
         }
     }
 
     fun setMode(mode: TuretmeMode) {
         if (_mode.value == mode) return
         _mode.value = mode
-        _state.value = when (mode) {
-            TuretmeMode.DAILY -> restoredDaily()
-            TuretmeMode.FREE -> TuretmeState.free(TuretmeWords.bases, TuretmeWords.valid)
+        // Hedef kelime taraması (15k+ kelime) ana iş parçacığını tıkamasın.
+        viewModelScope.launch {
+            _state.value = withContext(Dispatchers.Default) {
+                when (mode) {
+                    TuretmeMode.DAILY -> restoredDaily()
+                    TuretmeMode.FREE -> TuretmeState.free(TuretmeWords.bases, TuretmeWords.valid)
+                }
+            }
         }
     }
 
@@ -91,8 +102,11 @@ class TuretmeViewModel(application: Application) : AndroidViewModel(application)
 
     /** Serbest modda yeni taban kelime. */
     fun newFreeGame() {
-        if (_mode.value == TuretmeMode.FREE) {
-            _state.value = TuretmeState.free(TuretmeWords.bases, TuretmeWords.valid)
+        if (_mode.value != TuretmeMode.FREE) return
+        viewModelScope.launch {
+            _state.value = withContext(Dispatchers.Default) {
+                TuretmeState.free(TuretmeWords.bases, TuretmeWords.valid)
+            }
         }
     }
 }
