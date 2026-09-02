@@ -23,6 +23,12 @@ enum class Sfx(@RawRes val res: Int) {
 
     /** Oyun sonu. */
     OVER(R.raw.sfx_over),
+
+    /** Kuyu: bot atışı; kısa ve tiz, sık çalınır. */
+    SHOT(R.raw.sfx_shot),
+
+    /** Kuyu: düşmana basış. */
+    STOMP(R.raw.sfx_stomp),
 }
 
 /**

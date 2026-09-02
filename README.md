@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Oyunlar: **Tetris**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Oyunlar: **Tetris**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**.
 
 ## Manifesto
 
@@ -27,7 +27,7 @@ za/
 │       └── ui/theme/             # ZA teması
 ├── games/
 │   ├── tetris/  g2048/  snake/   # Oyun motorları: saf Kotlin/JVM, Android'e
-│   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ # bağımsız, her biri kendi birim testleriyle
+│   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ kuyu/ # bağımsız, her biri kendi birim testleriyle
 └── tools/                        # gen_sfx.py (sesler), gen_words.py + gen_turetme.py + gen_dizgi.py (kelime listeleri)
 ```
 
@@ -112,13 +112,26 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 - Sıra değişiminde perde ekranı: taşları yalnızca sıradaki oyuncu görür
 - Sözlük ~180 KB gömülü: 22.569 kök (2-15 harf; şapkalı yazımlar düzleştirilir: belâ → bela); rekor = kazananın skoru
 
+### Kuyu
+- **Kuyuya düşüş** (Downwell türü, kendi tasarımımız): tek tuş — yerdeyken zıplar, havada basılı
+  tutulunca **botlar aşağı ateş eder** ve düşüşü yavaşlatır; şarjör 8, yere inince ya da düşmana
+  basınca dolar
+- Düşmanlar: topak ve yarasa (üstüne basılır), dikenli (yalnız mermiyle), duvar tırmanıcısı; havada art
+  arda öldürdükçe **kombo**, inişte kombo × 2 taş bonusu; kırılabilir bloklar, taş bırakan bloklar
+- Kuyu 12 sütun genişliğinde, 16 satırlık parçalarla tohumdan üretilir: her satırda en az 3 boşluk,
+  dibe kadar geçilebilirlik testle garanti (`games/kuyu`); 3 bölge, derinlikle daha çok ve daha hızlı düşman
+- **Günlük kuyu**: gün numarasından türeyen tohum, herkes aynı kuyuyu oynar, tek deneme; ayrıca serbest mod
+- Kontrol eli ayarı (sağ/sol): ateş tuşu başparmağın tarafına gelir; 60 Hz sabit adımlı simülasyon,
+  aynı tohum + aynı girdi = aynı oyun
+- Skor = toplanan taş + derinlik (m); rekor = en yüksek skor
+
 ## Derleme
 
 Gereksinimler: JDK 17+, Android SDK (compileSdk 35). Android Studio ile açıp çalıştırabilir veya komut satırından derleyebilirsiniz:
 
 ```bash
 ./gradlew :app:assembleDebug        # APK: app/build/outputs/apk/debug/
-./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test :games:kiskac:test :games:turetme:test :games:dizgi:test
+./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test :games:kiskac:test :games:turetme:test :games:dizgi:test :games:kuyu:test
 ```
 
 Motor testleri Android SDK gerektirmez. Sürüm `-PzaVersion=X.Y.Z` özelliğiyle geçilir; release iş akışı bunu etiketten türetir (`versionCode` = `major*10000 + minor*100 + patch`).
@@ -165,7 +178,7 @@ Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
 
 ## Yol haritası
 
-- [x] Yeni oyunlar: 2048 ✓, yılan ✓, sudoku ✓, mayın tarlası ✓, beş harf ✓, kıskaç ✓, türetme ✓, dizgi ✓
+- [x] Yeni oyunlar: 2048 ✓, yılan ✓, sudoku ✓, mayın tarlası ✓, beş harf ✓, kıskaç ✓, türetme ✓, dizgi ✓, kuyu ✓
 - [x] Ses efektleri (kapatılabilir) ve satır temizleme animasyonları
 - [x] Sürümün etiketten türetilmesi, SHA256 sağlamaları ve kaynak arşivleri
 - [ ] Oyun içi istatistikler (toplam satır, en uzun oturum)

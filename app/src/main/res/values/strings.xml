@@ -158,6 +158,35 @@
     <string name="dizgi_legend_tw">3K üç kelime</string>
     <string name="dizgi_board_desc">Dizgi tahtası: %1$d taş yerleşik, %2$d taş bekliyor</string>
 
+    <!-- Kuyu -->
+    <string name="game_kuyu">Kuyu</string>
+    <string name="game_kuyu_tagline">Kuyuya düşüş: zıpla, botlarınla ateş et, düşmanlara bas</string>
+    <string name="kuyu_intro">Tek tuş: yerdeyken zıplar, havadayken basılı tutunca aşağı ateş eder. Yere inince ya da bir düşmana basınca şarjör dolar.</string>
+    <string name="kuyu_daily_desc">Herkes bugün aynı kuyuya iner; tek deneme.</string>
+    <string name="kuyu_daily_done_fmt">Bugünkü kuyu: %1$d puan, %2$d m derinlik</string>
+    <string name="kuyu_tomorrow">Yarın yeni kuyu!</string>
+    <string name="kuyu_start">Başla</string>
+    <string name="kuyu_hand_label">Kontrol eli</string>
+    <string name="kuyu_hand_right">Sağ el</string>
+    <string name="kuyu_hand_left">Sol el</string>
+    <string name="kuyu_hand_hint">Ateş tuşu başparmağının olduğu tarafa gelir</string>
+    <string name="kuyu_depth">Derinlik</string>
+    <string name="kuyu_depth_fmt">%1$d m</string>
+    <string name="kuyu_gems">Taş</string>
+    <string name="kuyu_combo_fmt">Kombo ×%1$d</string>
+    <string name="kuyu_combo_bonus_fmt">Kombo ×%1$d: +%2$d taş</string>
+    <string name="kuyu_hp_desc_fmt">Can %1$d/%2$d</string>
+    <string name="kuyu_ammo_desc_fmt">Mermi %1$d/%2$d</string>
+    <string name="kuyu_ctrl_left">Sola git</string>
+    <string name="kuyu_ctrl_right">Sağa git</string>
+    <string name="kuyu_ctrl_fire">Zıpla / ateş et</string>
+    <string name="kuyu_over_title">Kuyu seni yuttu</string>
+    <string name="kuyu_result_fmt">%1$d m derinlik · %2$d taş · en iyi kombo ×%3$d</string>
+    <string name="kuyu_to_start">Başa dön</string>
+    <string name="kuyu_area_fmt">%1$d. bölge</string>
+    <string name="kuyu_board_desc">Kuyu: derinlik %1$d m, can %2$d, mermi %3$d</string>
+    <string name="kuyu_hint">◀ ▶ hareket · ● yerde zıpla, havada basılı tut: ateş</string>
+
     <!-- Tahta açıklamaları (ekran okuyucu) -->
     <string name="tetris_board_desc">Tetris tahtası: seviye %1$d, %2$d satır, skor %3$d</string>
     <string name="snake_board_desc">Yılan tahtası: uzunluk %1$d, skor %2$d</string>

@@ -74,6 +74,12 @@ def main():
     # Oyun sonu: inen kayma.
     write("sfx_over.wav", tone(0.42, lambda t: 392 * (0.5 ** t), "tri", 0.30, 2.2))
 
+    # Kuyu, bot atışı: çok kısa, hızla inen tiz tıkırtı (saniyede 10 kez çalabilir).
+    write("sfx_shot.wav", tone(0.035, lambda t: 1200 - 700 * t, "square", 0.16, 9.0))
+
+    # Kuyu, düşmana basış: tok, yaylanan vuruş.
+    write("sfx_stomp.wav", tone(0.09, lambda t: 260 - 140 * t, "tri", 0.45, 6.0))
+
 
 if __name__ == "__main__":
     main()

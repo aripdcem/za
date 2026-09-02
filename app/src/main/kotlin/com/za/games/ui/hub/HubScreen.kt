@@ -496,3 +496,32 @@ fun BesHarfArt(modifier: Modifier = Modifier) {
         }
     }
 }
+
+/** Kuyu kartı: iki duvar arasında düşen oyuncu, altındaki mermiler ve düşmanlar. */
+@Composable
+fun KuyuArt(modifier: Modifier = Modifier) {
+    val wall = Color(0xFF475569)
+    val player = Color(0xFFF1F5F9)
+    val enemy = Color(0xFFF87171)
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        val unit = w / 5f
+        drawRoundRect(
+            color = Color(0xFF0B0F1A),
+            size = Size(w, w),
+            cornerRadius = CornerRadius(unit * 0.5f, unit * 0.5f),
+        )
+        drawRect(wall, topLeft = Offset(0f, 0f), size = Size(unit * 0.9f, w))
+        drawRect(wall, topLeft = Offset(w - unit * 0.9f, 0f), size = Size(unit * 0.9f, w))
+        drawRoundRect(
+            color = player,
+            topLeft = Offset(unit * 2.15f, unit * 0.6f),
+            size = Size(unit * 0.7f, unit * 0.8f),
+            cornerRadius = CornerRadius(unit * 0.15f, unit * 0.15f),
+        )
+        drawRect(player.copy(alpha = 0.7f), Offset(unit * 2.44f, unit * 1.6f), Size(unit * 0.12f, unit * 0.35f))
+        drawRect(player.copy(alpha = 0.4f), Offset(unit * 2.44f, unit * 2.2f), Size(unit * 0.12f, unit * 0.35f))
+        drawCircle(enemy, radius = unit * 0.32f, center = Offset(unit * 1.55f, unit * 3.5f))
+        drawCircle(enemy, radius = unit * 0.32f, center = Offset(unit * 3.45f, unit * 4.25f))
+    }
+}
