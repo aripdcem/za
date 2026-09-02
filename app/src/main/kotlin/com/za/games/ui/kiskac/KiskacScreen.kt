@@ -215,7 +215,7 @@ private fun ModeChip(
         } else {
             MaterialTheme.colorScheme.surfaceVariant
         },
-        modifier = modifier.height(40.dp),
+        modifier = modifier.height(48.dp),
     ) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
             Text(
