@@ -82,6 +82,7 @@ fun G2048Screen(
             if (!overHeard) {
                 overHeard = true
                 sound?.play(Sfx.OVER)
+                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
             }
         } else {
             overHeard = false
@@ -110,6 +111,7 @@ fun G2048Screen(
         if (state.reached2048 && !celebrated2048) {
             celebrated2048 = true
             sound?.play(Sfx.BIG)
+            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
         } else if (!state.reached2048) {
             celebrated2048 = false
         }

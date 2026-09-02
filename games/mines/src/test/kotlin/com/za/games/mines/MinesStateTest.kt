@@ -109,4 +109,17 @@ class MinesStateTest {
         val running = tinyBoard().copy(revealed = setOf(6))
         assertEquals(running, running.chord(6)) // 1 sayısı, 0 bayrak
     }
+
+    @Test
+    fun `a stray flag on a safe cell delays the win until it is cleared and revealed`() {
+        val flaggedMiddle = tinyBoard().toggleFlag(12)
+        val opened = flaggedMiddle.reveal(24)
+        assertEquals(MinesStatus.RUNNING, opened.status) // 12 hâlâ bayraklı, taşma onu atlar
+        assertTrue(12 !in opened.revealed)
+        assertEquals(23, opened.revealed.size)
+
+        val cleared = opened.toggleFlag(12).reveal(12)
+        assertEquals(MinesStatus.WON, cleared.status)
+        assertEquals(24, cleared.revealed.size)
+    }
 }
