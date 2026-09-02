@@ -192,6 +192,7 @@ fun MinesScreen(
                     descriptions = MinesDifficulty.entries.map {
                         stringResource(R.string.mines_difficulty_desc_fmt, it.width, it.height, it.mineCount)
                     },
+                    lastPicked = viewModel.lastDifficulty?.let { MinesDifficulty.entries.indexOf(it) },
                 ) { index ->
                     viewModel.newGame(MinesDifficulty.entries[index])
                 }

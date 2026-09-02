@@ -35,15 +35,20 @@ class SudokuViewModel(application: Application) : AndroidViewModel(application) 
     val canUndo: StateFlow<Boolean> = _canUndo.asStateFlow()
 
     private val _timerPaused = MutableStateFlow(false)
-    private var lastDifficulty: SudokuDifficulty? = null
+
+    /** Zorluk seçicide en son oynanan zorluğu öne çıkarmak için; cihaz yeniden açılsa da kalır. */
+    var lastDifficulty: SudokuDifficulty? = null
+        private set
 
     init {
         // Yarım kalmış bulmaca varsa kaldığı yerden devam et.
-        store.restore()?.let { (saved, savedElapsed) ->
+        val restored = store.restore()
+        if (restored != null) {
+            val (saved, savedElapsed) = restored
             _state.value = saved
             _elapsed.value = savedElapsed
-            lastDifficulty = saved.difficulty
         }
+        lastDifficulty = restored?.first?.difficulty ?: store.lastDifficulty()
         // Sayaç yalnızca oyun koşarken tikler; aksi hâlde askıda bekler —
         // duraklatılmışken veya menüdeyken saniyede bir uyanmaz.
         viewModelScope.launch {
