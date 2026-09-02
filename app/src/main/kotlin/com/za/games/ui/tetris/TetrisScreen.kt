@@ -29,6 +29,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -88,11 +89,16 @@ fun TetrisScreen(
         onDispose { latestOnScore(latestScore) }
     }
 
-    // Satır temizleme: parlamalı animasyon + ses + titreşim.
+    // Satır temizleme: parlamalı animasyon + ses + titreşim. Yalnızca canlı
+    // olaylarda: ViewModel etkinlik ömrünce yaşadığından ekrana geri dönüşte
+    // sayaçlar sıfırlanmaz; "görülen" değerden yüksek olanlar gerçek olaydır.
     val clearFlash = remember { Animatable(0f) }
     var flashRows by remember { mutableStateOf<List<Int>>(emptyList()) }
+    var seenClears by remember { mutableIntStateOf(state.clearEvents) }
     LaunchedEffect(state.clearEvents) {
-        if (state.clearEvents > 0) {
+        val live = state.clearEvents > seenClears
+        seenClears = state.clearEvents
+        if (live) {
             sound?.play(if (state.lastClear >= 4) Sfx.BIG else Sfx.CLEAR)
             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
             flashRows = state.lastClearedRows
@@ -101,9 +107,12 @@ fun TetrisScreen(
             flashRows = emptyList()
         }
     }
-    // Temizlik olmayan kilitlenmelerde tok bir vuruş sesi.
+    // Temizlik olmayan kilitlenmelerde tok bir vuruş sesi (yine yalnızca canlı).
+    var seenLocks by remember { mutableIntStateOf(state.locks) }
     LaunchedEffect(state.locks) {
-        if (state.locks > 0 && state.lastClear == 0) sound?.play(Sfx.DROP, volume = 0.6f)
+        val live = state.locks > seenLocks
+        seenLocks = state.locks
+        if (live && state.lastClear == 0) sound?.play(Sfx.DROP, volume = 0.6f)
     }
 
     // Uygulama arka plana geçince otomatik duraklat.
