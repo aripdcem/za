@@ -1,12 +1,15 @@
 package com.za.games.ui.dizgi
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.za.games.dizgi.DizgiState
 import com.za.games.dizgi.DizgiStatus
 import com.za.games.dizgi.DizgiWords
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 /** Ekran evresi: kurulum → (el değişimi ⇄ oyun) → bitiş oyun içinde gösterilir. */
@@ -23,6 +26,12 @@ class DizgiViewModel : ViewModel() {
 
     private val _state = MutableStateFlow(DizgiState.new(2, Random.nextLong()))
     val state: StateFlow<DizgiState> = _state.asStateFlow()
+
+    init {
+        // 22 bin kelimelik sözlük ilk "Onayla"da ana iş parçacığında yüklenmesin;
+        // oyuncu daha kurulum ekranındayken arka planda ısıtılır.
+        viewModelScope.launch(Dispatchers.Default) { DizgiWords.valid.size }
+    }
 
     fun start(playerCount: Int) {
         _state.value = DizgiState.new(playerCount, Random.nextLong())
