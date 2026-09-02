@@ -248,7 +248,8 @@ class DizgiStateTest {
         assertTrue(valid.size > 20_000)
         assertTrue(valid.all { it.length in 2..15 })
         assertTrue(valid.all { w -> w.all { DizgiLetters.isLetter(it) } })
-        for (w in listOf("ev", "at", "su", "kalem", "kitap", "deniz")) {
+        // Şapkalı kaynak girdileri düzleştirilmiş olmalı (belâ -> bela, kâğıt -> kağıt).
+        for (w in listOf("ev", "at", "su", "kalem", "kitap", "deniz", "bela", "kağıt", "hikaye")) {
             assertTrue(w, w in valid)
         }
     }

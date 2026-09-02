@@ -17,9 +17,14 @@ import math
 import os
 import re
 import sys
+import unicodedata
 
 TURKISH = "abcçdefgğhıijklmnoöprsştuüvyz"
 WORD_RE = re.compile(rf"^[{TURKISH}]{{2,15}}$")
+# Zemberek bazı kelimeleri şapkalı yazar (belâ, kâğıt, hâlâ); oyunda şapkalı
+# taş yok, oyuncu düz harfle yazar. Düzleştirmeden atlanırlarsa "bela" gibi
+# gündelik kelimeler sözlükte bulunamaz.
+CIRCUMFLEX = str.maketrans("âîûÂÎÛ", "aiuaiu")
 # 10+ harfli kökler yalnızca sıklık listesinde de geçiyorsa alınır
 # (nadir uzun kökler listeyi şişirir, oyunda hiç görülmez).
 LONG_NEEDS_FREQ = 10
@@ -39,6 +44,7 @@ def zemberek_roots(path):
             if not line or line.startswith("#") or "Prop" in line:
                 continue
             token = line.split(" ")[0].split("[")[0].strip()
+            token = unicodedata.normalize("NFC", token).translate(CIRCUMFLEX)
             if WORD_RE.match(token):
                 roots.add(token)
     return roots
