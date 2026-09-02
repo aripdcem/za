@@ -176,6 +176,9 @@ fun OverlayCard(content: @Composable () -> Unit) {
     Surface(
         shape = RoundedCornerShape(24.dp),
         color = MaterialTheme.colorScheme.surface.copy(alpha = 0.96f),
+        // Saydam yüzey rengi şemadaki hiçbir renkle eşleşmediğinden içerik rengi
+        // kendiliğinden türetilemez; başlıklar için açıkça verilir.
+        contentColor = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier.padding(16.dp),
     ) {
         Column(

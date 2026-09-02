@@ -1,8 +1,10 @@
 package com.za.games.ui.theme
 
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 
 // ZA bilinçli olarak tek görünüme sahip: koyu, yüksek kontrastlı bir oyun teması.
@@ -23,5 +25,9 @@ private val ZaColors = darkColorScheme(
 
 @Composable
 fun ZaTheme(content: @Composable () -> Unit) {
-    MaterialTheme(colorScheme = ZaColors, content = content)
+    MaterialTheme(colorScheme = ZaColors) {
+        // Kökte Surface yok; Material yalnızca Surface içinde içerik rengi sağlar.
+        // Rengi açıkça verilmeyen her Text aksi hâlde varsayılan siyahla çizilir.
+        CompositionLocalProvider(LocalContentColor provides ZaColors.onBackground, content = content)
+    }
 }
