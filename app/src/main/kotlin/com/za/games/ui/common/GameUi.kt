@@ -1,5 +1,7 @@
 package com.za.games.ui.common
 
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,12 +27,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -161,6 +168,67 @@ fun PadButton(
             Text(
                 text = label,
                 fontSize = fontSize,
+                color = if (accent) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
+            )
+        }
+    }
+}
+
+/**
+ * Basılı tutulan oyun tuşu: parmak bastığında [onPressChange] true, kalktığında
+ * false alır. Parmak sınır dışına kaysa bile bırakılana dek basılı sayılır; iki
+ * tuşa aynı anda basılabilir (her tuş yalnızca kendi işaretçisini görür).
+ */
+@Composable
+fun HoldButton(
+    label: String,
+    description: String,
+    modifier: Modifier = Modifier,
+    accent: Boolean = false,
+    fontSize: TextUnit = 26.sp,
+    onPressChange: (Boolean) -> Unit,
+) {
+    val currentChange by rememberUpdatedState(onPressChange)
+    var pressed by remember { mutableStateOf(false) }
+    DisposableEffect(Unit) {
+        onDispose { currentChange(false) }
+    }
+    Surface(
+        modifier = modifier
+            .semantics { contentDescription = description }
+            .pointerInput(Unit) {
+                awaitEachGesture {
+                    awaitFirstDown(requireUnconsumed = false).consume()
+                    pressed = true
+                    currentChange(true)
+                    try {
+                        do {
+                            val event = awaitPointerEvent()
+                            event.changes.forEach { it.consume() }
+                        } while (event.changes.any { it.pressed })
+                    } finally {
+                        pressed = false
+                        currentChange(false)
+                    }
+                }
+            },
+        shape = RoundedCornerShape(18.dp),
+        color = when {
+            accent && pressed -> MaterialTheme.colorScheme.primary.copy(alpha = 0.45f)
+            accent -> MaterialTheme.colorScheme.primary.copy(alpha = 0.22f)
+            pressed -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.35f)
+            else -> MaterialTheme.colorScheme.surfaceVariant
+        },
+    ) {
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+            Text(
+                text = label,
+                fontSize = fontSize,
+                fontWeight = FontWeight.Bold,
                 color = if (accent) {
                     MaterialTheme.colorScheme.primary
                 } else {

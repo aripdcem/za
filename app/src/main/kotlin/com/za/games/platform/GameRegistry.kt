@@ -9,6 +9,7 @@ import com.za.games.ui.hub.Art2048
 import com.za.games.ui.hub.BesHarfArt
 import com.za.games.ui.hub.DizgiArt
 import com.za.games.ui.hub.KiskacArt
+import com.za.games.ui.hub.KuyuArt
 import com.za.games.ui.hub.MinesArt
 import com.za.games.ui.hub.SnakeArt
 import com.za.games.ui.hub.SudokuArt
@@ -16,6 +17,7 @@ import com.za.games.ui.hub.TetrominoArt
 import com.za.games.ui.hub.TuretmeArt
 import com.za.games.ui.mines.MinesScreen
 import com.za.games.ui.kiskac.KiskacScreen
+import com.za.games.ui.kuyu.KuyuScreen
 import com.za.games.ui.snake.SnakeScreen
 import com.za.games.ui.sudoku.SudokuScreen
 import com.za.games.ui.tetris.TetrisScreen
@@ -116,6 +118,16 @@ object GameRegistry {
             art = { modifier -> DizgiArt(modifier) },
             screen = { highScore, onScore, onExit ->
                 DizgiScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "kuyu",
+            titleRes = R.string.game_kuyu,
+            taglineRes = R.string.game_kuyu_tagline,
+            accent = Color(0xFFF1F5F9),
+            art = { modifier -> KuyuArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                KuyuScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
     )

@@ -158,6 +158,35 @@
     <string name="dizgi_legend_tw">3K triple word</string>
     <string name="dizgi_board_desc">Dizgi board: %1$d tiles placed, %2$d pending</string>
 
+    <!-- Kuyu -->
+    <string name="game_kuyu">Kuyu</string>
+    <string name="game_kuyu_tagline">Down the well: jump, fire your boots, stomp the enemies</string>
+    <string name="kuyu_intro">One button: jump on the ground, hold in the air to fire downward. Landing or stomping an enemy refills the ammo.</string>
+    <string name="kuyu_daily_desc">Everyone drops into the same well today; one attempt.</string>
+    <string name="kuyu_daily_done_fmt">Today\'s well: %1$d points, %2$d m deep</string>
+    <string name="kuyu_tomorrow">A new well tomorrow!</string>
+    <string name="kuyu_start">Start</string>
+    <string name="kuyu_hand_label">Control hand</string>
+    <string name="kuyu_hand_right">Right hand</string>
+    <string name="kuyu_hand_left">Left hand</string>
+    <string name="kuyu_hand_hint">The fire button sits on your thumb\'s side</string>
+    <string name="kuyu_depth">Depth</string>
+    <string name="kuyu_depth_fmt">%1$d m</string>
+    <string name="kuyu_gems">Gems</string>
+    <string name="kuyu_combo_fmt">Combo ×%1$d</string>
+    <string name="kuyu_combo_bonus_fmt">Combo ×%1$d: +%2$d gems</string>
+    <string name="kuyu_hp_desc_fmt">Health %1$d/%2$d</string>
+    <string name="kuyu_ammo_desc_fmt">Ammo %1$d/%2$d</string>
+    <string name="kuyu_ctrl_left">Move left</string>
+    <string name="kuyu_ctrl_right">Move right</string>
+    <string name="kuyu_ctrl_fire">Jump / fire</string>
+    <string name="kuyu_over_title">The well got you</string>
+    <string name="kuyu_result_fmt">%1$d m deep · %2$d gems · best combo ×%3$d</string>
+    <string name="kuyu_to_start">Back to start</string>
+    <string name="kuyu_area_fmt">Area %1$d</string>
+    <string name="kuyu_board_desc">Well: depth %1$d m, health %2$d, ammo %3$d</string>
+    <string name="kuyu_hint">◀ ▶ move · ● jump on the ground, hold in the air: fire</string>
+
     <!-- Board descriptions (screen reader) -->
     <string name="tetris_board_desc">Tetris board: level %1$d, %2$d lines, score %3$d</string>
     <string name="snake_board_desc">Snake board: length %1$d, score %2$d</string>
