@@ -152,6 +152,16 @@
     <string name="dizgi_finished">Oyun bitti</string>
     <string name="dizgi_winner">Kazanan: %1$s</string>
     <string name="dizgi_draw">Berabere!</string>
+    <string name="dizgi_legend_dl">2H çift harf</string>
+    <string name="dizgi_legend_tl">3H üç harf</string>
+    <string name="dizgi_legend_dw">2K çift kelime</string>
+    <string name="dizgi_legend_tw">3K üç kelime</string>
+    <string name="dizgi_board_desc">Dizgi tahtası: %1$d taş yerleşik, %2$d taş bekliyor</string>
+
+    <!-- Tahta açıklamaları (ekran okuyucu) -->
+    <string name="tetris_board_desc">Tetris tahtası: seviye %1$d, %2$d satır, skor %3$d</string>
+    <string name="snake_board_desc">Yılan tahtası: uzunluk %1$d, skor %2$d</string>
+    <string name="mines_board_desc">Mayın tarlası %1$d×%2$d: %3$d mayın, %4$d bayrak</string>
 
     <!-- Ortak -->
     <string name="pick_difficulty">Zorluk seç</string>

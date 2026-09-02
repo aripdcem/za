@@ -73,6 +73,10 @@ import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.formatScore
 import kotlinx.coroutines.delay
 import java.util.Locale
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 
 private val TrLocale: Locale = Locale.forLanguageTag("tr")
 
@@ -477,6 +481,8 @@ private fun PlayPane(
                 .padding(vertical = 2.dp),
         )
 
+        PremiumLegend()
+
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -610,6 +616,43 @@ private fun PlayPane(
 
 // --- Tahta ---
 
+/** Premium kare lejantı: renk -> kat anlamı. */
+@Composable
+private fun PremiumLegend() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 2.dp),
+        horizontalArrangement = Arrangement.Center,
+    ) {
+        LegendItem(Color(0xFF3B82F6).copy(alpha = 0.5f), stringResource(R.string.dizgi_legend_dl))
+        LegendItem(Color(0xFF2563EB).copy(alpha = 0.85f), stringResource(R.string.dizgi_legend_tl))
+        LegendItem(AccentOrange.copy(alpha = 0.55f), stringResource(R.string.dizgi_legend_dw))
+        LegendItem(Color(0xFFF87171).copy(alpha = 0.8f), stringResource(R.string.dizgi_legend_tw))
+    }
+}
+
+@Composable
+private fun LegendItem(color: Color, label: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(horizontal = 6.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .size(10.dp)
+                .background(color, RoundedCornerShape(2.dp)),
+        )
+        Spacer(Modifier.size(4.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+        )
+    }
+}
+
+
 @Composable
 private fun DizgiBoardCanvas(
     state: DizgiState,
@@ -617,10 +660,14 @@ private fun DizgiBoardCanvas(
     modifier: Modifier = Modifier,
 ) {
     val textMeasurer = rememberTextMeasurer()
+    val layoutCache = remember { mutableMapOf<String, TextLayoutResult>() }
+    val boardDesc = stringResource(R.string.dizgi_board_desc, state.board.size, state.pending.size)
     val currentTap by rememberUpdatedState(onCellTap)
 
     Canvas(
-        modifier = modifier.pointerInput(Unit) {
+        modifier = modifier
+            .semantics { contentDescription = boardDesc }
+            .pointerInput(Unit) {
             detectTapGestures { offset ->
                 val cell = size.width / DizgiBoard.SIZE.toFloat()
                 val col = (offset.x / cell).toInt().coerceIn(0, DizgiBoard.SIZE - 1)
@@ -634,14 +681,19 @@ private fun DizgiBoardCanvas(
         val pad = cell * 0.06f
 
         fun textAt(text: String, index: Int, color: Color, scale: Float) {
-            val layout = textMeasurer.measure(
-                AnnotatedString(text),
-                style = TextStyle(
-                    fontSize = with(this) { (cell * scale).toSp() },
-                    fontWeight = FontWeight.Bold,
-                    color = color,
-                ),
-            )
+            // Metin yerleşimi her karede yeniden ölçülmesin: aynı metin/boyut/renk
+            // için bir kez ölçülür (hücre boyutu değişince anahtar da değişir).
+            val key = "$text|$scale|${cell.toInt()}|${color.toArgb()}"
+            val layout = layoutCache.getOrPut(key) {
+                textMeasurer.measure(
+                    AnnotatedString(text),
+                    style = TextStyle(
+                        fontSize = with(this) { (cell * scale).toSp() },
+                        fontWeight = FontWeight.Bold,
+                        color = color,
+                    ),
+                )
+            }
             val r = index / DizgiBoard.SIZE
             val c = index % DizgiBoard.SIZE
             drawText(
@@ -699,8 +751,18 @@ private fun DizgiBoardCanvas(
                     size = boxSize,
                     cornerRadius = corner,
                 )
+                // Premium kareler etiketli: yeni oyuncu mekaniği tahtadan okuyabilir.
+                val label = when (DizgiBoard.premium(index)) {
+                    Premium.DL -> "2H"
+                    Premium.TL -> "3H"
+                    Premium.DW -> "2K"
+                    Premium.TW -> "3K"
+                    Premium.NONE -> null
+                }
                 if (index == DizgiBoard.CENTER) {
                     textAt("★", index, Color.White.copy(alpha = 0.75f), scale = 0.55f)
+                } else if (label != null) {
+                    textAt(label, index, Color.White.copy(alpha = 0.6f), scale = 0.34f)
                 }
             }
         }

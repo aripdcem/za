@@ -103,7 +103,8 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 - **Elden ele kelime tahtası** (Scrabble türü, kendi tasarımımız): aynı telefonda 2-4 oyuncu,
   15×15 tahta, 100 taş (98 harf + 2 joker), elde 7 taş
 - Harf dağılımı ve puanları `tools/gen_dizgi.py` ile **kendi derlemimizden** türetilir;
-  premium kare dizilişi de Dizgi'ye özgüdür (köşeler ve köşegenler ÇK, kenar ortaları ÜK)
+  premium kare dizilişi de Dizgi'ye özgüdür (köşeler ve köşegenler ÇK, kenar ortaları ÜK);
+  kareler 2H/3H/2K/3K etiketli, tahtanın üstünde lejant var
 - Kurallar: ilk kelime ortadaki yıldızdan geçer, her hamle mevcut taşlara değer, ana kelime +
   tüm çapraz kelimeler sözlükte olmalı; katlar yalnızca yeni konan taşlara işler; 7 taş birden = +50
 - Pas ve taş değişimi (torbada ≥7 taşla); herkes üst üste iki kez puansız geçerse ya da torba

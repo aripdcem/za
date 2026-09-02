@@ -22,6 +22,10 @@ import com.za.games.tetris.TetrisState
 import com.za.games.tetris.TetrisStatus
 import kotlin.math.abs
 import kotlin.math.min
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import com.za.games.R
 
 /** Taş renkleri: koyu zeminde okunaklı, klasik paletten uyarlanmış tonlar. */
 fun Tetromino.color(): Color = when (this) {
@@ -49,8 +53,10 @@ fun BoardCanvas(
     flashAlpha: Float = 0f,
 ) {
     val boardWidth = state.width
+    val boardDesc = stringResource(R.string.tetris_board_desc, state.level, state.lines, state.score)
     Canvas(
         modifier = modifier
+            .semantics { contentDescription = boardDesc }
             // Döndürme (tek dokunuş) ve taşıma/yumuşak düşüş (sürükleme) ayrı jest
             // algılayıcılarındaydı ve aynı pointer akışını tüketiyorlardı; birleştirip
             // gerçek sürükleme başlayana kadar dokunuş adayı olarak tutuyoruz.

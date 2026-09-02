@@ -63,6 +63,10 @@ import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.PadButton
 import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.formatTime
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 
 @Composable
 fun MinesScreen(
@@ -249,11 +253,17 @@ private fun MinesBoard(
     modifier: Modifier = Modifier,
 ) {
     val textMeasurer = rememberTextMeasurer()
+    val layoutCache = remember { mutableMapOf<String, TextLayoutResult>() }
+    val boardDesc = stringResource(
+        R.string.mines_board_desc, state.width, state.height, state.mineCount, state.flagged.size,
+    )
     val currentTap by rememberUpdatedState(onCellTap)
     val currentLongPress by rememberUpdatedState(onCellLongPress)
 
     Canvas(
-        modifier = modifier.pointerInput(state.width, state.height) {
+        modifier = modifier
+            .semantics { contentDescription = boardDesc }
+            .pointerInput(state.width, state.height) {
             val toIndex = { offset: Offset ->
                 val cell = size.width / state.width.toFloat()
                 val col = (offset.x / cell).toInt().coerceIn(0, state.width - 1)
@@ -273,14 +283,19 @@ private fun MinesBoard(
         val won = state.status == MinesStatus.WON
 
         fun textAt(text: String, index: Int, color: Color, scale: Float = 0.5f) {
-            val layout = textMeasurer.measure(
-                AnnotatedString(text),
-                style = TextStyle(
-                    fontSize = with(this) { (cell * scale).toSp() },
-                    fontWeight = FontWeight.Bold,
-                    color = color,
-                ),
-            )
+            // Metin yerleşimi her karede yeniden ölçülmesin: aynı metin/boyut/renk
+            // için bir kez ölçülür (hücre boyutu değişince anahtar da değişir).
+            val key = "$text|$scale|${cell.toInt()}|${color.toArgb()}"
+            val layout = layoutCache.getOrPut(key) {
+                textMeasurer.measure(
+                    AnnotatedString(text),
+                    style = TextStyle(
+                        fontSize = with(this) { (cell * scale).toSp() },
+                        fontWeight = FontWeight.Bold,
+                        color = color,
+                    ),
+                )
+            }
             val r = index / state.width
             val c = index % state.width
             drawText(
