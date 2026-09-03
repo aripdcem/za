@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Oyunlar: **Tetris**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Tetris**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**.
 
 ## Manifesto
 
@@ -87,9 +87,9 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 - Karşılaştırma **Türk alfabesi sıralamasıyla** yapılır (c<ç, g<ğ, ı<i, o<ö, s<ş, u<ü) — Unicode değil
 - Sınırlara göre imkânsızlaşan baş harfler klavyede soluklaşır; 12 tahmin hakkı
 - Günlük + serbest mod, seri takibi; kelime listelerini Beş Harf ile paylaşır
-- **Uzaklık ipucu**: her sınır kartında gizli kelimenin o sınıra uzaklığı, tüm sözlük ölçeğinde yüzde olarak
-  (A = %0, Z = %100; "%18 uzakta" / "%15 uzakta"). Ölçek sabit olduğundan yeni bir tahmin yalnız taşınan sınırın
-  sayısını değiştirir; kör ikiye bölme yerine alfabetik konum kestirme becerisi ödüllendirilir
+- **Kolay mod** (anahtar, varsayılan kapalı): her sınır kartında gizli kelimenin o sınıra uzaklığı, tüm sözlük
+  ölçeğinde yüzde olarak (A = %0, Z = %100; "%18 uzakta" / "%15 uzakta"). Ölçek sabit olduğundan yeni bir tahmin
+  yalnız taşınan sınırın sayısını değiştirir; kapalıyken oyun yalnız önce/sonra bilgisiyle oynanır
 
 ### Türetme
 - Verilen 6-7 harften türetilebilen **tüm alt kelimeleri** bul (en az 3 harf); harflere

@@ -17,6 +17,13 @@ class KiskacStore(context: Context) {
             prefs.edit().putInt(KEY_STREAK, value).apply()
         }
 
+    /** Kolay mod: sınırlara uzaklık yüzdesi görünür. Varsayılan kapalı. */
+    var easyMode: Boolean
+        get() = prefs.getBoolean(KEY_EASY_MODE, false)
+        set(value) {
+            prefs.edit().putBoolean(KEY_EASY_MODE, value).apply()
+        }
+
     val dailyDay: Long
         get() = prefs.getLong(KEY_DAILY_DAY, Long.MIN_VALUE)
 
@@ -36,5 +43,6 @@ class KiskacStore(context: Context) {
         const val KEY_STREAK = "streak"
         const val KEY_DAILY_DAY = "daily_day"
         const val KEY_DAILY_GUESSES = "daily_guesses"
+        const val KEY_EASY_MODE = "easy_mode"
     }
 }

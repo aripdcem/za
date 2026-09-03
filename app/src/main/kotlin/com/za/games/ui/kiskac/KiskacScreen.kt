@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -78,8 +79,10 @@ fun KiskacScreen(
     val mode by viewModel.mode.collectAsStateWithLifecycle()
     val streak by viewModel.streak.collectAsStateWithLifecycle()
     val sortedWords by viewModel.sortedWords.collectAsStateWithLifecycle()
-    val distance = remember(state.answer, state.guesses, sortedWords) {
-        if (sortedWords.isEmpty()) null else state.distance(sortedWords)
+    val easyMode by viewModel.easyMode.collectAsStateWithLifecycle()
+    // Uzaklık ipucu yalnız kolay modda hesaplanır ve gösterilir.
+    val distance = remember(state.answer, state.guesses, sortedWords, easyMode) {
+        if (!easyMode || sortedWords.isEmpty()) null else state.distance(sortedWords)
     }
     // Tüm sözlük ölçeğinde (A = %0, Z = %100) gizli kelimenin her sınıra uzaklığı;
     // ölçek sabit olduğundan yeni bir tahmin yalnız taşınan sınırın sayısını değiştirir.
@@ -149,6 +152,7 @@ fun KiskacScreen(
         }
 
         ModeChips(mode = mode, onSelect = viewModel::setMode)
+        EasyModeRow(enabled = easyMode, onToggle = viewModel::setEasyMode)
 
         Text(
             text = stringResource(R.string.kiskac_hint),
@@ -219,6 +223,31 @@ private fun ModeChips(mode: KiskacMode, onSelect: (KiskacMode) -> Unit) {
             selected = mode == KiskacMode.FREE,
             modifier = Modifier.weight(1f),
         ) { onSelect(KiskacMode.FREE) }
+    }
+}
+
+/** Kolay mod anahtarı: sınırlara uzaklık yüzdesini açar; tercih kalıcıdır. */
+@Composable
+private fun EasyModeRow(enabled: Boolean, onToggle: (Boolean) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(R.string.kiskac_easy_mode),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = stringResource(R.string.kiskac_easy_mode_desc),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+            )
+        }
+        Switch(checked = enabled, onCheckedChange = onToggle)
     }
 }
 
