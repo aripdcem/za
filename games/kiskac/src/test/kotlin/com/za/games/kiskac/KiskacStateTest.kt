@@ -138,4 +138,52 @@ class KiskacStateTest {
             KiskacState.free(answers, 7L).answer,
         )
     }
+
+    // --- Uzaklık ipucu ---
+
+    private val sorted = listOf("abaca", "bakır", "çamur", "dalga", "elmas", "fasıl")
+
+    @Test
+    fun `distance uses list ends when there are no bounds`() {
+        val d = KiskacState(answer = "çamur").distance(sorted)
+        assertEquals(2, d.answerIndex)
+        assertEquals(-1, d.lowerIndex)
+        assertEquals(6, d.upperIndex)
+        assertEquals(3, d.fromLower)
+        assertEquals(4, d.toUpper)
+        assertEquals(3f / 7f, d.fraction, 1e-6f)
+    }
+
+    @Test
+    fun `distance narrows with bounds`() {
+        var state = KiskacState(answer = "çamur")
+        state = guessed(state, "abaca")
+        var d = state.distance(sorted)
+        assertEquals(0, d.lowerIndex)
+        assertEquals(2, d.fromLower)
+        state = guessed(state, "elmas")
+        d = state.distance(sorted)
+        assertEquals(4, d.upperIndex)
+        assertEquals(2, d.toUpper)
+        assertEquals(0.5f, d.fraction, 1e-6f)
+        state = guessed(state, "dalga")
+        d = state.distance(sorted)
+        assertEquals(3, d.upperIndex)
+        assertEquals(1, d.toUpper)
+        assertEquals(2f / 3f, d.fraction, 1e-6f)
+        state = guessed(state, "bakır")
+        d = state.distance(sorted)
+        assertEquals(1, d.fromLower)
+        assertEquals(1, d.toUpper)
+        assertEquals(0.5f, d.fraction, 1e-6f)
+    }
+
+    @Test
+    fun `index search finds words and insertion points in turkish order`() {
+        assertEquals(2, TurkishOrder.indexOf(sorted, "çamur"))
+        assertEquals(0, TurkishOrder.indexOf(sorted, "aaaaa"))
+        assertEquals(6, TurkishOrder.indexOf(sorted, "zzzzz"))
+        assertEquals(2, TurkishOrder.indexOf(sorted, "cccca")) // c < ç
+        assertTrue(TurkishOrder.compare("abcde", "abxde") < 0) // tablo dışı harf çökmez
+    }
 }

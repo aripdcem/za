@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -38,12 +39,15 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.za.games.R
+import com.za.games.kiskac.KiskacDistance
 import com.za.games.kiskac.KiskacInvalid
 import com.za.games.kiskac.KiskacState
 import com.za.games.kiskac.KiskacStatus
@@ -52,6 +56,7 @@ import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
 import com.za.games.ui.common.GameTopBar
 import com.za.games.ui.common.OverlayCard
+import com.za.games.ui.common.formatScore
 import kotlinx.coroutines.delay
 import java.util.Locale
 
@@ -76,6 +81,10 @@ fun KiskacScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val mode by viewModel.mode.collectAsStateWithLifecycle()
     val streak by viewModel.streak.collectAsStateWithLifecycle()
+    val sortedWords by viewModel.sortedWords.collectAsStateWithLifecycle()
+    val distance = remember(state.answer, state.guesses, sortedWords) {
+        if (sortedWords.isEmpty()) null else state.distance(sortedWords)
+    }
     val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current
     val latestOnScore by rememberUpdatedState(onScore)
@@ -155,7 +164,7 @@ fun KiskacScreen(
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center,
         ) {
-            KiskacBoard(state = state, invalidMessage = invalidMessage)
+            KiskacBoard(state = state, distance = distance, invalidMessage = invalidMessage)
             if (state.status != KiskacStatus.RUNNING && showResult) {
                 ResultOverlay(
                     state = state,
@@ -239,16 +248,17 @@ private fun ModeChip(
 }
 
 @Composable
-private fun KiskacBoard(state: KiskacState, invalidMessage: KiskacInvalid?) {
+private fun KiskacBoard(state: KiskacState, distance: KiskacDistance?, invalidMessage: KiskacInvalid?) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
         modifier = Modifier.padding(horizontal = 24.dp),
     ) {
         BoundCard(
             word = state.lowerBound,
             placeholder = "A",
             label = stringResource(R.string.kiskac_lower_label),
+            hint = distance?.let { stringResource(R.string.kiskac_after_fmt, formatScore(it.fromLower.toLong())) },
         )
 
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -266,10 +276,25 @@ private fun KiskacBoard(state: KiskacState, invalidMessage: KiskacInvalid?) {
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
         )
 
+        if (distance != null) {
+            SqueezeBar(
+                fraction = distance.fraction,
+                lower = state.lowerBound?.take(2)?.upperTr() ?: "A",
+                upper = state.upperBound?.take(2)?.upperTr() ?: "Z",
+                description = stringResource(
+                    R.string.kiskac_dist_desc,
+                    distance.fromLower,
+                    distance.toUpper,
+                ),
+            )
+        }
+
         BoundCard(
             word = state.upperBound,
             placeholder = "Z",
             label = stringResource(R.string.kiskac_upper_label),
+            hint = distance?.let { stringResource(R.string.kiskac_before_fmt, formatScore(it.toUpper.toLong())) },
+            hintFirst = true,
         )
 
         Text(
@@ -284,10 +309,74 @@ private fun KiskacBoard(state: KiskacState, invalidMessage: KiskacInvalid?) {
     }
 }
 
-/** Alfabetik sınır kartı: kelime yoksa uçtaki harf soluk gösterilir. */
+/**
+ * Kıskaç çubuğu: iki sınır arasında gizli kelimenin sözlük konumu. Sol uç alt
+ * sınır (ya da A), sağ uç üst sınır (ya da Z); işaret gizli kelimedir.
+ */
 @Composable
-private fun BoundCard(word: String?, placeholder: String, label: String) {
+private fun SqueezeBar(fraction: Float, lower: String, upper: String, description: String) {
+    val density = LocalDensity.current
+    var trackWidth by remember { mutableIntStateOf(0) }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .semantics { contentDescription = description },
+    ) {
+        Text(
+            text = lower,
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Bold,
+            color = AccentPink.copy(alpha = 0.8f),
+        )
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(16.dp)
+                .onSizeChanged { trackWidth = it.width },
+            contentAlignment = Alignment.CenterStart,
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(6.dp)
+                    .clip(RoundedCornerShape(3.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+            )
+            val markerX = with(density) { (trackWidth * fraction.coerceIn(0f, 1f)).toDp() } - 7.dp
+            Box(
+                modifier = Modifier
+                    .offset(x = markerX.coerceAtLeast(0.dp))
+                    .size(14.dp)
+                    .clip(RoundedCornerShape(7.dp))
+                    .background(AccentPink),
+            )
+        }
+        Text(
+            text = upper,
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Bold,
+            color = AccentPink.copy(alpha = 0.8f),
+        )
+    }
+}
+
+/**
+ * Alfabetik sınır kartı: kelime yoksa uçtaki harf soluk gösterilir. [hint]
+ * sınır ile gizli kelime arasındaki kelime sayısıdır; üst sınırda kartın
+ * üstünde, alt sınırda altında durur (gizli kelimeye bakan tarafta).
+ */
+@Composable
+private fun BoundCard(
+    word: String?,
+    placeholder: String,
+    label: String,
+    hint: String? = null,
+    hintFirst: Boolean = false,
+) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        if (hintFirst) HintLine(hint)
         Text(
             text = label.uppercase(TrLocale),
             style = MaterialTheme.typography.labelSmall,
@@ -315,7 +404,19 @@ private fun BoundCard(word: String?, placeholder: String, label: String) {
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
             )
         }
+        if (!hintFirst) HintLine(hint)
     }
+}
+
+@Composable
+private fun HintLine(hint: String?) {
+    Text(
+        text = hint ?: " ",
+        style = MaterialTheme.typography.labelMedium,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.padding(vertical = 2.dp),
+    )
 }
 
 @Composable

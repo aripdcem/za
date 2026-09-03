@@ -2,13 +2,17 @@ package com.za.games.ui.kiskac
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.za.games.besharf.BesHarfWords
 import com.za.games.kiskac.KiskacState
 import com.za.games.kiskac.KiskacStatus
+import com.za.games.kiskac.TurkishOrder
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 enum class KiskacMode { DAILY, FREE }
@@ -26,6 +30,16 @@ class KiskacViewModel(application: Application) : AndroidViewModel(application) 
 
     private val _streak = MutableStateFlow(store.streak)
     val streak: StateFlow<Int> = _streak.asStateFlow()
+
+    /** Uzaklık ipucu için tahmin edilebilir tüm kelimeler Türkçe sırayla; arka planda dizilir. */
+    private val _sortedWords = MutableStateFlow<List<String>>(emptyList())
+    val sortedWords: StateFlow<List<String>> = _sortedWords.asStateFlow()
+
+    init {
+        viewModelScope.launch(Dispatchers.Default) {
+            _sortedWords.value = BesHarfWords.allowed.sortedWith(TurkishOrder::compare)
+        }
+    }
 
     private fun todayEpoch(): Long = LocalDate.now().toEpochDay()
 
