@@ -187,6 +187,34 @@
     <string name="kuyu_board_desc">Kuyu: derinlik %1$d m, can %2$d, mermi %3$d</string>
     <string name="kuyu_hint">◀ ▶ hareket · ● yerde zıpla, havada basılı tut: ateş</string>
 
+    <!-- Geçit -->
+    <string name="game_gecit">Geçit</string>
+    <string name="game_gecit_tagline">Karşıya geç: yol, ray, nehir; durursan kartal kapar</string>
+    <string name="gecit_intro">Dokun: ileri zıpla. Kaydır: yana ya da geri. Arabalardan ve trenden kaç, kütüklere bin, durma.</string>
+    <string name="gecit_daily_desc">Herkes bugün aynı yolu geçer; günde 3 deneme.</string>
+    <string name="gecit_daily_status_fmt">Bugün: %1$d/%2$d deneme · en iyi %3$d</string>
+    <string name="gecit_daily_exhausted">Bugünkü denemeler bitti; yarın yeni yol!</string>
+    <string name="gecit_start">Başla</string>
+    <string name="gecit_retry_fmt">Tekrar dene (%1$d kaldı)</string>
+    <string name="gecit_to_start">Başa dön</string>
+    <string name="gecit_attempt">Deneme</string>
+    <string name="gecit_attempt_fmt">%1$d/%2$d</string>
+    <string name="gecit_eagle">Kartal</string>
+    <string name="gecit_death_car">Araba çarptı</string>
+    <string name="gecit_death_train">Tren çarptı</string>
+    <string name="gecit_death_water">Suya düştün</string>
+    <string name="gecit_death_carried">Akıntı seni götürdü</string>
+    <string name="gecit_death_camera">Geride kaldın</string>
+    <string name="gecit_death_eagle">Kartal kaptı</string>
+    <string name="gecit_result_fmt">%1$d şerit · %2$d sn</string>
+    <string name="gecit_ctrl_forward">İleri zıpla</string>
+    <string name="gecit_ctrl_back">Geri zıpla</string>
+    <string name="gecit_ctrl_left">Sola zıpla</string>
+    <string name="gecit_ctrl_right">Sağa zıpla</string>
+    <string name="gecit_board_desc">Geçit: %1$d. şerit, skor %2$d</string>
+    <string name="gecit_hint">Dokun: ileri · kaydır: yan/geri · durma, kartal geliyor</string>
+    <string name="gecit_milestone_fmt">%1$d şerit!</string>
+
     <!-- Tahta açıklamaları (ekran okuyucu) -->
     <string name="tetris_board_desc">Tetris tahtası: seviye %1$d, %2$d satır, skor %3$d</string>
     <string name="snake_board_desc">Yılan tahtası: uzunluk %1$d, skor %2$d</string>

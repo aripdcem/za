@@ -525,3 +525,24 @@ fun KuyuArt(modifier: Modifier = Modifier) {
         drawCircle(enemy, radius = unit * 0.32f, center = Offset(unit * 3.45f, unit * 4.25f))
     }
 }
+
+/** Geçit kartı: nehir, yol ve çim şeritleri; kütük, arabalar ve ortada kurbağa. */
+@Composable
+fun GecitArt(modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        val lane = w / 5f
+        val lanes = listOf(
+            Color(0xFF1D4ED8), Color(0xFF334155), Color(0xFF3F6212), Color(0xFF334155), Color(0xFF4D7C0F),
+        )
+        lanes.forEachIndexed { i, color ->
+            drawRect(color, topLeft = Offset(0f, i * lane), size = Size(w, lane + 1f))
+        }
+        val r = CornerRadius(lane * 0.3f, lane * 0.3f)
+        drawRoundRect(Color(0xFF92400E), Offset(lane * 0.8f, lane * 0.2f), Size(lane * 2f, lane * 0.6f), r)
+        drawRoundRect(Color(0xFFF87171), Offset(lane * 3.2f, lane * 1.15f), Size(lane * 1.1f, lane * 0.7f), r)
+        drawRoundRect(Color(0xFFA3E635), Offset(lane * 2.2f, lane * 2.2f), Size(lane * 0.6f, lane * 0.6f), r)
+        drawRoundRect(Color(0xFFFBBF24), Offset(lane * 0.3f, lane * 3.15f), Size(lane * 1.9f, lane * 0.7f), r)
+        drawCircle(Color(0xFF166534), radius = lane * 0.32f, center = Offset(lane * 4.3f, lane * 4.45f))
+    }
+}

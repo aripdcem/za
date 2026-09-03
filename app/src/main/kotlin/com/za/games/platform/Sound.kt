@@ -29,6 +29,12 @@ enum class Sfx(@RawRes val res: Int) {
 
     /** Kuyu: düşmana basış. */
     STOMP(R.raw.sfx_stomp),
+
+    /** Geçit: zıplama. */
+    HOP(R.raw.sfx_hop),
+
+    /** Geçit: tren kornası (uyarı). */
+    HORN(R.raw.sfx_horn),
 }
 
 /**
