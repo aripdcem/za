@@ -1,6 +1,6 @@
 package com.za.games.kuyu
 
-/** Kuyu hücresi. [WALL] kırılmaz; [BLOCK] ve [GEM_BLOCK] mermiyle kırılır. */
+/** Kuyu hücresi. [WALL] ve [GATE] kırılmaz; [BLOCK], [GEM_BLOCK] ve [CHEST] mermiyle kırılır. */
 enum class Tile(val solid: Boolean, val breakable: Boolean) {
     EMPTY(false, false),
     WALL(true, false),
@@ -8,6 +8,12 @@ enum class Tile(val solid: Boolean, val breakable: Boolean) {
 
     /** Kırılınca taş bırakan blok. */
     GEM_BLOCK(true, true),
+
+    /** Duvar oyuğundaki hazine sandığı; kırılınca çok taş bırakır. */
+    CHEST(true, true),
+
+    /** Bölge sonu kapısı; bekçi ölünce açılır. */
+    GATE(true, false),
 }
 
 /**
@@ -33,6 +39,9 @@ enum class EnemyKind(
 
     /** Duvar boyunca aşağı yukarı tırmanan. */
     CRAWLER(2, 5, true, 2.8f, 0.7f, 0.8f),
+
+    /** Bölge sonu bekçisi: kapının üstünde salınır, yarasa çağırır. */
+    BOSS(12, 25, true, 2.4f, 2.6f, 1.6f),
 }
 
 /** Bir parçanın düşman doğum noktası; satır dünya satırıdır, hücre boştur. */

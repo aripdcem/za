@@ -24,6 +24,16 @@ object KuyuGen {
     const val AREA_CHUNKS = 8
 
     private const val BAND_ROWS = 4
+    private const val NICHE_CHANCE = 0.35f
+
+    /** Arenadaki kırılmaz çıkıntıların yerel satırları. */
+    val ARENA_LEDGE_ROWS = listOf(2, 5, 8, 11)
+
+    /** Bekçinin arenadaki yerel satırı; kapı son satırdadır. */
+    const val BOSS_ROW = 12
+
+    /** Sandık kırılınca bırakılan taş. */
+    const val CHEST_GEMS = 15
 
     /** splitmix64 karması; tüm rastgelelik buradan tohumlanır. */
     fun mix(seed: Long, a: Int, b: Int = 0): Long {
@@ -49,8 +59,12 @@ object KuyuGen {
     private fun blockOrGem(rng: Random): Tile =
         if (rng.nextFloat() < 0.3f) Tile.GEM_BLOCK else Tile.BLOCK
 
+    /** Her bölgenin son parçası bekçi arenasıdır. */
+    fun isBossChunk(index: Int): Boolean = index > 0 && (index + 1) % AREA_CHUNKS == 0
+
     fun chunk(seed: Long, index: Int): KuyuChunk {
         require(index >= 0) { "Parça dizini negatif olamaz" }
+        if (isBossChunk(index)) return arena(index)
         val rng = Random(mix(seed, index, 3))
         val tiles = Array(CHUNK_ROWS * WIDTH) { Tile.EMPTY }
         fun set(r: Int, c: Int, t: Tile) {
@@ -130,7 +144,47 @@ object KuyuGen {
                 }
             }
         }
+        if (index >= 1) niche(rng, tiles, left, right)
         return KuyuChunk(index, tiles, spawns(rng, index, tiles, left, right))
+    }
+
+    /**
+     * Bekçi arenası: ince duvarlar, dönüşümlü kırılmaz çıkıntılar (2, 5, 8, 11.
+     * satırlar), en altta kapı ve kapının üstünde salınan bekçi.
+     */
+    fun arena(index: Int): KuyuChunk {
+        val tiles = Array(CHUNK_ROWS * WIDTH) { Tile.EMPTY }
+        for (r in 0 until CHUNK_ROWS) {
+            tiles[r * WIDTH] = Tile.WALL
+            tiles[r * WIDTH + WIDTH - 1] = Tile.WALL
+        }
+        ARENA_LEDGE_ROWS.forEachIndexed { i, r ->
+            val onLeft = i % 2 == 0
+            for (k in 0 until 3) {
+                val c = if (onLeft) 1 + k else WIDTH - 2 - k
+                tiles[r * WIDTH + c] = Tile.WALL
+            }
+        }
+        for (c in 1 until WIDTH - 1) tiles[(CHUNK_ROWS - 1) * WIDTH + c] = Tile.GATE
+        val spawns = listOf(KuyuSpawn(EnemyKind.BOSS, index * CHUNK_ROWS + BOSS_ROW, WIDTH / 2))
+        return KuyuChunk(index, tiles, spawns)
+    }
+
+    /**
+     * Hazine oyuğu: kalınlığı 3 olan bir duvar bandının içine 2×2 boşluk, altında
+     * sandık. Oyuncu içeri girip sandığın üstünden aşağı ateş ederek açar.
+     */
+    private fun niche(rng: Random, tiles: Array<Tile>, left: IntArray, right: IntArray) {
+        if (rng.nextFloat() >= NICHE_CHANCE) return
+        val onLeft = rng.nextBoolean()
+        val candidates = (2 until CHUNK_ROWS - 3).filter { r ->
+            r % BAND_ROWS <= 1 && (0..2).all { k -> (if (onLeft) left[r + k] else right[r + k]) == 3 }
+        }
+        if (candidates.isEmpty()) return
+        val r = candidates[rng.nextInt(candidates.size)]
+        val cols = if (onLeft) intArrayOf(1, 2) else intArrayOf(WIDTH - 3, WIDTH - 2)
+        for (rr in r..r + 1) for (c in cols) tiles[rr * WIDTH + c] = Tile.EMPTY
+        tiles[(r + 2) * WIDTH + (if (onLeft) 1 else WIDTH - 2)] = Tile.CHEST
     }
 
     private fun spawns(
@@ -170,7 +224,7 @@ object KuyuGen {
             var kind = allowed[rng.nextInt(allowed.size)]
             val pool = when (kind) {
                 EnemyKind.BLOB, EnemyKind.SPIKY -> floorCells
-                EnemyKind.BAT -> airCells
+                EnemyKind.BAT, EnemyKind.BOSS -> airCells // bekçi yalnız arenada doğar
                 EnemyKind.CRAWLER -> wallCells
             }
             var candidates = pool.filter { it !in used }

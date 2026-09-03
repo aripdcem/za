@@ -187,6 +187,44 @@
     <string name="kuyu_board_desc">Well: depth %1$d m, health %2$d, ammo %3$d</string>
     <string name="kuyu_hint">◀ ▶ move · ● jump on the ground, hold in the air: fire</string>
 
+    <!-- Kuyu: phase 2 (guardian, upgrades, shop, treasure) -->
+    <string name="kuyu_choose_upgrade">Pick an upgrade</string>
+    <string name="kuyu_shop">Shop</string>
+    <string name="kuyu_wallet_fmt">Wallet: ◆ %1$d</string>
+    <string name="kuyu_price_fmt">◆ %1$d</string>
+    <string name="kuyu_bought">Bought</string>
+    <string name="kuyu_continue">Back down the well</string>
+    <string name="kuyu_guard">Guardian</string>
+    <string name="kuyu_chest">Treasure! +%1$d</string>
+    <string name="kuyu_gate_open">Gate opened</string>
+    <string name="kuyu_shield_used">Shield!</string>
+    <string name="kuyu_up_ammo">Bigger clip</string>
+    <string name="kuyu_up_ammo_desc">+2 ammo</string>
+    <string name="kuyu_up_heart">Extra heart</string>
+    <string name="kuyu_up_heart_desc">+1 max health, heals 1</string>
+    <string name="kuyu_up_spread">Spread shot</string>
+    <string name="kuyu_up_spread_desc">Three bullets per shot</string>
+    <string name="kuyu_up_rapid">Rapid boots</string>
+    <string name="kuyu_up_rapid_desc">Fires faster, hovers better</string>
+    <string name="kuyu_up_range">Long range</string>
+    <string name="kuyu_up_range_desc">Bullets travel farther</string>
+    <string name="kuyu_up_magnet">Gem magnet</string>
+    <string name="kuyu_up_magnet_desc">Gems come from twice as far</string>
+    <string name="kuyu_up_combo">Combo master</string>
+    <string name="kuyu_up_combo_desc">Double combo bonus</string>
+    <string name="kuyu_up_greed">Greed</string>
+    <string name="kuyu_up_greed_desc">Every enemy drops +1 gem</string>
+    <string name="kuyu_up_shield">Shield</string>
+    <string name="kuyu_up_shield_desc">Blocks one hit per area</string>
+    <string name="kuyu_up_jump">Spring legs</string>
+    <string name="kuyu_up_jump_desc">Jump 20 percent higher</string>
+    <string name="kuyu_shop_heal">Heal</string>
+    <string name="kuyu_shop_heal_desc">Restores full health</string>
+    <string name="kuyu_shop_ammo">Clip +1</string>
+    <string name="kuyu_shop_ammo_desc">One more permanent bullet</string>
+    <string name="kuyu_shop_life">Heart +1</string>
+    <string name="kuyu_shop_life_desc">One more permanent heart</string>
+
     <!-- Geçit -->
     <string name="game_gecit">Geçit</string>
     <string name="game_gecit_tagline">Cross over: roads, rails, rivers; stall and the eagle gets you</string>

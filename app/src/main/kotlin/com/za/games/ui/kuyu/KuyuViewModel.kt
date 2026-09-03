@@ -16,7 +16,7 @@ import kotlin.random.Random
 enum class KuyuMode { DAILY, FREE }
 
 /** Ekran evresi: kurulum kartı → oyun ⇄ duraklatma → bitiş kartı. */
-enum class KuyuPhase { MENU, PLAYING, PAUSED, OVER }
+enum class KuyuPhase { MENU, PLAYING, PAUSED, CHOOSING, OVER }
 
 /**
  * Simülasyonu süren katman. Kare döngüsü ekranda ([androidx.compose.runtime.withFrameNanos])
@@ -53,6 +53,10 @@ class KuyuViewModel(application: Application) : AndroidViewModel(application) {
     /** Her simülasyon karesinde artar; tuval bunu okuyarak yeniden çizilir. */
     private val _frame = MutableStateFlow(0L)
     val frame: StateFlow<Long> = _frame.asStateFlow()
+
+    /** Seçim kartındaki her seçim/alışverişte artar; kart yeniden çizilir. */
+    private val _offerRevision = MutableStateFlow(0)
+    val offerRevision: StateFlow<Int> = _offerRevision.asStateFlow()
 
     private var left = false
     private var right = false
@@ -105,7 +109,7 @@ class KuyuViewModel(application: Application) : AndroidViewModel(application) {
 
     /** Bitiş/duraklatma kartından: serbest modda aynı, günlükte serbest koşu. */
     fun restart() {
-        if (_phase.value == KuyuPhase.PLAYING || _phase.value == KuyuPhase.PAUSED) {
+        if (_phase.value != KuyuPhase.MENU && _phase.value != KuyuPhase.OVER) {
             saveDailyProgress(done = true)
         }
         if (runMode == KuyuMode.DAILY) _mode.value = KuyuMode.FREE
@@ -145,12 +149,46 @@ class KuyuViewModel(application: Application) : AndroidViewModel(application) {
             _frame.value += 1
             val hud = world.hud()
             if (hud != _hud.value) _hud.value = hud
-            if (world.status == KuyuStatus.OVER) {
-                _phase.value = KuyuPhase.OVER
-                saveDailyProgress(done = true)
+            when (world.status) {
+                KuyuStatus.OVER -> {
+                    _phase.value = KuyuPhase.OVER
+                    saveDailyProgress(done = true)
+                }
+                KuyuStatus.CHOOSING -> {
+                    _phase.value = KuyuPhase.CHOOSING
+                    left = false
+                    right = false
+                    fire = false
+                    saveDailyProgress(done = false)
+                }
+                KuyuStatus.RUNNING -> Unit
             }
         }
         return out
+    }
+
+    /** Seçim kartı: yükseltme seçimi, alışveriş ve kuyuya dönüş. */
+    fun chooseUpgrade(index: Int) {
+        if (world.chooseUpgrade(index)) {
+            _hud.value = world.hud()
+            _offerRevision.value += 1
+        }
+    }
+
+    fun buy(index: Int) {
+        if (world.buy(index)) {
+            _hud.value = world.hud()
+            _offerRevision.value += 1
+        }
+    }
+
+    fun continueRun() {
+        if (_phase.value != KuyuPhase.CHOOSING) return
+        if (world.resumeFromOffer()) {
+            accumulator = 0L
+            _hud.value = world.hud()
+            _phase.value = KuyuPhase.PLAYING
+        }
     }
 
     private fun saveDailyProgress(done: Boolean) {
@@ -184,7 +222,7 @@ class KuyuViewModel(application: Application) : AndroidViewModel(application) {
 
     /** Koşuyu bırakıp kurulum kartına döner; günlük koşunun o ana kadarki sonucu kalır. */
     fun toMenu() {
-        if (_phase.value == KuyuPhase.PLAYING || _phase.value == KuyuPhase.PAUSED) {
+        if (_phase.value != KuyuPhase.MENU && _phase.value != KuyuPhase.OVER) {
             saveDailyProgress(done = true)
         }
         left = false

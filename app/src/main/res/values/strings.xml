@@ -187,6 +187,44 @@
     <string name="kuyu_board_desc">Kuyu: derinlik %1$d m, can %2$d, mermi %3$d</string>
     <string name="kuyu_hint">◀ ▶ hareket · ● yerde zıpla, havada basılı tut: ateş</string>
 
+    <!-- Kuyu: 2. evre (bekçi, yükseltme, dükkân, hazine) -->
+    <string name="kuyu_choose_upgrade">Bir yükseltme seç</string>
+    <string name="kuyu_shop">Dükkân</string>
+    <string name="kuyu_wallet_fmt">Cüzdan: ◆ %1$d</string>
+    <string name="kuyu_price_fmt">◆ %1$d</string>
+    <string name="kuyu_bought">Alındı</string>
+    <string name="kuyu_continue">Kuyuya in</string>
+    <string name="kuyu_guard">Bekçi</string>
+    <string name="kuyu_chest">Hazine! +%1$d</string>
+    <string name="kuyu_gate_open">Kapı açıldı</string>
+    <string name="kuyu_shield_used">Kalkan!</string>
+    <string name="kuyu_up_ammo">Geniş şarjör</string>
+    <string name="kuyu_up_ammo_desc">+2 mermi</string>
+    <string name="kuyu_up_heart">Fazladan can</string>
+    <string name="kuyu_up_heart_desc">+1 can, 1 can iyileşir</string>
+    <string name="kuyu_up_spread">Yayılan atış</string>
+    <string name="kuyu_up_spread_desc">Her atışta üç mermi</string>
+    <string name="kuyu_up_rapid">Hızlı botlar</string>
+    <string name="kuyu_up_rapid_desc">Daha sık ateş, daha iyi askı</string>
+    <string name="kuyu_up_range">Uzun menzil</string>
+    <string name="kuyu_up_range_desc">Mermiler daha uzağa gider</string>
+    <string name="kuyu_up_magnet">Taş mıknatısı</string>
+    <string name="kuyu_up_magnet_desc">Taşlar iki kat uzaktan gelir</string>
+    <string name="kuyu_up_combo">Kombo ustası</string>
+    <string name="kuyu_up_combo_desc">Kombo bonusu iki kat</string>
+    <string name="kuyu_up_greed">Açgözlülük</string>
+    <string name="kuyu_up_greed_desc">Her düşman +1 taş bırakır</string>
+    <string name="kuyu_up_shield">Kalkan</string>
+    <string name="kuyu_up_shield_desc">Her bölgede bir vuruşu engeller</string>
+    <string name="kuyu_up_jump">Yaylı bacak</string>
+    <string name="kuyu_up_jump_desc">Zıplama yüzde 20 daha yüksek</string>
+    <string name="kuyu_shop_heal">İyileş</string>
+    <string name="kuyu_shop_heal_desc">Canı tamamen doldurur</string>
+    <string name="kuyu_shop_ammo">Şarjör +1</string>
+    <string name="kuyu_shop_ammo_desc">Kalıcı bir mermi daha</string>
+    <string name="kuyu_shop_life">Can +1</string>
+    <string name="kuyu_shop_life_desc">Kalıcı bir can daha</string>
+
     <!-- Geçit -->
     <string name="game_gecit">Geçit</string>
     <string name="game_gecit_tagline">Karşıya geç: yol, ray, nehir; durursan kartal kapar</string>
