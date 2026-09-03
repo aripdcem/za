@@ -3,6 +3,8 @@ package com.za.games.ui.kuyu
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
@@ -62,9 +65,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.za.games.R
 import com.za.games.kuyu.EnemyKind
 import com.za.games.kuyu.KuyuHud
+import com.za.games.kuyu.KuyuOffer
 import com.za.games.kuyu.KuyuWorld
 import com.za.games.kuyu.Player
+import com.za.games.kuyu.ShopItem
 import com.za.games.kuyu.Tile
+import com.za.games.kuyu.Upgrade
 import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
 import com.za.games.ui.common.GameTopBar
@@ -91,6 +97,11 @@ private val EnemyColor = KuyuFx.ENEMY
 private val GemColor = KuyuFx.GEM
 private val MuzzleColor = KuyuFx.MUZZLE
 private val DarkColor = Color(0xFF06121D)
+private val BossColor = Color(0xFF9333EA)
+private val GateColor = Color(0xFF1F2937)
+private val GateStripe = Color(0xFF9CA3AF)
+private val ChestColor = Color(0xFFD97706)
+private val ChestLid = Color(0xFF78350F)
 
 @Composable
 fun KuyuScreen(
@@ -105,6 +116,7 @@ fun KuyuScreen(
     val daily by viewModel.daily.collectAsStateWithLifecycle()
     val hud by viewModel.hud.collectAsStateWithLifecycle()
     val runId by viewModel.runId.collectAsStateWithLifecycle()
+    val offerRevision by viewModel.offerRevision.collectAsStateWithLifecycle()
     val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current
     val resources = LocalContext.current.resources
@@ -205,6 +217,8 @@ fun KuyuScreen(
         }
 
         StatusRow(hud)
+        val bossHp = hud.bossHp
+        if (bossHp != null) BossBar(hp = bossHp, maxHp = hud.bossMaxHp)
 
         Box(
             modifier = Modifier
@@ -247,6 +261,14 @@ fun KuyuScreen(
                     onMenu = viewModel::toMenu,
                     onExit = onExit,
                 )
+                KuyuPhase.CHOOSING -> ChoiceCard(
+                    offer = viewModel.world.offer,
+                    hud = hud,
+                    revision = offerRevision,
+                    onChoose = viewModel::chooseUpgrade,
+                    onBuy = viewModel::buy,
+                    onContinue = viewModel::continueRun,
+                )
                 KuyuPhase.PLAYING -> Unit
             }
         }
@@ -257,23 +279,35 @@ fun KuyuScreen(
 
 @Composable
 private fun StatusRow(hud: KuyuHud) {
-    val hpDesc = stringResource(R.string.kuyu_hp_desc_fmt, hud.hp, KuyuWorld.MAX_HP)
-    val ammoDesc = stringResource(R.string.kuyu_ammo_desc_fmt, hud.ammo, KuyuWorld.AMMO)
-    val gemsDesc = stringResource(R.string.kuyu_gems) + " " + hud.gems
+    val hpDesc = stringResource(R.string.kuyu_hp_desc_fmt, hud.hp, hud.maxHp)
+    val ammoDesc = stringResource(R.string.kuyu_ammo_desc_fmt, hud.ammo, hud.maxAmmo)
+    val gemsDesc = stringResource(R.string.kuyu_gems) + " " + hud.wallet
+    val shieldDesc = stringResource(R.string.kuyu_up_shield)
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Text(
-            text = "♥".repeat(hud.hp) + "♡".repeat(KuyuWorld.MAX_HP - hud.hp),
+            text = "♥".repeat(hud.hp) + "♡".repeat((hud.maxHp - hud.hp).coerceAtLeast(0)),
             color = MaterialTheme.colorScheme.error,
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.semantics { contentDescription = hpDesc },
         )
-        AmmoPips(ammo = hud.ammo, modifier = Modifier.semantics { contentDescription = ammoDesc })
+        if (hud.shieldReady) {
+            Text(
+                text = "🛡",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.semantics { contentDescription = shieldDesc },
+            )
+        }
+        AmmoPips(
+            ammo = hud.ammo,
+            maxAmmo = hud.maxAmmo,
+            modifier = Modifier.semantics { contentDescription = ammoDesc },
+        )
         Spacer(Modifier.weight(1f))
         if (hud.combo >= 2) {
             Text(
@@ -284,7 +318,7 @@ private fun StatusRow(hud: KuyuHud) {
             )
         }
         Text(
-            text = "◆ " + hud.gems,
+            text = "◆ " + hud.wallet,
             color = GemColor,
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.labelLarge,
@@ -294,21 +328,211 @@ private fun StatusRow(hud: KuyuHud) {
 }
 
 @Composable
-private fun AmmoPips(ammo: Int, modifier: Modifier = Modifier) {
+private fun AmmoPips(ammo: Int, maxAmmo: Int, modifier: Modifier = Modifier) {
+    val count = maxAmmo.coerceAtLeast(1)
     Canvas(
         modifier = modifier
-            .width(88.dp)
+            .width((count * 11).dp)
             .height(12.dp),
     ) {
         val gap = 3.dp.toPx()
-        val w = (size.width - gap * (KuyuWorld.AMMO - 1)) / KuyuWorld.AMMO
-        for (i in 0 until KuyuWorld.AMMO) {
+        val w = (size.width - gap * (count - 1)) / count
+        for (i in 0 until count) {
             drawRoundRect(
                 color = if (i < ammo) MuzzleColor else MuzzleColor.copy(alpha = 0.2f),
                 topLeft = Offset(i * (w + gap), 0f),
                 size = Size(w, size.height),
                 cornerRadius = CornerRadius(3f, 3f),
             )
+        }
+    }
+}
+
+/** Bekçi can çubuğu: arenaya girince görünür. */
+@Composable
+private fun BossBar(hp: Int, maxHp: Int) {
+    val fraction = if (maxHp > 0) (hp.toFloat() / maxHp).coerceIn(0f, 1f) else 0f
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 2.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            text = stringResource(R.string.kuyu_guard),
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Bold,
+            color = BossColor,
+        )
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(8.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(fraction)
+                    .fillMaxHeight()
+                    .background(BossColor),
+            )
+        }
+    }
+}
+
+private fun Upgrade.nameRes(): Int = when (this) {
+    Upgrade.AMMO -> R.string.kuyu_up_ammo
+    Upgrade.HEART -> R.string.kuyu_up_heart
+    Upgrade.SPREAD -> R.string.kuyu_up_spread
+    Upgrade.RAPID -> R.string.kuyu_up_rapid
+    Upgrade.RANGE -> R.string.kuyu_up_range
+    Upgrade.MAGNET -> R.string.kuyu_up_magnet
+    Upgrade.COMBO -> R.string.kuyu_up_combo
+    Upgrade.GREED -> R.string.kuyu_up_greed
+    Upgrade.SHIELD -> R.string.kuyu_up_shield
+    Upgrade.JUMP -> R.string.kuyu_up_jump
+}
+
+private fun Upgrade.descRes(): Int = when (this) {
+    Upgrade.AMMO -> R.string.kuyu_up_ammo_desc
+    Upgrade.HEART -> R.string.kuyu_up_heart_desc
+    Upgrade.SPREAD -> R.string.kuyu_up_spread_desc
+    Upgrade.RAPID -> R.string.kuyu_up_rapid_desc
+    Upgrade.RANGE -> R.string.kuyu_up_range_desc
+    Upgrade.MAGNET -> R.string.kuyu_up_magnet_desc
+    Upgrade.COMBO -> R.string.kuyu_up_combo_desc
+    Upgrade.GREED -> R.string.kuyu_up_greed_desc
+    Upgrade.SHIELD -> R.string.kuyu_up_shield_desc
+    Upgrade.JUMP -> R.string.kuyu_up_jump_desc
+}
+
+private fun ShopItem.nameRes(): Int = when (this) {
+    ShopItem.HEAL -> R.string.kuyu_shop_heal
+    ShopItem.AMMO_UP -> R.string.kuyu_shop_ammo
+    ShopItem.LIFE -> R.string.kuyu_shop_life
+}
+
+private fun ShopItem.descRes(): Int = when (this) {
+    ShopItem.HEAL -> R.string.kuyu_shop_heal_desc
+    ShopItem.AMMO_UP -> R.string.kuyu_shop_ammo_desc
+    ShopItem.LIFE -> R.string.kuyu_shop_life_desc
+}
+
+/**
+ * Bölge başı seçim kartı: bir ücretsiz yükseltme, taş karşılığı dükkân.
+ * [revision] her seçim/alışverişte değişir; teklif nesnesi yerinde güncellendiği
+ * için kartın yeniden çizilmesini sağlar.
+ */
+@Composable
+private fun ChoiceCard(
+    offer: KuyuOffer?,
+    hud: KuyuHud,
+    revision: Int,
+    onChoose: (Int) -> Unit,
+    onBuy: (Int) -> Unit,
+    onContinue: () -> Unit,
+) {
+    if (offer == null || revision < 0) return
+    OverlayCard {
+        Column(
+            modifier = Modifier
+                .heightIn(max = 520.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.kuyu_area_fmt, offer.area + 1),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = stringResource(R.string.kuyu_choose_upgrade),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            )
+            offer.upgrades.forEachIndexed { i, upgrade ->
+                val selected = offer.chosen == upgrade
+                val enabled = offer.chosen == null || selected
+                Surface(
+                    onClick = { onChoose(i) },
+                    enabled = enabled,
+                    shape = RoundedCornerShape(14.dp),
+                    color = if (selected) {
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.28f)
+                    } else {
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = if (enabled) 1f else 0.4f)
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
+                        Text(
+                            text = stringResource(upgrade.nameRes()),
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = if (selected) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onSurface
+                            },
+                        )
+                        Text(
+                            text = stringResource(upgrade.descRes()),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
+                        )
+                    }
+                }
+            }
+            Text(
+                text = stringResource(R.string.kuyu_shop) + " · " +
+                    stringResource(R.string.kuyu_wallet_fmt, hud.wallet),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            )
+            offer.shop.forEachIndexed { i, entry ->
+                val affordable = hud.wallet >= entry.price
+                val useful = entry.item != ShopItem.HEAL || hud.hp < hud.maxHp
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = stringResource(entry.item.nameRes()),
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Text(
+                            text = stringResource(entry.item.descRes()),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
+                        )
+                    }
+                    OutlinedButton(
+                        onClick = { onBuy(i) },
+                        enabled = !entry.bought && affordable && useful,
+                    ) {
+                        Text(
+                            text = if (entry.bought) {
+                                stringResource(R.string.kuyu_bought)
+                            } else {
+                                stringResource(R.string.kuyu_price_fmt, entry.price)
+                            },
+                        )
+                    }
+                }
+            }
+            Button(
+                onClick = onContinue,
+                enabled = offer.chosen != null || offer.upgrades.isEmpty(),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(stringResource(R.string.kuyu_continue))
+            }
         }
     }
 }
@@ -658,6 +882,26 @@ private fun DrawScope.drawTiles(
             val t = world.tile(r, c)
             if (t == Tile.EMPTY) continue
             val x = c * cell
+            if (t == Tile.GATE) {
+                drawRect(GateColor, Offset(x, y + inset), Size(cell + 1f, cell - 2 * inset))
+                var sx = x + cell * 0.1f
+                while (sx < x + cell) {
+                    drawRect(GateStripe, Offset(sx, y + inset), Size(cell * 0.1f, cell - 2 * inset))
+                    sx += cell * 0.3f
+                }
+                continue
+            }
+            if (t == Tile.CHEST) {
+                drawRoundRect(
+                    color = ChestColor,
+                    topLeft = Offset(x + inset, y + cell * 0.25f),
+                    size = Size(cell - 2 * inset, cell * 0.75f - inset),
+                    cornerRadius = corner,
+                )
+                drawRect(ChestLid, Offset(x + inset, y + cell * 0.25f), Size(cell - 2 * inset, cell * 0.12f))
+                drawRect(ChestLid, Offset(x + cell * 0.44f, y + cell * 0.25f), Size(cell * 0.12f, cell * 0.3f))
+                continue
+            }
             if (t == Tile.WALL) {
                 drawRect(palette.wall, Offset(x, y), Size(cell + 1f, cell + 1f))
                 if (c + 1 < KuyuWorld.WIDTH && !world.tile(r, c + 1).solid) {
@@ -774,6 +1018,25 @@ private fun DrawScope.drawEnemies(
                 for (i in 1..3) {
                     drawRect(DarkColor, Offset(x + w * 0.15f, y + h * (i / 4f)), Size(w * 0.7f, h * 0.06f))
                 }
+            }
+            EnemyKind.BOSS -> {
+                val body = if (e.hitFlash > 0) PlayerColor else BossColor
+                drawRoundRect(body, Offset(x, y), Size(w, h), CornerRadius(h * 0.35f, h * 0.35f))
+                val teeth = Path().apply {
+                    for (i in 0 until 5) {
+                        val left = x + w * (0.1f + i * 0.16f)
+                        moveTo(left, y + h * 0.78f)
+                        lineTo(left + w * 0.06f, y + h)
+                        lineTo(left + w * 0.12f, y + h * 0.78f)
+                        close()
+                    }
+                }
+                drawPath(teeth, DarkColor)
+                val eyeY = y + h * 0.38f
+                drawCircle(MuzzleColor, h * 0.12f, Offset(x + w * 0.32f, eyeY))
+                drawCircle(MuzzleColor, h * 0.12f, Offset(x + w * 0.68f, eyeY))
+                drawCircle(DarkColor, h * 0.05f, Offset(x + w * 0.32f + e.dir * h * 0.04f, eyeY))
+                drawCircle(DarkColor, h * 0.05f, Offset(x + w * 0.68f + e.dir * h * 0.04f, eyeY))
             }
         }
     }

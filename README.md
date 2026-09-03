@@ -123,6 +123,11 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 - **Günlük kuyu**: gün numarasından türeyen tohum, herkes aynı kuyuyu oynar, tek deneme; ayrıca serbest mod
 - Kontrol eli ayarı (sağ/sol): ateş tuşu başparmağın tarafına gelir; 60 Hz sabit adımlı simülasyon,
   aynı tohum + aynı girdi = aynı oyun
+- **Bölge sonu bekçisi**: her bölgenin son parçası arenadır; bekçi kapının üstünde salınır, yarasa çağırır,
+  ölünce kapı açılır. Yeni bölgede simülasyon durur: **3 yükseltmeden biri** (şarjör, can, yayılan atış, hızlı
+  botlar, menzil, mıknatıs, kombo, açgözlülük, kalkan, yaylı bacak) ve **taş karşılığı dükkân** (iyileş, şarjör +1,
+  can +1); harcamak skoru düşürmez. Teklifler tohumdan türer, günlük modda herkese aynı
+- **Hazine oyukları**: kalın duvarların içinde 2×2 oyuk ve altında sandık; üstünden aşağı ateş edince 15 taş
 - Skor = toplanan taş + derinlik (m); rekor = en yüksek skor
 
 ### Geçit

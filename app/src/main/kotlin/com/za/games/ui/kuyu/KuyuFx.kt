@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import com.za.games.R
+import com.za.games.kuyu.EnemyKind
 import com.za.games.kuyu.KuyuEvent
 import com.za.games.kuyu.KuyuWorld
 import com.za.games.platform.Sfx
@@ -84,9 +85,39 @@ internal class KuyuFx {
                 shake = maxOf(shake, 0.12f)
             }
             is KuyuEvent.Kill -> {
-                if (!event.stomp) sound?.play(Sfx.POP, volume = 0.7f, rate = 0.8f)
-                burst(event.x, event.y, 10, ENEMY, 5f, up = true)
+                if (event.kind == EnemyKind.BOSS) {
+                    sound?.play(Sfx.BIG)
+                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    burst(event.x, event.y, 24, ENEMY, 6f, up = true)
+                    shake = maxOf(shake, 0.3f)
+                } else {
+                    if (!event.stomp) sound?.play(Sfx.POP, volume = 0.7f, rate = 0.8f)
+                    burst(event.x, event.y, 10, ENEMY, 5f, up = true)
+                }
             }
+            is KuyuEvent.Chest -> {
+                sound?.play(Sfx.BIG, volume = 0.8f)
+                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                burst(event.col + 0.5f, event.row + 0.5f, 12, GEM, 4f, up = true)
+                texts += FloatingText(
+                    resources.getString(R.string.kuyu_chest, event.gems),
+                    event.col + 0.5f,
+                    event.row - 0.5f,
+                    GEM,
+                )
+            }
+            is KuyuEvent.GateOpen -> {
+                sound?.play(Sfx.CLEAR)
+                val gateRow = event.chunk * KuyuWorld.CHUNK_ROWS + KuyuWorld.CHUNK_ROWS - 0.5f
+                burst(KuyuWorld.WIDTH / 2f, gateRow, 16, BLOCK, 4f, up = true)
+                texts += FloatingText(resources.getString(R.string.kuyu_gate_open), p.centerX, p.y - 0.8f, PLAYER)
+            }
+            KuyuEvent.Shield -> {
+                sound?.play(Sfx.POP, volume = 0.6f, rate = 0.5f)
+                haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                texts += FloatingText(resources.getString(R.string.kuyu_shield_used), p.centerX, p.y - 0.6f, GEM)
+            }
+            is KuyuEvent.Offer -> Unit
             is KuyuEvent.BlockBreak -> {
                 sound?.play(Sfx.POP, volume = 0.35f, rate = 0.6f)
                 burst(event.col + 0.5f, event.row + 0.5f, 6, BLOCK, 3f, up = true)

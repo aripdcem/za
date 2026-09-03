@@ -39,6 +39,7 @@ class KuyuGenTest {
                 for (r in 0 until KuyuGen.CHUNK_ROWS) {
                     assertEquals(Tile.WALL, chunk.tile(r, 0))
                     assertEquals(Tile.WALL, chunk.tile(r, KuyuGen.WIDTH - 1))
+                    if ((0 until KuyuGen.WIDTH).any { chunk.tile(r, it) == Tile.GATE }) continue // kapı satırı
                     assertTrue(
                         "tohum $seed parça $index satır $r dar",
                         longestGap(chunk, r) >= KuyuGen.MIN_GAP,
@@ -65,9 +66,10 @@ class KuyuGenTest {
                     if (s.kind == EnemyKind.BLOB || s.kind == EnemyKind.SPIKY) {
                         assertTrue("zemin yok: $s", chunk.tile(r + 1, s.col).solid)
                     }
-                    if (KuyuGen.area(index) == 0) {
+                    if (KuyuGen.area(index) == 0 && !KuyuGen.isBossChunk(index)) {
                         assertTrue(s.kind == EnemyKind.BLOB || s.kind == EnemyKind.BAT)
                     }
+                    if (s.kind == EnemyKind.BOSS) assertTrue(KuyuGen.isBossChunk(index))
                 }
             }
         }
@@ -94,7 +96,8 @@ class KuyuGenTest {
         val w = KuyuGen.WIDTH
         for (seed in 1L..8L) {
             val world = KuyuWorld(seed)
-            fun open(r: Int, c: Int) = r in 0 until rows && c in 0 until w && !world.tile(r, c).solid
+            fun open(r: Int, c: Int) = r in 0 until rows && c in 0 until w &&
+                world.tile(r, c).let { !it.solid || it == Tile.GATE } // kapı bekçi ölünce açılır
             val startCol = floor(world.player.centerX).toInt()
             val startRow = floor(world.player.bottom - 0.01f).toInt()
             assertTrue(open(startRow, startCol))
