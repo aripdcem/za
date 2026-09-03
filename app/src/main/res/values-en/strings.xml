@@ -187,6 +187,34 @@
     <string name="kuyu_board_desc">Well: depth %1$d m, health %2$d, ammo %3$d</string>
     <string name="kuyu_hint">◀ ▶ move · ● jump on the ground, hold in the air: fire</string>
 
+    <!-- Geçit -->
+    <string name="game_gecit">Geçit</string>
+    <string name="game_gecit_tagline">Cross over: roads, rails, rivers; stall and the eagle gets you</string>
+    <string name="gecit_intro">Tap to hop forward, swipe to move sideways or back. Dodge cars and trains, ride the logs, keep moving.</string>
+    <string name="gecit_daily_desc">Everyone crosses the same road today; 3 attempts a day.</string>
+    <string name="gecit_daily_status_fmt">Today: %1$d/%2$d attempts · best %3$d</string>
+    <string name="gecit_daily_exhausted">Today\'s attempts are used up; a new road tomorrow!</string>
+    <string name="gecit_start">Start</string>
+    <string name="gecit_retry_fmt">Try again (%1$d left)</string>
+    <string name="gecit_to_start">Back to start</string>
+    <string name="gecit_attempt">Attempt</string>
+    <string name="gecit_attempt_fmt">%1$d/%2$d</string>
+    <string name="gecit_eagle">Eagle</string>
+    <string name="gecit_death_car">Hit by a car</string>
+    <string name="gecit_death_train">Hit by a train</string>
+    <string name="gecit_death_water">You fell in the water</string>
+    <string name="gecit_death_carried">The current carried you away</string>
+    <string name="gecit_death_camera">You fell behind</string>
+    <string name="gecit_death_eagle">The eagle got you</string>
+    <string name="gecit_result_fmt">%1$d lanes · %2$d s</string>
+    <string name="gecit_ctrl_forward">Hop forward</string>
+    <string name="gecit_ctrl_back">Hop back</string>
+    <string name="gecit_ctrl_left">Hop left</string>
+    <string name="gecit_ctrl_right">Hop right</string>
+    <string name="gecit_board_desc">Crossing: lane %1$d, score %2$d</string>
+    <string name="gecit_hint">Tap: forward · swipe: side/back · keep moving, the eagle is coming</string>
+    <string name="gecit_milestone_fmt">%1$d lanes!</string>
+
     <!-- Board descriptions (screen reader) -->
     <string name="tetris_board_desc">Tetris board: level %1$d, %2$d lines, score %3$d</string>
     <string name="snake_board_desc">Snake board: length %1$d, score %2$d</string>

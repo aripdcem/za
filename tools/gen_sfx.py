@@ -80,6 +80,12 @@ def main():
     # Kuyu, düşmana basış: tok, yaylanan vuruş.
     write("sfx_stomp.wav", tone(0.09, lambda t: 260 - 140 * t, "tri", 0.45, 6.0))
 
+    # Geçit, zıplama: kısa yükselen "hop".
+    write("sfx_hop.wav", tone(0.05, lambda t: 520 + 500 * t, "tri", 0.32, 5.0))
+
+    # Geçit, tren kornası: iki notalı, boğuk.
+    write("sfx_horn.wav", tone(0.12, lambda t: 466.16, "square", 0.26, 2.0) + tone(0.2, lambda t: 392.0, "square", 0.26, 3.0))
+
 
 if __name__ == "__main__":
     main()
