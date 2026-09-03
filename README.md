@@ -87,9 +87,9 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 - Karşılaştırma **Türk alfabesi sıralamasıyla** yapılır (c<ç, g<ğ, ı<i, o<ö, s<ş, u<ü) — Unicode değil
 - Sınırlara göre imkânsızlaşan baş harfler klavyede soluklaşır; 12 tahmin hakkı
 - Günlük + serbest mod, seri takibi; kelime listelerini Beş Harf ile paylaşır
-- **Uzaklık ipucu**: her sınır kartında gizli kelimenin o sınıra uzaklığı, aralığın yüzdesi olarak ("%30
-  uzakta" / "%70 uzakta"); sınırlar arasında konumu gösteren kıskaç çubuğu. Kör ikiye bölme yerine alfabetik
-  konum kestirme becerisi ödüllendirilir
+- **Uzaklık ipucu**: her sınır kartında gizli kelimenin o sınıra uzaklığı, tüm sözlük ölçeğinde yüzde olarak
+  (A = %0, Z = %100; "%18 uzakta" / "%15 uzakta"). Ölçek sabit olduğundan yeni bir tahmin yalnız taşınan sınırın
+  sayısını değiştirir; kör ikiye bölme yerine alfabetik konum kestirme becerisi ödüllendirilir
 
 ### Türetme
 - Verilen 6-7 harften türetilebilen **tüm alt kelimeleri** bul (en az 3 harf); harflere

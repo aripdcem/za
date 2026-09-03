@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -39,8 +38,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LifecycleResumeEffect
@@ -84,9 +81,12 @@ fun KiskacScreen(
     val distance = remember(state.answer, state.guesses, sortedWords) {
         if (sortedWords.isEmpty()) null else state.distance(sortedWords)
     }
-    // Aralık içindeki konum yüzde olarak; ikisi 100'e tamamlanır.
-    val percentLower = distance?.let { (it.fraction * 100f).roundToInt().coerceIn(0, 100) }
-    val percentUpper = percentLower?.let { 100 - it }
+    // Tüm sözlük ölçeğinde (A = %0, Z = %100) gizli kelimenin her sınıra uzaklığı;
+    // ölçek sabit olduğundan yeni bir tahmin yalnız taşınan sınırın sayısını değiştirir.
+    val percentLower = distance?.let { absolutePercent(it.answerIndex - it.lowerIndex.coerceAtLeast(0), it.size) }
+    val percentUpper = distance?.let {
+        absolutePercent(it.upperIndex.coerceAtMost(it.size - 1) - it.answerIndex, it.size)
+    }
     val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current
     val latestOnScore by rememberUpdatedState(onScore)
@@ -168,7 +168,6 @@ fun KiskacScreen(
         ) {
             KiskacBoard(
                 state = state,
-                fraction = distance?.fraction,
                 percentLower = percentLower,
                 percentUpper = percentUpper,
                 invalidMessage = invalidMessage,
@@ -255,10 +254,15 @@ private fun ModeChip(
     }
 }
 
+/** Sözlük ölçeğinde yüzde; sıfırdan büyük ama yarımdan küçük fark "%1" olarak gösterilir. */
+private fun absolutePercent(words: Int, size: Int): Int {
+    if (size <= 1 || words <= 0) return 0
+    return maxOf(1, (words * 100f / (size - 1)).roundToInt())
+}
+
 @Composable
 private fun KiskacBoard(
     state: KiskacState,
-    fraction: Float?,
     percentLower: Int?,
     percentUpper: Int?,
     invalidMessage: KiskacInvalid?,
@@ -290,15 +294,6 @@ private fun KiskacBoard(
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
         )
 
-        if (fraction != null && percentLower != null && percentUpper != null) {
-            SqueezeBar(
-                fraction = fraction,
-                lower = state.lowerBound?.take(2)?.upperTr() ?: "A",
-                upper = state.upperBound?.take(2)?.upperTr() ?: "Z",
-                description = stringResource(R.string.kiskac_dist_desc, percentLower, percentUpper),
-            )
-        }
-
         BoundCard(
             word = state.upperBound,
             placeholder = "Z",
@@ -315,59 +310,6 @@ private fun KiskacBoard(
             },
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.error,
-        )
-    }
-}
-
-/**
- * Kıskaç çubuğu: iki sınır arasında gizli kelimenin sözlük konumu. Sol uç alt
- * sınır (ya da A), sağ uç üst sınır (ya da Z); işaret gizli kelimedir.
- */
-@Composable
-private fun SqueezeBar(fraction: Float, lower: String, upper: String, description: String) {
-    val density = LocalDensity.current
-    var trackWidth by remember { mutableIntStateOf(0) }
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .semantics { contentDescription = description },
-    ) {
-        Text(
-            text = lower,
-            style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Bold,
-            color = AccentPink.copy(alpha = 0.8f),
-        )
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .height(16.dp)
-                .onSizeChanged { trackWidth = it.width },
-            contentAlignment = Alignment.CenterStart,
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(6.dp)
-                    .clip(RoundedCornerShape(3.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
-            )
-            val markerX = with(density) { (trackWidth * fraction.coerceIn(0f, 1f)).toDp() } - 7.dp
-            Box(
-                modifier = Modifier
-                    .offset(x = markerX.coerceAtLeast(0.dp))
-                    .size(14.dp)
-                    .clip(RoundedCornerShape(7.dp))
-                    .background(AccentPink),
-            )
-        }
-        Text(
-            text = upper,
-            style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Bold,
-            color = AccentPink.copy(alpha = 0.8f),
         )
     }
 }
