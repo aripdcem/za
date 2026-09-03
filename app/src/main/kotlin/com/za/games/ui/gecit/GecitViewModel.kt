@@ -7,6 +7,7 @@ import com.za.games.gecit.GecitHud
 import com.za.games.gecit.GecitStatus
 import com.za.games.gecit.GecitWorld
 import com.za.games.gecit.Move
+import com.za.games.platform.SettingsStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,6 +26,10 @@ enum class GecitPhase { MENU, PLAYING, PAUSED, OVER }
 class GecitViewModel(application: Application) : AndroidViewModel(application) {
 
     private val store = GecitStore(application)
+    private val settings = SettingsStore(application)
+
+    private val _leftHanded = MutableStateFlow(settings.leftHanded)
+    val leftHanded: StateFlow<Boolean> = _leftHanded.asStateFlow()
 
     private val _phase = MutableStateFlow(GecitPhase.MENU)
     val phase: StateFlow<GecitPhase> = _phase.asStateFlow()
@@ -57,6 +62,12 @@ class GecitViewModel(application: Application) : AndroidViewModel(application) {
 
     fun refreshDaily() {
         _daily.value = store.daily(todayEpoch())
+        _leftHanded.value = settings.leftHanded // başka oyunda değişmiş olabilir
+    }
+
+    fun setLeftHanded(value: Boolean) {
+        settings.leftHanded = value
+        _leftHanded.value = value
     }
 
     fun setMode(mode: GecitMode) {

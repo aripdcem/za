@@ -79,7 +79,10 @@ class KuyuPerks {
 
     fun apply(upgrade: Upgrade, player: Player) {
         when (upgrade) {
-            Upgrade.AMMO -> maxAmmo = min(maxAmmo + 2, MAX_AMMO)
+            Upgrade.AMMO -> {
+                maxAmmo = min(maxAmmo + 2, MAX_AMMO)
+                player.ammo = maxAmmo // etkisi hemen görülsün: şarjör dolar
+            }
             Upgrade.HEART -> {
                 maxHp = min(maxHp + 1, MAX_HP)
                 player.hp = min(maxHp, player.hp + 1)

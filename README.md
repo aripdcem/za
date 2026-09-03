@@ -121,8 +121,8 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 - Kuyu 12 sütun genişliğinde, 16 satırlık parçalarla tohumdan üretilir: her satırda en az 3 boşluk,
   dibe kadar geçilebilirlik testle garanti (`games/kuyu`); 3 bölge, derinlikle daha çok ve daha hızlı düşman
 - **Günlük kuyu**: gün numarasından türeyen tohum, herkes aynı kuyuyu oynar, tek deneme; ayrıca serbest mod
-- Kontrol eli ayarı (sağ/sol): ateş tuşu başparmağın tarafına gelir; 60 Hz sabit adımlı simülasyon,
-  aynı tohum + aynı girdi = aynı oyun
+- Kontrol eli ayarı (sağ/sol, Geçit ile ortak): ateş tuşu başparmağın tarafına gelir; 60 Hz sabit adımlı
+  simülasyon, aynı tohum + aynı girdi = aynı oyun
 - **Bölge sonu bekçisi**: her bölgenin son parçası arenadır; bekçi kapının üstünde salınır, yarasa çağırır,
   ölünce kapı açılır. Yeni bölgede simülasyon durur: **3 yükseltmeden biri** (şarjör, can, yayılan atış, hızlı
   botlar, menzil, mıknatıs, kombo, açgözlülük, kalkan, yaylı bacak) ve **taş karşılığı dükkân** (iyileş, şarjör +1,
@@ -131,8 +131,9 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 - Skor = toplanan taş + derinlik (m); rekor = en yüksek skor
 
 ### Geçit
-- **Karşıya geçiş** (Frogger/Crossy Road türü, kendi tasarımımız): 9 sütunluk ızgarada zıpla; dokun = ileri,
-  kaydır = yan/geri; ekranda yön tuşları da var
+- **Karşıya geçiş** (Frogger/Crossy Road türü, kendi tasarımımız): 9 sütunluk ızgarada zıpla. Altta iki
+  başparmak için büyük tuşlar: ◀ ▶ bir yanda, ▼ ve büyük ▲ öbür yanda; ileri tuşu seçilen başparmağın tarafında
+  (sağ/sol el ayarı Kuyu ile ortak), basılı tutunca art arda zıplar. Tahtada dokun = ileri, kaydır = yön
 - Şeritler tohumdan sonsuz üretilir: çim (ağaçlı), yol (araba/kamyon), demiryolu (uyarı ışığı, sonra tren),
   nehir (kütüğe bin, kütükle sürüklen; kenardan taşınırsan ölürsün); ilerledikçe daha hızlı ve daha sık tehlike
 - Çimdeki ağaçlar geçişi asla kapatmaz (üreteç her satırın bir önceki satırdan ulaşılabilir kalmasını garanti eder,

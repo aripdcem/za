@@ -238,6 +238,7 @@
     <string name="gecit_attempt">Attempt</string>
     <string name="gecit_attempt_fmt">%1$d/%2$d</string>
     <string name="gecit_gems">Gems</string>
+    <string name="gecit_hand_hint">The forward button sits on your thumb\'s side; shared with Kuyu</string>
     <string name="gecit_eagle">Eagle</string>
     <string name="gecit_death_car">Hit by a car</string>
     <string name="gecit_death_train">Hit by a train</string>

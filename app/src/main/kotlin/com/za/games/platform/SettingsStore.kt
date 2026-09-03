@@ -20,8 +20,18 @@ class SettingsStore(context: Context) {
             prefs.edit().putBoolean(KEY_HAPTICS, value).apply()
         }
 
+    /** Kontrol eli: true = sol el (ateş/ileri tuşu solda). Gerçek zamanlı oyunlar paylaşır. */
+    var leftHanded: Boolean
+        get() = prefs.getBoolean(KEY_LEFT_HANDED, false)
+        set(value) {
+            prefs.edit().putBoolean(KEY_LEFT_HANDED, value).apply()
+        }
+
+    val hasLeftHanded: Boolean get() = prefs.contains(KEY_LEFT_HANDED)
+
     private companion object {
         const val KEY_SOUND = "sound_enabled"
         const val KEY_HAPTICS = "haptics_enabled"
+        const val KEY_LEFT_HANDED = "left_handed"
     }
 }
