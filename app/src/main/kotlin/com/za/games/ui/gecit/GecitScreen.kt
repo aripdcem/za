@@ -64,6 +64,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.za.games.R
 import com.za.games.gecit.DeathCause
+import com.za.games.gecit.GecitGen
 import com.za.games.gecit.GecitHud
 import com.za.games.gecit.GecitStatus
 import com.za.games.gecit.GecitWorld
@@ -84,6 +85,7 @@ import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.sin
+import kotlin.random.Random
 
 private val GrassA = Color(0xFF3F6212)
 private val GrassB = Color(0xFF4D7C0F)
@@ -110,6 +112,11 @@ private val CarColors = listOf(
     Color(0xFFF87171), Color(0xFFFBBF24), Color(0xFF60A5FA),
     Color(0xFFF472B6), Color(0xFFA78BFA), Color(0xFFE2E8F0),
 )
+private val ShadowColor = Color(0x46000000)
+private val GemColor = GecitFx.GEM
+private val RiverEdge = Color(0xFF1E40AF)
+private val Flower = Color(0xFFFDE68A)
+private val Pebble = Color(0xFF65A30D)
 
 @Composable
 fun GecitScreen(
@@ -137,7 +144,7 @@ fun GecitScreen(
     LaunchedEffect(phase) {
         if (phase == GecitPhase.OVER) latestOnScore(hud.score)
     }
-    LaunchedEffect(runId) { fx.reset() }
+    LaunchedEffect(runId) { fx.reset(viewModel.world.camera) }
     LaunchedEffect(Unit) { viewModel.refreshDaily() }
     LifecycleResumeEffect(Unit) {
         onPauseOrDispose { viewModel.pause() }
@@ -158,7 +165,7 @@ fun GecitScreen(
                     for (event in viewModel.advance(dt)) {
                         fx.onEvent(event, world, sound, haptics, resources)
                     }
-                    fx.update(dt / 1_000_000_000f)
+                    fx.update(dt / 1_000_000_000f, world.camera)
                     fxTick.longValue += 1
                 }
                 last = now
@@ -234,6 +241,7 @@ fun GecitScreen(
 
         EagleBar(
             fraction = hud.idleFraction,
+            gems = hud.gems,
             visible = phase == GecitPhase.PLAYING || phase == GecitPhase.PAUSED,
         )
 
@@ -299,8 +307,9 @@ private fun formatTime(seconds: Int): String = "%d:%02d".format(seconds / 60, se
 
 /** Kartal sayacı: ileri gitmeden geçen sürenin oranı; dolunca kartal iner. */
 @Composable
-private fun EagleBar(fraction: Float, visible: Boolean) {
+private fun EagleBar(fraction: Float, gems: Int, visible: Boolean) {
     val alpha = if (visible) 1f else 0f
+    val gemsDesc = stringResource(R.string.gecit_gems) + " " + gems
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -333,6 +342,13 @@ private fun EagleBar(fraction: Float, visible: Boolean) {
                     ),
             )
         }
+        Text(
+            text = "◆ " + gems,
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Bold,
+            color = GemColor,
+            modifier = Modifier.semantics { contentDescription = gemsDesc },
+        )
     }
 }
 
@@ -566,7 +582,7 @@ private fun OverCard(
             )
         }
         Text(
-            text = stringResource(R.string.gecit_result_fmt, hud.score, hud.seconds),
+            text = stringResource(R.string.gecit_result_fmt, hud.score - hud.gems, hud.gems, hud.seconds),
             style = MaterialTheme.typography.bodySmall,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
@@ -650,7 +666,7 @@ private fun GecitCanvas(
         if (frame < 0L || fxTick.longValue < 0L) return@Canvas
         val world = viewModel.world
         val cell = size.width / GecitWorld.WIDTH
-        val camera = world.camera
+        val camera = if (fx.renderCamera.isNaN()) world.camera else fx.renderCamera
         val rowsVisible = size.height / cell
         drawRect(GrassA)
         translate(fx.shakeX * cell, fx.shakeY * cell) {
@@ -658,17 +674,57 @@ private fun GecitCanvas(
             val last = floor(camera + rowsVisible).toInt() + 1
             for (r in first..last) {
                 val top = size.height - (r + 1 - camera) * cell
-                drawLane(world.lane(r), r, top, cell, frame)
+                drawLane(world.lane(r), world.lane(r + 1), world.seed, r, top, cell, frame)
             }
-            drawPlayer(world, cell, camera)
-            drawEagle(world, cell, camera, frame)
+            drawPlayer(world, fx, cell, camera)
+            drawEagle(world, fx, cell, camera, frame)
             drawParticles(fx, cell, camera)
             drawTexts(fx, textMeasurer, textCache, cell, camera)
         }
     }
 }
 
-private fun DrawScope.drawLane(lane: Lane?, r: Int, top: Float, cell: Float, frame: Long) {
+/** Yerdeki nesnelerin altına yumuşak gölge: derinlik hissi. */
+private fun DrawScope.drawShadow(cx: Float, cy: Float, w: Float, h: Float) {
+    drawOval(ShadowColor, Offset(cx - w / 2f, cy - h / 2f), Size(w, h))
+}
+
+/** Çim süsleri: satır tohumundan türeyen çiçek ve çakıllar (ağaçsız hücrelerde). */
+private fun DrawScope.drawGrassDecor(lane: Lane, seed: Long, r: Int, top: Float, cell: Float) {
+    val rng = Random(GecitGen.mix(seed, r, 77))
+    val count = rng.nextInt(3)
+    repeat(count) {
+        val c = rng.nextInt(GecitWorld.WIDTH)
+        if (lane.trees[c] || lane.gemCol == c) return@repeat
+        val x = c * cell + cell * (0.2f + rng.nextFloat() * 0.6f)
+        val y = top + cell * (0.2f + rng.nextFloat() * 0.6f)
+        if (rng.nextBoolean()) {
+            drawCircle(Flower, cell * 0.07f, Offset(x, y))
+            drawCircle(Pebble, cell * 0.03f, Offset(x, y))
+        } else {
+            drawOval(Pebble, Offset(x - cell * 0.08f, y - cell * 0.05f), Size(cell * 0.16f, cell * 0.1f))
+        }
+    }
+}
+
+private fun DrawScope.drawGem(col: Int, top: Float, cell: Float, frame: Long) {
+    val bob = sin(frame * 0.12f) * cell * 0.06f
+    val cx = (col + 0.5f) * cell
+    val cy = top + cell * 0.5f + bob
+    drawShadow(cx, top + cell * 0.8f, cell * 0.3f, cell * 0.1f)
+    val r = cell * 0.2f
+    val path = Path().apply {
+        moveTo(cx, cy - r)
+        lineTo(cx + r * 0.7f, cy)
+        lineTo(cx, cy + r)
+        lineTo(cx - r * 0.7f, cy)
+        close()
+    }
+    drawPath(path, GemColor)
+    drawCircle(Color.White.copy(alpha = 0.8f), r * 0.18f, Offset(cx - r * 0.2f, cy - r * 0.35f))
+}
+
+private fun DrawScope.drawLane(lane: Lane?, above: Lane?, seed: Long, r: Int, top: Float, cell: Float, frame: Long) {
     val h = cell + 1f
     val w = size.width
     val grass = if (r % 2 == 0) GrassA else GrassB
@@ -680,15 +736,23 @@ private fun DrawScope.drawLane(lane: Lane?, r: Int, top: Float, cell: Float, fra
     when (lane.kind) {
         LaneKind.GRASS -> {
             drawRect(grass, Offset(0f, top), Size(w, h))
+            drawGrassDecor(lane, seed, r, top, cell)
+            if (lane.gemCol >= 0) drawGem(lane.gemCol, top, cell, frame)
             for (c in 0 until GecitWorld.WIDTH) if (lane.trees[c]) drawTree(c * cell, top, cell)
         }
         LaneKind.ROAD -> {
             drawRect(Road, Offset(0f, top), Size(w, h))
-            var x = cell * 0.2f
-            while (x < w) {
-                drawRect(RoadLine, Offset(x, top - cell * 0.02f), Size(cell * 0.4f, cell * 0.04f))
-                x += cell * 0.8f
+            if (above?.kind == LaneKind.ROAD) {
+                // Bitişik yol şeritleri arasında kesikli çizgi.
+                var x = cell * 0.2f
+                while (x < w) {
+                    drawRect(RoadLine, Offset(x, top - cell * 0.02f), Size(cell * 0.4f, cell * 0.04f))
+                    x += cell * 0.8f
+                }
+            } else {
+                drawRect(RoadLine.copy(alpha = 0.6f), Offset(0f, top), Size(w, cell * 0.04f))
             }
+            if (lane.gemCol >= 0) drawGem(lane.gemCol, top, cell, frame)
             for (m in lane.movers) drawCar(lane, m, top, cell)
         }
         LaneKind.RAIL -> {
@@ -708,6 +772,8 @@ private fun DrawScope.drawLane(lane: Lane?, r: Int, top: Float, cell: Float, fra
         }
         LaneKind.RIVER -> {
             drawRect(River, Offset(0f, top), Size(w, h))
+            drawRect(RiverEdge, Offset(0f, top), Size(w, cell * 0.08f))
+            drawRect(RiverEdge, Offset(0f, top + cell - cell * 0.08f), Size(w, cell * 0.08f))
             val drift = lane.phase * cell * 0.5f
             for (i in 0 until 8) {
                 val x = (((i * cell * 1.3f + drift) % (w + cell)) + (w + cell)) % (w + cell) - cell * 0.5f
@@ -719,8 +785,10 @@ private fun DrawScope.drawLane(lane: Lane?, r: Int, top: Float, cell: Float, fra
 }
 
 private fun DrawScope.drawTree(x: Float, top: Float, cell: Float) {
+    drawShadow(x + cell * 0.55f, top + cell * 0.88f, cell * 0.6f, cell * 0.2f)
     drawRect(Trunk, Offset(x + cell * 0.42f, top + cell * 0.5f), Size(cell * 0.16f, cell * 0.4f))
     drawCircle(Tree, cell * 0.36f, Offset(x + cell * 0.5f, top + cell * 0.4f))
+    drawCircle(Pebble.copy(alpha = 0.55f), cell * 0.14f, Offset(x + cell * 0.4f, top + cell * 0.3f))
 }
 
 private fun DrawScope.drawCar(lane: Lane, m: Mover, top: Float, cell: Float) {
@@ -729,12 +797,23 @@ private fun DrawScope.drawCar(lane: Lane, m: Mover, top: Float, cell: Float) {
     val px = x * cell
     val len = m.len * cell
     val color = CarColors[m.style % CarColors.size]
+    drawShadow(px + len / 2f + cell * 0.04f, top + cell * 0.55f, len, cell * 0.72f)
     drawRoundRect(
         color = color,
         topLeft = Offset(px + cell * 0.05f, top + cell * 0.15f),
         size = Size(len - cell * 0.1f, cell * 0.7f),
         cornerRadius = CornerRadius(cell * 0.2f, cell * 0.2f),
     )
+    if (m.len > 1) {
+        // Kamyon: arka kasa daha koyu, kabin önde.
+        val boxX = if (lane.dir > 0) px + cell * 0.05f else px + cell * 0.75f
+        drawRoundRect(
+            color = Glass.copy(alpha = 0.35f),
+            topLeft = Offset(boxX, top + cell * 0.12f),
+            size = Size(len - cell * 0.8f, cell * 0.76f),
+            cornerRadius = CornerRadius(cell * 0.12f, cell * 0.12f),
+        )
+    }
     val frontX = if (lane.dir > 0) px + len - cell * 0.6f else px + cell * 0.25f
     drawRect(Glass.copy(alpha = 0.6f), Offset(frontX, top + cell * 0.24f), Size(cell * 0.35f, cell * 0.52f))
     val lightX = if (lane.dir > 0) px + len - cell * 0.13f else px + cell * 0.06f
@@ -748,7 +827,9 @@ private fun DrawScope.drawCar(lane: Lane, m: Mover, top: Float, cell: Float) {
 private fun DrawScope.drawTrain(tx: Float, dir: Int, top: Float, cell: Float) {
     val px = tx * cell
     val len = Lane.TRAIN_LEN * cell
+    drawShadow(px + len / 2f, top + cell * 0.6f, len, cell * 0.9f)
     drawRect(TrainColor, Offset(px, top + cell * 0.08f), Size(len, cell * 0.84f))
+    drawRect(Light.copy(alpha = 0.5f), Offset(px, top + cell * 0.08f), Size(len, cell * 0.1f))
     var x = px + cell * 0.3f
     while (x < px + len - cell * 0.4f) {
         drawRect(TrainWindow, Offset(x, top + cell * 0.28f), Size(cell * 0.32f, cell * 0.3f))
@@ -763,6 +844,7 @@ private fun DrawScope.drawLog(lane: Lane, m: Mover, top: Float, cell: Float) {
     if (x + m.len < -0.5f || x > GecitWorld.WIDTH + 0.5f) return
     val px = x * cell
     val len = m.len * cell
+    drawShadow(px + len / 2f, top + cell * 0.58f, len, cell * 0.62f)
     drawRoundRect(
         color = LogColor,
         topLeft = Offset(px + cell * 0.03f, top + cell * 0.2f),
@@ -773,15 +855,20 @@ private fun DrawScope.drawLog(lane: Lane, m: Mover, top: Float, cell: Float) {
     drawCircle(LogEnd, cell * 0.18f, Offset(px + len - cell * 0.3f, top + cell * 0.5f))
 }
 
-private fun DrawScope.drawPlayer(world: GecitWorld, cell: Float, camera: Float) {
+private fun DrawScope.drawPlayer(world: GecitWorld, fx: GecitFx, cell: Float, camera: Float) {
     val p = world.player
     val t = p.hopT
+    val ease = 1f - (1f - t) * (1f - t)
     val arc = sin(PI.toFloat() * t)
-    val x = p.fromX + (p.x - p.fromX) * t
-    val row = p.fromRow + (p.row - p.fromRow) * t
+    val x = p.fromX + (p.x - p.fromX) * ease
+    val row = p.fromRow + (p.row - p.fromRow) * ease
     val cx = (x + 0.5f) * cell
-    val cy = size.height - (row + 0.5f - camera) * cell - arc * cell * 0.35f
     val cause = if (world.status == GecitStatus.OVER) world.cause else null
+    val lift = if (cause == DeathCause.EAGLE) fx.eagleLift else 0f
+    val cy = size.height - (row + 0.5f - camera) * cell - arc * cell * 0.35f - lift * cell
+    if (cause != DeathCause.WATER && cause != DeathCause.CARRIED) {
+        drawShadow(cx, size.height - (row + 0.15f - camera) * cell, cell * 0.6f * (1f - arc * 0.3f), cell * 0.2f)
+    }
     when (cause) {
         DeathCause.CAR, DeathCause.TRAIN -> {
             drawRoundRect(
@@ -834,13 +921,13 @@ private fun DrawScope.drawPlayer(world: GecitWorld, cell: Float, camera: Float) 
     }
 }
 
-private fun DrawScope.drawEagle(world: GecitWorld, cell: Float, camera: Float, frame: Long) {
+private fun DrawScope.drawEagle(world: GecitWorld, fx: GecitFx, cell: Float, camera: Float, frame: Long) {
     val dead = world.status == GecitStatus.OVER && world.cause == DeathCause.EAGLE
     val fraction = world.idleFraction
     if (!dead && (!world.started || fraction < 0.55f)) return
     val p = world.player
     val cx = (p.x + 0.5f) * cell
-    val cy = size.height - (p.row + 0.5f - camera) * cell
+    val cy = size.height - (p.row + 0.5f - camera) * cell - (if (dead) fx.eagleLift * cell else 0f)
     val a = if (dead) 1f else ((fraction - 0.55f) / 0.45f).coerceIn(0f, 1f)
     val rx = cell * (0.3f + 0.45f * a)
     drawOval(

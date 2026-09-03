@@ -17,6 +17,10 @@ sealed interface GecitEvent {
     data class Warning(val row: Int) : GecitEvent
     data class Train(val row: Int) : GecitEvent
     data class Milestone(val row: Int) : GecitEvent
+    data class Gem(val row: Int, val col: Int, val total: Int) : GecitEvent
+
+    /** Kartal yaklaşıyor: sayaç sınırın yüzde 65'ini geçti (bekleyiş başına bir kez). */
+    data object EagleNear : GecitEvent
     data class Over(val cause: DeathCause) : GecitEvent
 }
 
@@ -24,6 +28,7 @@ sealed interface GecitEvent {
 data class GecitHud(
     val score: Long,
     val row: Int,
+    val gems: Int,
     val seconds: Int,
     val idleFraction: Float,
     val status: GecitStatus,
@@ -62,6 +67,10 @@ class GecitWorld(
 
         /** İleri hamle yapmadan bu kadar bekleyen oyuncuyu kartal kapar. */
         const val IDLE_LIMIT = 3.5f
+
+        /** Yana/geri hamle sayacı en fazla buraya indirir: nefes aldırır, sonsuz oyalamayı önlemez. */
+        const val IDLE_SIDE_RESET = IDLE_LIMIT * 0.5f
+        const val EAGLE_NEAR = IDLE_LIMIT * 0.65f
         const val MILESTONE = 25
         private const val GEN_AHEAD = 10
 
@@ -83,8 +92,11 @@ class GecitWorld(
         private set
     var maxRow = 0
         private set
+    var gems = 0
+        private set
     var idle = 0f
         private set
+    private var eagleWarned = false
     var started = false
         private set
     var frames = 0
@@ -94,11 +106,12 @@ class GecitWorld(
         ensureRows(VIEW_ROWS + GEN_AHEAD)
     }
 
-    val score: Long get() = maxRow.toLong()
+    /** Skor = geçilen şerit + toplanan taş. */
+    val score: Long get() = (maxRow + gems).toLong()
     val seconds: Int get() = frames / 60
     val idleFraction: Float get() = (idle / IDLE_LIMIT).coerceIn(0f, 1f)
 
-    fun hud(): GecitHud = GecitHud(score, player.row, seconds, idleFraction, status, cause)
+    fun hud(): GecitHud = GecitHud(score, player.row, gems, seconds, idleFraction, status, cause)
 
     /** Satır şeridi; negatif satırlar (başlangıcın gerisi) yoktur. */
     fun lane(row: Int): Lane? {
@@ -122,7 +135,10 @@ class GecitWorld(
         frames++
         val p = player
         if (move != null) pending = move
-        if (p.hopT < 1f) p.hopT = min(1f, p.hopT + STEP / HOP_TIME)
+        if (p.hopT < 1f) {
+            p.hopT = min(1f, p.hopT + STEP / HOP_TIME)
+            if (p.hopT >= 1f) collectGem(p)
+        }
         if (p.hopT >= 1f) {
             val m = pending
             if (m != null) {
@@ -167,6 +183,10 @@ class GecitWorld(
         if (started) {
             camera += creep() * STEP
             idle += STEP
+            if (!eagleWarned && idle >= EAGLE_NEAR) {
+                eagleWarned = true
+                emit(GecitEvent.EagleNear)
+            }
         }
         camera = max(camera, p.row - BEHIND.toFloat())
         if (p.row + 1f <= camera) {
@@ -209,12 +229,27 @@ class GecitWorld(
         p.x = x2
         p.hopT = 0f
         started = true
-        if (m == Move.FORWARD) idle = 0f
+        if (m == Move.FORWARD) {
+            idle = 0f
+            eagleWarned = false
+        } else if (idle > IDLE_SIDE_RESET) {
+            idle = IDLE_SIDE_RESET
+        }
         if (p.row > maxRow) {
             maxRow = p.row
             if (maxRow % MILESTONE == 0) emit(GecitEvent.Milestone(maxRow))
         }
         emit(GecitEvent.Hop)
+    }
+
+    /** Zıplama bitince hücredeki taş alınır. */
+    private fun collectGem(p: Player) {
+        val lane = lanes[p.row]
+        val col = p.x.roundToInt()
+        if (lane.gemCol != col) return
+        lane.gemCol = -1
+        gems++
+        emit(GecitEvent.Gem(p.row, col, gems))
     }
 
     private fun die(cause: DeathCause) {

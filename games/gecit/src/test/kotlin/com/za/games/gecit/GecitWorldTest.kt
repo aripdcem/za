@@ -164,10 +164,59 @@ class GecitWorldTest {
         hop(world, Move.FORWARD)
         run(world, 150)
         assertEquals(GecitStatus.RUNNING, world.status)
-        // Yana zıplamak kartalı geciktirmez.
+        assertTrue(world.idle > GecitWorld.IDLE_SIDE_RESET)
+        // Yana zıplamak sayacı yarıya indirir ama sıfırlamaz.
         hop(world, Move.LEFT)
+        assertTrue(world.idle <= GecitWorld.IDLE_SIDE_RESET + 0.2f)
+        assertTrue(world.idle > 1f)
         run(world, 60)
+        assertEquals(GecitStatus.RUNNING, world.status)
+        run(world, 80)
         assertEquals(DeathCause.EAGLE, world.cause)
+    }
+
+    @Test
+    fun forwardHopResetsEagleAndSideHopsCannotStallForever() {
+        val world = world()
+        hop(world, Move.FORWARD)
+        run(world, 150)
+        hop(world, Move.FORWARD)
+        assertTrue(world.idle < 0.2f)
+        var frames = 0
+        while (world.status == GecitStatus.RUNNING && frames < 1200) {
+            world.step(if (frames % 60 == 0) (if ((frames / 60) % 2 == 0) Move.RIGHT else Move.LEFT) else null)
+            frames++
+        }
+        // Yana zıplayarak oyalanan ya kamerada kalır ya kartala gider; ikisi de ölümdür.
+        assertEquals(GecitStatus.OVER, world.status)
+        assertTrue(world.cause == DeathCause.CAMERA || world.cause == DeathCause.EAGLE)
+        assertTrue("$frames", frames in 600..1000)
+    }
+
+    @Test
+    fun eagleWarnsOncePerWait() {
+        val world = world()
+        hop(world, Move.FORWARD)
+        val events = run(world, 200)
+        assertEquals(1, events.count { it == GecitEvent.EagleNear })
+        assertEquals(GecitStatus.RUNNING, world.status)
+        hop(world, Move.FORWARD)
+        assertEquals(1, run(world, 200).count { it == GecitEvent.EagleNear })
+    }
+
+    @Test
+    fun gemsAreCollectedOnLandingAndCountTowardScore() {
+        val world = world({ r -> Lane(r, LaneKind.GRASS) }, { r -> Lane(r, LaneKind.GRASS, gemCol = 5) })
+        hop(world, Move.FORWARD)
+        assertEquals(0, world.gems)
+        val events = hop(world, Move.RIGHT)
+        assertEquals(1, world.gems)
+        assertTrue(events.any { it is GecitEvent.Gem && it.col == 5 && it.total == 1 })
+        assertEquals(-1, world.lane(1)!!.gemCol)
+        assertEquals(2L, world.score)
+        hop(world, Move.LEFT)
+        hop(world, Move.RIGHT)
+        assertEquals(1, world.gems)
     }
 
     @Test

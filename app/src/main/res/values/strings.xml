@@ -237,6 +237,7 @@
     <string name="gecit_to_start">Başa dön</string>
     <string name="gecit_attempt">Deneme</string>
     <string name="gecit_attempt_fmt">%1$d/%2$d</string>
+    <string name="gecit_gems">Taş</string>
     <string name="gecit_eagle">Kartal</string>
     <string name="gecit_death_car">Araba çarptı</string>
     <string name="gecit_death_train">Tren çarptı</string>
@@ -244,13 +245,13 @@
     <string name="gecit_death_carried">Akıntı seni götürdü</string>
     <string name="gecit_death_camera">Geride kaldın</string>
     <string name="gecit_death_eagle">Kartal kaptı</string>
-    <string name="gecit_result_fmt">%1$d şerit · %2$d sn</string>
+    <string name="gecit_result_fmt">%1$d şerit · %2$d taş · %3$d sn</string>
     <string name="gecit_ctrl_forward">İleri zıpla</string>
     <string name="gecit_ctrl_back">Geri zıpla</string>
     <string name="gecit_ctrl_left">Sola zıpla</string>
     <string name="gecit_ctrl_right">Sağa zıpla</string>
     <string name="gecit_board_desc">Geçit: %1$d. şerit, skor %2$d</string>
-    <string name="gecit_hint">Dokun: ileri · kaydır: yan/geri · durma, kartal geliyor</string>
+    <string name="gecit_hint">Dokun: ileri · kaydır: yan/geri · taşları topla, durma</string>
     <string name="gecit_milestone_fmt">%1$d şerit!</string>
 
     <!-- Tahta açıklamaları (ekran okuyucu) -->

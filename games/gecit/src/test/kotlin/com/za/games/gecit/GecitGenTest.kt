@@ -127,4 +127,23 @@ class GecitGenTest {
             assertEquals(a[i].movers.map { Triple(it.start, it.len, it.style) }, b[i].movers.map { Triple(it.start, it.len, it.style) })
         }
     }
+
+    @Test
+    fun earlyRoadsAreGentleAndGemsAppear() {
+        var gems = 0
+        for (seed in 1L..6L) {
+            for (lane in lanes(seed, 400)) {
+                if (lane.kind == LaneKind.ROAD && lane.row < GecitGen.GENTLE_ROWS) {
+                    assertTrue("tohum $seed satır ${lane.row} hız ${lane.speed}", lane.speed <= 2.6f)
+                    assertEquals(2, lane.movers.size)
+                }
+                if (lane.gemCol >= 0) {
+                    gems++
+                    assertTrue(lane.kind == LaneKind.GRASS || lane.kind == LaneKind.ROAD)
+                    if (lane.kind == LaneKind.GRASS) assertTrue(!lane.trees[lane.gemCol])
+                }
+            }
+        }
+        assertTrue("taş yok: $gems", gems > 60)
+    }
 }

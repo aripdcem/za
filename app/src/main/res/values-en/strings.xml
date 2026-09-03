@@ -237,6 +237,7 @@
     <string name="gecit_to_start">Back to start</string>
     <string name="gecit_attempt">Attempt</string>
     <string name="gecit_attempt_fmt">%1$d/%2$d</string>
+    <string name="gecit_gems">Gems</string>
     <string name="gecit_eagle">Eagle</string>
     <string name="gecit_death_car">Hit by a car</string>
     <string name="gecit_death_train">Hit by a train</string>
@@ -244,13 +245,13 @@
     <string name="gecit_death_carried">The current carried you away</string>
     <string name="gecit_death_camera">You fell behind</string>
     <string name="gecit_death_eagle">The eagle got you</string>
-    <string name="gecit_result_fmt">%1$d lanes · %2$d s</string>
+    <string name="gecit_result_fmt">%1$d lanes · %2$d gems · %3$d s</string>
     <string name="gecit_ctrl_forward">Hop forward</string>
     <string name="gecit_ctrl_back">Hop back</string>
     <string name="gecit_ctrl_left">Hop left</string>
     <string name="gecit_ctrl_right">Hop right</string>
     <string name="gecit_board_desc">Crossing: lane %1$d, score %2$d</string>
-    <string name="gecit_hint">Tap: forward · swipe: side/back · keep moving, the eagle is coming</string>
+    <string name="gecit_hint">Tap: forward · swipe: side/back · grab the gems, keep moving</string>
     <string name="gecit_milestone_fmt">%1$d lanes!</string>
 
     <!-- Board descriptions (screen reader) -->

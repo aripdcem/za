@@ -24,9 +24,14 @@ class Lane(
     val trees: BooleanArray = BooleanArray(GecitGen.WIDTH),
     val period: Float = 0f,
     initialTimer: Float = 0f,
+    gemCol: Int = -1,
 ) {
     var phase = 0f
         private set
+
+    /** Bu şeritte bekleyen taşın sütunu; yoksa ya da toplandıysa -1. */
+    var gemCol = gemCol
+        internal set
     var timer = initialTimer
         private set
 

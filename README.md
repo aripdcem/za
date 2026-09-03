@@ -137,7 +137,11 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   nehir (kütüğe bin, kütükle sürüklen; kenardan taşınırsan ölürsün); ilerledikçe daha hızlı ve daha sık tehlike
 - Çimdeki ağaçlar geçişi asla kapatmaz (üreteç her satırın bir önceki satırdan ulaşılabilir kalmasını garanti eder,
   testle doğrulanır); ilk hamleden sonra kamera yavaşça ilerler, 3,5 s ileri gitmeyeni kartal kapar
-- Skor = geçilen şerit; **günlük mod**: herkes aynı yolu geçer, günde 3 deneme, en iyisi kaydedilir; serbest mod
+- Çim ve yollarda **taşlar** (◆): üstüne zıplayınca alınır, her taş 1 puan; ilk 12 şerit yumuşak (yavaş, seyrek
+  araba); yana/geri zıplamak kartal sayacını yarıya indirir ama sıfırlamaz, kartal gelmeden çığlık uyarır
+- Skor = geçilen şerit + taş; **günlük mod**: herkes aynı yolu geçer, günde 3 deneme, en iyisi kaydedilir; serbest mod
+- Görsel derinlik: araç, kütük, ağaç ve kurbağa gölgeleri, çim süsleri, kamyon kasası, tren çatısı, yumuşak kamera ve
+  zıplama eğrisi, kartalın kurbağayı kaçırma animasyonu
 - 60 Hz sabit adım, aynı tohum + aynı hamleler = aynı oyun (`games/gecit`)
 
 ## Derleme

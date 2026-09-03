@@ -11,6 +11,7 @@ import com.za.games.gecit.GecitWorld
 import com.za.games.platform.Sfx
 import com.za.games.platform.SoundPlayer
 import kotlin.math.exp
+import kotlin.math.min
 import kotlin.random.Random
 
 /** Hücre biriminde parçacık; yalnızca çizim için. */
@@ -42,14 +43,28 @@ internal class GecitFx {
     private var shake = 0f
     private val rng = Random.Default
 
-    val isBusy: Boolean get() = particles.isNotEmpty() || texts.isNotEmpty() || shake > 0.005f
+    /** Çizim kamerası: motor kamerasını yumuşakça izler. */
+    var renderCamera = Float.NaN
+        private set
 
-    fun reset() {
+    /** Kartal ölümünde kurbağanın yukarı taşınma miktarı (hücre). */
+    var eagleLift = 0f
+        private set
+    private var eagleCarry = false
+
+    val isBusy: Boolean
+        get() = particles.isNotEmpty() || texts.isNotEmpty() || shake > 0.005f ||
+            (eagleCarry && eagleLift < EAGLE_LIFT_MAX)
+
+    fun reset(camera: Float) {
         particles.clear()
         texts.clear()
         shake = 0f
         shakeX = 0f
         shakeY = 0f
+        renderCamera = camera
+        eagleLift = 0f
+        eagleCarry = false
     }
 
     fun onEvent(
@@ -72,6 +87,12 @@ internal class GecitFx {
                 sound?.play(Sfx.DROP, volume = 0.5f, rate = 0.4f)
                 shake = maxOf(shake, 0.08f)
             }
+            is GecitEvent.Gem -> {
+                sound?.play(Sfx.POP, volume = 0.45f, rate = 1.5f + (event.total % 6) * 0.06f)
+                haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                burst(event.col + 0.5f, event.row.toFloat(), 6, GEM, 2f)
+            }
+            GecitEvent.EagleNear -> sound?.play(Sfx.SCREECH, volume = 0.6f)
             is GecitEvent.Milestone -> {
                 sound?.play(Sfx.CLEAR, volume = 0.7f)
                 haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
@@ -86,10 +107,14 @@ internal class GecitFx {
                         shake = maxOf(shake, 0.3f)
                     }
                     DeathCause.WATER, DeathCause.CARRIED -> {
-                        sound?.play(Sfx.DROP, volume = 0.7f, rate = 1.2f)
+                        sound?.play(Sfx.SPLASH, volume = 0.9f)
                         burst(p.centerX, p.row.toFloat(), 10, WATER, 2.5f)
                     }
-                    DeathCause.EAGLE -> shake = maxOf(shake, 0.15f)
+                    DeathCause.EAGLE -> {
+                        sound?.play(Sfx.SCREECH, volume = 0.9f, rate = 0.85f)
+                        shake = maxOf(shake, 0.15f)
+                        eagleCarry = true
+                    }
                     DeathCause.CAMERA -> Unit
                 }
                 sound?.play(Sfx.OVER)
@@ -111,8 +136,14 @@ internal class GecitFx {
         }
     }
 
-    fun update(dt: Float) {
+    fun update(dt: Float, cameraTarget: Float) {
         if (dt <= 0f) return
+        renderCamera = if (renderCamera.isNaN()) {
+            cameraTarget
+        } else {
+            renderCamera + (cameraTarget - renderCamera) * min(1f, 10f * dt)
+        }
+        if (eagleCarry) eagleLift = min(EAGLE_LIFT_MAX, eagleLift + 4f * dt)
         val it = particles.iterator()
         while (it.hasNext()) {
             val q = it.next()
@@ -147,5 +178,7 @@ internal class GecitFx {
         val DUST = Color(0xFFD9F99D)
         val CRASH = Color(0xFFF87171)
         val WATER = Color(0xFF93C5FD)
+        val GEM = Color(0xFF4DE1FF)
+        const val EAGLE_LIFT_MAX = 7f
     }
 }
