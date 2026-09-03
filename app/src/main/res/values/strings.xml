@@ -238,6 +238,7 @@
     <string name="gecit_attempt">Deneme</string>
     <string name="gecit_attempt_fmt">%1$d/%2$d</string>
     <string name="gecit_gems">Taş</string>
+    <string name="gecit_hand_hint">İleri tuşu başparmağının olduğu tarafa gelir; ayar Kuyu ile ortaktır</string>
     <string name="gecit_eagle">Kartal</string>
     <string name="gecit_death_car">Araba çarptı</string>
     <string name="gecit_death_train">Tren çarptı</string>

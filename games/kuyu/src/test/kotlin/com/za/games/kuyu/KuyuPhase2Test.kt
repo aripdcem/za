@@ -194,12 +194,16 @@ class KuyuPhase2Test {
         val world = KuyuWorld(1L, shaft(floors = setOf(12)))
         world.player.x = 5f
         world.player.y = 12f - KuyuWorld.PLAYER_H
+        world.player.ammo = 3
         world.grant(Upgrade.AMMO)
         assertEquals(KuyuWorld.AMMO + 2, world.perks.maxAmmo)
+        assertEquals(KuyuWorld.AMMO + 2, world.player.ammo) // hemen dolar
         world.player.y = 6f
+        run(world, 60, fire)
+        assertTrue(world.player.ammo < KuyuWorld.AMMO + 2)
         run(world, 120, none)
         assertTrue(world.player.grounded)
-        assertEquals(KuyuWorld.AMMO + 2, world.player.ammo)
+        assertEquals(KuyuWorld.AMMO + 2, world.player.ammo) // inişte tam şarjör
 
         val startY = world.player.y
         world.grant(Upgrade.JUMP)

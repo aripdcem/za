@@ -196,7 +196,10 @@ class KuyuWorld(
         if (entry.bought || wallet < entry.price) return false
         when (entry.item) {
             ShopItem.HEAL -> player.hp = perks.maxHp
-            ShopItem.AMMO_UP -> perks.maxAmmo = min(perks.maxAmmo + 1, KuyuPerks.MAX_AMMO)
+            ShopItem.AMMO_UP -> {
+                perks.maxAmmo = min(perks.maxAmmo + 1, KuyuPerks.MAX_AMMO)
+                player.ammo = perks.maxAmmo
+            }
             ShopItem.LIFE -> {
                 perks.maxHp = min(perks.maxHp + 1, KuyuPerks.MAX_HP)
                 player.hp = min(perks.maxHp, player.hp + 1)

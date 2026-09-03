@@ -1,6 +1,7 @@
 package com.za.games.ui.kuyu
 
 import android.content.Context
+import com.za.games.platform.SettingsStore
 
 /** Günün koşusu: başlandıysa kaydedilir; [done] koşu bittiğinde true olur. */
 data class KuyuDaily(val epochDay: Long, val score: Long, val depth: Int, val done: Boolean)
@@ -16,10 +17,21 @@ class KuyuStore(context: Context) {
     private val prefs =
         context.applicationContext.getSharedPreferences("za_kuyu", Context.MODE_PRIVATE)
 
+    private val settings = SettingsStore(context)
+
+    init {
+        // Önceki sürümlerde Kuyu'ya özel saklanan el tercihi ortak ayara taşınır.
+        if (prefs.contains(KEY_LEFT_HANDED)) {
+            if (!settings.hasLeftHanded) settings.leftHanded = prefs.getBoolean(KEY_LEFT_HANDED, false)
+            prefs.edit().remove(KEY_LEFT_HANDED).apply()
+        }
+    }
+
+    /** Ortak kontrol eli ayarı (Geçit ile paylaşılır). */
     var leftHanded: Boolean
-        get() = prefs.getBoolean(KEY_LEFT_HANDED, false)
+        get() = settings.leftHanded
         set(value) {
-            prefs.edit().putBoolean(KEY_LEFT_HANDED, value).apply()
+            settings.leftHanded = value
         }
 
     /** Günün koşusu; o gün hiç başlanmadıysa null. */

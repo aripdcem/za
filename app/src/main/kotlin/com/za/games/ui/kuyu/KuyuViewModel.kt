@@ -70,6 +70,7 @@ class KuyuViewModel(application: Application) : AndroidViewModel(application) {
     /** Gün değişmiş olabilir; ekrana girişte çağrılır. */
     fun refreshDaily() {
         _daily.value = store.daily(todayEpoch())
+        _leftHanded.value = store.leftHanded // başka oyunda değişmiş olabilir
     }
 
     fun setMode(mode: KuyuMode) {

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -59,6 +60,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -130,6 +132,7 @@ fun GecitScreen(
     val daily by viewModel.daily.collectAsStateWithLifecycle()
     val hud by viewModel.hud.collectAsStateWithLifecycle()
     val runId by viewModel.runId.collectAsStateWithLifecycle()
+    val leftHanded by viewModel.leftHanded.collectAsStateWithLifecycle()
     val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current
     val resources = LocalContext.current.resources
@@ -264,6 +267,8 @@ fun GecitScreen(
                 GecitPhase.MENU -> StartCard(
                     mode = mode,
                     daily = daily,
+                    leftHanded = leftHanded,
+                    onHand = viewModel::setLeftHanded,
                     onMode = viewModel::setMode,
                     onStart = startRun,
                     onExit = onExit,
@@ -271,6 +276,8 @@ fun GecitScreen(
                 GecitPhase.PAUSED -> PauseCard(
                     daily = mode == GecitMode.DAILY,
                     attemptsLeft = attemptsLeft,
+                    leftHanded = leftHanded,
+                    onHand = viewModel::setLeftHanded,
                     onResume = viewModel::resume,
                     onRestart = restartRun,
                     onMenu = viewModel::toMenu,
@@ -289,17 +296,7 @@ fun GecitScreen(
             }
         }
 
-        DPad(onMove = viewModel::move)
-
-        Text(
-            text = stringResource(R.string.gecit_hint),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp),
-        )
+        Controls(leftHanded = leftHanded, onMove = viewModel::move)
     }
 }
 
@@ -352,43 +349,98 @@ private fun EagleBar(fraction: Float, gems: Int, visible: Boolean) {
     }
 }
 
+/**
+ * Kontrol satırı, iki başparmak: yön tuşları bir yanda, geri ve büyük ileri
+ * tuşu öbür yanda; ileri tuşu seçilen başparmağın tarafındadır (ayar Kuyu ile
+ * ortak). Tuşlar basılı tutulunca art arda zıplatır.
+ */
 @Composable
-private fun DPad(onMove: (Move) -> Unit) {
+private fun Controls(leftHanded: Boolean, onMove: (Move) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 4.dp),
+            .padding(horizontal = 12.dp, vertical = 8.dp)
+            .height(84.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        PadButton(
-            label = "◀",
-            description = stringResource(R.string.gecit_ctrl_left),
-            modifier = Modifier
-                .weight(1f)
-                .height(56.dp),
-        ) { onMove(Move.LEFT) }
-        PadButton(
-            label = "▼",
-            description = stringResource(R.string.gecit_ctrl_back),
-            modifier = Modifier
-                .weight(1f)
-                .height(56.dp),
-        ) { onMove(Move.BACK) }
-        PadButton(
-            label = "▲",
-            description = stringResource(R.string.gecit_ctrl_forward),
-            modifier = Modifier
-                .weight(1.4f)
-                .height(56.dp),
-            accent = true,
-        ) { onMove(Move.FORWARD) }
-        PadButton(
-            label = "▶",
-            description = stringResource(R.string.gecit_ctrl_right),
-            modifier = Modifier
-                .weight(1f)
-                .height(56.dp),
-        ) { onMove(Move.RIGHT) }
+        if (leftHanded) {
+            HopButtons(forwardFirst = true, onMove = onMove)
+            Spacer(Modifier.weight(0.2f))
+            SideButtons(onMove)
+        } else {
+            SideButtons(onMove)
+            Spacer(Modifier.weight(0.2f))
+            HopButtons(forwardFirst = false, onMove = onMove)
+        }
+    }
+}
+
+@Composable
+private fun RowScope.SideButtons(onMove: (Move) -> Unit) {
+    PadButton(
+        label = "◀",
+        description = stringResource(R.string.gecit_ctrl_left),
+        modifier = Modifier
+            .weight(1f)
+            .fillMaxHeight(),
+        repeatIntervalMs = 170L,
+        fontSize = 26.sp,
+    ) { onMove(Move.LEFT) }
+    PadButton(
+        label = "▶",
+        description = stringResource(R.string.gecit_ctrl_right),
+        modifier = Modifier
+            .weight(1f)
+            .fillMaxHeight(),
+        repeatIntervalMs = 170L,
+        fontSize = 26.sp,
+    ) { onMove(Move.RIGHT) }
+}
+
+@Composable
+private fun RowScope.HopButtons(forwardFirst: Boolean, onMove: (Move) -> Unit) {
+    if (forwardFirst) ForwardButton(onMove)
+    PadButton(
+        label = "▼",
+        description = stringResource(R.string.gecit_ctrl_back),
+        modifier = Modifier
+            .weight(0.7f)
+            .fillMaxHeight(),
+        fontSize = 22.sp,
+    ) { onMove(Move.BACK) }
+    if (!forwardFirst) ForwardButton(onMove)
+}
+
+@Composable
+private fun RowScope.ForwardButton(onMove: (Move) -> Unit) {
+    PadButton(
+        label = "▲",
+        description = stringResource(R.string.gecit_ctrl_forward),
+        modifier = Modifier
+            .weight(1.5f)
+            .fillMaxHeight(),
+        repeatIntervalMs = 150L,
+        accent = true,
+        fontSize = 30.sp,
+    ) { onMove(Move.FORWARD) }
+}
+
+@Composable
+private fun HandChips(leftHanded: Boolean, onHand: (Boolean) -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        ModeChip(
+            label = stringResource(R.string.kuyu_hand_right),
+            selected = !leftHanded,
+            modifier = Modifier.weight(1f),
+        ) { onHand(false) }
+        ModeChip(
+            label = stringResource(R.string.kuyu_hand_left),
+            selected = leftHanded,
+            modifier = Modifier.weight(1f),
+        ) { onHand(true) }
     }
 }
 
@@ -428,6 +480,8 @@ private fun ModeChip(
 private fun StartCard(
     mode: GecitMode,
     daily: GecitDaily?,
+    leftHanded: Boolean,
+    onHand: (Boolean) -> Unit,
     onMode: (GecitMode) -> Unit,
     onStart: () -> Unit,
     onExit: () -> Unit,
@@ -484,6 +538,24 @@ private fun StartCard(
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
             )
         }
+        Text(
+            text = stringResource(R.string.kuyu_hand_label),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+        )
+        HandChips(leftHanded = leftHanded, onHand = onHand)
+        Text(
+            text = stringResource(R.string.gecit_hand_hint),
+            style = MaterialTheme.typography.labelSmall,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+        )
+        Text(
+            text = stringResource(R.string.gecit_hint),
+            style = MaterialTheme.typography.labelSmall,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+        )
         Spacer(Modifier.height(4.dp))
         if (mode == GecitMode.DAILY && exhausted) {
             Button(onClick = { onMode(GecitMode.FREE) }, modifier = Modifier.fillMaxWidth()) {
@@ -515,6 +587,8 @@ private fun RetryLabel(daily: Boolean, attemptsLeft: Int) {
 private fun PauseCard(
     daily: Boolean,
     attemptsLeft: Int,
+    leftHanded: Boolean,
+    onHand: (Boolean) -> Unit,
     onResume: () -> Unit,
     onRestart: () -> Unit,
     onMenu: () -> Unit,
@@ -526,6 +600,7 @@ private fun PauseCard(
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
         )
+        HandChips(leftHanded = leftHanded, onHand = onHand)
         Spacer(Modifier.height(4.dp))
         Button(onClick = onResume, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.resume))
@@ -632,7 +707,7 @@ private fun GecitCanvas(
             .clip(RoundedCornerShape(16.dp))
             .semantics { contentDescription = desc }
             .pointerInput(Unit) {
-                val threshold = 24.dp.toPx()
+                val threshold = 18.dp.toPx()
                 awaitEachGesture {
                     val down = awaitFirstDown()
                     var dx = 0f
