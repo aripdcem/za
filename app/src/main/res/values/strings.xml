@@ -96,9 +96,11 @@
     <string name="kiskac_lower_label">Gizli kelime bundan sonra</string>
     <string name="kiskac_upper_label">Gizli kelime bundan önce</string>
     <string name="kiskac_attempts_fmt">Tahmin: %1$d/%2$d</string>
-    <string name="kiskac_hint">Tahmin, kelimenin önünde mi sonrasında mı söyler; yüzdeler tüm sözlük ölçeğinde (A %%0, Z %%100) gizli kelimenin sınırlara uzaklığıdır</string>
+    <string name="kiskac_hint">Tahmin, kelimenin önünde mi sonrasında mı söyler; kolay modda sınırlara uzaklık yüzdesi görünür (A %%0, Z %%100)</string>
     <string name="kiskac_after_fmt">%%%1$d uzakta</string>
     <string name="kiskac_before_fmt">%%%1$d uzakta</string>
+    <string name="kiskac_easy_mode">Kolay mod</string>
+    <string name="kiskac_easy_mode_desc">Sınırlara uzaklık yüzdesi görünür</string>
     <string name="already_tried">Bunu zaten denedin</string>
 
     <!-- Türetme -->

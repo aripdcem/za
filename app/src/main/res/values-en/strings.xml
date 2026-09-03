@@ -96,9 +96,11 @@
     <string name="kiskac_lower_label">The hidden word comes after</string>
     <string name="kiskac_upper_label">The hidden word comes before</string>
     <string name="kiskac_attempts_fmt">Guesses: %1$d/%2$d</string>
-    <string name="kiskac_hint">Each guess says before or after; the percentages are the hidden word\'s distance from each bound on the whole-dictionary scale (A 0%%, Z 100%%)</string>
+    <string name="kiskac_hint">Each guess says before or after; easy mode shows the distance percentages to each bound (A 0%%, Z 100%%)</string>
     <string name="kiskac_after_fmt">%1$d%% away</string>
     <string name="kiskac_before_fmt">%1$d%% away</string>
+    <string name="kiskac_easy_mode">Easy mode</string>
+    <string name="kiskac_easy_mode_desc">Shows the distance percentages to each bound</string>
     <string name="already_tried">Already tried that one</string>
 
     <!-- Türetme -->

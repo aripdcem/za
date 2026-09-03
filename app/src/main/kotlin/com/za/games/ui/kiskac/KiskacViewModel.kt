@@ -31,6 +31,14 @@ class KiskacViewModel(application: Application) : AndroidViewModel(application) 
     private val _streak = MutableStateFlow(store.streak)
     val streak: StateFlow<Int> = _streak.asStateFlow()
 
+    private val _easyMode = MutableStateFlow(store.easyMode)
+    val easyMode: StateFlow<Boolean> = _easyMode.asStateFlow()
+
+    fun setEasyMode(value: Boolean) {
+        store.easyMode = value
+        _easyMode.value = value
+    }
+
     /** Uzaklık ipucu için tahmin edilebilir tüm kelimeler Türkçe sırayla; arka planda dizilir. */
     private val _sortedWords = MutableStateFlow<List<String>>(emptyList())
     val sortedWords: StateFlow<List<String>> = _sortedWords.asStateFlow()
