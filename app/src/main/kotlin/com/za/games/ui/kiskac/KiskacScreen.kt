@@ -47,7 +47,6 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.za.games.R
-import com.za.games.kiskac.KiskacDistance
 import com.za.games.kiskac.KiskacInvalid
 import com.za.games.kiskac.KiskacState
 import com.za.games.kiskac.KiskacStatus
@@ -56,7 +55,7 @@ import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
 import com.za.games.ui.common.GameTopBar
 import com.za.games.ui.common.OverlayCard
-import com.za.games.ui.common.formatScore
+import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
 import java.util.Locale
 
@@ -85,6 +84,9 @@ fun KiskacScreen(
     val distance = remember(state.answer, state.guesses, sortedWords) {
         if (sortedWords.isEmpty()) null else state.distance(sortedWords)
     }
+    // Aralık içindeki konum yüzde olarak; ikisi 100'e tamamlanır.
+    val percentLower = distance?.let { (it.fraction * 100f).roundToInt().coerceIn(0, 100) }
+    val percentUpper = percentLower?.let { 100 - it }
     val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current
     val latestOnScore by rememberUpdatedState(onScore)
@@ -164,7 +166,13 @@ fun KiskacScreen(
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center,
         ) {
-            KiskacBoard(state = state, distance = distance, invalidMessage = invalidMessage)
+            KiskacBoard(
+                state = state,
+                fraction = distance?.fraction,
+                percentLower = percentLower,
+                percentUpper = percentUpper,
+                invalidMessage = invalidMessage,
+            )
             if (state.status != KiskacStatus.RUNNING && showResult) {
                 ResultOverlay(
                     state = state,
@@ -248,7 +256,13 @@ private fun ModeChip(
 }
 
 @Composable
-private fun KiskacBoard(state: KiskacState, distance: KiskacDistance?, invalidMessage: KiskacInvalid?) {
+private fun KiskacBoard(
+    state: KiskacState,
+    fraction: Float?,
+    percentLower: Int?,
+    percentUpper: Int?,
+    invalidMessage: KiskacInvalid?,
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -258,7 +272,7 @@ private fun KiskacBoard(state: KiskacState, distance: KiskacDistance?, invalidMe
             word = state.lowerBound,
             placeholder = "A",
             label = stringResource(R.string.kiskac_lower_label),
-            hint = distance?.let { stringResource(R.string.kiskac_after_fmt, formatScore(it.fromLower.toLong())) },
+            hint = percentLower?.let { stringResource(R.string.kiskac_after_fmt, it) },
         )
 
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -276,16 +290,12 @@ private fun KiskacBoard(state: KiskacState, distance: KiskacDistance?, invalidMe
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
         )
 
-        if (distance != null) {
+        if (fraction != null && percentLower != null && percentUpper != null) {
             SqueezeBar(
-                fraction = distance.fraction,
+                fraction = fraction,
                 lower = state.lowerBound?.take(2)?.upperTr() ?: "A",
                 upper = state.upperBound?.take(2)?.upperTr() ?: "Z",
-                description = stringResource(
-                    R.string.kiskac_dist_desc,
-                    distance.fromLower,
-                    distance.toUpper,
-                ),
+                description = stringResource(R.string.kiskac_dist_desc, percentLower, percentUpper),
             )
         }
 
@@ -293,7 +303,7 @@ private fun KiskacBoard(state: KiskacState, distance: KiskacDistance?, invalidMe
             word = state.upperBound,
             placeholder = "Z",
             label = stringResource(R.string.kiskac_upper_label),
-            hint = distance?.let { stringResource(R.string.kiskac_before_fmt, formatScore(it.toUpper.toLong())) },
+            hint = percentUpper?.let { stringResource(R.string.kiskac_before_fmt, it) },
             hintFirst = true,
         )
 
