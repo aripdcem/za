@@ -71,7 +71,13 @@ class GecitGen(private val seed: Long) {
             trees[c] = false
             reach = reachable(trees, prevReach)
         }
-        return Lane(row, LaneKind.GRASS, trees = trees).also { it.reach = reach }
+        val gem = if (row >= 3 && rng.nextFloat() < GEM_CHANCE_GRASS) {
+            val open = (0 until WIDTH).filter { !trees[it] }
+            if (open.isEmpty()) -1 else open[rng.nextInt(open.size)]
+        } else {
+            -1
+        }
+        return Lane(row, LaneKind.GRASS, trees = trees, gemCol = gem).also { it.reach = reach }
     }
 
     /** Boş sütunların yatay bileşenlerinden, önceki satırdan ulaşılabilene bağlı olanlar. */
@@ -93,11 +99,14 @@ class GecitGen(private val seed: Long) {
 
     private fun road(row: Int, rng: Random, d: Float): Lane {
         val dir = if (rng.nextBoolean()) 1 else -1
-        val speed = 2.2f + 3.2f * d + rng.nextFloat()
-        val count = 2 + rng.nextInt(2 + (2 * d).toInt())
+        // İlk yollar yumuşak: yavaş, seyrek.
+        val gentle = row < GENTLE_ROWS
+        val speed = if (gentle) 2.0f + rng.nextFloat() * 0.6f else 2.2f + 3.2f * d + rng.nextFloat()
+        val count = if (gentle) 2 else 2 + rng.nextInt(2 + (2 * d).toInt())
         val minGap = if (d < 0.5f) 3 else 2
         val movers = layout(rng, count, minGap, styles = 6) { if (rng.nextFloat() < 0.3f) 2 else 1 }
-        return Lane(row, LaneKind.ROAD, dir, speed, movers)
+        val gem = if (rng.nextFloat() < GEM_CHANCE_ROAD) rng.nextInt(WIDTH) else -1
+        return Lane(row, LaneKind.ROAD, dir, speed, movers, gemCol = gem)
     }
 
     private fun river(row: Int, rng: Random, d: Float): Lane {
@@ -149,6 +158,11 @@ class GecitGen(private val seed: Long) {
         const val START_COL = 4
         const val RIVER_FROM = 6
         const val RAIL_FROM = 14
+
+        /** Bu şeritten önceki yollar yavaş ve seyrektir. */
+        const val GENTLE_ROWS = 12
+        const val GEM_CHANCE_GRASS = 0.10f
+        const val GEM_CHANCE_ROAD = 0.06f
 
         /** 0 → 1 arası zorluk; 160. şeritte tavan. */
         fun difficulty(row: Int): Float = min(1f, row / 160f)

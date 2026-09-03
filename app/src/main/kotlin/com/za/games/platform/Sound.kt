@@ -35,6 +35,12 @@ enum class Sfx(@RawRes val res: Int) {
 
     /** Geçit: tren kornası (uyarı). */
     HORN(R.raw.sfx_horn),
+
+    /** Geçit: kartal çığlığı (yaklaşıyor). */
+    SCREECH(R.raw.sfx_screech),
+
+    /** Geçit: suya düşüş. */
+    SPLASH(R.raw.sfx_splash),
 }
 
 /**

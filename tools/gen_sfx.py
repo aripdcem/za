@@ -86,6 +86,12 @@ def main():
     # Geçit, tren kornası: iki notalı, boğuk.
     write("sfx_horn.wav", tone(0.12, lambda t: 466.16, "square", 0.26, 2.0) + tone(0.2, lambda t: 392.0, "square", 0.26, 3.0))
 
+    # Geçit, kartal çığlığı: titreşimli, inen tiz ses.
+    write("sfx_screech.wav", tone(0.22, lambda t: 1500 - 500 * t + 120 * math.sin(90 * t), "square", 0.22, 3.0))
+
+    # Geçit, suya düşüş: tok, hızla inen "plop".
+    write("sfx_splash.wav", tone(0.12, lambda t: 420 - 300 * t, "tri", 0.40, 6.0))
+
 
 if __name__ == "__main__":
     main()
