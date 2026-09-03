@@ -12,7 +12,24 @@ object TurkishOrder {
     private val ranks: Map<Char, Int> =
         LETTERS.withIndex().associate { (index, letter) -> letter to index }
 
-    fun rankOf(letter: Char): Int = ranks.getValue(letter)
+    /** Tablo dışı bir karakter (olmamalı) alfabenin sonuna sıralanır; çökmez. */
+    fun rankOf(letter: Char): Int = ranks[letter] ?: (LETTERS.length + letter.code)
+
+    /** [sorted] bu sıralamayla dizilmiş olmalı; bulunamazsa ekleme noktası döner. */
+    fun indexOf(sorted: List<String>, word: String): Int {
+        var low = 0
+        var high = sorted.size - 1
+        while (low <= high) {
+            val mid = (low + high) ushr 1
+            val c = compare(sorted[mid], word)
+            when {
+                c < 0 -> low = mid + 1
+                c > 0 -> high = mid - 1
+                else -> return mid
+            }
+        }
+        return low
+    }
 
     fun compare(a: String, b: String): Int {
         val n = minOf(a.length, b.length)
@@ -25,6 +42,32 @@ object TurkishOrder {
 }
 
 enum class KiskacStatus { RUNNING, WON, LOST }
+
+/**
+ * Sınırlar ile gizli kelime arasındaki uzaklık, sözlük sırasındaki konumlarla
+ * ölçülür. Sınır yoksa listenin başı/sonu sınır sayılır.
+ */
+data class KiskacDistance(
+    val answerIndex: Int,
+    /** Alt sınırın dizini; sınır yoksa -1. */
+    val lowerIndex: Int,
+    /** Üst sınırın dizini; sınır yoksa liste boyu. */
+    val upperIndex: Int,
+    val size: Int,
+) {
+    /** Alt sınırdan (ya da A'dan) gizli kelimeye kaç kelime sonra. */
+    val fromLower: Int get() = answerIndex - lowerIndex
+
+    /** Gizli kelimeden üst sınıra (ya da Z'ye) kaç kelime önce. */
+    val toUpper: Int get() = upperIndex - answerIndex
+
+    /** Gizli kelimenin iki sınır arasındaki konumu, 0 (alt) ile 1 (üst) arasında. */
+    val fraction: Float
+        get() {
+            val span = upperIndex - lowerIndex
+            return if (span <= 0) 0.5f else fromLower.toFloat() / span
+        }
+}
 
 enum class KiskacInvalid { NOT_IN_LIST, ALREADY_TRIED }
 
@@ -65,6 +108,17 @@ data class KiskacState(
             .filter { !it.hiddenIsAfter }
             .map { it.word }
             .minWithOrNull { a, b -> TurkishOrder.compare(a, b) }
+
+    /**
+     * Uzaklık ipucu: [sorted], oyuncunun tahmin edebileceği tüm kelimelerin
+     * [TurkishOrder] ile dizilmiş listesi olmalı.
+     */
+    fun distance(sorted: List<String>): KiskacDistance = KiskacDistance(
+        answerIndex = TurkishOrder.indexOf(sorted, answer),
+        lowerIndex = lowerBound?.let { TurkishOrder.indexOf(sorted, it) } ?: -1,
+        upperIndex = upperBound?.let { TurkishOrder.indexOf(sorted, it) } ?: sorted.size,
+        size = sorted.size,
+    )
 
     /** Sınırlara göre hâlâ mümkün olan baş harfler (klavye soluklaştırma). */
     fun possibleFirstLetters(): Set<Char> {

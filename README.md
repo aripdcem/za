@@ -87,6 +87,9 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 - Karşılaştırma **Türk alfabesi sıralamasıyla** yapılır (c<ç, g<ğ, ı<i, o<ö, s<ş, u<ü) — Unicode değil
 - Sınırlara göre imkânsızlaşan baş harfler klavyede soluklaşır; 12 tahmin hakkı
 - Günlük + serbest mod, seri takibi; kelime listelerini Beş Harf ile paylaşır
+- **Uzaklık ipucu**: her sınır kartında sınır ile gizli kelime arasındaki sözlük kelimesi sayısı ("214 kelime
+  sonra"), sınırlar arasında gizli kelimenin konumunu gösteren kıskaç çubuğu; kör ikiye bölme yerine alfabetik
+  konum kestirme becerisi ödüllendirilir
 
 ### Türetme
 - Verilen 6-7 harften türetilebilen **tüm alt kelimeleri** bul (en az 3 harf); harflere
