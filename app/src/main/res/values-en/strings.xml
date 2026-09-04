@@ -259,6 +259,53 @@
     <string name="gecit_hint">Tap: forward · swipe: side/back · grab the gems, keep moving</string>
     <string name="gecit_milestone_fmt">%1$d lanes!</string>
 
+    <!-- Tavla -->
+    <string name="game_tavla">Tavla</string>
+    <string name="game_tavla_tagline">Classic, Tapa and Hapis backgammon: vs the computer or a friend</string>
+    <string name="tavla_mode_klasik">Classic</string>
+    <string name="tavla_mode_tapa">Tapa</string>
+    <string name="tavla_mode_hapis">Hapis</string>
+    <string name="tavla_mode_desc_klasik">Blots are hit and re-enter from the bar</string>
+    <string name="tavla_mode_desc_tapa">No hitting, checkers get pinned; all 15 start on the 24-point</string>
+    <string name="tavla_mode_desc_hapis">No hitting, checkers get pinned; classic setup</string>
+    <string name="tavla_opponent_label">Opponent</string>
+    <string name="tavla_opponent_computer">Computer</string>
+    <string name="tavla_opponent_human">Two players</string>
+    <string name="tavla_target_label">Match</string>
+    <string name="tavla_target_fmt">%1$d points</string>
+    <string name="tavla_nopin">No pinning in the opponent\'s home board</string>
+    <string name="tavla_cube">Doubling cube</string>
+    <string name="tavla_cube_desc">Offer to double the stakes before rolling; accept or resign</string>
+    <string name="tavla_start">Start</string>
+    <string name="tavla_you">You</string>
+    <string name="tavla_computer">Computer</string>
+    <string name="tavla_player_fmt">Player %1$d</string>
+    <string name="tavla_game_fmt">Game %1$d · to %2$d</string>
+    <string name="tavla_turn_fmt">Turn: %1$s</string>
+    <string name="tavla_roll">Roll</string>
+    <string name="tavla_double">Double</string>
+    <string name="tavla_no_moves">No legal moves, passing</string>
+    <string name="tavla_opening_fmt">Opening %1$d–%2$d: %3$s starts</string>
+    <string name="tavla_pips_fmt">%1$d pips · %2$d off</string>
+    <string name="tavla_double_offer_fmt">%1$s offers a double: cube %2$d → %3$d</string>
+    <string name="tavla_accept">Accept</string>
+    <string name="tavla_decline">Resign</string>
+    <string name="tavla_won_fmt">%1$s wins the game</string>
+    <string name="tavla_mars">Gammon! Double points</string>
+    <string name="tavla_resigned">The opponent resigned</string>
+    <string name="tavla_deadlock">Deadlock: fewer pips wins</string>
+    <string name="tavla_draw">Deadlock: draw, no points</string>
+    <string name="tavla_match_won_fmt">%1$s wins the match: %2$d–%3$d</string>
+    <string name="tavla_next_game">Next game</string>
+    <string name="tavla_new_match">New match</string>
+    <string name="tavla_to_setup">Setup</string>
+    <string name="tavla_board_desc">Backgammon board: turn %1$s, dice %2$s</string>
+    <string name="tavla_cube_fmt">Cube %1$d</string>
+    <string name="tavla_wins_label">Wins</string>
+    <string name="tavla_thinking">The computer is thinking…</string>
+    <string name="tavla_hint">Tap a checker, then its destination; tap the tray below to bear off</string>
+    <string name="tavla_off_tray">Bear-off tray</string>
+
     <!-- Board descriptions (screen reader) -->
     <string name="tetris_board_desc">Tetris board: level %1$d, %2$d lines, score %3$d</string>
     <string name="snake_board_desc">Snake board: length %1$d, score %2$d</string>
