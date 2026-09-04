@@ -6,6 +6,7 @@ prosedürel olarak sentezler. Yeniden üretmek için: python3 tools/gen_sfx.py
 """
 import math
 import os
+import random
 import struct
 import wave
 
@@ -34,6 +35,29 @@ def tone(dur, freq_fn, shape="square", amp=0.30, decay=4.0):
 
 def silence(dur):
     return [0.0] * int(SR * dur)
+
+
+def noise(dur, amp=0.30, decay=6.0, lowpass=0.3, seed=7, swell=0.0):
+    """Beyaz gürültü patlaması; [lowpass] tek kutuplu süzgeç (küçük = boğuk),
+    [swell] > 0 ise zarf önce yükselip sonra iner (vızıltı). Tohum sabittir."""
+    rnd = random.Random(seed)
+    n = int(SR * dur)
+    out = []
+    y = 0.0
+    attack = max(1, int(0.003 * SR))
+    for i in range(n):
+        t = i / n
+        y += lowpass * (rnd.uniform(-1.0, 1.0) - y)
+        env = min(1.0, i / attack) * math.exp(-decay * t)
+        if swell > 0:
+            env = math.sin(math.pi * min(1.0, t)) ** swell
+        out.append(amp * y * env)
+    return out
+
+
+def mix(*parts):
+    n = max(len(p) for p in parts)
+    return [sum(p[i] for p in parts if i < len(p)) for i in range(n)]
 
 
 def write(name, samples):
@@ -91,6 +115,18 @@ def main():
 
     # Geçit, suya düşüş: tok, hızla inen "plop".
     write("sfx_splash.wav", tone(0.12, lambda t: 420 - 300 * t, "tri", 0.40, 6.0))
+
+    # Balkon, tükürük: kısa "pft" (gürültü + inen tiz).
+    write("sfx_spit.wav", mix(noise(0.09, 0.55, 9.0, 0.5, seed=11), tone(0.05, lambda t: 900 - 600 * t, "tri", 0.12, 8.0)))
+
+    # Balkon, ıslak çarpma: boğuk gürültü + tok vuruş.
+    write("sfx_splat.wav", mix(noise(0.14, 0.50, 7.0, 0.12, seed=12), tone(0.10, lambda t: 180 - 100 * t, "tri", 0.35, 8.0)))
+
+    # Balkon, su balonu fırlatma: derin vızıltı, yükselip inen.
+    write("sfx_whoosh.wav", noise(0.28, 0.40, 3.0, 0.06, seed=13, swell=1.5))
+
+    # Balkon, mega: hırıltılı "hhkk" (kalın kare dalga + gürültü).
+    write("sfx_hock.wav", mix(tone(0.22, lambda t: 110 - 40 * t, "square", 0.20, 3.0), noise(0.22, 0.30, 3.0, 0.25, seed=14)))
 
 
 if __name__ == "__main__":

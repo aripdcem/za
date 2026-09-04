@@ -41,6 +41,18 @@ enum class Sfx(@RawRes val res: Int) {
 
     /** Geçit: suya düşüş. */
     SPLASH(R.raw.sfx_splash),
+
+    /** Balkon: tükürük fırlatma. */
+    SPIT(R.raw.sfx_spit),
+
+    /** Balkon: ıslak çarpma (tükürük, balgam). */
+    SPLAT(R.raw.sfx_splat),
+
+    /** Balkon: su balonu fırlatma vızıltısı. */
+    WHOOSH(R.raw.sfx_whoosh),
+
+    /** Balkon: mega atış hırıltısı. */
+    HOCK(R.raw.sfx_hock),
 }
 
 /**

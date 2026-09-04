@@ -12,6 +12,7 @@ import com.za.games.ui.hub.KiskacArt
 import com.za.games.ui.hub.GecitArt
 import com.za.games.ui.hub.KuyuArt
 import com.za.games.ui.hub.TavlaArt
+import com.za.games.ui.hub.BalkonArt
 import com.za.games.ui.hub.MinesArt
 import com.za.games.ui.hub.SnakeArt
 import com.za.games.ui.hub.SudokuArt
@@ -22,6 +23,7 @@ import com.za.games.ui.kiskac.KiskacScreen
 import com.za.games.ui.gecit.GecitScreen
 import com.za.games.ui.kuyu.KuyuScreen
 import com.za.games.ui.tavla.TavlaScreen
+import com.za.games.ui.balkon.BalkonScreen
 import com.za.games.ui.snake.SnakeScreen
 import com.za.games.ui.sudoku.SudokuScreen
 import com.za.games.ui.tetris.TetrisScreen
@@ -152,6 +154,16 @@ object GameRegistry {
             art = { modifier -> TavlaArt(modifier) },
             screen = { highScore, onScore, onExit ->
                 TavlaScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "balkon",
+            titleRes = R.string.game_balkon,
+            taglineRes = R.string.game_balkon_tagline,
+            accent = Color(0xFF38BDF8),
+            art = { modifier -> BalkonArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                BalkonScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
     )
