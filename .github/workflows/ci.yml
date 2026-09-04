@@ -25,7 +25,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Motor birim testleri
-        run: ./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test :games:kiskac:test :games:turetme:test :games:dizgi:test :games:kuyu:test :games:gecit:test :games:tavla:test
+        run: ./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test :games:kiskac:test :games:turetme:test :games:dizgi:test :games:kuyu:test :games:gecit:test :games:tavla:test :games:balkon:test
 
       - name: Debug APK derle
         run: ./gradlew :app:assembleDebug

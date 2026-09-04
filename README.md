@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Tetris**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Tetris**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**.
 
 ## Manifesto
 
@@ -27,7 +27,7 @@ za/
 │       └── ui/theme/             # ZA teması
 ├── games/
 │   ├── tetris/  g2048/  snake/   # Oyun motorları: saf Kotlin/JVM, Android'e
-│   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ kuyu/ gecit/ tavla/ # bağımsız, her biri kendi birim testleriyle
+│   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ kuyu/ gecit/ tavla/ balkon/ # bağımsız, her biri kendi birim testleriyle
 └── tools/                        # gen_sfx.py (sesler), gen_words.py + gen_turetme.py + gen_dizgi.py (kelime listeleri)
 ```
 
@@ -161,13 +161,26 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   hedefe dokun (yasal hedefler işaretlenir), geri al. Deterministik zar (`games/tavla`, 18 test); rekor =
   bilgisayara karşı kazanılan maç sayısı
 
+### Balkon
+- Yukarıdan bakış: apartman balkonundan aşağıdaki sokağa nişan al. Sokağa dokun, oraya atar; atış 0,5–1 s
+  havada kalır, bu sürede **rüzgâr** iniş noktasını kaydırır (korkuluktaki bayrak ve HUD oku gösterir) ve
+  hedefler yürümeye devam eder: önden nişan almak işin özü
+- **Üç tema**, başta seçilir, mekanik ortak: kabak çekirdeği + avuç dolusu, su balonu + kova, tükürük + balgam.
+  Yalnızca mermi, iz ve sesler değişir
+- Hedefler: güvercin, kedi, top, bisikletli, kurye motoru, araba, simitçi (süre bonusu). **Yasak** hedefler
+  kapıcı ve komşu teyze: ceza, kombo sıfırlanır, kısa donma
+- **Mega**: üst üste 5 isabet bir şarj verir (en çok 3); düğme ile kurulur ya da uzun basışla atılır. Üç kat
+  isabet alanı, iki kat puan, ekran sarsıntısı
+- Süreli seviyeler: 45 saniyede gereken isabete ulaş (8, 10, 12…); kalan süre ×10 bonus; hız, hedef sayısı ve
+  rüzgâr seviyeyle artar. 60 Hz sabit adım, deterministik hedef akışı (`games/balkon`, 11 test)
+
 ## Derleme
 
 Gereksinimler: JDK 17+, Android SDK (compileSdk 35). Android Studio ile açıp çalıştırabilir veya komut satırından derleyebilirsiniz:
 
 ```bash
 ./gradlew :app:assembleDebug        # APK: app/build/outputs/apk/debug/
-./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test :games:kiskac:test :games:turetme:test :games:dizgi:test :games:kuyu:test :games:gecit:test :games:tavla:test
+./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test :games:kiskac:test :games:turetme:test :games:dizgi:test :games:kuyu:test :games:gecit:test :games:tavla:test :games:balkon:test
 ```
 
 Motor testleri Android SDK gerektirmez. Sürüm `-PzaVersion=X.Y.Z` özelliğiyle geçilir; release iş akışı bunu etiketten türetir (`versionCode` = `major*10000 + minor*100 + patch`).
@@ -214,7 +227,7 @@ Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
 
 ## Yol haritası
 
-- [x] Yeni oyunlar: 2048 ✓, yılan ✓, sudoku ✓, mayın tarlası ✓, beş harf ✓, kıskaç ✓, türetme ✓, dizgi ✓, kuyu ✓, geçit ✓, tavla ✓
+- [x] Yeni oyunlar: 2048 ✓, yılan ✓, sudoku ✓, mayın tarlası ✓, beş harf ✓, kıskaç ✓, türetme ✓, dizgi ✓, kuyu ✓, geçit ✓, tavla ✓, balkon ✓
 - [x] Ses efektleri (kapatılabilir) ve satır temizleme animasyonları
 - [x] Sürümün etiketten türetilmesi, SHA256 sağlamaları ve kaynak arşivleri
 - [ ] Oyun içi istatistikler (toplam satır, en uzun oturum)

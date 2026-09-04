@@ -340,4 +340,35 @@
     <string name="ctrl_rotate_ccw">Saat yönünün tersine döndür</string>
     <string name="ctrl_hard_drop">Sert bırak</string>
     <string name="ctrl_hold">Taşı beklet</string>
+
+    <!-- Balkon -->
+    <string name="game_balkon">Balkon</string>
+    <string name="game_balkon_tagline">Balkondan sokağa nişan al: rüzgâr, hareketli hedefler, süreli seviyeler</string>
+    <string name="balkon_theme_label">Ne atıyorsun?</string>
+    <string name="balkon_theme_cekirdek">Kabak çekirdeği</string>
+    <string name="balkon_theme_balon">Su balonu</string>
+    <string name="balkon_theme_tukuruk">Tükürük</string>
+    <string name="balkon_mega_cekirdek">Avuç dolusu</string>
+    <string name="balkon_mega_balon">Kova</string>
+    <string name="balkon_mega_tukuruk">Balgam</string>
+    <string name="balkon_mega_desc_fmt">Mega: %1$s</string>
+    <string name="balkon_rules">Üst üste 5 isabet megayı doldurur. Kapıcı ve komşu teyze yasak: ceza ve donma. Simitçi süre verir</string>
+    <string name="balkon_start">Başla</string>
+    <string name="balkon_level_label">Seviye</string>
+    <string name="balkon_level_fmt">Seviye %1$d</string>
+    <string name="balkon_hits_fmt">İsabet %1$d/%2$d</string>
+    <string name="balkon_wind_label">Rüzgâr</string>
+    <string name="balkon_mega_button_fmt">%1$s ×%2$d</string>
+    <string name="balkon_mega_ready_fmt">%1$s hazır!</string>
+    <string name="balkon_mega_armed">Sıradaki atış mega</string>
+    <string name="balkon_forbidden">Yasak!</string>
+    <string name="balkon_bonus_fmt">+%1$d sn</string>
+    <string name="balkon_level_clear_fmt">Seviye %1$d tamam · +%2$d</string>
+    <string name="balkon_hint">Sokağa dokun, oraya atar; rüzgâra göre nişan al. Uzun basış: mega</string>
+    <string name="balkon_stunned">Kızgın bakışlar…</string>
+    <string name="balkon_time_up">Süre doldu</string>
+    <string name="balkon_best_level_fmt">En iyi seviye: %1$d</string>
+    <string name="balkon_level_reached_fmt">%1$d. seviyeye ulaştın</string>
+    <string name="balkon_to_menu">Tema seçimi</string>
+    <string name="balkon_board_desc">Balkon sahnesi: seviye %1$d, %2$d saniye kaldı</string>
 </resources>

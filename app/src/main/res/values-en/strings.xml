@@ -340,4 +340,35 @@
     <string name="ctrl_rotate_ccw">Rotate counter-clockwise</string>
     <string name="ctrl_hard_drop">Hard drop</string>
     <string name="ctrl_hold">Hold piece</string>
+
+    <!-- Balkon -->
+    <string name="game_balkon">Balkon</string>
+    <string name="game_balkon_tagline">Take aim from the balcony: wind, moving targets, timed levels</string>
+    <string name="balkon_theme_label">What are you throwing?</string>
+    <string name="balkon_theme_cekirdek">Pumpkin seeds</string>
+    <string name="balkon_theme_balon">Water balloon</string>
+    <string name="balkon_theme_tukuruk">Spit</string>
+    <string name="balkon_mega_cekirdek">A fistful</string>
+    <string name="balkon_mega_balon">Bucket</string>
+    <string name="balkon_mega_tukuruk">Phlegm</string>
+    <string name="balkon_mega_desc_fmt">Mega: %1$s</string>
+    <string name="balkon_rules">Five hits in a row charge the mega. The janitor and the neighbour are off limits: penalty and a freeze. The simit seller adds time</string>
+    <string name="balkon_start">Start</string>
+    <string name="balkon_level_label">Level</string>
+    <string name="balkon_level_fmt">Level %1$d</string>
+    <string name="balkon_hits_fmt">Hits %1$d/%2$d</string>
+    <string name="balkon_wind_label">Wind</string>
+    <string name="balkon_mega_button_fmt">%1$s ×%2$d</string>
+    <string name="balkon_mega_ready_fmt">%1$s ready!</string>
+    <string name="balkon_mega_armed">Next throw is mega</string>
+    <string name="balkon_forbidden">Off limits!</string>
+    <string name="balkon_bonus_fmt">+%1$d s</string>
+    <string name="balkon_level_clear_fmt">Level %1$d clear · +%2$d</string>
+    <string name="balkon_hint">Tap the street to throw there; aim for the wind. Long press: mega</string>
+    <string name="balkon_stunned">Angry looks…</string>
+    <string name="balkon_time_up">Time is up</string>
+    <string name="balkon_best_level_fmt">Best level: %1$d</string>
+    <string name="balkon_level_reached_fmt">You reached level %1$d</string>
+    <string name="balkon_to_menu">Theme choice</string>
+    <string name="balkon_board_desc">Balcony scene: level %1$d, %2$d seconds left</string>
 </resources>

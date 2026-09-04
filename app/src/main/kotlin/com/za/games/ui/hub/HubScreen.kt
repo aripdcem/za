@@ -587,3 +587,33 @@ fun TavlaArt(modifier: Modifier = Modifier) {
         drawCircle(white, r, Offset(w - r * 1.1f, rowH * 1.5f))
     }
 }
+
+/** Balkon kartı: yukarıdan sokak, korkuluk, aşağıda güvercin ve yeşil bir leke. */
+@Composable
+fun BalkonArt(modifier: Modifier = Modifier) {
+    val wall = Color(0xFF7C5C46)
+    val rail = Color(0xFF1F2937)
+    val pavement = Color(0xFFA1A7B0)
+    val asphalt = Color(0xFF3F3F46)
+    val line = Color(0xFFE5E7EB)
+    val pigeon = Color(0xFFD1D5DB)
+    val splat = Color(0xFF4ADE80)
+    val skin = Color(0xFFF1C27D)
+    val hair = Color(0xFF3B2A20)
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        drawRoundRect(pavement, size = Size(w, w), cornerRadius = CornerRadius(w * 0.12f, w * 0.12f))
+        drawRect(asphalt, topLeft = Offset(0f, w * 0.52f), size = Size(w, w * 0.3f))
+        drawLine(line, Offset(w * 0.08f, w * 0.67f), Offset(w * 0.3f, w * 0.67f), strokeWidth = w * 0.03f)
+        drawLine(line, Offset(w * 0.45f, w * 0.67f), Offset(w * 0.67f, w * 0.67f), strokeWidth = w * 0.03f)
+        drawRect(wall, topLeft = Offset(0f, 0f), size = Size(w, w * 0.22f))
+        drawLine(rail, Offset(0f, w * 0.2f), Offset(w, w * 0.2f), strokeWidth = w * 0.04f)
+        drawCircle(skin, radius = w * 0.06f, center = Offset(w * 0.36f, w * 0.2f))
+        drawCircle(skin, radius = w * 0.06f, center = Offset(w * 0.64f, w * 0.2f))
+        drawCircle(hair, radius = w * 0.1f, center = Offset(w * 0.5f, w * 0.14f))
+        drawOval(splat, topLeft = Offset(w * 0.52f, w * 0.36f), size = Size(w * 0.3f, w * 0.16f))
+        drawCircle(splat, radius = w * 0.04f, center = Offset(w * 0.5f, w * 0.34f))
+        drawOval(pigeon, topLeft = Offset(w * 0.12f, w * 0.86f), size = Size(w * 0.22f, w * 0.12f))
+        drawCircle(Color(0xFF6B7280), radius = w * 0.04f, center = Offset(w * 0.35f, w * 0.92f))
+    }
+}
