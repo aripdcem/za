@@ -303,7 +303,7 @@
     <string name="tavla_cube_fmt">Cube %1$d</string>
     <string name="tavla_wins_label">Wins</string>
     <string name="tavla_thinking">The computer is thinking…</string>
-    <string name="tavla_hint">Tap a checker, then its destination; tap the tray below to bear off</string>
+    <string name="tavla_hint">Drag a checker to its destination, or tap it and then the destination; drop it on the tray at the right to bear off</string>
     <string name="tavla_off_tray">Bear-off tray</string>
 
     <!-- Board descriptions (screen reader) -->
