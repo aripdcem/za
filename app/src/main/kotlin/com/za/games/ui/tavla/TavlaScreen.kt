@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.changedToUpIgnoreConsumed
 import androidx.compose.ui.input.pointer.pointerInput
@@ -74,6 +75,7 @@ import com.za.games.ui.common.GameTopBar
 import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.PadButton
 import kotlinx.coroutines.delay
+import kotlin.math.abs
 import kotlin.math.min
 
 // Tahta renkleri: koyu ceviz zemin, iki ton hane, fildişi ve abanoz pullar.
@@ -412,6 +414,75 @@ private fun playerName(player: Int, vsComputer: Boolean): String = when {
     else -> stringResource(R.string.tavla_computer)
 }
 
+/**
+ * Tahta etkileşimi: dokunma ve sürükleme kararları. Dokunma: seçili pulun hedefine
+ * dokununca oynar; pula dokununca tek hedefi varsa hemen oynar, yoksa seçer (ikinci
+ * dokunuş seçimi kaldırır); boş bir hedefe dokununca oraya yalnız tek bir pul
+ * gidebiliyorsa o pul oynanır; zar atılmadan tahtaya dokunmak zar atar.
+ * Alanlar her birleştirmede [PlayingPanel] tarafından tazelenir.
+ */
+private class BoardController(
+    private val viewModel: TavlaViewModel,
+    private val haptics: HapticFeedback,
+) {
+    /** Oyuncunun seçtiği kaynak; geçerliliği birleştirmede denetlenir. */
+    val selection = mutableStateOf<Int?>(null)
+    var legal: List<Move> = emptyList()
+    var sources: Set<Int> = emptySet()
+    var selected: Int? = null
+    var destinations: Set<Int> = emptySet()
+    var canPlay: Boolean = false
+    var canRoll: Boolean = false
+
+    fun destinationsOf(from: Int): Set<Int> = legal.filter { it.from == from }.map { it.to }.toSet()
+
+    private fun play(from: Int, to: Int) {
+        selection.value = null
+        viewModel.move(from, to)
+    }
+
+    fun tap(target: Int) {
+        if (canRoll) {
+            viewModel.roll()
+            return
+        }
+        if (!canPlay) return
+        val current = selected
+        when {
+            current != null && target in destinations -> play(current, target)
+            target in sources -> {
+                val targets = destinationsOf(target)
+                when {
+                    targets.size == 1 -> play(target, targets.first())
+                    target == current -> selection.value = null
+                    else -> {
+                        haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        selection.value = target
+                    }
+                }
+            }
+            else -> {
+                val froms = legal.filter { it.to == target }.map { it.from }.distinct()
+                if (froms.size == 1) play(froms.first(), target) else selection.value = null
+            }
+        }
+    }
+
+    /** Sürükleme başlangıcı: kaynak oynanabilir bir pulsa seçer ve sürüklemeye izin verir. */
+    fun dragStart(source: Int): Boolean {
+        if (!canPlay || source !in sources) return false
+        haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        selection.value = source
+        return true
+    }
+
+    /** Bırakma: hedef yasalsa oynar; değilse seçim kalır, pul yerine döner. */
+    fun drop(source: Int, target: Int) {
+        if (!canPlay) return
+        if (target in destinationsOf(source)) play(source, target)
+    }
+}
+
 @Composable
 private fun ColumnScope.PlayingPanel(
     state: TavlaState,
@@ -427,7 +498,10 @@ private fun ColumnScope.PlayingPanel(
     val legal = remember(state) { state.legalMoves() }
     val sources = remember(legal) { legal.map { it.from }.toSet() }
     val haptics = LocalZaHaptics.current
-    var selectedRaw by remember(matchId) { mutableStateOf<Int?>(null) }
+    // Etkileşim kalıcı bir nesnede: yerel fonksiyon başvuruları (::tap) Compose derleyicisince
+    // bir kez hatırlanıp bayatlıyordu; alanlar her birleştirmede aşağıda tazelenir.
+    val controller = remember(matchId, viewModel, haptics) { BoardController(viewModel, haptics) }
+    val selectedRaw by controller.selection
     // Seçim ancak hâlâ oynanabilir bir kaynaksa geçerlidir; tek kaynak varsa kendiliğinden seçilir.
     val selected: Int? = when {
         !humanActs || state.phase != Phase.MOVING -> null
@@ -439,60 +513,12 @@ private fun ColumnScope.PlayingPanel(
         if (selected == null) emptySet() else legal.filter { it.from == selected }.map { it.to }.toSet()
     }
     val names = listOf(playerName(0, vsComputer), playerName(1, vsComputer))
-    val canPlay = humanActs && state.phase == Phase.MOVING
-
-    fun destinationsOf(from: Int): Set<Int> = legal.filter { it.from == from }.map { it.to }.toSet()
-
-    fun play(from: Int, to: Int) {
-        selectedRaw = null
-        viewModel.move(from, to)
-    }
-
-    /**
-     * Dokunma: seçili pulun hedefine dokununca oynar; pula dokununca tek hedefi varsa
-     * hemen oynar, yoksa seçer (ikinci dokunuş seçimi kaldırır); boş bir hedefe dokununca
-     * oraya yalnız tek bir pul gidebiliyorsa o pul oynanır.
-     */
-    fun tap(target: Int) {
-        // Zar atılmadan tahtaya dokunmak zar atar (düğmeyi aramaya gerek kalmasın).
-        if (humanActs && state.phase == Phase.TO_ROLL) {
-            viewModel.roll()
-            return
-        }
-        if (!canPlay) return
-        when {
-            selected != null && target in destinations -> play(selected, target)
-            target in sources -> {
-                val targets = destinationsOf(target)
-                when {
-                    targets.size == 1 -> play(target, targets.first())
-                    target == selected -> selectedRaw = null
-                    else -> {
-                        haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        selectedRaw = target
-                    }
-                }
-            }
-            else -> {
-                val froms = legal.filter { it.to == target }.map { it.from }.distinct()
-                if (froms.size == 1) play(froms.first(), target) else selectedRaw = null
-            }
-        }
-    }
-
-    /** Sürükleme başlangıcı: kaynak oynanabilir bir pulsa seçer ve sürüklemeye izin verir. */
-    fun dragStart(source: Int): Boolean {
-        if (!canPlay || source !in sources) return false
-        haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-        selectedRaw = source
-        return true
-    }
-
-    /** Bırakma: hedef yasalsa oynar; değilse seçim kalır, pul yerine döner. */
-    fun drop(source: Int, target: Int) {
-        if (!canPlay) return
-        if (target in destinationsOf(source)) play(source, target)
-    }
+    controller.legal = legal
+    controller.sources = sources
+    controller.selected = selected
+    controller.destinations = destinations
+    controller.canPlay = humanActs && state.phase == Phase.MOVING
+    controller.canRoll = humanActs && state.phase == Phase.TO_ROLL
 
     ScoreRow(state = state, names = names)
     StatusLine(state = state, names = names, thinking = thinking, vsComputer = vsComputer)
@@ -511,9 +537,7 @@ private fun ColumnScope.PlayingPanel(
             destinations = destinations,
             lastMove = lastMove,
             turnName = names[state.turn],
-            onTap = ::tap,
-            onDragStart = ::dragStart,
-            onDrop = ::drop,
+            controller = controller,
             modifier = Modifier.fillMaxSize(),
         )
         if (state.phase == Phase.DOUBLE_OFFERED && humanActs) {
@@ -918,26 +942,22 @@ private fun TavlaBoard(
     destinations: Set<Int>,
     lastMove: Move?,
     turnName: String,
-    onTap: (Int) -> Unit,
-    onDragStart: (Int) -> Boolean,
-    onDrop: (Int, Int) -> Unit,
+    controller: BoardController,
     modifier: Modifier = Modifier,
 ) {
-    val currentTap by rememberUpdatedState(onTap)
-    val currentDragStart by rememberUpdatedState(onDragStart)
-    val currentDrop by rememberUpdatedState(onDrop)
     val textMeasurer = rememberTextMeasurer()
     val diceText = state.dice.joinToString("-")
     val desc = stringResource(R.string.tavla_board_desc, turnName, diceText)
     val trayDesc = stringResource(R.string.tavla_off_tray)
-    // Sürüklenen pul: kaynağı ve parmağın konumu (yalnız çizim için).
+    // Sürüklenen pul: kaynağı, parmağın konumu ve o an bırakılırsa gideceği hane (çizim için).
     var dragFrom by remember { mutableStateOf<Int?>(null) }
     var dragPos by remember { mutableStateOf<Offset?>(null) }
+    var dragTarget by remember { mutableStateOf<Int?>(null) }
     Canvas(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .semantics { contentDescription = "$desc. $trayDesc" }
-            .pointerInput(Unit) {
+            .pointerInput(controller) {
                 // Tek algılayıcı: parmak kalkınca dokunma, eşik aşılınca sürükleme.
                 // Tüketilmiş olaylar da izlenir ki üstteki hiçbir katman dokunuşu yutmasın.
                 val slop = viewConfiguration.touchSlop
@@ -953,29 +973,34 @@ private fun TavlaBoard(
                             change.consume()
                             if (dragging) {
                                 val from = dragFrom
-                                val target = g.hit(change.position.x, change.position.y)
+                                // Bırakma yeri pulun görünen konumuna göre bulunur; parmak tahtanın
+                                // dışına taşsa bile en yakın yasal hedef kabul edilir.
+                                val target = resolveDrop(g, change.position, controller.destinations)
                                 dragFrom = null
                                 dragPos = null
-                                if (from != null && target != null) currentDrop(from, target)
+                                dragTarget = null
+                                if (from != null && target != null) controller.drop(from, target)
                             } else if (origin != null) {
-                                currentTap(origin)
+                                controller.tap(origin)
                             }
                             break
                         }
                         if (!change.pressed) {
                             dragFrom = null
                             dragPos = null
+                            dragTarget = null
                             break
                         }
                         if (!dragging && origin != null && origin != Move.OFF &&
                             (change.position - down.position).getDistance() > slop &&
-                            currentDragStart(origin)
+                            controller.dragStart(origin)
                         ) {
                             dragging = true
                             dragFrom = origin
                         }
                         if (dragging) {
                             dragPos = change.position
+                            dragTarget = resolveDrop(g, change.position, controller.destinations)
                             change.consume()
                         }
                     }
@@ -992,8 +1017,11 @@ private fun TavlaBoard(
         if (state.rules.cube) drawCube(g, state, textMeasurer)
         val pos = dragPos
         if (lifted != null && pos != null) {
+            // Bırakınca gidecek hane: kalın halka (tepsi için çerçeve).
+            val target = dragTarget
+            if (target != null) drawDropTarget(g, state, target)
             // Havadaki pul parmağın biraz üstünde durur ki görünsün.
-            drawChecker(pos.x, pos.y - g.radius * 1.6f, g.radius * 1.15f, state.turn)
+            drawChecker(pos.x, pos.y - g.radius * DRAG_LIFT, g.radius * 1.15f, state.turn)
         }
     }
 }
@@ -1080,6 +1108,51 @@ private fun DrawScope.drawPoints(
         }
         if (i in destinations) drawLandingMark(g, i, total)
     }
+}
+
+/** Sürüklenen pulun parmağın üstünde çizildiği mesafe (yarıçap katı). */
+private const val DRAG_LIFT = 1.6f
+
+/**
+ * Sürüklenen pulun bırakılacağı hane: önce pulun görünen merkezi, sonra parmağın
+ * konumu (ikisi de tahta sınırına kenetlenir); hiçbiri yasal değilse aynı yarıdaki
+ * en yakın yasal hane (en çok 1,5 hane uzakta). Hiçbiri yoksa null: pul yerine döner.
+ */
+private fun resolveDrop(g: BoardGeometry, finger: Offset, destinations: Set<Int>): Int? {
+    if (destinations.isEmpty()) return null
+    val checker = Offset(finger.x, finger.y - g.radius * DRAG_LIFT)
+    for (p in listOf(checker, finger)) {
+        val hit = g.hit(p.x.coerceIn(0f, g.width - 1f), p.y.coerceIn(0f, g.height - 1f))
+        if (hit != null && hit in destinations) return hit
+    }
+    val cx = checker.x.coerceIn(0f, g.width - 1f)
+    val top = checker.y.coerceIn(0f, g.height - 1f) < g.halfH
+    return destinations
+        .filter { it in 0 until TavlaLogic.POINTS && g.isTop(it) == top }
+        .minByOrNull { abs(g.centerX(it) - cx) }
+        ?.takeIf { abs(g.centerX(it) - cx) <= g.pointW * 1.5f }
+}
+
+/** Sürüklerken bırakılacak hedef: hane ya da tepsi üzerinde kalın vurgu. */
+private fun DrawScope.drawDropTarget(g: BoardGeometry, state: TavlaState, target: Int) {
+    if (target == Move.OFF) {
+        val top = if (state.turn == 0) g.halfH else 0f
+        drawRoundRect(
+            Highlight,
+            topLeft = Offset(g.trayX + 2f, top + 2f),
+            size = Size(g.trayW - 4f, g.halfH - 4f),
+            cornerRadius = CornerRadius(8f, 8f),
+            style = Stroke(width = 6f),
+        )
+        return
+    }
+    if (target !in 0 until TavlaLogic.POINTS) return
+    drawPath(trianglePath(g, target), Highlight.copy(alpha = 0.35f))
+    val point = state.points[target]
+    val total = point.count + (if (point.pinned) 1 else 0)
+    val cx = g.centerX(target)
+    val cy = g.stackY(target, total, total + 1)
+    drawCircle(Highlight, radius = g.radius * 1.15f, center = Offset(cx, cy), style = Stroke(width = g.radius * 0.3f))
 }
 
 /** Hedef hanede bir sonraki pulun ineceği yere içi boş halka. */
