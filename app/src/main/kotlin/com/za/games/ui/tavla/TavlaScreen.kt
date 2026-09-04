@@ -415,11 +415,12 @@ private fun playerName(player: Int, vsComputer: Boolean): String = when {
 }
 
 /**
- * Tahta etkileşimi: dokunma ve sürükleme kararları. Dokunma: seçili pulun hedefine
- * dokununca oynar; pula dokununca tek hedefi varsa hemen oynar, yoksa seçer (ikinci
- * dokunuş seçimi kaldırır); boş bir hedefe dokununca oraya yalnız tek bir pul
- * gidebiliyorsa o pul oynanır; zar atılmadan tahtaya dokunmak zar atar.
- * Alanlar her birleştirmede [PlayingPanel] tarafından tazelenir.
+ * Tahta etkileşimi: dokunma ve sürükleme kararları. Pula dokunmak yalnızca seçer ve
+ * hedeflerini gösterir (tek hedef olsa bile hemen oynamaz; oyuncu vazgeçebilir), ikinci
+ * dokunuş seçimi kaldırır; hamle hedefe dokununca ya da sürükleyip bırakınca olur. Boş
+ * bir hedefe doğrudan dokununca oraya yalnız tek bir pul gidebiliyorsa o pul oynanır;
+ * zar atılmadan tahtaya dokunmak zar atar. Alanlar her birleştirmede
+ * [PlayingPanel] tarafından tazelenir.
  */
 private class BoardController(
     private val viewModel: TavlaViewModel,
@@ -451,14 +452,11 @@ private class BoardController(
         when {
             current != null && target in destinations -> play(current, target)
             target in sources -> {
-                val targets = destinationsOf(target)
-                when {
-                    targets.size == 1 -> play(target, targets.first())
-                    target == current -> selection.value = null
-                    else -> {
-                        haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        selection.value = target
-                    }
+                if (target == current) {
+                    selection.value = null
+                } else {
+                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    selection.value = target
                 }
             }
             else -> {
