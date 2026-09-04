@@ -303,7 +303,7 @@
     <string name="tavla_cube_fmt">Küp %1$d</string>
     <string name="tavla_wins_label">Galibiyet</string>
     <string name="tavla_thinking">Bilgisayar düşünüyor…</string>
-    <string name="tavla_hint">Pula dokun, sonra hedefe dokun; toplamak için alttaki tepsiye dokun</string>
+    <string name="tavla_hint">Pulu hedefe sürükle ya da pula dokunup hedefe dokun; toplamak için sağdaki tepsiye bırak</string>
     <string name="tavla_off_tray">Toplama tepsisi</string>
 
     <!-- Tahta açıklamaları (ekran okuyucu) -->

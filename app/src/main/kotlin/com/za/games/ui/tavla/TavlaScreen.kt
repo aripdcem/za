@@ -3,7 +3,8 @@ package com.za.games.ui.tavla
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,6 +45,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.changedToUpIgnoreConsumed
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -148,11 +150,19 @@ fun TavlaScreen(
     }
 
     // İnsanın hamlesi yoksa kısa bir bekleyişle sıra geçer (bilgisayarınkini ViewModel yönetir).
+    // Küp kullanılamıyorsa zar kendiliğinden atılır; küp varsa oyuncu önce katlayabilsin diye beklenir.
     LaunchedEffect(state) {
         val s = state ?: return@LaunchedEffect
-        if (s.phase == Phase.MOVING && viewModel.humanCanAct(s) && !s.canMove) {
-            delay(1100L)
-            viewModel.endTurn()
+        if (!viewModel.humanCanAct(s)) return@LaunchedEffect
+        when {
+            s.phase == Phase.MOVING && !s.canMove -> {
+                delay(1100L)
+                viewModel.endTurn()
+            }
+            s.phase == Phase.TO_ROLL && !s.canDouble -> {
+                delay(900L)
+                viewModel.roll()
+            }
         }
     }
 
@@ -429,25 +439,59 @@ private fun ColumnScope.PlayingPanel(
         if (selected == null) emptySet() else legal.filter { it.from == selected }.map { it.to }.toSet()
     }
     val names = listOf(playerName(0, vsComputer), playerName(1, vsComputer))
+    val canPlay = humanActs && state.phase == Phase.MOVING
 
+    fun destinationsOf(from: Int): Set<Int> = legal.filter { it.from == from }.map { it.to }.toSet()
+
+    fun play(from: Int, to: Int) {
+        selectedRaw = null
+        viewModel.move(from, to)
+    }
+
+    /**
+     * Dokunma: seçili pulun hedefine dokununca oynar; pula dokununca tek hedefi varsa
+     * hemen oynar, yoksa seçer (ikinci dokunuş seçimi kaldırır); boş bir hedefe dokununca
+     * oraya yalnız tek bir pul gidebiliyorsa o pul oynanır.
+     */
     fun tap(target: Int) {
-        if (!humanActs || state.phase != Phase.MOVING) return
+        // Zar atılmadan tahtaya dokunmak zar atar (düğmeyi aramaya gerek kalmasın).
+        if (humanActs && state.phase == Phase.TO_ROLL) {
+            viewModel.roll()
+            return
+        }
+        if (!canPlay) return
         when {
-            selected != null && target in destinations -> {
-                selectedRaw = null
-                viewModel.move(selected, target)
-            }
+            selected != null && target in destinations -> play(selected, target)
             target in sources -> {
-                if (target == selected && destinations.size == 1) {
-                    selectedRaw = null
-                    viewModel.move(target, destinations.first())
-                } else {
-                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                    selectedRaw = target
+                val targets = destinationsOf(target)
+                when {
+                    targets.size == 1 -> play(target, targets.first())
+                    target == selected -> selectedRaw = null
+                    else -> {
+                        haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        selectedRaw = target
+                    }
                 }
             }
-            else -> selectedRaw = null
+            else -> {
+                val froms = legal.filter { it.to == target }.map { it.from }.distinct()
+                if (froms.size == 1) play(froms.first(), target) else selectedRaw = null
+            }
         }
+    }
+
+    /** Sürükleme başlangıcı: kaynak oynanabilir bir pulsa seçer ve sürüklemeye izin verir. */
+    fun dragStart(source: Int): Boolean {
+        if (!canPlay || source !in sources) return false
+        haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        selectedRaw = source
+        return true
+    }
+
+    /** Bırakma: hedef yasalsa oynar; değilse seçim kalır, pul yerine döner. */
+    fun drop(source: Int, target: Int) {
+        if (!canPlay) return
+        if (target in destinationsOf(source)) play(source, target)
     }
 
     ScoreRow(state = state, names = names)
@@ -468,6 +512,8 @@ private fun ColumnScope.PlayingPanel(
             lastMove = lastMove,
             turnName = names[state.turn],
             onTap = ::tap,
+            onDragStart = ::dragStart,
+            onDrop = ::drop,
             modifier = Modifier.fillMaxSize(),
         )
         if (state.phase == Phase.DOUBLE_OFFERED && humanActs) {
@@ -873,31 +919,82 @@ private fun TavlaBoard(
     lastMove: Move?,
     turnName: String,
     onTap: (Int) -> Unit,
+    onDragStart: (Int) -> Boolean,
+    onDrop: (Int, Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val currentTap by rememberUpdatedState(onTap)
+    val currentDragStart by rememberUpdatedState(onDragStart)
+    val currentDrop by rememberUpdatedState(onDrop)
     val textMeasurer = rememberTextMeasurer()
     val diceText = state.dice.joinToString("-")
     val desc = stringResource(R.string.tavla_board_desc, turnName, diceText)
     val trayDesc = stringResource(R.string.tavla_off_tray)
+    // Sürüklenen pul: kaynağı ve parmağın konumu (yalnız çizim için).
+    var dragFrom by remember { mutableStateOf<Int?>(null) }
+    var dragPos by remember { mutableStateOf<Offset?>(null) }
     Canvas(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .semantics { contentDescription = "$desc. $trayDesc" }
             .pointerInput(Unit) {
-                detectTapGestures { pos ->
+                // Tek algılayıcı: parmak kalkınca dokunma, eşik aşılınca sürükleme.
+                // Tüketilmiş olaylar da izlenir ki üstteki hiçbir katman dokunuşu yutmasın.
+                val slop = viewConfiguration.touchSlop
+                awaitEachGesture {
+                    val down = awaitFirstDown(requireUnconsumed = false)
                     val g = BoardGeometry(size.width.toFloat(), size.height.toFloat())
-                    g.hit(pos.x, pos.y)?.let { currentTap(it) }
+                    val origin = g.hit(down.position.x, down.position.y)
+                    var dragging = false
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        val change = event.changes.firstOrNull { it.id == down.id } ?: break
+                        if (change.changedToUpIgnoreConsumed()) {
+                            change.consume()
+                            if (dragging) {
+                                val from = dragFrom
+                                val target = g.hit(change.position.x, change.position.y)
+                                dragFrom = null
+                                dragPos = null
+                                if (from != null && target != null) currentDrop(from, target)
+                            } else if (origin != null) {
+                                currentTap(origin)
+                            }
+                            break
+                        }
+                        if (!change.pressed) {
+                            dragFrom = null
+                            dragPos = null
+                            break
+                        }
+                        if (!dragging && origin != null && origin != Move.OFF &&
+                            (change.position - down.position).getDistance() > slop &&
+                            currentDragStart(origin)
+                        ) {
+                            dragging = true
+                            dragFrom = origin
+                        }
+                        if (dragging) {
+                            dragPos = change.position
+                            change.consume()
+                        }
+                    }
                 }
             },
     ) {
         val g = BoardGeometry(size.width, size.height)
+        val lifted = if (dragPos != null) dragFrom else null
         drawBoardBase(g)
-        drawPoints(g, state, selected, sources, destinations, lastMove, textMeasurer)
-        drawBar(g, state, selected, textMeasurer)
+        drawPoints(g, state, selected, sources, destinations, lastMove, lifted, textMeasurer)
+        drawBar(g, state, selected, lifted, textMeasurer)
         drawTrays(g, state, destinations, textMeasurer)
         drawDice(g, state)
         if (state.rules.cube) drawCube(g, state, textMeasurer)
+        val pos = dragPos
+        if (lifted != null && pos != null) {
+            // Havadaki pul parmağın biraz üstünde durur ki görünsün.
+            drawChecker(pos.x, pos.y - g.radius * 1.6f, g.radius * 1.15f, state.turn)
+        }
     }
 }
 
@@ -940,6 +1037,7 @@ private fun DrawScope.drawPoints(
     sources: Set<Int>,
     destinations: Set<Int>,
     lastMove: Move?,
+    lifted: Int?,
     textMeasurer: TextMeasurer,
 ) {
     for (i in 0 until TavlaLogic.POINTS) {
@@ -947,12 +1045,13 @@ private fun DrawScope.drawPoints(
         val dark = (col + (if (g.isTop(i)) 1 else 0)) % 2 == 0
         val path = trianglePath(g, i)
         drawPath(path, if (dark) PointDark else PointLight)
-        if (i in destinations) drawPath(path, Highlight.copy(alpha = 0.32f))
+        if (i in destinations) drawPath(path, Highlight.copy(alpha = 0.38f))
         if (lastMove != null && lastMove.to == i) drawPath(path, LastMoveColor.copy(alpha = 0.16f))
     }
     for (i in 0 until TavlaLogic.POINTS) {
         val point = state.points[i]
-        val total = point.count + (if (point.pinned) 1 else 0)
+        val count = if (i == lifted) point.count - 1 else point.count
+        val total = count + (if (point.pinned) 1 else 0)
         if (total == 0) {
             if (i in destinations) drawLandingMark(g, i, 0)
             continue
@@ -966,17 +1065,17 @@ private fun DrawScope.drawPoints(
             drawCircle(PrisonRing, radius = g.radius * 0.72f, center = Offset(cx, cy), style = Stroke(width = g.radius * 0.16f))
             k = 1
         }
-        repeat(point.count) { n ->
+        repeat(count) { n ->
             drawChecker(cx, g.stackY(i, k + n, total), g.radius, point.owner)
         }
         val topK = total - 1
         val topY = g.stackY(i, topK, total)
-        if (point.count > 5) {
-            drawCenteredText(textMeasurer, point.count.toString(), cx, topY, 11.sp, if (point.owner == 0) Ink else P0Fill)
+        if (count > 5) {
+            drawCenteredText(textMeasurer, count.toString(), cx, topY, 11.sp, if (point.owner == 0) Ink else P0Fill)
         }
         when {
-            i == selected -> drawCircle(Highlight, radius = g.radius * 1.05f, center = Offset(cx, topY), style = Stroke(width = g.radius * 0.22f))
-            i in sources -> drawCircle(Color.White.copy(alpha = 0.55f), radius = g.radius * 0.5f, center = Offset(cx, topY), style = Stroke(width = g.radius * 0.12f))
+            i == selected && i != lifted -> drawSelectionRing(cx, topY, g.radius)
+            i in sources -> drawSourceDot(cx, topY, g.radius)
             lastMove != null && lastMove.to == i -> drawCircle(LastMoveColor.copy(alpha = 0.85f), radius = g.radius * 1.02f, center = Offset(cx, topY), style = Stroke(width = g.radius * 0.14f))
         }
         if (i in destinations) drawLandingMark(g, i, total)
@@ -987,7 +1086,20 @@ private fun DrawScope.drawPoints(
 private fun DrawScope.drawLandingMark(g: BoardGeometry, point: Int, total: Int) {
     val cx = g.centerX(point)
     val cy = g.stackY(point, total, total + 1)
-    drawCircle(Highlight, radius = g.radius * 0.8f, center = Offset(cx, cy), style = Stroke(width = g.radius * 0.18f))
+    drawCircle(Highlight.copy(alpha = 0.35f), radius = g.radius * 0.8f, center = Offset(cx, cy))
+    drawCircle(Highlight, radius = g.radius * 0.8f, center = Offset(cx, cy), style = Stroke(width = g.radius * 0.2f))
+}
+
+/** Seçili pul: parlayan halka. */
+private fun DrawScope.drawSelectionRing(cx: Float, cy: Float, r: Float) {
+    drawCircle(Highlight.copy(alpha = 0.35f), radius = r * 1.45f, center = Offset(cx, cy))
+    drawCircle(Highlight, radius = r * 1.08f, center = Offset(cx, cy), style = Stroke(width = r * 0.26f))
+}
+
+/** Oynanabilir pul: üstünde küçük camgöbeği nokta (açık pulda da görünür). */
+private fun DrawScope.drawSourceDot(cx: Float, cy: Float, r: Float) {
+    drawCircle(Ink.copy(alpha = 0.5f), radius = r * 0.34f, center = Offset(cx, cy))
+    drawCircle(Highlight, radius = r * 0.26f, center = Offset(cx, cy))
 }
 
 private fun DrawScope.drawChecker(cx: Float, cy: Float, r: Float, owner: Int) {
@@ -999,13 +1111,13 @@ private fun DrawScope.drawChecker(cx: Float, cy: Float, r: Float, owner: Int) {
     drawCircle(edge.copy(alpha = 0.6f), radius = r * 0.55f, center = Offset(cx, cy), style = Stroke(width = r * 0.08f))
 }
 
-private fun DrawScope.drawBar(g: BoardGeometry, state: TavlaState, selected: Int?, textMeasurer: TextMeasurer) {
+private fun DrawScope.drawBar(g: BoardGeometry, state: TavlaState, selected: Int?, lifted: Int?, textMeasurer: TextMeasurer) {
     val cx = g.barX + g.barW / 2f
     val r = min(g.radius, g.barW * 0.45f)
     // Oyuncu 0'ın kırık pulları üst yarıda (rakip evine girer), oyuncu 1'inkiler alt yarıda.
     for (player in 0..1) {
-        val n = state.bar[player]
-        if (n == 0) continue
+        val n = if (lifted == Move.BAR && player == state.turn) state.bar[player] - 1 else state.bar[player]
+        if (n <= 0) continue
         val baseY = if (player == 0) g.halfH - r * 1.4f else g.halfH + r * 1.4f
         val dir = if (player == 0) -1f else 1f
         val shown = min(n, 4)
@@ -1014,8 +1126,8 @@ private fun DrawScope.drawBar(g: BoardGeometry, state: TavlaState, selected: Int
         }
         val topY = baseY + dir * (shown - 1) * r * 1.1f
         if (n > 1) drawCenteredText(textMeasurer, n.toString(), cx, topY, 11.sp, if (player == 0) Ink else P0Fill)
-        if (selected == Move.BAR && state.turn == player) {
-            drawCircle(Highlight, radius = r * 1.05f, center = Offset(cx, topY), style = Stroke(width = r * 0.22f))
+        if (selected == Move.BAR && state.turn == player && lifted != Move.BAR) {
+            drawSelectionRing(cx, topY, r)
         }
     }
 }
