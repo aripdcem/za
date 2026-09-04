@@ -259,6 +259,53 @@
     <string name="gecit_hint">Dokun: ileri · kaydır: yan/geri · taşları topla, durma</string>
     <string name="gecit_milestone_fmt">%1$d şerit!</string>
 
+    <!-- Tavla -->
+    <string name="game_tavla">Tavla</string>
+    <string name="game_tavla_tagline">Klasik, Tapa ve Hapis: bilgisayara ya da arkadaşına karşı</string>
+    <string name="tavla_mode_klasik">Klasik</string>
+    <string name="tavla_mode_tapa">Tapa</string>
+    <string name="tavla_mode_hapis">Hapis</string>
+    <string name="tavla_mode_desc_klasik">Açık pul kırılır, bar\'dan yeniden girer</string>
+    <string name="tavla_mode_desc_tapa">Pullar kırılmaz, hapsedilir; 15 pul 24. haneden başlar</string>
+    <string name="tavla_mode_desc_hapis">Pullar kırılmaz, hapsedilir; klasik diziliş</string>
+    <string name="tavla_opponent_label">Rakip</string>
+    <string name="tavla_opponent_computer">Bilgisayar</string>
+    <string name="tavla_opponent_human">İki oyuncu</string>
+    <string name="tavla_target_label">Maç</string>
+    <string name="tavla_target_fmt">%1$d puan</string>
+    <string name="tavla_nopin">Rakibin evinde hapis yasak</string>
+    <string name="tavla_cube">Katlama küpü</string>
+    <string name="tavla_cube_desc">Zar atmadan önce bahsi ikiye katlama teklifi; kabul ya da pes</string>
+    <string name="tavla_start">Başla</string>
+    <string name="tavla_you">Sen</string>
+    <string name="tavla_computer">Bilgisayar</string>
+    <string name="tavla_player_fmt">%1$d. Oyuncu</string>
+    <string name="tavla_game_fmt">Oyun %1$d · hedef %2$d</string>
+    <string name="tavla_turn_fmt">Sıra: %1$s</string>
+    <string name="tavla_roll">Zar at</string>
+    <string name="tavla_double">Katla</string>
+    <string name="tavla_no_moves">Hamle yok, sıra geçiyor</string>
+    <string name="tavla_opening_fmt">Açılış %1$d–%2$d: %3$s başlıyor</string>
+    <string name="tavla_pips_fmt">%1$d pip · %2$d toplandı</string>
+    <string name="tavla_double_offer_fmt">%1$s katlamayı teklif etti: küp %2$d → %3$d</string>
+    <string name="tavla_accept">Kabul</string>
+    <string name="tavla_decline">Pes</string>
+    <string name="tavla_won_fmt">%1$s oyunu kazandı</string>
+    <string name="tavla_mars">Mars! İki kat puan</string>
+    <string name="tavla_resigned">Rakip pes etti</string>
+    <string name="tavla_deadlock">Kilitlenme: pip sayısı az olan kazandı</string>
+    <string name="tavla_draw">Kilitlenme: berabere, puan yok</string>
+    <string name="tavla_match_won_fmt">%1$s maçı kazandı: %2$d–%3$d</string>
+    <string name="tavla_next_game">Sonraki oyun</string>
+    <string name="tavla_new_match">Yeni maç</string>
+    <string name="tavla_to_setup">Kurulum</string>
+    <string name="tavla_board_desc">Tavla tahtası: sıra %1$s, zar %2$s</string>
+    <string name="tavla_cube_fmt">Küp %1$d</string>
+    <string name="tavla_wins_label">Galibiyet</string>
+    <string name="tavla_thinking">Bilgisayar düşünüyor…</string>
+    <string name="tavla_hint">Pula dokun, sonra hedefe dokun; toplamak için alttaki tepsiye dokun</string>
+    <string name="tavla_off_tray">Toplama tepsisi</string>
+
     <!-- Tahta açıklamaları (ekran okuyucu) -->
     <string name="tetris_board_desc">Tetris tahtası: seviye %1$d, %2$d satır, skor %3$d</string>
     <string name="snake_board_desc">Yılan tahtası: uzunluk %1$d, skor %2$d</string>

@@ -31,6 +31,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -544,5 +545,45 @@ fun GecitArt(modifier: Modifier = Modifier) {
         drawRoundRect(Color(0xFFA3E635), Offset(lane * 2.2f, lane * 2.2f), Size(lane * 0.6f, lane * 0.6f), r)
         drawRoundRect(Color(0xFFFBBF24), Offset(lane * 0.3f, lane * 3.15f), Size(lane * 1.9f, lane * 0.7f), r)
         drawCircle(Color(0xFF166534), radius = lane * 0.32f, center = Offset(lane * 4.3f, lane * 4.45f))
+    }
+}
+
+/** Tavla kartı: karşılıklı üçgen haneler, iki renkte pullar. */
+@Composable
+fun TavlaArt(modifier: Modifier = Modifier) {
+    val board = Color(0xFF2A1F1B)
+    val dark = Color(0xFF5B4636)
+    val light = Color(0xFF8B6B4F)
+    val white = Color(0xFFF5F5F4)
+    val black = Color(0xFF292524)
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        drawRoundRect(board, size = Size(w, w), cornerRadius = CornerRadius(w * 0.12f, w * 0.12f))
+        val rows = 5
+        val rowH = w / rows
+        for (r in 0 until rows) {
+            val y = r * rowH
+            val leftTri = Path().apply {
+                moveTo(0f, y)
+                lineTo(0f, y + rowH)
+                lineTo(w * 0.42f, y + rowH / 2f)
+                close()
+            }
+            val rightTri = Path().apply {
+                moveTo(w, y)
+                lineTo(w, y + rowH)
+                lineTo(w * 0.58f, y + rowH / 2f)
+                close()
+            }
+            drawPath(leftTri, if (r % 2 == 0) dark else light)
+            drawPath(rightTri, if (r % 2 == 0) light else dark)
+        }
+        val r = rowH * 0.36f
+        drawCircle(white, r, Offset(r * 1.1f, rowH * 0.5f))
+        drawCircle(white, r, Offset(r * 3.0f, rowH * 0.5f))
+        drawCircle(black, r, Offset(w - r * 1.1f, rowH * 4.5f))
+        drawCircle(black, r, Offset(w - r * 3.0f, rowH * 4.5f))
+        drawCircle(black, r, Offset(r * 1.1f, rowH * 3.5f))
+        drawCircle(white, r, Offset(w - r * 1.1f, rowH * 1.5f))
     }
 }

@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Tetris**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Tetris**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**.
 
 ## Manifesto
 
@@ -27,7 +27,7 @@ za/
 │       └── ui/theme/             # ZA teması
 ├── games/
 │   ├── tetris/  g2048/  snake/   # Oyun motorları: saf Kotlin/JVM, Android'e
-│   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ kuyu/ gecit/ # bağımsız, her biri kendi birim testleriyle
+│   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ kuyu/ gecit/ tavla/ # bağımsız, her biri kendi birim testleriyle
 └── tools/                        # gen_sfx.py (sesler), gen_words.py + gen_turetme.py + gen_dizgi.py (kelime listeleri)
 ```
 
@@ -148,13 +148,26 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   zıplama eğrisi, kartalın kurbağayı kaçırma animasyonu
 - 60 Hz sabit adım, aynı tohum + aynı hamleler = aynı oyun (`games/gecit`)
 
+### Tavla
+- **Üç kural seti** tek oyunda: Klasik (açık pul kırılır, bar'dan girer), Tapa (pullar hapsedilir, 15 pul 24.
+  haneden başlar), Hapis (hapis kurallı, klasik diziliş). Hapsedilen pul, üstündeki pullar kalkana dek oynayamaz;
+  hapsedeni hapsetmek yok. Rakibin evinde hapsetme yasağı ve katlama küpü kurulumda ayarlanabilir
+- Kurallar tam: iki zar da mümkünse oynanır, tek zar oynanabiliyorsa büyük olan; çift zar dört hamle; bar'daki
+  pul önce girer; toplama için tüm pullar evde, fazla zarla en uzaktaki pul toplanır; mars iki puan; maç 1/3/5 puan
+- **Bilgisayar rakip**: tüm yasal turları değerlendirir (pip yarışı, kapılar ve zincirler, açık pullar, bar/hapis,
+  toplama); katlama teklif ve kabul kararı kazanma olasılığı kestirimiyle. İki oyuncu modu aynı telefonda
+- Karşılıklı kilitlenme (yalnız hapis kurallarında olabilir): pip sayısı az olan kazanır, eşitse berabere
+- Dikey ekrana sığan klasik tahta: üstte ve altta 12'şer hane, ortada bar, sağda toplama tepsisi; pula dokun,
+  hedefe dokun (yasal hedefler işaretlenir), geri al. Deterministik zar (`games/tavla`, 18 test); rekor =
+  bilgisayara karşı kazanılan maç sayısı
+
 ## Derleme
 
 Gereksinimler: JDK 17+, Android SDK (compileSdk 35). Android Studio ile açıp çalıştırabilir veya komut satırından derleyebilirsiniz:
 
 ```bash
 ./gradlew :app:assembleDebug        # APK: app/build/outputs/apk/debug/
-./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test :games:kiskac:test :games:turetme:test :games:dizgi:test :games:kuyu:test :games:gecit:test
+./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test :games:kiskac:test :games:turetme:test :games:dizgi:test :games:kuyu:test :games:gecit:test :games:tavla:test
 ```
 
 Motor testleri Android SDK gerektirmez. Sürüm `-PzaVersion=X.Y.Z` özelliğiyle geçilir; release iş akışı bunu etiketten türetir (`versionCode` = `major*10000 + minor*100 + patch`).
@@ -201,7 +214,7 @@ Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
 
 ## Yol haritası
 
-- [x] Yeni oyunlar: 2048 ✓, yılan ✓, sudoku ✓, mayın tarlası ✓, beş harf ✓, kıskaç ✓, türetme ✓, dizgi ✓, kuyu ✓, geçit ✓
+- [x] Yeni oyunlar: 2048 ✓, yılan ✓, sudoku ✓, mayın tarlası ✓, beş harf ✓, kıskaç ✓, türetme ✓, dizgi ✓, kuyu ✓, geçit ✓, tavla ✓
 - [x] Ses efektleri (kapatılabilir) ve satır temizleme animasyonları
 - [x] Sürümün etiketten türetilmesi, SHA256 sağlamaları ve kaynak arşivleri
 - [ ] Oyun içi istatistikler (toplam satır, en uzun oturum)
