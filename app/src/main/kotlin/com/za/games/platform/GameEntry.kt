@@ -16,6 +16,8 @@ data class GameEntry(
     val id: String,
     @StringRes val titleRes: Int,
     @StringRes val taglineRes: Int,
+    /** Menüdeki grup (süzgeç). */
+    val category: GameCategory,
     /** Menü kartında kullanılan vurgu rengi. */
     val accent: Color,
     /** Menü kartındaki küçük görsel. */

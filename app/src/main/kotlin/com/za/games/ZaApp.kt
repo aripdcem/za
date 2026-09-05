@@ -35,6 +35,12 @@ fun ZaApp() {
             GameRegistry.games.forEach { put(it.id, scoreStore.highScore(it.id)) }
         }
     }
+    val lastPlayed = remember {
+        mutableStateMapOf<String, Long>().apply {
+            GameRegistry.games.forEach { put(it.id, settings.lastPlayed(it.id)) }
+        }
+    }
+    var hubCategory by remember { mutableStateOf(settings.hubCategory) }
 
     var soundOn by remember { mutableStateOf(settings.soundEnabled) }
     val soundPlayer = remember { SoundPlayer(context) { soundOn } }
@@ -56,7 +62,18 @@ fun ZaApp() {
             HubScreen(
                 games = GameRegistry.games,
                 highScores = highScores,
-                onPlay = { currentGameId = it.id },
+                lastPlayed = lastPlayed,
+                category = hubCategory,
+                onCategory = { picked ->
+                    hubCategory = picked
+                    settings.hubCategory = picked
+                },
+                onPlay = { game ->
+                    val now = System.currentTimeMillis()
+                    settings.recordPlay(game.id, now)
+                    lastPlayed[game.id] = now
+                    currentGameId = game.id
+                },
                 soundOn = soundOn,
                 onToggleSound = {
                     soundOn = !soundOn
