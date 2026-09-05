@@ -617,3 +617,39 @@ fun BalkonArt(modifier: Modifier = Modifier) {
         drawCircle(Color(0xFF6B7280), radius = w * 0.04f, center = Offset(w * 0.35f, w * 0.92f))
     }
 }
+
+/** Kakuro kartı: çapraz ipucu hücreleri ve doldurulmuş beyaz hücreler. */
+@Composable
+fun KakuroArt(modifier: Modifier = Modifier) {
+    val bg = Color(0xFF0F1628)
+    val clue = Color(0xFF1E293B)
+    val white = Color(0xFFE8ECF3)
+    val green = Color(0xFFBBF7D0)
+    val line = Color(0x59FFFFFF)
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        val cell = w / 4f
+        drawRoundRect(bg, size = Size(w, w), cornerRadius = CornerRadius(w * 0.12f, w * 0.12f))
+        for (r in 0 until 4) {
+            for (c in 0 until 4) {
+                val x = c * cell
+                val y = r * cell
+                val isClue = r == 0 || c == 0 || (r == 2 && c == 2)
+                val color = when {
+                    isClue -> clue
+                    r == 1 -> green
+                    else -> white
+                }
+                drawRect(color, topLeft = Offset(x + 1f, y + 1f), size = Size(cell - 2f, cell - 2f))
+                if (isClue && (r + c) > 0) {
+                    drawLine(line, Offset(x, y), Offset(x + cell, y + cell), strokeWidth = 1.5f)
+                }
+            }
+        }
+        // Sayı yerine küçük noktalar: dolu hücre izlenimi.
+        val dot = Color(0xFF0F172A)
+        for ((r, c) in listOf(1 to 1, 1 to 2, 1 to 3, 2 to 1, 3 to 2)) {
+            drawCircle(dot, radius = cell * 0.13f, center = Offset(c * cell + cell / 2f, r * cell + cell / 2f))
+        }
+    }
+}

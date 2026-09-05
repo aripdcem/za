@@ -371,4 +371,15 @@
     <string name="balkon_level_reached_fmt">You reached level %1$d</string>
     <string name="balkon_to_menu">Theme choice</string>
     <string name="balkon_board_desc">Balcony scene: level %1$d, %2$d seconds left</string>
+
+    <!-- Kakuro -->
+    <string name="game_kakuro">Kakuro</string>
+    <string name="game_kakuro_tagline">Sum crossword: every run adds up to its clue with no repeated digits; unique solution guaranteed</string>
+    <string name="kakuro_rules">Digits in a run must differ and add up to the clue; the upper number is the across clue, the lower the down clue</string>
+    <string name="kakuro_select_hint">Select a cell: the remaining sums of its runs appear here</string>
+    <string name="kakuro_run_across_fmt">Across %1$d: %2$d left, %3$d empty</string>
+    <string name="kakuro_run_down_fmt">Down %1$d: %2$d left, %3$d empty</string>
+    <string name="kakuro_difficulty_desc_fmt">%1$d×%2$d grid</string>
+    <string name="kakuro_board_desc_fmt">Kakuro %1$d×%2$d, %3$d empty cells</string>
+    <string name="kakuro_generating">Preparing the puzzle…</string>
 </resources>
