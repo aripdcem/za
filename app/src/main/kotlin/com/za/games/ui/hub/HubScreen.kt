@@ -2,6 +2,8 @@ package com.za.games.ui.hub
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.za.games.R
+import com.za.games.platform.GameCategory
 import com.za.games.platform.GameEntry
 import java.util.Locale
 
@@ -50,11 +53,20 @@ fun HubScreen(
     games: List<GameEntry>,
     highScores: Map<String, Long>,
     onPlay: (GameEntry) -> Unit,
+    lastPlayed: Map<String, Long> = emptyMap(),
+    category: GameCategory? = null,
+    onCategory: (GameCategory?) -> Unit = {},
     soundOn: Boolean = true,
     onToggleSound: () -> Unit = {},
     hapticsOn: Boolean = true,
     onToggleHaptics: () -> Unit = {},
 ) {
+    // Liste sırası kayıt sırasıdır (kararlı); hızlı erişim için ayrı bir "son oynananlar" şeridi var.
+    val visible = if (category == null) games else games.filter { it.category == category }
+    val recent = games
+        .filter { (lastPlayed[it.id] ?: 0L) > 0L }
+        .sortedByDescending { lastPlayed[it.id] ?: 0L }
+        .take(RECENT_LIMIT)
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -64,7 +76,11 @@ fun HubScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item { HubHeader(soundOn, onToggleSound, hapticsOn, onToggleHaptics) }
-        items(games, key = { it.id }) { game ->
+        item { CategoryChips(selected = category, onSelect = onCategory) }
+        if (category == null && recent.isNotEmpty()) {
+            item { RecentRow(games = recent, onPlay = onPlay) }
+        }
+        items(visible, key = { it.id }) { game ->
             GameCard(
                 game = game,
                 highScore = highScores[game.id] ?: 0L,
@@ -73,6 +89,90 @@ fun HubScreen(
         }
         item { ComingSoonCard() }
         item { HubFooter() }
+    }
+}
+
+private const val RECENT_LIMIT = 4
+
+/** Grup süzgeci: Tümü + kategoriler; seçim kalıcıdır. */
+@Composable
+private fun CategoryChips(selected: GameCategory?, onSelect: (GameCategory?) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        FilterChip(label = stringResource(R.string.hub_cat_all), selected = selected == null) { onSelect(null) }
+        GameCategory.entries.forEach { cat ->
+            FilterChip(label = stringResource(cat.labelRes), selected = selected == cat) { onSelect(cat) }
+        }
+    }
+}
+
+@Composable
+private fun FilterChip(label: String, selected: Boolean, onClick: () -> Unit) {
+    Surface(
+        onClick = onClick,
+        shape = CircleShape,
+        color = if (selected) {
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.28f)
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant
+        },
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
+            color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+        )
+    }
+}
+
+/** Son oynanan oyunlar: küçük kartlar, dokununca doğrudan açılır. */
+@Composable
+private fun RecentRow(games: List<GameEntry>, onPlay: (GameEntry) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(
+            text = stringResource(R.string.hub_recent).uppercase(Locale.getDefault()),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            games.forEach { game ->
+                RecentCard(game = game, onPlay = { onPlay(game) }, modifier = Modifier.weight(1f))
+            }
+            repeat(RECENT_LIMIT - games.size) { Spacer(Modifier.weight(1f)) }
+        }
+    }
+}
+
+@Composable
+private fun RecentCard(game: GameEntry, onPlay: () -> Unit, modifier: Modifier = Modifier) {
+    Surface(
+        onClick = onPlay,
+        shape = RoundedCornerShape(18.dp),
+        color = MaterialTheme.colorScheme.surface,
+        modifier = modifier,
+    ) {
+        Column(
+            modifier = Modifier
+                .background(Brush.verticalGradient(listOf(game.accent.copy(alpha = 0.16f), Color.Transparent)))
+                .padding(vertical = 10.dp, horizontal = 6.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            game.art(Modifier.size(40.dp))
+            Text(
+                text = stringResource(game.titleRes),
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                textAlign = TextAlign.Center,
+            )
+        }
     }
 }
 

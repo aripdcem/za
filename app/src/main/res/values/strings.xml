@@ -382,4 +382,12 @@
     <string name="kakuro_difficulty_desc_fmt">%1$d×%2$d ızgara</string>
     <string name="kakuro_board_desc_fmt">Kakuro %1$d×%2$d, %3$d boş hücre</string>
     <string name="kakuro_generating">Bulmaca hazırlanıyor…</string>
+
+    <!-- Ana menü grupları -->
+    <string name="hub_cat_all">Tümü</string>
+    <string name="hub_cat_word">Kelime</string>
+    <string name="hub_cat_puzzle">Bulmaca</string>
+    <string name="hub_cat_arcade">Arcade</string>
+    <string name="hub_cat_board">Masa</string>
+    <string name="hub_recent">Son oynananlar</string>
 </resources>

@@ -382,4 +382,12 @@
     <string name="kakuro_difficulty_desc_fmt">%1$d×%2$d grid</string>
     <string name="kakuro_board_desc_fmt">Kakuro %1$d×%2$d, %3$d empty cells</string>
     <string name="kakuro_generating">Preparing the puzzle…</string>
+
+    <!-- Hub groups -->
+    <string name="hub_cat_all">All</string>
+    <string name="hub_cat_word">Word</string>
+    <string name="hub_cat_puzzle">Puzzle</string>
+    <string name="hub_cat_arcade">Arcade</string>
+    <string name="hub_cat_board">Board</string>
+    <string name="hub_recent">Recently played</string>
 </resources>
