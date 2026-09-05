@@ -14,6 +14,8 @@ import com.za.games.ui.hub.KuyuArt
 import com.za.games.ui.hub.TavlaArt
 import com.za.games.ui.hub.BalkonArt
 import com.za.games.ui.hub.KakuroArt
+import com.za.games.ui.hub.VergiciArt
+import com.za.games.ui.hub.ToplamArt
 import com.za.games.ui.hub.MinesArt
 import com.za.games.ui.hub.SnakeArt
 import com.za.games.ui.hub.SudokuArt
@@ -26,6 +28,8 @@ import com.za.games.ui.kuyu.KuyuScreen
 import com.za.games.ui.tavla.TavlaScreen
 import com.za.games.ui.balkon.BalkonScreen
 import com.za.games.ui.kakuro.KakuroScreen
+import com.za.games.ui.vergici.VergiciScreen
+import com.za.games.ui.toplam.ToplamScreen
 import com.za.games.ui.snake.SnakeScreen
 import com.za.games.ui.sudoku.SudokuScreen
 import com.za.games.ui.tetris.TetrisScreen
@@ -190,6 +194,28 @@ object GameRegistry {
             art = { modifier -> KakuroArt(modifier) },
             screen = { highScore, onScore, onExit ->
                 KakuroScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "vergici",
+            titleRes = R.string.game_vergici,
+            taglineRes = R.string.game_vergici_tagline,
+            category = GameCategory.BOARD,
+            accent = Color(0xFFA3E635),
+            art = { modifier -> VergiciArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                VergiciScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "toplam",
+            titleRes = R.string.game_toplam,
+            taglineRes = R.string.game_toplam_tagline,
+            category = GameCategory.BOARD,
+            accent = Color(0xFFC084FC),
+            art = { modifier -> ToplamArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                ToplamScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
     )

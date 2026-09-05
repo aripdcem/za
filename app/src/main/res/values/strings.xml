@@ -390,4 +390,59 @@
     <string name="hub_cat_arcade">Arcade</string>
     <string name="hub_cat_board">Masa</string>
     <string name="hub_recent">Son oynananlar</string>
+
+    <!-- Vergici -->
+    <string name="game_vergici">Vergici</string>
+    <string name="game_vergici_tagline">Sayıyı al, vergici bölenlerini alsın: bölen sezgisi ve plan</string>
+    <string name="vergici_rules">Böleni kalmış bir sayı al; vergici o sayının tahtadaki tüm bölenlerini alır. Alınacak sayı kalmayınca kalanlar vergiciye. Puanı yüksek olan kazanır</string>
+    <string name="vergici_size_label">Sayı aralığı</string>
+    <string name="vergici_size_fmt">1–%1$d</string>
+    <string name="vergici_start">Başla</string>
+    <string name="vergici_you">Sen</string>
+    <string name="vergici_taxman">Vergici</string>
+    <string name="vergici_target">Hedef</string>
+    <string name="vergici_hint_pick">Böleni kalmış bir sayıya dokun; vergicinin alacakları kırmızı görünür</string>
+    <string name="vergici_preview_fmt">%1$d alırsan vergici %2$s alır (+%3$d)</string>
+    <string name="vergici_last_fmt">%1$d aldın · vergici %2$s aldı</string>
+    <string name="vergici_leftover_fmt">Kalanlar vergiciye gitti: %1$s</string>
+    <string name="vergici_take_fmt">%1$d al</string>
+    <string name="vergici_won">Vergiciyi yendin!</string>
+    <string name="vergici_lost">Vergici kazandı</string>
+    <string name="vergici_draw">Berabere</string>
+    <string name="vergici_result_fmt">Sen %1$d · Vergici %2$d</string>
+    <string name="vergici_target_fmt">En iyi olası: %1$d</string>
+    <string name="vergici_good_fmt">İyi bir skor: %1$d</string>
+    <string name="vergici_wins_fmt">Galibiyet: %1$d</string>
+    <string name="vergici_best_fmt">1–%1$d rekorun: %2$d</string>
+    <string name="vergici_again">Yeniden</string>
+    <string name="vergici_to_setup">Kurulum</string>
+    <string name="vergici_cell_gone_fmt">%1$d alındı</string>
+    <string name="vergici_cell_taxed_fmt">%1$d vergiciye gidecek</string>
+    <string name="vergici_cell_takeable_fmt">%1$d alınabilir</string>
+    <string name="vergici_cell_locked_fmt">%1$d alınamaz, böleni kalmadı</string>
+
+    <!-- Toplam Kapma -->
+    <string name="game_toplam">Toplam Kapma</string>
+    <string name="game_toplam_tagline">1–9 arasından sırayla sayı al; üç sayın 15 ederse kazanırsın</string>
+    <string name="toplam_rules">Sırayla 1–9 arasından bir sayı al. Elindeki herhangi üç sayının toplamı 15 olursa kazanırsın; dokuz sayı bitince berabere</string>
+    <string name="toplam_opponent_label">Rakip</string>
+    <string name="toplam_computer">Bilgisayar</string>
+    <string name="toplam_two_players">İki oyuncu</string>
+    <string name="toplam_level_label">Seviye</string>
+    <string name="toplam_level_easy">Kolay</string>
+    <string name="toplam_level_perfect">Kusursuz</string>
+    <string name="toplam_start">Başla</string>
+    <string name="toplam_you">Sen</string>
+    <string name="toplam_player_fmt">%1$d. Oyuncu</string>
+    <string name="toplam_draws">Berabere</string>
+    <string name="toplam_turn_fmt">Sıra: %1$s</string>
+    <string name="toplam_thinking">Bilgisayar düşünüyor…</string>
+    <string name="toplam_won_fmt">%1$s kazandı</string>
+    <string name="toplam_draw">Berabere</string>
+    <string name="toplam_again">Yeni oyun</string>
+    <string name="toplam_secret">Sır</string>
+    <string name="toplam_secret_text">Sayıları sihirli kareye yerleştir: her satır, sütun ve köşegen 15 eder. Yani aslında üç taş oynadın</string>
+    <string name="toplam_to_setup">Kurulum</string>
+    <string name="toplam_chip_free_fmt">%1$d, boşta</string>
+    <string name="toplam_chip_taken_fmt">%1$d, alınmış</string>
 </resources>
