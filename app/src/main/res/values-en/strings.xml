@@ -390,4 +390,59 @@
     <string name="hub_cat_arcade">Arcade</string>
     <string name="hub_cat_board">Board</string>
     <string name="hub_recent">Recently played</string>
+
+    <!-- Vergici -->
+    <string name="game_vergici">Vergici</string>
+    <string name="game_vergici_tagline">Take a number, the taxman takes its divisors: divisor sense and planning</string>
+    <string name="vergici_rules">Take a number that still has a divisor on the board; the taxman takes all of its remaining divisors. When nothing can be taken, the rest goes to the taxman. Higher total wins</string>
+    <string name="vergici_size_label">Number range</string>
+    <string name="vergici_size_fmt">1–%1$d</string>
+    <string name="vergici_start">Start</string>
+    <string name="vergici_you">You</string>
+    <string name="vergici_taxman">Taxman</string>
+    <string name="vergici_target">Target</string>
+    <string name="vergici_hint_pick">Tap a number that still has a divisor; what the taxman would take shows in red</string>
+    <string name="vergici_preview_fmt">Take %1$d and the taxman gets %2$s (+%3$d)</string>
+    <string name="vergici_last_fmt">You took %1$d · the taxman took %2$s</string>
+    <string name="vergici_leftover_fmt">Leftovers went to the taxman: %1$s</string>
+    <string name="vergici_take_fmt">Take %1$d</string>
+    <string name="vergici_won">You beat the taxman!</string>
+    <string name="vergici_lost">The taxman wins</string>
+    <string name="vergici_draw">Draw</string>
+    <string name="vergici_result_fmt">You %1$d · Taxman %2$d</string>
+    <string name="vergici_target_fmt">Best possible: %1$d</string>
+    <string name="vergici_good_fmt">A good score: %1$d</string>
+    <string name="vergici_wins_fmt">Wins: %1$d</string>
+    <string name="vergici_best_fmt">Your 1–%1$d record: %2$d</string>
+    <string name="vergici_again">Again</string>
+    <string name="vergici_to_setup">Setup</string>
+    <string name="vergici_cell_gone_fmt">%1$d taken</string>
+    <string name="vergici_cell_taxed_fmt">%1$d would go to the taxman</string>
+    <string name="vergici_cell_takeable_fmt">%1$d can be taken</string>
+    <string name="vergici_cell_locked_fmt">%1$d cannot be taken, no divisor left</string>
+
+    <!-- Toplam Kapma -->
+    <string name="game_toplam">Toplam Kapma</string>
+    <string name="game_toplam_tagline">Take turns picking from 1–9; three of your numbers adding to 15 win</string>
+    <string name="toplam_rules">Take turns picking a number from 1–9. If any three of your numbers add up to 15 you win; when all nine are gone it is a draw</string>
+    <string name="toplam_opponent_label">Opponent</string>
+    <string name="toplam_computer">Computer</string>
+    <string name="toplam_two_players">Two players</string>
+    <string name="toplam_level_label">Level</string>
+    <string name="toplam_level_easy">Easy</string>
+    <string name="toplam_level_perfect">Perfect</string>
+    <string name="toplam_start">Start</string>
+    <string name="toplam_you">You</string>
+    <string name="toplam_player_fmt">Player %1$d</string>
+    <string name="toplam_draws">Draws</string>
+    <string name="toplam_turn_fmt">Turn: %1$s</string>
+    <string name="toplam_thinking">The computer is thinking…</string>
+    <string name="toplam_won_fmt">%1$s wins</string>
+    <string name="toplam_draw">Draw</string>
+    <string name="toplam_again">New game</string>
+    <string name="toplam_secret">Secret</string>
+    <string name="toplam_secret_text">Place the numbers on the magic square: every row, column and diagonal adds to 15. So you were really playing tic-tac-toe</string>
+    <string name="toplam_to_setup">Setup</string>
+    <string name="toplam_chip_free_fmt">%1$d, free</string>
+    <string name="toplam_chip_taken_fmt">%1$d, taken</string>
 </resources>

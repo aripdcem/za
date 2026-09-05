@@ -115,6 +115,8 @@
   .card.tavla { background-image: linear-gradient(90deg, rgba(217, 119, 6, 0.10), transparent 60%); }
   .card.balkon { background-image: linear-gradient(90deg, rgba(56, 189, 248, 0.10), transparent 60%); }
   .card.kakuro { background-image: linear-gradient(90deg, rgba(20, 184, 166, 0.10), transparent 60%); }
+  .card.vergici { background-image: linear-gradient(90deg, rgba(163, 230, 53, 0.10), transparent 60%); }
+  .card.toplam { background-image: linear-gradient(90deg, rgba(192, 132, 252, 0.10), transparent 60%); }
   .card.muted { opacity: .65; }
   .art {
     flex: 0 0 auto;
@@ -434,6 +436,44 @@
       <div class="info">
         <h2>Kakuro</h2>
         <p>Toplam bulmacası: her koşu ipucuyla toplanır, rakamlar yinelenmez. Üç boy, notlar, kalan toplam yardımcısı ve tek çözüm garantisi.</p>
+      </div>
+    </section>
+
+    <section class="card vergici">
+      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(5,11px);grid-auto-rows:11px;gap:2px">
+        <i style="grid-area:1/1/6/6;background:#14201C"></i>
+        <i style="grid-area:2/2;background:#F87171;border-radius:3px"></i>
+        <i style="grid-area:2/3;background:#F87171;border-radius:3px"></i>
+        <i style="grid-area:3/2;background:#F87171;border-radius:3px"></i>
+        <i style="grid-area:3/3;background:#A3E635;border-radius:3px"></i>
+        <i style="grid-area:2/4;background:#2E3B2F;border-radius:3px"></i>
+        <i style="grid-area:3/4;background:#2E3B2F;border-radius:3px"></i>
+        <i style="grid-area:4/2;background:#2E3B2F;border-radius:3px"></i>
+        <i style="grid-area:4/3;background:#2E3B2F;border-radius:3px"></i>
+        <i style="grid-area:4/4;background:#2E3B2F;border-radius:3px"></i>
+      </div>
+      <div class="info">
+        <h2>Vergici</h2>
+        <p>Böleni kalmış sayıyı al, vergici bölenlerini alsın. 1–12'den 1–40'a; en iyi olası puan hedef olarak gösterilir.</p>
+      </div>
+    </section>
+
+    <section class="card toplam">
+      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(5,11px);grid-auto-rows:11px;gap:2px">
+        <i style="grid-area:1/1/6/6;background:#1C1430"></i>
+        <i style="grid-area:2/2;background:#4ADE80;border-radius:50%"></i>
+        <i style="grid-area:2/3;background:#3B2F55;border-radius:50%"></i>
+        <i style="grid-area:2/4;background:#F472B6;border-radius:50%"></i>
+        <i style="grid-area:3/2;background:#F472B6;border-radius:50%"></i>
+        <i style="grid-area:3/3;background:#4ADE80;border-radius:50%"></i>
+        <i style="grid-area:3/4;background:#3B2F55;border-radius:50%"></i>
+        <i style="grid-area:4/2;background:#3B2F55;border-radius:50%"></i>
+        <i style="grid-area:4/3;background:#F472B6;border-radius:50%"></i>
+        <i style="grid-area:4/4;background:#4ADE80;border-radius:50%"></i>
+      </div>
+      <div class="info">
+        <h2>Toplam Kapma</h2>
+        <p>1–9'dan sırayla sayı al; üç sayın 15 ederse kazanırsın. Kusursuz ya da kolay bilgisayar, iki oyuncu; sonunda sihirli kare sırrı.</p>
       </div>
     </section>
 

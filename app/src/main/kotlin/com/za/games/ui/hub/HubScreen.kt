@@ -753,3 +753,50 @@ fun KakuroArt(modifier: Modifier = Modifier) {
         }
     }
 }
+
+/** Vergici kartı: sayı taşları ve vergicinin aldığı kırmızı bölenler. */
+@Composable
+fun VergiciArt(modifier: Modifier = Modifier) {
+    val bg = Color(0xFF14201C)
+    val tile = Color(0xFF2E3B2F)
+    val coin = Color(0xFFA3E635)
+    val tax = Color(0xFFF87171)
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        drawRoundRect(bg, size = Size(w, w), cornerRadius = CornerRadius(w * 0.12f, w * 0.12f))
+        val cell = w / 3f
+        for (r in 0 until 3) {
+            for (c in 0 until 3) {
+                val idx = r * 3 + c
+                val color = when (idx) {
+                    4 -> coin
+                    0, 1, 3 -> tax
+                    else -> tile
+                }
+                drawRoundRect(color, topLeft = Offset(c * cell + 3f, r * cell + 3f), size = Size(cell - 6f, cell - 6f), cornerRadius = CornerRadius(5f, 5f))
+            }
+        }
+        drawCircle(Color(0xFF14201C), radius = cell * 0.18f, center = Offset(cell * 1.5f, cell * 1.5f))
+    }
+}
+
+/** Toplam Kapma kartı: dokuz sayı pulu, üçü kazanan yeşil. */
+@Composable
+fun ToplamArt(modifier: Modifier = Modifier) {
+    val bg = Color(0xFF1C1430)
+    val chip = Color(0xFF3B2F55)
+    val p0 = Color(0xFF22D3EE)
+    val p1 = Color(0xFFF472B6)
+    val win = Color(0xFF4ADE80)
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        drawRoundRect(bg, size = Size(w, w), cornerRadius = CornerRadius(w * 0.12f, w * 0.12f))
+        val cell = w / 3f
+        val colors = listOf(win, chip, p1, p0, win, chip, chip, p1, win)
+        for (r in 0 until 3) {
+            for (c in 0 until 3) {
+                drawCircle(colors[r * 3 + c], radius = cell * 0.36f, center = Offset(c * cell + cell / 2f, r * cell + cell / 2f))
+            }
+        }
+    }
+}
