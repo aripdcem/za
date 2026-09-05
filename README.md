@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Tetris**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Tetris**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**.
 
 ## Manifesto
 
@@ -27,7 +27,7 @@ za/
 │       └── ui/theme/             # ZA teması
 ├── games/
 │   ├── tetris/  g2048/  snake/   # Oyun motorları: saf Kotlin/JVM, Android'e
-│   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ kuyu/ gecit/ tavla/ balkon/ # bağımsız, her biri kendi birim testleriyle
+│   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ kuyu/ gecit/ tavla/ balkon/ kakuro/ # bağımsız, her biri kendi birim testleriyle
 └── tools/                        # gen_sfx.py (sesler), gen_words.py + gen_turetme.py + gen_dizgi.py (kelime listeleri)
 ```
 
@@ -174,13 +174,22 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 - Süreli seviyeler: 45 saniyede gereken isabete ulaş (8, 10, 12…); kalan süre ×10 bonus; hız, hedef sayısı ve
   rüzgâr seviyeyle artar. 60 Hz sabit adım, deterministik hedef akışı (`games/balkon`, 11 test)
 
+### Kakuro
+- Toplam bulmacası: kara hücrelerdeki ipucu, sağındaki yatay ve altındaki dikey koşunun toplamı; koşudaki rakamlar
+  farklı. Üç boy: 7×7, 9×9, 11×11 (ipucu kenarı hariç). Notlar, geri alma, çakışma ve tamamlanan koşu vurgusu,
+  seçili hücrenin koşularında kalan toplam; yarım kalan bulmaca cihazda saklanır
+- **Tek çözüm garantisi**: 180° simetrik rastgele düzen (koşular 2–9), koşu içinde yinelenmeyen rastgele doldurma,
+  ardından yayılımlı çözücüyle (toplam–uzunluk kombinasyonları, aday daraltma, geri izleme) iki çözüm arandığında
+  farklı hücreler yeniden dağıtılır; birkaç aday arasından koşuları en sıkı kılan seçilir. Tohumdan deterministik
+  (`games/kakuro`, 8 test)
+
 ## Derleme
 
 Gereksinimler: JDK 17+, Android SDK (compileSdk 35). Android Studio ile açıp çalıştırabilir veya komut satırından derleyebilirsiniz:
 
 ```bash
 ./gradlew :app:assembleDebug        # APK: app/build/outputs/apk/debug/
-./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test :games:kiskac:test :games:turetme:test :games:dizgi:test :games:kuyu:test :games:gecit:test :games:tavla:test :games:balkon:test
+./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test :games:kiskac:test :games:turetme:test :games:dizgi:test :games:kuyu:test :games:gecit:test :games:tavla:test :games:balkon:test :games:kakuro:test
 ```
 
 Motor testleri Android SDK gerektirmez. Sürüm `-PzaVersion=X.Y.Z` özelliğiyle geçilir; release iş akışı bunu etiketten türetir (`versionCode` = `major*10000 + minor*100 + patch`).
@@ -227,7 +236,7 @@ Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
 
 ## Yol haritası
 
-- [x] Yeni oyunlar: 2048 ✓, yılan ✓, sudoku ✓, mayın tarlası ✓, beş harf ✓, kıskaç ✓, türetme ✓, dizgi ✓, kuyu ✓, geçit ✓, tavla ✓, balkon ✓
+- [x] Yeni oyunlar: 2048 ✓, yılan ✓, sudoku ✓, mayın tarlası ✓, beş harf ✓, kıskaç ✓, türetme ✓, dizgi ✓, kuyu ✓, geçit ✓, tavla ✓, balkon ✓, kakuro ✓
 - [x] Ses efektleri (kapatılabilir) ve satır temizleme animasyonları
 - [x] Sürümün etiketten türetilmesi, SHA256 sağlamaları ve kaynak arşivleri
 - [ ] Oyun içi istatistikler (toplam satır, en uzun oturum)

@@ -371,4 +371,15 @@
     <string name="balkon_level_reached_fmt">%1$d. seviyeye ulaştın</string>
     <string name="balkon_to_menu">Tema seçimi</string>
     <string name="balkon_board_desc">Balkon sahnesi: seviye %1$d, %2$d saniye kaldı</string>
+
+    <!-- Kakuro -->
+    <string name="game_kakuro">Kakuro</string>
+    <string name="game_kakuro_tagline">Toplam bulmacası: her koşu ipucuyla toplanır, rakamlar yinelenmez; tek çözüm garantisi</string>
+    <string name="kakuro_rules">Koşudaki rakamlar farklı olmalı ve ipucuyla toplanmalı; ipucu üstteki sayı yatay, alttaki dikey koşu için</string>
+    <string name="kakuro_select_hint">Bir hücre seç: koşuların kalan toplamı burada görünür</string>
+    <string name="kakuro_run_across_fmt">Yatay %1$d: %2$d kaldı, %3$d boş</string>
+    <string name="kakuro_run_down_fmt">Dikey %1$d: %2$d kaldı, %3$d boş</string>
+    <string name="kakuro_difficulty_desc_fmt">%1$d×%2$d ızgara</string>
+    <string name="kakuro_board_desc_fmt">Kakuro %1$d×%2$d, %3$d boş hücre</string>
+    <string name="kakuro_generating">Bulmaca hazırlanıyor…</string>
 </resources>
