@@ -74,6 +74,8 @@ import com.za.games.tavla.TavlaState
 import com.za.games.ui.common.GameTopBar
 import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.PadButton
+import com.za.games.platform.ShareContent
+import com.za.games.ui.common.ShareButton
 import kotlinx.coroutines.delay
 import kotlin.math.abs
 import kotlin.math.min
@@ -864,6 +866,17 @@ private fun MatchOverCard(
                 color = MaterialTheme.colorScheme.primary,
             )
         }
+        ShareButton(
+            ShareContent(
+                gameId = "tavla",
+                headline = stringResource(R.string.tavla_match_won_fmt, names[winner], state.scores[0], state.scores[1]),
+                details = listOfNotNull(
+                    stringResource(R.string.tavla_target_label) + ": " + stringResource(R.string.tavla_target_fmt, state.rules.target),
+                    if (state.mars && !state.resigned) stringResource(R.string.tavla_mars) else null,
+                    wins?.let { stringResource(R.string.share_wins_fmt, it) },
+                ),
+            ),
+        )
         Spacer(Modifier.height(4.dp))
         Button(onClick = onNewMatch, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.tavla_new_match))

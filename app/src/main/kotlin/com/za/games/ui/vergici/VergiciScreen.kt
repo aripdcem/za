@@ -48,6 +48,8 @@ import com.za.games.ui.common.GameTopBar
 import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.PadButton
 import com.za.games.ui.common.ScoreCard
+import com.za.games.platform.ShareContent
+import com.za.games.ui.common.ShareButton
 
 private val TaxColor = Color(0xFFF87171)
 private val CoinColor = Color(0xFFFBBF24)
@@ -391,15 +393,16 @@ private fun OverCard(
     onSetup: () -> Unit,
     onExit: () -> Unit,
 ) {
+    val verdict = stringResource(
+        when {
+            state.player > state.taxman -> R.string.vergici_won
+            state.player < state.taxman -> R.string.vergici_lost
+            else -> R.string.vergici_draw
+        },
+    )
     OverlayCard {
         Text(
-            text = stringResource(
-                when {
-                    state.player > state.taxman -> R.string.vergici_won
-                    state.player < state.taxman -> R.string.vergici_lost
-                    else -> R.string.vergici_draw
-                },
-            ),
+            text = verdict,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
@@ -416,6 +419,19 @@ private fun OverCard(
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
             )
         }
+        ShareButton(
+            ShareContent(
+                gameId = "vergici",
+                headline = verdict,
+                details = listOfNotNull(
+                    stringResource(R.string.vergici_result_fmt, state.player, state.taxman),
+                    stringResource(R.string.vergici_size_fmt, state.n),
+                    target?.let {
+                        stringResource(if (it.exact) R.string.vergici_target_fmt else R.string.vergici_good_fmt, it.score)
+                    },
+                ),
+            ),
+        )
         Spacer(Modifier.height(4.dp))
         Button(onClick = onRetry, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.vergici_again))

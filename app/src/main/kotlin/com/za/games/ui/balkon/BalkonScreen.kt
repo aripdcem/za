@@ -76,6 +76,8 @@ import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.PadButton
 import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.formatScore
+import com.za.games.platform.ShareContent
+import com.za.games.ui.common.ShareButton
 import kotlinx.coroutines.isActive
 import kotlin.math.PI
 import kotlin.math.abs
@@ -273,6 +275,7 @@ fun BalkonScreen(
                 BalkonPhase.OVER -> OverCard(
                     hud = hud,
                     isRecord = hud.score > previousBest,
+                    themeName = stringResource(themeNameRes(viewModel.runTheme)),
                     onRestart = restartRun,
                     onMenu = viewModel::toMenu,
                     onExit = onExit,
@@ -526,7 +529,14 @@ private fun PauseCard(onResume: () -> Unit, onRestart: () -> Unit, onMenu: () ->
 }
 
 @Composable
-private fun OverCard(hud: BalkonHud, isRecord: Boolean, onRestart: () -> Unit, onMenu: () -> Unit, onExit: () -> Unit) {
+private fun OverCard(
+    hud: BalkonHud,
+    isRecord: Boolean,
+    themeName: String,
+    onRestart: () -> Unit,
+    onMenu: () -> Unit,
+    onExit: () -> Unit,
+) {
     OverlayCard {
         Text(
             text = stringResource(R.string.balkon_time_up),
@@ -551,6 +561,13 @@ private fun OverCard(hud: BalkonHud, isRecord: Boolean, onRestart: () -> Unit, o
                 color = MaterialTheme.colorScheme.secondary,
             )
         }
+        ShareButton(
+            ShareContent(
+                gameId = "balkon",
+                headline = stringResource(R.string.share_score_fmt, formatScore(hud.score)),
+                details = listOf(stringResource(R.string.balkon_level_reached_fmt, hud.level), themeName),
+            ),
+        )
         Spacer(Modifier.height(4.dp))
         Button(onClick = onRestart, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.restart))

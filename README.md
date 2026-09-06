@@ -22,7 +22,7 @@ Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç 
 za/
 ├── app/                          # Android uygulaması (Kotlin + Jetpack Compose)
 │   └── com.za.games
-│       ├── platform/             # Çekirdek: GameRegistry, ScoreStore, SettingsStore, SoundPlayer
+│       ├── platform/             # Çekirdek: GameRegistry, ScoreStore, SettingsStore, SoundPlayer, ShareCard
 │       ├── ui/common/            # Oyunların paylaştığı bileşenler (tuşlar, katmanlar, kartlar)
 │       ├── ui/hub/               # Ana menü (oyun listesi + manifesto + ses düğmesi)
 │       ├── ui/&lt;oyun&gt;/            # Oyunların Compose arayüzleri
@@ -44,6 +44,8 @@ Temel ilke: **oyun kuralları saf Kotlin modüllerinde, arayüz `app` içinde** 
 ## Oyunlar
 
 Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı hamlelerle birebir aynı sonucu üretir. Rekorlar cihazda saklanır; oyunlar arka plana geçince kendiliğinden duraklar. Ses efektleri prosedürel üretilmiş küçük WAV'lardır ve ana menüden tamamen kapatılabilir.
+
+**Sonuç paylaşımı:** her oyunun bitiş kartındaki **Paylaş** düğmesi 1080 px genişliğinde bir sonuç kartı (PNG) ve kısa bir metin üretip Android'in paylaşım sayfasına verir (`platform/Share.kt`). Kakuro, Sudoku, Mayın Tarlası, Beş Harf, 2048 ve Dizgi'de karta bitmiş tahta da çizilir; Beş Harf metne 🟩🟨⬛ ızgarasını ekler ve günlük kelimeyi ele vermez. Kart uygulamanın önbelleğine yazılır, yalnızca seçilen uygulamaya ve yalnızca okuma için açılır (`FileProvider`): depolama izni gerekmez, "0 izin" sözü bozulmaz.
 
 ### Tetris
 - 10×20 tahta, **7'li torba** rastgeleliği, **SRS rotasyon** + tam duvar tekmesi tabloları

@@ -63,6 +63,8 @@ import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.PadButton
 import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.formatTime
+import com.za.games.platform.ShareContent
+import com.za.games.ui.common.ShareButton
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.semantics.contentDescription
@@ -199,6 +201,7 @@ fun MinesScreen(
                 MinesStatus.WON -> ResultOverlay(
                     title = stringResource(R.string.mines_won),
                     time = formatTime(elapsed),
+                    share = state?.let { minesShare(it, formatTime(elapsed)) },
                     onRetry = viewModel::retry,
                     onPickDifficulty = viewModel::reset,
                     onExit = onExit,
@@ -206,6 +209,7 @@ fun MinesScreen(
                 MinesStatus.LOST -> ResultOverlay(
                     title = stringResource(R.string.mines_lost),
                     time = formatTime(elapsed),
+                    share = state?.let { minesShare(it, formatTime(elapsed)) },
                     onRetry = viewModel::retry,
                     onPickDifficulty = viewModel::reset,
                     onExit = onExit,
@@ -347,6 +351,7 @@ private fun MinesBoard(
 private fun ResultOverlay(
     title: String,
     time: String,
+    share: ShareContent?,
     onRetry: () -> Unit,
     onPickDifficulty: () -> Unit,
     onExit: () -> Unit,
@@ -362,6 +367,7 @@ private fun ResultOverlay(
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
         )
+        if (share != null) ShareButton(share)
         Spacer(Modifier.height(4.dp))
         Button(onClick = onRetry, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.try_again))
@@ -374,3 +380,14 @@ private fun ResultOverlay(
         }
     }
 }
+
+@Composable
+private fun minesShare(state: MinesState, time: String): ShareContent = ShareContent(
+    gameId = "mines",
+    headline = stringResource(if (state.status == MinesStatus.WON) R.string.mines_won else R.string.mines_lost),
+    details = listOf(
+        stringResource(R.string.mines_difficulty_desc_fmt, state.width, state.height, state.mineCount),
+        stringResource(R.string.time_fmt, time),
+    ),
+    board = minesPainter(state),
+)

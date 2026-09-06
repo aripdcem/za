@@ -78,6 +78,9 @@ import com.za.games.ui.common.HoldButton
 import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.formatScore
+import com.za.games.platform.ShareContent
+import com.za.games.ui.common.ShareButton
+import com.za.games.ui.common.modeShareLabel
 import kotlinx.coroutines.isActive
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -806,6 +809,16 @@ private fun OverCard(
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
             )
         }
+        ShareButton(
+            ShareContent(
+                gameId = "kuyu",
+                headline = stringResource(R.string.share_score_fmt, formatScore(hud.score)),
+                details = listOf(
+                    stringResource(R.string.kuyu_result_fmt, hud.depth, hud.gems, hud.bestCombo),
+                    modeShareLabel(daily, null),
+                ),
+            ),
+        )
         Spacer(Modifier.height(4.dp))
         Button(onClick = onRestart, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(if (daily) R.string.play_free else R.string.restart))

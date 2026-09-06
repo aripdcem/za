@@ -55,6 +55,9 @@ import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.PadButton
 import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.formatScore
+import com.za.games.platform.ShareContent
+import com.za.games.ui.common.ShareButton
+import com.za.games.ui.common.modeShareLabel
 import kotlinx.coroutines.delay
 import java.util.Locale
 
@@ -517,6 +520,17 @@ private fun CompletedOverlay(
             style = MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.Black,
             color = MaterialTheme.colorScheme.primary,
+        )
+        ShareButton(
+            ShareContent(
+                gameId = "turetme",
+                headline = stringResource(R.string.turetme_completed),
+                details = listOf(
+                    stringResource(R.string.share_score_fmt, formatScore(state.score)),
+                    stringResource(R.string.share_words_fmt, state.found.size, state.targets.size),
+                    modeShareLabel(mode == TuretmeMode.DAILY, state.dailyDay),
+                ),
+            ),
         )
         Spacer(Modifier.height(4.dp))
         if (mode == TuretmeMode.DAILY) {

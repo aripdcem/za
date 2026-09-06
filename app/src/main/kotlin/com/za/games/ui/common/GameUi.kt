@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.za.games.R
+import com.za.games.platform.ShareContent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import java.util.Locale
@@ -359,6 +360,7 @@ fun GameOverOverlay(
     isRecord: Boolean,
     onRestart: () -> Unit,
     onExit: () -> Unit,
+    share: ShareContent? = null,
 ) {
     OverlayCard {
         Text(
@@ -379,6 +381,7 @@ fun GameOverOverlay(
                 color = MaterialTheme.colorScheme.secondary,
             )
         }
+        if (share != null) ShareButton(share)
         Spacer(Modifier.height(4.dp))
         Button(onClick = onRestart, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.restart))

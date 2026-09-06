@@ -51,6 +51,8 @@ import com.za.games.sayi.ToplamState
 import com.za.games.ui.common.GameTopBar
 import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.ScoreCard
+import com.za.games.platform.ShareContent
+import com.za.games.ui.common.ShareButton
 
 private val P0Color = Color(0xFF22D3EE)
 private val P1Color = Color(0xFFF472B6)
@@ -189,6 +191,25 @@ fun ToplamScreen(
                 TextButton(onClick = viewModel::toSetup, modifier = Modifier.weight(0.7f)) {
                     Text(stringResource(R.string.toplam_to_setup))
                 }
+                ShareButton(
+                    content = ShareContent(
+                        gameId = "toplam",
+                        headline = if (state.winner == null) {
+                            stringResource(R.string.toplam_draw)
+                        } else {
+                            stringResource(R.string.toplam_won_fmt, names[state.winner ?: 0])
+                        },
+                        details = listOfNotNull(
+                            "${names[0]} ${tally.p0} · ${stringResource(R.string.toplam_draws)} ${tally.draws} · ${names[1]} ${tally.p1}",
+                            if (vsComputer) {
+                                stringResource(if (viewModel.matchPerfect) R.string.toplam_level_perfect else R.string.toplam_level_easy)
+                            } else {
+                                null
+                            },
+                        ),
+                    ),
+                    compact = true,
+                )
             } else {
                 Spacer(Modifier.height(40.dp))
             }
