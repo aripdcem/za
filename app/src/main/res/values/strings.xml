@@ -452,7 +452,7 @@
     <string name="share_chooser">Sonucu paylaş</string>
     <string name="share_failed">Paylaşım açılamadı</string>
     <string name="share_tagline">ZA: sıfır reklam, sıfır izin, saf oyun. Ücretsiz ve açık kaynak:</string>
-    <string name="share_link">https://github.com/aripdcem/za</string>
+    <string name="share_link">https://za.aripd.com</string>
     <string name="share_solved">Çözüldü!</string>
     <string name="share_score_fmt">%1$s puan</string>
     <string name="share_lines_fmt">%1$d satır</string>

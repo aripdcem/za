@@ -452,7 +452,7 @@
     <string name="share_chooser">Share result</string>
     <string name="share_failed">Could not open sharing</string>
     <string name="share_tagline">ZA: zero ads, zero permissions, pure play. Free and open source:</string>
-    <string name="share_link">https://github.com/aripdcem/za</string>
+    <string name="share_link">https://za.aripd.com</string>
     <string name="share_solved">Solved!</string>
     <string name="share_score_fmt">%1$s points</string>
     <string name="share_lines_fmt">%1$d lines</string>
