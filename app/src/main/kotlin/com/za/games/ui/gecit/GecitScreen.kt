@@ -82,6 +82,9 @@ import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.PadButton
 import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.formatScore
+import com.za.games.platform.ShareContent
+import com.za.games.ui.common.ShareButton
+import com.za.games.ui.common.modeShareLabel
 import kotlinx.coroutines.isActive
 import kotlin.math.PI
 import kotlin.math.abs
@@ -670,6 +673,16 @@ private fun OverCard(
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
             )
         }
+        ShareButton(
+            ShareContent(
+                gameId = "gecit",
+                headline = stringResource(R.string.share_score_fmt, formatScore(hud.score)),
+                details = listOf(
+                    stringResource(R.string.gecit_result_fmt, hud.score - hud.gems, hud.gems, hud.seconds),
+                    modeShareLabel(daily, null),
+                ),
+            ),
+        )
         Spacer(Modifier.height(4.dp))
         Button(onClick = onRestart, modifier = Modifier.fillMaxWidth()) {
             RetryLabel(daily = daily, attemptsLeft = attemptsLeft)

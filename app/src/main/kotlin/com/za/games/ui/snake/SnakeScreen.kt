@@ -62,6 +62,7 @@ import com.za.games.ui.common.GameTopBar
 import com.za.games.ui.common.PausedOverlay
 import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.formatScore
+import com.za.games.platform.ShareContent
 import kotlin.math.abs
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -207,6 +208,11 @@ fun SnakeScreen(
                     isRecord = state.score > previousBest.longValue,
                     onRestart = restart,
                     onExit = onExit,
+                    share = ShareContent(
+                        gameId = "snake",
+                        headline = stringResource(R.string.share_score_fmt, formatScore(state.score)),
+                        details = listOf(stringResource(R.string.share_length_fmt, state.body.size)),
+                    ),
                 )
                 SnakeStatus.RUNNING -> Unit
             }

@@ -56,6 +56,7 @@ import com.za.games.ui.common.GameTopBar
 import com.za.games.ui.common.PadButton
 import com.za.games.ui.common.PausedOverlay
 import com.za.games.ui.common.formatScore
+import com.za.games.platform.ShareContent
 import java.util.Locale
 
 @Composable
@@ -182,6 +183,14 @@ fun TetrisScreen(
                         isRecord = state.score > previousBest.longValue,
                         onRestart = restart,
                         onExit = onExit,
+                        share = ShareContent(
+                            gameId = "tetris",
+                            headline = stringResource(R.string.share_score_fmt, formatScore(state.score)),
+                            details = listOf(
+                                stringResource(R.string.level) + " " + state.level,
+                                stringResource(R.string.share_lines_fmt, state.lines),
+                            ),
+                        ),
                     )
                     TetrisStatus.RUNNING -> Unit
                 }

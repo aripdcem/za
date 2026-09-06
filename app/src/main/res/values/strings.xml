@@ -446,4 +446,21 @@
     <string name="toplam_to_setup">Kurulum</string>
     <string name="toplam_chip_free_fmt">%1$d, boşta</string>
     <string name="toplam_chip_taken_fmt">%1$d, alınmış</string>
+
+    <!-- Paylaşım -->
+    <string name="share">Paylaş</string>
+    <string name="share_chooser">Sonucu paylaş</string>
+    <string name="share_failed">Paylaşım açılamadı</string>
+    <string name="share_tagline">ZA: sıfır reklam, sıfır izin, saf oyun. Ücretsiz ve açık kaynak:</string>
+    <string name="share_link">https://github.com/aripdcem/za</string>
+    <string name="share_solved">Çözüldü!</string>
+    <string name="share_score_fmt">%1$s puan</string>
+    <string name="share_lines_fmt">%1$d satır</string>
+    <string name="share_moves_fmt">%1$d hamle</string>
+    <string name="share_max_tile_fmt">En büyük taş %1$d</string>
+    <string name="share_length_fmt">Uzunluk %1$d</string>
+    <string name="share_words_fmt">%1$d/%2$d kelime</string>
+    <string name="share_daily_fmt">Günlük · %1$s</string>
+    <string name="share_streak_fmt">Seri %1$d</string>
+    <string name="share_wins_fmt">%1$d galibiyet</string>
 </resources>

@@ -446,4 +446,21 @@
     <string name="toplam_to_setup">Setup</string>
     <string name="toplam_chip_free_fmt">%1$d, free</string>
     <string name="toplam_chip_taken_fmt">%1$d, taken</string>
+
+    <!-- Sharing -->
+    <string name="share">Share</string>
+    <string name="share_chooser">Share result</string>
+    <string name="share_failed">Could not open sharing</string>
+    <string name="share_tagline">ZA: zero ads, zero permissions, pure play. Free and open source:</string>
+    <string name="share_link">https://github.com/aripdcem/za</string>
+    <string name="share_solved">Solved!</string>
+    <string name="share_score_fmt">%1$s points</string>
+    <string name="share_lines_fmt">%1$d lines</string>
+    <string name="share_moves_fmt">%1$d moves</string>
+    <string name="share_max_tile_fmt">Biggest tile %1$d</string>
+    <string name="share_length_fmt">Length %1$d</string>
+    <string name="share_words_fmt">%1$d/%2$d words</string>
+    <string name="share_daily_fmt">Daily · %1$s</string>
+    <string name="share_streak_fmt">Streak %1$d</string>
+    <string name="share_wins_fmt">%1$d wins</string>
 </resources>

@@ -71,6 +71,8 @@ import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.PadButton
 import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.formatScore
+import com.za.games.platform.ShareContent
+import com.za.games.ui.common.ShareButton
 import kotlinx.coroutines.delay
 import java.util.Locale
 import androidx.compose.ui.text.TextLayoutResult
@@ -927,6 +929,17 @@ private fun FinishedOverlay(
     val ranking = state.players.withIndex().sortedByDescending { it.value.score }
     val best = ranking.first().value.score
     val tie = ranking.count { it.value.score == best } > 1
+    val verdict = if (tie) {
+        stringResource(R.string.dizgi_draw)
+    } else {
+        stringResource(
+            R.string.dizgi_winner,
+            stringResource(R.string.dizgi_player_n, ranking.first().index + 1),
+        )
+    }
+    val lines = ranking.map { (index, player) ->
+        "${stringResource(R.string.dizgi_player_n, index + 1)}: ${formatScore(player.score.toLong())}"
+    }
     OverlayCard {
         Text(
             text = stringResource(R.string.dizgi_finished),
@@ -934,24 +947,15 @@ private fun FinishedOverlay(
             fontWeight = FontWeight.Bold,
         )
         Text(
-            text = if (tie) {
-                stringResource(R.string.dizgi_draw)
-            } else {
-                stringResource(
-                    R.string.dizgi_winner,
-                    stringResource(R.string.dizgi_player_n, ranking.first().index + 1),
-                )
-            },
+            text = verdict,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold,
         )
-        ranking.forEach { (index, player) ->
-            Text(
-                text = "${stringResource(R.string.dizgi_player_n, index + 1)}: ${formatScore(player.score.toLong())}",
-                style = MaterialTheme.typography.bodyMedium,
-            )
+        lines.forEach { line ->
+            Text(text = line, style = MaterialTheme.typography.bodyMedium)
         }
+        ShareButton(ShareContent(gameId = "dizgi", headline = verdict, details = lines, board = dizgiPainter(state)))
         Spacer(Modifier.height(4.dp))
         Button(onClick = onNewMatch, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.new_game))

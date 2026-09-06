@@ -63,6 +63,8 @@ import com.za.games.ui.common.GameTopBar
 import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.formatTime
+import com.za.games.platform.ShareContent
+import com.za.games.ui.common.ShareButton
 
 @Composable
 fun difficultyLabel(difficulty: SudokuDifficulty): String = stringResource(
@@ -182,6 +184,7 @@ fun SudokuScreen(
                 }
                 state?.status == SudokuStatus.SOLVED -> SolvedOverlay(
                     time = formatTime(elapsed),
+                    share = state?.let { sudokuShare(it, formatTime(elapsed)) },
                     onSameDifficulty = {
                         selected = -1
                         viewModel.retry()
@@ -504,6 +507,7 @@ private fun PadActionButton(
 @Composable
 private fun SolvedOverlay(
     time: String,
+    share: ShareContent?,
     onSameDifficulty: () -> Unit,
     onPickDifficulty: () -> Unit,
     onExit: () -> Unit,
@@ -519,6 +523,7 @@ private fun SolvedOverlay(
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
         )
+        if (share != null) ShareButton(share)
         Spacer(Modifier.height(4.dp))
         Button(onClick = onSameDifficulty, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.same_difficulty))
@@ -531,3 +536,11 @@ private fun SolvedOverlay(
         }
     }
 }
+
+@Composable
+private fun sudokuShare(state: SudokuState, time: String): ShareContent = ShareContent(
+    gameId = "sudoku",
+    headline = stringResource(R.string.share_solved),
+    details = listOf(difficultyLabel(state.difficulty), stringResource(R.string.time_fmt, time)),
+    board = sudokuPainter(state),
+)

@@ -70,6 +70,8 @@ import com.za.games.ui.common.GameTopBar
 import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.formatTime
+import com.za.games.platform.ShareContent
+import com.za.games.ui.common.ShareButton
 
 private val BoardBg = Color(0xFF0F1628)
 private val ClueCell = Color(0xFF1E293B)
@@ -206,6 +208,7 @@ fun KakuroScreen(
                 }
                 state?.status == KakuroStatus.SOLVED -> SolvedOverlay(
                     time = formatTime(elapsed),
+                    share = state?.let { kakuroShare(it, formatTime(elapsed)) },
                     onSameDifficulty = {
                         selected = -1
                         viewModel.retry()
@@ -473,6 +476,7 @@ private fun KakuroKey(
 @Composable
 private fun SolvedOverlay(
     time: String,
+    share: ShareContent?,
     onSameDifficulty: () -> Unit,
     onPickDifficulty: () -> Unit,
     onExit: () -> Unit,
@@ -488,6 +492,7 @@ private fun SolvedOverlay(
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
         )
+        if (share != null) ShareButton(share)
         Spacer(Modifier.height(4.dp))
         Button(onClick = onSameDifficulty, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.same_difficulty))
@@ -500,3 +505,15 @@ private fun SolvedOverlay(
         }
     }
 }
+
+@Composable
+private fun kakuroShare(state: KakuroState, time: String): ShareContent = ShareContent(
+    gameId = "kakuro",
+    headline = stringResource(R.string.share_solved),
+    details = listOf(
+        difficultyLabel(state.difficulty),
+        stringResource(R.string.kakuro_difficulty_desc_fmt, state.size - 1, state.size - 1),
+        stringResource(R.string.time_fmt, time),
+    ),
+    board = kakuroPainter(state),
+)

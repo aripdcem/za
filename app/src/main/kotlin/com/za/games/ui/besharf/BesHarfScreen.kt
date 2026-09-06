@@ -52,6 +52,9 @@ import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
 import com.za.games.ui.common.GameTopBar
 import com.za.games.ui.common.OverlayCard
+import com.za.games.platform.ShareContent
+import com.za.games.ui.common.ShareButton
+import com.za.games.ui.common.modeShareLabel
 import kotlinx.coroutines.delay
 import java.util.Locale
 
@@ -455,6 +458,22 @@ private fun ResultOverlay(
             text = "🔥 ${stringResource(R.string.streak_label)}: $streak",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+        )
+        ShareButton(
+            ShareContent(
+                gameId = "besharf",
+                headline = if (state.status == BesHarfStatus.WON) {
+                    "${state.guesses.size}/${BesHarfState.MAX_GUESSES}"
+                } else {
+                    "X/${BesHarfState.MAX_GUESSES}"
+                },
+                details = listOf(
+                    modeShareLabel(mode == BesHarfMode.DAILY, state.dailyDay),
+                    stringResource(R.string.share_streak_fmt, streak),
+                ),
+                board = besHarfPainter(state),
+                extraText = besHarfEmojiGrid(state),
+            ),
         )
         Spacer(Modifier.height(4.dp))
         if (mode == BesHarfMode.DAILY) {

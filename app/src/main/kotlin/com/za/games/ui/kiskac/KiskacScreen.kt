@@ -53,6 +53,9 @@ import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
 import com.za.games.ui.common.GameTopBar
 import com.za.games.ui.common.OverlayCard
+import com.za.games.platform.ShareContent
+import com.za.games.ui.common.ShareButton
+import com.za.games.ui.common.modeShareLabel
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
 import java.util.Locale
@@ -564,6 +567,20 @@ private fun ResultOverlay(
             text = "🔥 ${stringResource(R.string.streak_label)}: $streak",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+        )
+        ShareButton(
+            ShareContent(
+                gameId = "kiskac",
+                headline = if (state.status == KiskacStatus.WON) {
+                    "${state.guesses.size}/${KiskacState.MAX_GUESSES}"
+                } else {
+                    "X/${KiskacState.MAX_GUESSES}"
+                },
+                details = listOf(
+                    modeShareLabel(mode == KiskacMode.DAILY, state.dailyDay),
+                    stringResource(R.string.share_streak_fmt, streak),
+                ),
+            ),
         )
         Spacer(Modifier.height(4.dp))
         if (mode == KiskacMode.DAILY) {

@@ -59,6 +59,8 @@ import com.za.games.ui.common.GameTopBar
 import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.formatScore
+import com.za.games.platform.ShareContent
+import com.za.games.ui.common.ShareButton
 import kotlin.math.abs
 
 @Composable
@@ -174,11 +176,27 @@ fun G2048Screen(
                         isRecord = state.score > previousBest.longValue,
                         onRestart = restart,
                         onExit = onExit,
+                        share = g2048Share(
+                            state,
+                            stringResource(R.string.share_score_fmt, formatScore(state.score)),
+                            listOf(
+                                stringResource(R.string.share_moves_fmt, state.moves),
+                                stringResource(R.string.share_max_tile_fmt, state.cells.max()),
+                            ),
+                        ),
                     )
                 } else if (state.reached2048 && !wonShown) {
                     WonOverlay(
                         onKeepGoing = { wonShown = true },
                         onRestart = restart,
+                        share = g2048Share(
+                            state,
+                            stringResource(R.string.won_2048_title),
+                            listOf(
+                                stringResource(R.string.share_score_fmt, formatScore(state.score)),
+                                stringResource(R.string.share_moves_fmt, state.moves),
+                            ),
+                        ),
                     )
                 }
             }
@@ -331,7 +349,7 @@ private fun tileColor(value: Int): Color = when (value) {
 }
 
 @Composable
-private fun WonOverlay(onKeepGoing: () -> Unit, onRestart: () -> Unit) {
+private fun WonOverlay(onKeepGoing: () -> Unit, onRestart: () -> Unit, share: ShareContent) {
     OverlayCard {
         Text(
             text = stringResource(R.string.won_2048_title),
@@ -344,6 +362,7 @@ private fun WonOverlay(onKeepGoing: () -> Unit, onRestart: () -> Unit) {
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
         )
+        ShareButton(share)
         Spacer(Modifier.height(4.dp))
         Button(onClick = onKeepGoing, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.keep_going))
@@ -353,3 +372,6 @@ private fun WonOverlay(onKeepGoing: () -> Unit, onRestart: () -> Unit) {
         }
     }
 }
+
+private fun g2048Share(state: G2048State, headline: String, details: List<String>): ShareContent =
+    ShareContent(gameId = "2048", headline = headline, details = details, board = g2048Painter(state))
