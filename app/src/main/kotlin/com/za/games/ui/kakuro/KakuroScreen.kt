@@ -81,7 +81,7 @@ private val SelectedCell = Color(0xFF93C5FD)
 private val SolvedCell = Color(0xFFBBF7D0)
 private val Digit = Color(0xFF0F172A)
 private val ConflictDigit = Color(0xFFDC2626)
-private val NoteText = Color(0xFF475569)
+private val NoteText = Color(0xFF1E293B)
 private val GridLine = Color(0x33000000)
 
 @Composable
@@ -219,7 +219,7 @@ fun KakuroScreen(
             }
         }
 
-        RunInfo(state = state, selected = selected)
+        RunInfo(state = state, selected = selected, notesMode = notesMode)
 
         state?.let { puzzle ->
             KakuroPad(
@@ -254,8 +254,8 @@ fun KakuroScreen(
 
 /** Seçili hücrenin koşuları: ipucu, kalan toplam ve boş hücre sayısı. */
 @Composable
-private fun RunInfo(state: KakuroState?, selected: Int) {
-    val text = if (state == null) {
+private fun RunInfo(state: KakuroState?, selected: Int, notesMode: Boolean) {
+    val body = if (state == null) {
         stringResource(R.string.kakuro_rules)
     } else if (selected < 0 || !state.cells[selected].white) {
         stringResource(R.string.kakuro_select_hint)
@@ -275,6 +275,7 @@ private fun RunInfo(state: KakuroState?, selected: Int) {
         }
         parts.joinToString("   ·   ")
     }
+    val text = if (notesMode && state != null) stringResource(R.string.kakuro_notes_on) + "  " + body else body
     Text(
         text = text,
         style = MaterialTheme.typography.bodySmall,
@@ -322,7 +323,7 @@ private fun KakuroBoard(
         val cell = size.width / n
         val clueSize = (cell * 0.30f).toSp()
         val digitSize = (cell * 0.52f).toSp()
-        val noteSize = (cell * 0.22f).toSp()
+        val noteSize = (cell * 0.30f).toSp()
 
         fun text(key: String, value: String, sizeSp: TextUnit, color: Color, bold: Boolean): TextLayoutResult =
             cache.getOrPut("$key|$value|${cell.toInt()}|${color.value}") {
@@ -372,7 +373,7 @@ private fun KakuroBoard(
                         if (d !in state.notes[i]) continue
                         val nc = (d - 1) % 3
                         val nr = (d - 1) / 3
-                        drawCentered(text("n", d.toString(), noteSize, NoteText, false), x + cell * (0.2f + nc * 0.3f), y + cell * (0.22f + nr * 0.28f))
+                        drawCentered(text("n", d.toString(), noteSize, NoteText, true), x + cell * (0.2f + nc * 0.3f), y + cell * (0.2f + nr * 0.3f))
                     }
                 }
             }
