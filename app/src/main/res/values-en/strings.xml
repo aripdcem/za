@@ -381,6 +381,7 @@
     <string name="kakuro_run_down_fmt">Down %1$d: %2$d left, %3$d empty</string>
     <string name="kakuro_difficulty_desc_fmt">%1$d×%2$d grid</string>
     <string name="kakuro_board_desc_fmt">Kakuro %1$d×%2$d, %3$d empty cells</string>
+    <string name="kakuro_notes_on">✎ Notes mode: digits are pencilled in</string>
     <string name="kakuro_generating">Preparing the puzzle…</string>
 
     <!-- Hub groups -->
