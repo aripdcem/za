@@ -271,6 +271,34 @@ class GecitWorldTest {
         assertTrue(a.maxRow > 0)
     }
 
+    /**
+     * Şeritler ne zaman yaratılırsa yaratılsın evreleri dünya saatine bağlıdır:
+     * aynı yön ve hızdaki nehirler her an aynı evrede kalır (köprü kütükleri
+     * hizalı kalır). Kamera ilerledikçe yeni şeritler farklı anlarda üretilir.
+     */
+    @Test
+    fun lanePhasesFollowWorldClock() {
+        val logs = arrayOf(0f to 3, 8f to 3, 16f to 3)
+        val world = GecitWorld(3L) { prev ->
+            val r = prev.size
+            if (r < 14) Lane(r, LaneKind.GRASS) else Lane(r, LaneKind.RIVER, 1, 2f, logs.map { Mover(it.first + Lane.PAD, it.second, 0) })
+        }
+        val createdAtStart = world.lanes.size
+        repeat(9) {
+            hop(world, Move.FORWARD)
+            run(world, 80)
+        }
+        assertEquals(GecitStatus.RUNNING, world.status)
+        assertTrue(world.lanes.size > createdAtStart + 4)
+        val rivers = world.lanes.filter { it.kind == LaneKind.RIVER }
+        assertTrue(rivers.size > 10)
+        val expected = (2f * world.frames * GecitWorld.STEP) % Lane.TRACK
+        for (lane in rivers) {
+            val diff = kotlin.math.abs(lane.phase - expected)
+            assertTrue("satır ${lane.row} evre ${lane.phase} beklenen $expected", minOf(diff, Lane.TRACK - diff) < 1e-2f)
+        }
+    }
+
     @Test
     fun randomRunsSurvive() {
         for (seed in 1L..5L) {

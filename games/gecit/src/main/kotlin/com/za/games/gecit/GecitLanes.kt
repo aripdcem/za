@@ -46,6 +46,17 @@ class Lane(
             else -> RailPhase.IDLE
         }
 
+    /**
+     * Evreyi dünya saatine göre ayarlar: şerit sanki oyunun başından beri
+     * akıyormuş gibi konumlanır. Böylece aynı yön ve hızdaki iki şeridin göreli
+     * konumu, hangi anda yaratıldıklarından bağımsız olarak üretecin tasarladığı
+     * gibi kalır (köprü kütükleri örtüşür).
+     */
+    fun syncPhase(time: Float) {
+        if (movers.isEmpty()) return
+        phase = (((dir * speed * time) % TRACK) + TRACK) % TRACK
+    }
+
     /** Bir adım ilerletir; ray evresi değiştiyse yeni evreyi döndürür. */
     fun update(dt: Float): RailPhase? {
         phase += dir * speed * dt

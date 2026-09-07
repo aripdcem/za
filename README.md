@@ -145,6 +145,9 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   nehir (kütüğe bin, kütükle sürüklen; kenardan taşınırsan ölürsün); ilerledikçe daha hızlı ve daha sık tehlike
 - Çimdeki ağaçlar geçişi asla kapatmaz (üreteç her satırın bir önceki satırdan ulaşılabilir kalmasını garanti eder,
   testle doğrulanır); ilk hamleden sonra kamera yavaşça ilerler, 3,5 s ileri gitmeyeni kartal kapar
+- Aynı yönde ardışık nehirler de kapanmaz: ya aynı hızda akar ve her kütüğün üstünde en az bir hücre örtüşen bir
+  "köprü" kütüğü vardır, ya da hızları en az 1,2 hücre/s farklıdır (kütükler düzenli hizalanır). Şerit evreleri oyun
+  saatine bağlıdır; şeritler ne zaman üretilirse üretilsin bu göreli konum korunur (testle doğrulanır)
 - Çim ve yollarda **taşlar** (◆): üstüne zıplayınca alınır, her taş 1 puan; ilk 12 şerit yumuşak (yavaş, seyrek
   araba); yana/geri zıplamak kartal sayacını yarıya indirir ama sıfırlamaz, kartal gelmeden çığlık uyarır
 - Skor = geçilen şerit + taş; **günlük mod**: herkes aynı yolu geçer, günde 3 deneme, en iyisi kaydedilir; serbest mod
