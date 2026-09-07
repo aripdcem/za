@@ -120,8 +120,15 @@ class GecitWorld(
         return lanes[row]
     }
 
+    /** Şeritlerin ilerletildiği an (s); yeni şerit bu ana göre evrelenir. */
+    private var laneClock = 0f
+
     private fun ensureRows(row: Int) {
-        while (lanes.size <= row) lanes.add(laneFactory?.invoke(lanes) ?: gen.next(lanes))
+        while (lanes.size <= row) {
+            val lane = laneFactory?.invoke(lanes) ?: gen.next(lanes)
+            lane.syncPhase(laneClock)
+            lanes.add(lane)
+        }
     }
 
     private fun emit(event: GecitEvent) {
@@ -147,11 +154,12 @@ class GecitWorld(
             }
         }
 
-        // Şeritler: görünen alan ve biraz ötesi akar.
+        // Şeritler: görünen alandan üretilmiş son satıra dek hepsi akar; ileridekiler
+        // de akar ki aynı hızdaki komşu şeritlerin göreli konumu bozulmasın.
         val bottom = floor(camera).toInt()
         val high = bottom + VIEW_ROWS + 6
         ensureRows(high + GEN_AHEAD)
-        for (r in max(0, bottom - 2)..high) {
+        for (r in max(0, bottom - 2) until lanes.size) {
             val change = lanes[r].update(STEP) ?: continue
             if (r > bottom + VIEW_ROWS) continue
             when (change) {
@@ -160,6 +168,7 @@ class GecitWorld(
                 RailPhase.IDLE -> Unit
             }
         }
+        laneClock += STEP
 
         // Çarpışma ve kütükle taşınma.
         val lane = lanes[p.row]

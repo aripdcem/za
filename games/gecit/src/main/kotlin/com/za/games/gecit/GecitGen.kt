@@ -29,7 +29,7 @@ class GecitGen(private val seed: Long) {
         return when (kind) {
             LaneKind.GRASS -> grass(row, rng, d, prev.lastOrNull())
             LaneKind.ROAD -> road(row, rng, d)
-            LaneKind.RIVER -> river(row, rng, d)
+            LaneKind.RIVER -> river(row, rng, d, prev.lastOrNull())
             LaneKind.RAIL -> rail(row, rng, d)
         }
     }
@@ -109,10 +109,52 @@ class GecitGen(private val seed: Long) {
         return Lane(row, LaneKind.ROAD, dir, speed, movers, gemCol = gem)
     }
 
-    private fun river(row: Int, rng: Random, d: Float): Lane {
+    /**
+     * Nehir şeridi. Aynı yönde ardışık iki nehirde kütüklerin göreli konumu
+     * hızlar yakınsa donar; hizalanmamışsa geçiş hiç açılmaz. İki adil seçenek:
+     * aynı hız + her kütüğün üstünde örtüşen bir kütük (köprü) ya da belirgin
+     * hız farkı (kütükler düzenli olarak hizalanır, zamanlama gerekir).
+     */
+    private fun river(row: Int, rng: Random, d: Float, prev: Lane?): Lane {
         val dir = if (rng.nextBoolean()) 1 else -1
         val speed = 1.3f + 1.9f * d + rng.nextFloat() * 0.6f
-        return Lane(row, LaneKind.RIVER, dir, speed, riverLayout(rng, d))
+        if (prev == null || prev.kind != LaneKind.RIVER || prev.dir != dir) {
+            return Lane(row, LaneKind.RIVER, dir, speed, riverLayout(rng, d))
+        }
+        return if (rng.nextFloat() < 0.65f - 0.25f * d) {
+            Lane(row, LaneKind.RIVER, dir, prev.speed, bridgeLayout(rng, prev.movers))
+        } else {
+            Lane(row, LaneKind.RIVER, dir, offsetSpeed(rng, prev.speed), riverLayout(rng, d))
+        }
+    }
+
+    /** [base] hızından en az [MIN_SPEED_GAP] uzak, oynanabilir aralıkta kalan hız. */
+    private fun offsetSpeed(rng: Random, base: Float): Float {
+        val delta = MIN_SPEED_GAP + rng.nextFloat() * 0.6f
+        val slower = base - delta
+        val faster = base + delta
+        return when {
+            slower < MIN_RIVER_SPEED -> faster
+            faster > MAX_RIVER_SPEED -> slower
+            rng.nextBoolean() -> faster
+            else -> slower
+        }
+    }
+
+    /**
+     * Önceki nehrin kütüklerini ortak bir kaydırmayla (uzunlar bazen bir hücre
+     * kısalarak) kopyalar: her kütük öncekindeki eşiyle en az [BRIDGE_OVERLAP]
+     * hücre örtüşür. Aynı hız ve yönde bu örtüşme hiç bozulmaz; aralıklar aynı
+     * kalır ya da büyür.
+     */
+    private fun bridgeLayout(rng: Random, prev: List<Mover>): List<Mover> {
+        val lens = IntArray(prev.size) { i ->
+            if (prev[i].len > 3 && rng.nextFloat() < 0.3f) prev[i].len - 1 else prev[i].len
+        }
+        val lo = -(lens.min() - BRIDGE_OVERLAP)
+        val hi = prev.minOf { it.len } - BRIDGE_OVERLAP
+        val delta = lo + rng.nextFloat() * (hi - lo)
+        return prev.mapIndexed { i, m -> Mover(m.start + delta, lens[i], rng.nextInt(3)) }
     }
 
     /**
@@ -161,6 +203,14 @@ class GecitGen(private val seed: Long) {
 
         /** Bu şeritten önceki yollar yavaş ve seyrektir. */
         const val GENTLE_ROWS = 12
+
+        /** Aynı yönde ardışık nehirler ya aynı hızdadır (köprü) ya da en az bu kadar farklı (hücre/s). */
+        const val MIN_SPEED_GAP = 1.2f
+        const val MIN_RIVER_SPEED = 1.0f
+        const val MAX_RIVER_SPEED = 4.6f
+
+        /** Köprü kütüğünün önceki şeritteki eşiyle en az örtüşmesi (hücre). */
+        const val BRIDGE_OVERLAP = 1f
         const val GEM_CHANCE_GRASS = 0.10f
         const val GEM_CHANCE_ROAD = 0.06f
 

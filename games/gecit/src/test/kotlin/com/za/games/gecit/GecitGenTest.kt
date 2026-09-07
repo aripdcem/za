@@ -103,6 +103,50 @@ class GecitGenTest {
         }
     }
 
+    /** Parkurda döngüsel örtüşme (hücre). */
+    private fun overlap(a: Mover, b: Mover): Float {
+        var best = 0f
+        for (shift in listOf(-Lane.TRACK, 0f, Lane.TRACK)) {
+            val bs = b.start + shift
+            val o = minOf(a.start + a.len, bs + b.len) - maxOf(a.start, bs)
+            if (o > best) best = o
+        }
+        return best
+    }
+
+    /**
+     * Aynı yönde ardışık iki nehir ya aynı hızdadır ve önceki şeridin her kütüğünün
+     * üstünde en az bir hücre örtüşen bir kütük vardır (köprü), ya da hızları
+     * belirgin biçimde farklıdır. Hız aynıysa evreler de aynı olacağından örtüşme
+     * yalnızca başlangıç konumlarına bakılarak ölçülür.
+     */
+    @Test
+    fun sameDirectionRiversAreBridgedOrOffset() {
+        var bridges = 0
+        var offsets = 0
+        for (seed in 1L..16L) {
+            val all = lanes(seed, 700)
+            for (i in 1 until all.size) {
+                val a = all[i - 1]
+                val b = all[i]
+                if (a.kind != LaneKind.RIVER || b.kind != LaneKind.RIVER || a.dir != b.dir) continue
+                val where = "tohum $seed satır ${b.row}"
+                if (a.speed == b.speed) {
+                    bridges++
+                    for (log in a.movers) {
+                        val best = b.movers.maxOf { overlap(log, it) }
+                        assertTrue("$where örtüşme $best", best >= GecitGen.BRIDGE_OVERLAP - 1e-3f)
+                    }
+                } else {
+                    offsets++
+                    assertTrue("$where hız farkı ${a.speed} / ${b.speed}", kotlin.math.abs(a.speed - b.speed) >= GecitGen.MIN_SPEED_GAP - 1e-3f)
+                    assertTrue(where, b.speed >= GecitGen.MIN_RIVER_SPEED && b.speed <= GecitGen.MAX_RIVER_SPEED)
+                }
+            }
+        }
+        assertTrue("köprü $bridges, fark $offsets", bridges > 20 && offsets > 20)
+    }
+
     @Test
     fun difficultyRamps() {
         val all = (1L..6L).flatMap { lanes(it, 400) }
