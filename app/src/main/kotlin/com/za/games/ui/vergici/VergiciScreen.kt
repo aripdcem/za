@@ -25,7 +25,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -76,11 +79,19 @@ fun VergiciScreen(
     LaunchedEffect(wins) {
         if (wins > 0) latestOnScore(wins.toLong())
     }
+    // Bitiş sesi yalnızca canlı bitişte bir kez: ViewModel etkinlik kapsamlı
+    // olduğundan biten oyunla menüye çıkıp geri gelince aşama hâlâ OVER'dır.
+    var overHeard by remember { mutableStateOf(phase == VergiciPhase.OVER) }
     LaunchedEffect(phase) {
-        val s = state ?: return@LaunchedEffect
         if (phase == VergiciPhase.OVER) {
-            sound?.play(if (s.player > s.taxman) Sfx.BIG else Sfx.OVER)
-            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+            val s = state ?: return@LaunchedEffect
+            if (!overHeard) {
+                overHeard = true
+                sound?.play(if (s.player > s.taxman) Sfx.BIG else Sfx.OVER)
+                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+            }
+        } else {
+            overHeard = false
         }
     }
     BackHandler {
