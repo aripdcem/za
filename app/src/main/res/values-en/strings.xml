@@ -487,4 +487,6 @@
     <string name="about_cc_note">Because the word lists derive from FrequencyWords they are shared under CC BY-SA 4.0; license text:</string>
     <string name="about_license_show">Show the Apache 2.0 license text</string>
     <string name="about_license_hide">Hide the license text</string>
+    <string name="about_app_license">ZA\'s source code is open under the GNU GPL v3. The "ZA" name and logo are not part of the license.</string>
+    <string name="about_app_license_link">License text (GitHub)</string>
 </resources>

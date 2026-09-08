@@ -487,4 +487,6 @@
     <string name="about_cc_note">Kelime listeleri FrequencyWords\'ten türetildiği için CC BY-SA 4.0 koşullarıyla paylaşılır; lisans metni:</string>
     <string name="about_license_show">Apache 2.0 lisans metnini göster</string>
     <string name="about_license_hide">Lisans metnini gizle</string>
+    <string name="about_app_license">ZA\'nın kaynak kodu GNU GPL v3 ile açıktır. "ZA" adı ve logosu lisansa dahil değildir.</string>
+    <string name="about_app_license_link">Lisans metni (GitHub)</string>
 </resources>

@@ -13,6 +13,7 @@ object ZaLinks {
     const val PRIVACY = "https://za.aripd.com/gizlilik.html"
     const val SOURCE = "https://github.com/aripdcem/za"
     const val REPORT = "https://github.com/aripdcem/za/issues/new"
+    const val LICENSE = "https://github.com/aripdcem/za/blob/main/LICENSE"
     const val ZEMBEREK = "https://github.com/ahmetaa/zemberek-nlp"
     const val FREQUENCY_WORDS = "https://github.com/hermitdave/FrequencyWords"
     const val CC_BY_SA = "https://creativecommons.org/licenses/by-sa/4.0/"
