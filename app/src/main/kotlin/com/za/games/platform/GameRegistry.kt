@@ -44,6 +44,7 @@ object GameRegistry {
     val games: List<GameEntry> = listOf(
         GameEntry(
             id = "tetris",
+            since = "0.1.0",
             titleRes = R.string.game_tetris,
             taglineRes = R.string.game_tetris_tagline,
             category = GameCategory.ARCADE,
@@ -55,6 +56,7 @@ object GameRegistry {
         ),
         GameEntry(
             id = "2048",
+            since = "0.2.0",
             titleRes = R.string.game_2048,
             taglineRes = R.string.game_2048_tagline,
             category = GameCategory.PUZZLE,
@@ -66,6 +68,7 @@ object GameRegistry {
         ),
         GameEntry(
             id = "snake",
+            since = "0.2.0",
             titleRes = R.string.game_snake,
             taglineRes = R.string.game_snake_tagline,
             category = GameCategory.ARCADE,
@@ -77,6 +80,7 @@ object GameRegistry {
         ),
         GameEntry(
             id = "sudoku",
+            since = "0.3.0",
             titleRes = R.string.game_sudoku,
             taglineRes = R.string.game_sudoku_tagline,
             category = GameCategory.PUZZLE,
@@ -88,6 +92,7 @@ object GameRegistry {
         ),
         GameEntry(
             id = "mines",
+            since = "0.3.0",
             titleRes = R.string.game_mines,
             taglineRes = R.string.game_mines_tagline,
             category = GameCategory.PUZZLE,
@@ -99,6 +104,7 @@ object GameRegistry {
         ),
         GameEntry(
             id = "kiskac",
+            since = "0.9.0",
             titleRes = R.string.game_kiskac,
             taglineRes = R.string.game_kiskac_tagline,
             category = GameCategory.WORD,
@@ -110,6 +116,7 @@ object GameRegistry {
         ),
         GameEntry(
             id = "besharf",
+            since = "0.4.0",
             titleRes = R.string.game_besharf,
             taglineRes = R.string.game_besharf_tagline,
             category = GameCategory.WORD,
@@ -121,6 +128,7 @@ object GameRegistry {
         ),
         GameEntry(
             id = "turetme",
+            since = "0.10.0",
             titleRes = R.string.game_turetme,
             taglineRes = R.string.game_turetme_tagline,
             category = GameCategory.WORD,
@@ -132,6 +140,7 @@ object GameRegistry {
         ),
         GameEntry(
             id = "dizgi",
+            since = "0.12.0",
             titleRes = R.string.game_dizgi,
             taglineRes = R.string.game_dizgi_tagline,
             category = GameCategory.WORD,
@@ -143,6 +152,7 @@ object GameRegistry {
         ),
         GameEntry(
             id = "kuyu",
+            since = "0.13.0",
             titleRes = R.string.game_kuyu,
             taglineRes = R.string.game_kuyu_tagline,
             category = GameCategory.ARCADE,
@@ -154,6 +164,7 @@ object GameRegistry {
         ),
         GameEntry(
             id = "gecit",
+            since = "0.14.0",
             titleRes = R.string.game_gecit,
             taglineRes = R.string.game_gecit_tagline,
             category = GameCategory.ARCADE,
@@ -165,6 +176,7 @@ object GameRegistry {
         ),
         GameEntry(
             id = "tavla",
+            since = "0.16.0",
             titleRes = R.string.game_tavla,
             taglineRes = R.string.game_tavla_tagline,
             category = GameCategory.BOARD,
@@ -176,6 +188,7 @@ object GameRegistry {
         ),
         GameEntry(
             id = "balkon",
+            since = "0.17.0",
             titleRes = R.string.game_balkon,
             taglineRes = R.string.game_balkon_tagline,
             category = GameCategory.ARCADE,
@@ -187,6 +200,7 @@ object GameRegistry {
         ),
         GameEntry(
             id = "kakuro",
+            since = "0.18.0",
             titleRes = R.string.game_kakuro,
             taglineRes = R.string.game_kakuro_tagline,
             category = GameCategory.PUZZLE,
@@ -198,6 +212,7 @@ object GameRegistry {
         ),
         GameEntry(
             id = "vergici",
+            since = "0.19.0",
             titleRes = R.string.game_vergici,
             taglineRes = R.string.game_vergici_tagline,
             category = GameCategory.BOARD,
@@ -209,6 +224,7 @@ object GameRegistry {
         ),
         GameEntry(
             id = "toplam",
+            since = "0.19.0",
             titleRes = R.string.game_toplam,
             taglineRes = R.string.game_toplam_tagline,
             category = GameCategory.BOARD,

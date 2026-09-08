@@ -1,0 +1,22 @@
+ZA, reklamsız oyun platformu: tek uygulamada 16 oyun. Hiçbiri reklam göstermez, hiçbiri izin istemez, hiçbiri veri toplamaz. İnternet izni bile yok; her şey çevrimdışı çalışır.
+
+SÖZÜMÜZ
+• 0 reklam: hiçbir reklam SDK'sı yok
+• 0 izleyici: analitik ya da izleme kütüphanesi yok
+• 0 izin: uygulama tek bir izin bile istemez
+• Saf oyun: skorlar ve ayarlar yalnızca cihazınızda kalır
+
+OYUNLAR
+Arcade: Blok (düşen bloklar), Yılan, Kuyu (kuyuya düşüş, günlük kuyu), Geçit (karşıya geçiş, günlük mod), Balkon (balkondan nişan: kabak çekirdeği, su balonu ya da tükürük)
+Bulmaca: 2048, Sudoku (üç zorluk, notlar, tek çözüm garantisi), Mayın Tarlası, Kakuro (üç boy, tek çözüm garantisi)
+Kelime: Beş Harf (Türkçe kelime tahmini, günlük kelime), Kıskaç (alfabetik daraltma), Türetme (harflerden kelime türetme), Dizgi (elden ele kelime tahtası, 2-4 oyuncu)
+Masa ve sayı: Tavla (Klasik, Tapa, Hapis; bilgisayara ya da arkadaşına karşı), Vergici, Toplam Kapma
+
+ÖZELLİKLER
+• Günlük bulmacalar: Beş Harf, Kıskaç, Türetme, Kuyu ve Geçit'te herkes aynı gün aynı bulmacayı oynar; sunucu yok, tarihten üretilir
+• Sonucunu paylaş: bitiş kartındaki Paylaş, görsel bir sonuç kartı ve kısa bir metin üretir
+• Türkçe sözlükler gömülü; Türkçe klavye ve Türk alfabesi sıralaması
+• Ses ve titreşim tek dokunuşla kapanır; sol el desteği
+• Açık kaynak (GPL-3.0): github.com/aripdcem/za
+
+Gizlilik politikası: za.aripd.com/gizlilik.html

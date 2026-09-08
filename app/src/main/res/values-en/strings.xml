@@ -489,4 +489,11 @@
     <string name="about_license_hide">Hide the license text</string>
     <string name="about_app_license">ZA\'s source code is open under the GNU GPL v3. The "ZA" name and logo are not part of the license.</string>
     <string name="about_app_license_link">License text (GitHub)</string>
+
+    <!-- What's new -->
+    <string name="whats_new_title">What\'s new</string>
+    <string name="whats_new_version_fmt">Version %1$s · %2$s</string>
+    <string name="whats_new_dismiss">Got it</string>
+    <string name="badge_new">New</string>
+    <string name="about_release_notes">Release notes</string>
 </resources>

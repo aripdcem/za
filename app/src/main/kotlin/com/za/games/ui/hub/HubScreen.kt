@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -35,6 +36,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -44,7 +46,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.za.games.R
 import com.za.games.platform.GameCategory
+import com.za.games.platform.Changelog
 import com.za.games.platform.GameEntry
+import com.za.games.platform.ReleaseNote
 import java.util.Locale
 
 /** Ana menü: platform manifestosu ve oyun listesi. */
@@ -61,6 +65,11 @@ fun HubScreen(
     hapticsOn: Boolean = true,
     onToggleHaptics: () -> Unit = {},
     onAbout: () -> Unit = {},
+    /** Güncellemeden sonra gösterilen sürüm notu; null = kart yok. */
+    whatsNew: ReleaseNote? = null,
+    onDismissWhatsNew: () -> Unit = {},
+    /** Bu sürüm kodundan sonra eklenen oyunlar "Yeni" rozeti alır. */
+    newSinceCode: Int = Int.MAX_VALUE,
 ) {
     // Liste sırası kayıt sırasıdır (kararlı); hızlı erişim için ayrı bir "son oynananlar" şeridi var.
     val visible = if (category == null) games else games.filter { it.category == category }
@@ -72,12 +81,16 @@ fun HubScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .safeDrawingPadding(),
+            .safeDrawingPadding()
+            .testTag(HUB_LIST_TAG),
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item { HubHeader(soundOn, onToggleSound, hapticsOn, onToggleHaptics, onAbout) }
         item { CategoryChips(selected = category, onSelect = onCategory) }
+        if (whatsNew != null) {
+            item { WhatsNewCard(note = whatsNew, onDismiss = onDismissWhatsNew) }
+        }
         if (category == null && recent.isNotEmpty()) {
             item { RecentRow(games = recent, onPlay = onPlay) }
         }
@@ -85,6 +98,7 @@ fun HubScreen(
             GameCard(
                 game = game,
                 highScore = highScores[game.id] ?: 0L,
+                isNew = Changelog.versionCode(game.since) > newSinceCode,
                 onPlay = { onPlay(game) },
             )
         }
@@ -94,6 +108,42 @@ fun HubScreen(
 }
 
 private const val RECENT_LIMIT = 4
+
+/** Testlerin liste düğümünü bulup kaydırması için. */
+const val HUB_LIST_TAG = "hub_list"
+
+/** Güncellemeden sonraki ilk açılışta en üstte görünen sürüm notu kartı. */
+@Composable
+private fun WhatsNewCard(note: ReleaseNote, onDismiss: () -> Unit) {
+    Surface(
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.whats_new_title),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            Text(
+                text = stringResource(R.string.whats_new_version_fmt, note.version, note.date),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+            )
+            note.notes().forEach { line ->
+                Text(text = "• $line", style = MaterialTheme.typography.bodyMedium)
+            }
+            Button(onClick = onDismiss, modifier = Modifier.padding(top = 4.dp)) {
+                Text(stringResource(R.string.whats_new_dismiss))
+            }
+        }
+    }
+}
 
 /** Grup süzgeci: Tümü + kategoriler; seçim kalıcıdır. */
 @Composable
@@ -270,7 +320,7 @@ private fun ZeroChip(label: String) {
 }
 
 @Composable
-private fun GameCard(game: GameEntry, highScore: Long, onPlay: () -> Unit) {
+private fun GameCard(game: GameEntry, highScore: Long, isNew: Boolean, onPlay: () -> Unit) {
     Surface(
         onClick = onPlay,
         shape = RoundedCornerShape(24.dp),
@@ -291,11 +341,24 @@ private fun GameCard(game: GameEntry, highScore: Long, onPlay: () -> Unit) {
             ) {
                 game.art(Modifier.size(56.dp))
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = stringResource(game.titleRes),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(
+                            text = stringResource(game.titleRes),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        if (isNew) {
+                            Surface(shape = CircleShape, color = MaterialTheme.colorScheme.secondary) {
+                                Text(
+                                    text = stringResource(R.string.badge_new),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSecondary,
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                )
+                            }
+                        }
+                    }
                     Text(
                         text = stringResource(game.taglineRes),
                         style = MaterialTheme.typography.bodyMedium,

@@ -9,7 +9,7 @@ plugins {
 // Sürüm tek kaynaktan yönetilir: release.yml, etiketten türettiği sürümü
 // -PzaVersion=X.Y.Z olarak geçirir; yerel derlemeler alttaki varsayılanı
 // kullanır. versionCode = major*10000 + minor*100 + patch.
-val zaVersion: String = (project.findProperty("zaVersion") as? String) ?: "0.21.1"
+val zaVersion: String = (project.findProperty("zaVersion") as? String) ?: "0.22.0"
 val zaVersionCode: Int = zaVersion.split('.').map { it.toInt() }.let { (major, minor, patch) ->
     require(major < 214 && minor < 100 && patch < 100) { "Geçersiz sürüm: $zaVersion" }
     // AGP, versionCode için pozitif tamsayı ister.
@@ -63,6 +63,19 @@ android {
     buildFeatures {
         compose = true
     }
+
+    // Arayüz testleri JVM'de Robolectric ile koşar (emülatör gerekmez); kaynaklar dahil edilir.
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
+}
+
+tasks.withType<Test>().configureEach {
+    maxHeapSize = "2g"
+    // Compose metin ölçümü ve tuval çizimi için gerçek grafik yığını.
+    systemProperty("robolectric.graphicsMode", "NATIVE")
 }
 
 kotlin {
@@ -99,4 +112,13 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
+    // createComposeRule için ComponentActivity'yi debug manifestine ekler.
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.ext.junit)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.androidx.compose.ui.test.junit4)
 }

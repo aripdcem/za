@@ -39,6 +39,13 @@ class SettingsStore(context: Context) {
             }.apply()
         }
 
+    /** Son görülen sürüm kodu (Yenilikler kartı kapatılınca güncellenir); ilk kurulumda 0. */
+    var lastSeenVersionCode: Int
+        get() = prefs.getInt(KEY_SEEN_VERSION, 0)
+        set(value) {
+            prefs.edit().putInt(KEY_SEEN_VERSION, value).apply()
+        }
+
     /** Oyunun son açılma zamanı (epoch ms); hiç açılmadıysa 0. */
     fun lastPlayed(gameId: String): Long = prefs.getLong(KEY_PLAYED_PREFIX + gameId, 0L)
 
@@ -52,5 +59,6 @@ class SettingsStore(context: Context) {
         const val KEY_LEFT_HANDED = "left_handed"
         const val KEY_HUB_CATEGORY = "hub_category"
         const val KEY_PLAYED_PREFIX = "played_"
+        const val KEY_SEEN_VERSION = "seen_version"
     }
 }

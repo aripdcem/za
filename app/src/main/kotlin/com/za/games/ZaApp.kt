@@ -12,6 +12,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import com.za.games.platform.Changelog
 import com.za.games.platform.GameRegistry
 import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
@@ -57,6 +58,23 @@ fun ZaApp() {
     val currentGame = GameRegistry.games.firstOrNull { it.id == currentGameId }
     var showAbout by rememberSaveable { mutableStateOf(false) }
 
+    // Güncelleme algısı: ilk kurulumda sürüm sessizce kaydedilir; sonraki bir
+    // güncellemede Yenilikler kartı çıkar ve bu sürümden sonra eklenen oyunlar
+    // "Yeni" rozeti alır (oturum boyunca).
+    val currentCode = remember { Changelog.versionCode(Changelog.installedVersion(context)) }
+    val updatedFrom = remember {
+        val seen = settings.lastSeenVersionCode
+        when {
+            seen == 0 -> {
+                settings.lastSeenVersionCode = currentCode
+                null
+            }
+            seen < currentCode -> seen
+            else -> null
+        }
+    }
+    var showWhatsNew by rememberSaveable { mutableStateOf(updatedFrom != null) }
+
     BackHandler(enabled = currentGame != null) { currentGameId = null }
 
     CompositionLocalProvider(LocalZaSound provides soundPlayer, LocalZaHaptics provides gatedHaptics) {
@@ -89,6 +107,12 @@ fun ZaApp() {
                     settings.hapticsEnabled = hapticsOn
                 },
                 onAbout = { showAbout = true },
+                whatsNew = if (showWhatsNew) Changelog.latest else null,
+                onDismissWhatsNew = {
+                    showWhatsNew = false
+                    settings.lastSeenVersionCode = currentCode
+                },
+                newSinceCode = updatedFrom ?: Int.MAX_VALUE,
             )
         } else {
             currentGame.screen(

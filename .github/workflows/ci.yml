@@ -27,6 +27,24 @@ jobs:
       - name: Motor birim testleri
         run: ./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test :games:kiskac:test :games:turetme:test :games:dizgi:test :games:kuyu:test :games:gecit:test :games:tavla:test :games:balkon:test :games:kakuro:test :games:sayi:test
 
+      - name: Robolectric önbelleği
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository/org/robolectric
+          key: robolectric-${{ hashFiles('gradle/libs.versions.toml') }}
+
+      - name: Arayüz testleri (Robolectric + Compose)
+        run: ./gradlew :app:testDebugUnitTest
+
+      - name: Test raporlarını yükle
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: za-test-reports
+          path: |
+            app/build/reports/tests
+            app/build/test-results
+
       - name: Debug APK derle
         run: ./gradlew :app:assembleDebug
 

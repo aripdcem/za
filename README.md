@@ -26,7 +26,8 @@ za/
 │       ├── platform/             # Çekirdek: GameRegistry, ScoreStore, SettingsStore, SoundPlayer, ShareCard
 │       ├── ui/common/            # Oyunların paylaştığı bileşenler (tuşlar, katmanlar, kartlar)
 │       ├── ui/hub/               # Ana menü (oyun listesi + manifesto + ses düğmesi)
-│       ├── ui/about/             # Hakkında: sürüm, bağlantılar, açık kaynak lisansları
+│       ├── ui/about/             # Hakkında: sürüm, bağlantılar, sürüm notları, açık kaynak lisansları
+│   └── src/test/                 # Arayüz testleri: Robolectric + Compose (emülatör gerekmez)
 │       ├── ui/&lt;oyun&gt;/            # Oyunların Compose arayüzleri
 │       └── ui/theme/             # ZA teması
 ├── games/
@@ -46,6 +47,8 @@ Temel ilke: **oyun kuralları saf Kotlin modüllerinde, arayüz `app` içinde** 
 ## Oyunlar
 
 Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı hamlelerle birebir aynı sonucu üretir. Rekorlar cihazda saklanır; oyunlar arka plana geçince kendiliğinden duraklar. Ses efektleri prosedürel üretilmiş küçük WAV'lardır ve ana menüden tamamen kapatılabilir.
+
+**Yenilikler:** güncellemeden sonraki ilk açılışta ana menüde sürüm notu kartı çıkar, o sürümden sonra eklenen oyunlar "Yeni" rozeti alır; tüm notlar Hakkında ekranında (`platform/Changelog.kt`, depo kopyası `CHANGELOG.md`).
 
 **Sonuç paylaşımı:** her oyunun bitiş kartındaki **Paylaş** düğmesi 1080 px genişliğinde bir sonuç kartı (PNG) ve kısa bir metin üretip Android'in paylaşım sayfasına verir (`platform/Share.kt`). Kakuro, Sudoku, Mayın Tarlası, Beş Harf, 2048 ve Dizgi'de karta bitmiş tahta da çizilir; Beş Harf metne 🟩🟨⬛ ızgarasını ekler ve günlük kelimeyi ele vermez. Kart uygulamanın önbelleğine yazılır, yalnızca seçilen uygulamaya ve yalnızca okuma için açılır (`FileProvider`): depolama izni gerekmez, "0 izin" sözü bozulmaz.
 
@@ -203,6 +206,10 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   oyunda değişir. Oyun sonunda "Sır": sayılar Lo Shu sihirli karesine yerleşince oyunun üç taş olduğu görülür
 
 ## Derleme
+
+Arayüz testleri JVM'de koşar, emülatör gerekmez: `./gradlew :app:testDebugUnitTest` (Robolectric + Compose test kuralı;
+ana menü, gezinme, Sudoku/Kakuro/Mayın Tarlası/Beş Harf etkileşimleri, Hakkında ve 16 oyun ekranının duman testi).
+CI her itmede motor testleriyle birlikte koşturur; sürüm iş akışı da bunlar geçmeden APK üretmez.
 
 Gereksinimler: JDK 17+, Android SDK (compileSdk 35). Android Studio ile açıp çalıştırabilir veya komut satırından derleyebilirsiniz:
 

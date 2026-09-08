@@ -1,7 +1,5 @@
 package com.za.games.ui.about
 
-import android.content.Context
-import android.content.pm.PackageManager
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -38,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.za.games.R
+import com.za.games.platform.Changelog
 import com.za.games.platform.ZaLinks
 import com.za.games.ui.common.GameTopBar
 
@@ -64,7 +63,7 @@ private val Components = listOf(
 @Composable
 fun AboutScreen(onExit: () -> Unit) {
     val context = LocalContext.current
-    val version = remember { appVersion(context) }
+    val version = remember { Changelog.installedVersion(context) }
     var showApache by rememberSaveable { mutableStateOf(false) }
     val apacheText = remember(showApache) {
         if (showApache) context.resources.openRawResource(R.raw.license_apache2).bufferedReader().use { it.readText() } else ""
@@ -139,6 +138,24 @@ fun AboutScreen(onExit: () -> Unit) {
                 )
                 TextButton(onClick = { ZaLinks.open(context, ZaLinks.CC_BY_SA) }) {
                     Text(ZaLinks.CC_BY_SA)
+                }
+            }
+            item { SectionTitle(stringResource(R.string.about_release_notes)) }
+            items(Changelog.entries.size) { index ->
+                val note = Changelog.entries[index]
+                Column(modifier = Modifier.padding(bottom = 4.dp)) {
+                    Text(
+                        text = stringResource(R.string.whats_new_version_fmt, note.version, note.date),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    note.notes().forEach { line ->
+                        Text(
+                            text = "• $line",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
+                        )
+                    }
                 }
             }
             item {
@@ -250,10 +267,4 @@ private fun ComponentCard(component: OssComponent) {
             )
         }
     }
-}
-
-private fun appVersion(context: Context): String = try {
-    context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "?"
-} catch (e: PackageManager.NameNotFoundException) {
-    "?"
 }
