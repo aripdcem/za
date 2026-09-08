@@ -118,6 +118,12 @@ fun AboutScreen(onExit: () -> Unit) {
 
             item { SectionTitle(stringResource(R.string.about_licenses)) }
             item {
+                InfoCard(stringResource(R.string.about_app_license))
+                TextButton(onClick = { ZaLinks.open(context, ZaLinks.LICENSE) }) {
+                    Text(stringResource(R.string.about_app_license_link))
+                }
+            }
+            item {
                 Text(
                     text = stringResource(R.string.about_licenses_intro),
                     style = MaterialTheme.typography.bodyMedium,
