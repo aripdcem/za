@@ -1,7 +1,8 @@
 package com.za.games
 
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onAllNodesWithText
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -37,6 +38,8 @@ class GameScreensSmokeTest(private val gameId: String) {
             rule.mainClock.advanceTimeByFrame()
             rule.mainClock.advanceTimeByFrame()
         }
-        rule.onNodeWithText(titleOf(entry.titleRes)).assertExists()
+        // Başlık başka yerde de geçebilir (Vergici'de skor kartı etiketi); en az bir düğüm yeter.
+        val title = titleOf(entry.titleRes)
+        assertTrue("$gameId başlığı yok: $title", rule.onAllNodesWithText(title).fetchSemanticsNodes().isNotEmpty())
     }
 }

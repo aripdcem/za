@@ -38,6 +38,8 @@ class SudokuScreenTest {
 
         val empty = str(R.string.sudoku_cell_empty)
         fun emptyCells() = rule.onAllNodes(hasContentDescription(empty, substring = true))
+        // Bulmaca arka planda üretilir; tahta gelene dek bekle.
+        rule.waitUntil(timeoutMillis = 30_000) { emptyCells().fetchSemanticsNodes().isNotEmpty() }
         val before = emptyCells().fetchSemanticsNodes().size
         assertTrue("boş hücre yok", before > 0)
 
