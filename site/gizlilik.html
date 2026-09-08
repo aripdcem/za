@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F3F6FB" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B0F1A" media="(prefers-color-scheme: dark)">
+<title>ZA · Gizlilik politikası</title>
+<meta name="description" content="ZA Games gizlilik politikası: uygulama hiçbir veri toplamaz, hiçbir izin istemez, ağa bağlanmaz.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B0F1A'/%3E%3Cg fill='%234DE1FF'%3E%3Crect x='7' y='7' width='4' height='4' rx='1'/%3E%3Crect x='12' y='7' width='4' height='4' rx='1'/%3E%3Crect x='17' y='7' width='4' height='4' rx='1'/%3E%3Crect x='22' y='7' width='4' height='4' rx='1'/%3E%3Crect x='17' y='12' width='4' height='4' rx='1'/%3E%3Crect x='12' y='16' width='4' height='4' rx='1'/%3E%3Crect x='7' y='21' width='4' height='4' rx='1'/%3E%3Crect x='12' y='21' width='4' height='4' rx='1'/%3E%3Crect x='17' y='21' width='4' height='4' rx='1'/%3E%3Crect x='22' y='21' width='4' height='4' rx='1'/%3E%3C/g%3E%3C/svg%3E">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #F3F6FB; --surface: #FFFFFF; --surface-2: #E8EDF5; --text: #0F1828; --muted: #5A6577; --title: #0891B2;
+    --card-border: rgba(15, 24, 40, 0.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0B0F1A; --surface: #111827; --surface-2: #1B2437; --text: #E4EAF5; --muted: #AAB4C8; --title: #4DE1FF; --card-border: rgba(255, 255, 255, 0.05); }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.6; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 40px 20px 64px; }
+  a { color: var(--title); }
+  .back { display: inline-block; text-decoration: none; font-weight: 700; margin-bottom: 20px; }
+  h1 { font-size: 34px; font-weight: 900; line-height: 1.15; }
+  .meta { color: var(--muted); font-size: 14px; margin-top: 6px; }
+  h2 { font-size: 20px; margin-top: 28px; }
+  p, li { margin-top: 10px; }
+  ul { padding-left: 22px; }
+  .summary {
+    margin-top: 22px; background: var(--surface); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px 18px;
+  }
+  .summary strong { color: var(--title); }
+  hr { border: 0; border-top: 1px solid var(--card-border); margin: 40px 0 8px; }
+  .en h2 { font-size: 18px; }
+  footer { margin-top: 48px; color: var(--muted); font-size: 14px; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+  footer a { text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="./">← ZA</a>
+  <h1>Gizlilik politikası</h1>
+  <p class="meta">ZA Games (Android) · Yürürlük: 8 Eylül 2026 · Geliştirici: aripdcem</p>
+
+  <div class="summary">
+    <strong>Kısaca:</strong> ZA hiçbir kişisel veri toplamaz, saklamaz, paylaşmaz ya da satmaz. Uygulama
+    hiçbir izin istemez, reklam ya da izleme kütüphanesi içermez ve ağa bağlanmaz. Skorlar ve ayarlar
+    yalnızca sizin cihazınızda durur.
+  </div>
+
+  <h2>1. Toplanan veriler</h2>
+  <p>Hiçbiri. ZA ad, e-posta, konum, cihaz kimliği, kullanım istatistiği, çökme raporu ya da başka bir
+  veri toplamaz. Uygulamada analitik, reklam ya da üçüncü taraf SDK'sı yoktur.</p>
+
+  <h2>2. İzinler ve ağ</h2>
+  <p>Uygulama manifestosunda tek bir <code>uses-permission</code> bile yoktur; İNTERNET izni dahil.
+  ZA hiçbir sunucuya bağlanmaz; günlük bulmacalar cihaz tarihinden çevrimdışı üretilir.</p>
+
+  <h2>3. Cihazda saklanan bilgiler</h2>
+  <ul>
+    <li>Rekorlar, seriler, günlük bulmaca ilerlemesi ve ayarlar (ses, titreşim, el tercihi, seçili tema)
+    uygulamanın özel alanında saklanır. Başka uygulamalar erişemez.</li>
+    <li>Bu veriler yalnızca uygulamayı kaldırdığınızda ya da uygulama verisini temizlediğinizde silinir.</li>
+    <li>Android'in cihaz yedeklemesini açtıysanız bu ayarlar, işletim sisteminin standart uygulama yedeğine
+    dahil olabilir. Bu yedek sizin Google hesabınıza aittir; ZA ona erişemez.</li>
+  </ul>
+
+  <h2>4. Sonuç paylaşımı</h2>
+  <p>Bitiş kartındaki "Paylaş" düğmesi bir sonuç görseli ve kısa bir metin üretir, sonra Android'in
+  paylaşım sayfasını açar. Görsel yalnızca sizin seçtiğiniz uygulamaya, yalnızca okuma için verilir;
+  ZA'nın kendisi hiçbir şey göndermez ve kimin ne paylaştığını bilmez.</p>
+
+  <h2>5. Bağlantılar</h2>
+  <p>"Hakkında" ekranındaki bağlantılar (web sitesi, kaynak kodu, sorun bildirme) cihazınızdaki tarayıcıda
+  açılır. Açılan sitelerin (GitHub gibi) kendi gizlilik politikaları geçerlidir.</p>
+
+  <h2>6. Çocuklar</h2>
+  <p>ZA veri toplamadığı için her yaş için uygundur ve çocuklardan da hiçbir bilgi almaz.</p>
+
+  <h2>7. Değişiklikler</h2>
+  <p>Bu politika değişirse yeni sürüm bu sayfada yayımlanır ve uygulamanın sürüm notlarında belirtilir.
+  Veri toplamaya başlayacak hiçbir değişiklik planlanmamaktadır.</p>
+
+  <h2>8. İletişim</h2>
+  <p>Sorular ve bildirimler için: <a href="https://github.com/aripdcem/za/issues/new">github.com/aripdcem/za/issues</a></p>
+
+  <hr>
+  <section class="en">
+    <h1 style="font-size:26px">Privacy Policy (English)</h1>
+    <p class="meta">ZA Games for Android · Effective 8 September 2026 · Developer: aripdcem</p>
+    <p><strong>In short:</strong> ZA collects, stores, shares or sells no personal data. The app requests no
+    permissions, contains no ads or tracking libraries, and never connects to the network.</p>
+    <h2>Data collected</h2>
+    <p>None. No names, e-mails, location, device identifiers, usage statistics or crash reports. There are
+    no analytics, advertising or third-party SDKs in the app.</p>
+    <h2>Permissions and network</h2>
+    <p>The app manifest declares no <code>uses-permission</code> at all, not even INTERNET. Daily puzzles
+    are generated offline from the device date.</p>
+    <h2>Information kept on your device</h2>
+    <p>High scores, streaks, daily-puzzle progress and settings are stored in the app's private storage
+    and removed when you uninstall the app or clear its data. If you enabled Android device backup,
+    they may be included in the standard app backup owned by your Google account; ZA cannot access it.</p>
+    <h2>Sharing results</h2>
+    <p>The "Share" button renders a result image and text, then opens the Android share sheet. The image
+    is handed read-only to the app you choose; ZA itself sends nothing and does not know what was shared.</p>
+    <h2>Links, children, changes</h2>
+    <p>Links in the About screen open in your browser, where the target site's policy applies. Since no data
+    is collected, the app is suitable for all ages. Any change to this policy will be published here.</p>
+    <h2>Contact</h2>
+    <p><a href="https://github.com/aripdcem/za/issues/new">github.com/aripdcem/za/issues</a></p>
+  </section>
+
+  <footer>
+    <span>ZA · zero-ads games</span>
+    <a href="./">Ana sayfa</a>
+    <a href="https://github.com/aripdcem/za">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>

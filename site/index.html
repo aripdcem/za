@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#F3F6FB" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0B0F1A" media="(prefers-color-scheme: dark)">
 <title>ZA · zero-ads games</title>
-<meta name="description" content="ZA: Android için sıfır reklam, sıfır izleyici, sıfır izin oyun platformu. Tetris, 2048, Yılan, Sudoku, Mayın Tarlası ve Türkçe kelime oyunları — saf oyun.">
+<meta name="description" content="ZA: Android için sıfır reklam, sıfır izleyici, sıfır izin oyun platformu. Blok, 2048, Yılan, Sudoku, Mayın Tarlası, Kakuro, Tavla ve Türkçe kelime oyunları — saf oyun.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B0F1A'/%3E%3Cg fill='%234DE1FF'%3E%3Crect x='7' y='7' width='4' height='4' rx='1'/%3E%3Crect x='12' y='7' width='4' height='4' rx='1'/%3E%3Crect x='17' y='7' width='4' height='4' rx='1'/%3E%3Crect x='22' y='7' width='4' height='4' rx='1'/%3E%3Crect x='17' y='12' width='4' height='4' rx='1'/%3E%3Crect x='12' y='16' width='4' height='4' rx='1'/%3E%3Crect x='7' y='21' width='4' height='4' rx='1'/%3E%3Crect x='12' y='21' width='4' height='4' rx='1'/%3E%3Crect x='17' y='21' width='4' height='4' rx='1'/%3E%3Crect x='22' y='21' width='4' height='4' rx='1'/%3E%3C/g%3E%3C/svg%3E">
 <style>
   /* Tema: düğme yok; sistem tercihine (prefers-color-scheme) uyulur. */
@@ -90,7 +90,29 @@
   .btn:hover { filter: brightness(1.08); }
   .cta a.all { color: var(--title); font-size: 14px; text-decoration: none; }
   .cta a.all:hover { text-decoration: underline; }
-  main { margin-top: 36px; display: grid; gap: 16px; }
+  main { margin-top: 24px; display: grid; gap: 30px; }
+  .groups { display: flex; flex-wrap: wrap; gap: 8px; }
+  .groups a {
+    background: var(--surface-2);
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .groups a span { color: var(--muted); font-weight: 500; margin-left: 4px; }
+  .groups a:hover { filter: brightness(1.06); }
+  .group h2 {
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--title);
+    scroll-margin-top: 16px;
+  }
+  .group .group-desc { color: var(--muted); font-size: 15px; margin: 2px 0 12px; }
+  .group .cards { display: grid; gap: 14px; }
   .card {
     background: var(--surface);
     border: 1px solid var(--card-border);
@@ -134,7 +156,7 @@
     font-style: normal;
   }
   .art .round { border-radius: 50%; }
-  .card h2 { font-size: 22px; }
+  .card h3 { font-size: 22px; }
   .card .info { flex: 1 1 auto; min-width: 0; }
   .card .info p { color: var(--muted); font-size: 15px; margin-top: 2px; }
   .note {
@@ -181,6 +203,17 @@
   </header>
 
   <main>
+    <nav class="groups" aria-label="Oyun grupları">
+      <a href="#arcade">Arcade <span>5</span></a>
+      <a href="#bulmaca">Bulmaca <span>4</span></a>
+      <a href="#kelime">Kelime <span>4</span></a>
+      <a href="#masa">Masa <span>3</span></a>
+    </nav>
+
+    <section class="group" id="arcade">
+      <h2>Arcade</h2>
+      <p class="group-desc">Refleks ve ritim: düşen bloklar, yılan, kuyu, karşıya geçiş, balkondan nişan.</p>
+      <div class="cards">
     <section class="card tetris">
       <div class="art" aria-hidden="true">
         <i style="grid-area:1/2;background:#A78BFA"></i>
@@ -195,24 +228,10 @@
         <i style="grid-area:4/2;background:#FACC15"></i>
       </div>
       <div class="info">
-        <h2>Tetris</h2>
-        <p>Klasik blok bulmaca: SRS rotasyon, hold, hayalet taş, satır temizleme efektleri.</p>
+        <h3>Blok</h3>
+        <p>Düşen dörtlü bloklar: satırları tamamla, taşı tut, gölgesiyle nişan al; satır temizleme efektleri.</p>
       </div>
     </section>
-
-    <section class="card g2048">
-      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(2,27px);grid-auto-rows:27px;gap:3px">
-        <i style="background:#EEE4DA"></i>
-        <i style="background:#F2B179"></i>
-        <i style="background:#EDCF72"></i>
-        <i style="background:#F65E3B"></i>
-      </div>
-      <div class="info">
-        <h2>2048</h2>
-        <p>Kaydır, birleştir, 2048'e ulaş — sonra da rekorunu büyüt.</p>
-      </div>
-    </section>
-
     <section class="card snake">
       <div class="art" aria-hidden="true">
         <i class="round" style="grid-area:1/1;background:#F87171"></i>
@@ -224,116 +243,10 @@
         <i style="grid-area:4/1;background:#4ADE80;opacity:.45"></i>
       </div>
       <div class="info">
-        <h2>Yılan</h2>
+        <h3>Yılan</h3>
         <p>Klasik yılan: ye, büyü, hızlan — duvara ve kendine çarpma.</p>
       </div>
     </section>
-
-    <section class="card sudoku">
-      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(3,18px);grid-auto-rows:18px;gap:2px">
-        <i style="background:#60A5FA"></i>
-        <i style="background:transparent;border:1.5px solid rgba(96,165,250,.4)"></i>
-        <i style="background:transparent;border:1.5px solid rgba(96,165,250,.4)"></i>
-        <i style="background:transparent;border:1.5px solid rgba(96,165,250,.4)"></i>
-        <i style="background:transparent;border:1.5px solid rgba(96,165,250,.4)"></i>
-        <i style="background:#60A5FA;opacity:.7"></i>
-        <i style="background:transparent;border:1.5px solid rgba(96,165,250,.4)"></i>
-        <i style="background:#60A5FA;opacity:.45"></i>
-        <i style="background:transparent;border:1.5px solid rgba(96,165,250,.4)"></i>
-      </div>
-      <div class="info">
-        <h2>Sudoku</h2>
-        <p>Klasik 9×9: üç zorluk, kalem notları, tek çözüm garantisi.</p>
-      </div>
-    </section>
-
-    <section class="card mines">
-      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(3,18px);grid-auto-rows:18px;gap:2px">
-        <i style="background:#223049">🚩</i>
-        <i style="background:rgba(255,255,255,.06)"></i>
-        <i style="background:#223049"></i>
-        <i style="background:rgba(255,255,255,.06)"></i>
-        <i style="background:#223049"></i>
-        <i style="background:rgba(255,255,255,.06)"></i>
-        <i style="background:#223049"></i>
-        <i style="background:rgba(255,255,255,.06)"></i>
-        <i style="background:#223049">💣</i>
-      </div>
-      <div class="info">
-        <h2>Mayın Tarlası</h2>
-        <p>Sayıları çöz, bayrak dik, mayına basma — ilk dokunuş hep güvenli.</p>
-      </div>
-    </section>
-
-    <section class="card besharf">
-      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(5,11px);grid-auto-rows:11px;gap:2px">
-        <i style="background:#313A4E"></i>
-        <i style="background:#FACC15"></i>
-        <i style="background:#313A4E"></i>
-        <i style="background:#313A4E"></i>
-        <i style="background:#FACC15"></i>
-        <i style="background:#FACC15"></i>
-        <i style="background:#4ADE80"></i>
-        <i style="background:#313A4E"></i>
-        <i style="background:#4ADE80"></i>
-        <i style="background:#313A4E"></i>
-        <i style="background:#4ADE80"></i>
-        <i style="background:#4ADE80"></i>
-        <i style="background:#4ADE80"></i>
-        <i style="background:#4ADE80"></i>
-        <i style="background:#4ADE80"></i>
-      </div>
-      <div class="info">
-        <h2>Beş Harf</h2>
-        <p>Türkçe kelime tahmini: her gün herkese aynı kelime — tamamen çevrimdışı — artı serbest mod.</p>
-      </div>
-    </section>
-
-    <section class="card kiskac">
-      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(3,18px);grid-auto-rows:12px;gap:3px">
-        <i style="grid-column:1/4;background:#F472B6"></i>
-        <i style="grid-column:2/3;background:#FACC15"></i>
-        <i style="grid-column:1/4;background:rgba(244,114,182,.55)"></i>
-      </div>
-      <div class="info">
-        <h2>Kıskaç</h2>
-        <p>Alfabetik kıskaç: her tahmin "önce mi, sonra mı?" der; kelimeyi iki sınır arasında sıkıştır.</p>
-      </div>
-    </section>
-
-    <section class="card turetme">
-      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(3,16px);grid-auto-rows:16px;gap:3px">
-        <i class="round" style="grid-area:1/2;background:#A78BFA;opacity:.85"></i>
-        <i class="round" style="grid-area:2/1;background:#A78BFA;opacity:.6"></i>
-        <i class="round" style="grid-area:2/2;background:#A78BFA"></i>
-        <i class="round" style="grid-area:2/3;background:#A78BFA;opacity:.6"></i>
-        <i class="round" style="grid-area:3/1;background:#A78BFA;opacity:.45"></i>
-        <i class="round" style="grid-area:3/3;background:#A78BFA;opacity:.45"></i>
-      </div>
-      <div class="info">
-        <h2>Türetme</h2>
-        <p>Harf çarkından kelime türet: 6-7 harfin içinde saklı tüm kelimeleri bul — günlük ve serbest mod.</p>
-      </div>
-    </section>
-
-    <section class="card dizgi">
-      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(5,11px);grid-auto-rows:11px;gap:2px">
-        <i style="grid-area:1/3;background:#EADFC8;opacity:.85"></i>
-        <i style="grid-area:2/3;background:#EADFC8"></i>
-        <i style="grid-area:3/1;background:#EADFC8"></i>
-        <i style="grid-area:3/2;background:#EADFC8"></i>
-        <i style="grid-area:3/3;background:#FB923C"></i>
-        <i style="grid-area:3/4;background:#EADFC8"></i>
-        <i style="grid-area:3/5;background:#EADFC8"></i>
-        <i style="grid-area:4/3;background:#EADFC8"></i>
-        <i style="grid-area:5/3;background:#EADFC8;opacity:.85"></i>
-      </div>
-      <div class="info">
-        <h2>Dizgi</h2>
-        <p>Elden ele kelime tahtası: aynı telefonda 2-4 oyuncu, harfleri diz, kelimeleri kesiştir, premium karelerle puanı katla.</p>
-      </div>
-    </section>
-
     <section class="card kuyu">
       <div class="art" aria-hidden="true" style="grid-template-columns:repeat(5,11px);grid-auto-rows:11px;gap:2px">
         <i style="grid-area:1/1;background:#475569"></i>
@@ -353,11 +266,10 @@
         <i style="grid-area:5/4;background:#F87171"></i>
       </div>
       <div class="info">
-        <h2>Kuyu</h2>
+        <h3>Kuyu</h3>
         <p>Kuyuya düşüş: zıpla, botlarınla aşağı ateş et, düşmanlara bas, komboyu büyüt. Her gün herkese aynı kuyu, tek deneme.</p>
       </div>
     </section>
-
     <section class="card gecit">
       <div class="art" aria-hidden="true" style="grid-template-columns:repeat(5,11px);grid-auto-rows:11px;gap:2px">
         <i style="grid-area:1/1/2/6;background:#1D4ED8"></i>
@@ -372,11 +284,177 @@
         <i style="grid-area:5/5;background:#166534"></i>
       </div>
       <div class="info">
-        <h2>Geçit</h2>
+        <h3>Geçit</h3>
         <p>Karşıya geç: arabalardan ve trenden kaç, kütüklere bin, durma. Her gün herkese aynı yol, üç deneme.</p>
       </div>
     </section>
+    <section class="card balkon">
+      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(5,11px);grid-auto-rows:11px;gap:2px">
+        <i style="grid-area:1/1/6/6;background:#A1A7B0"></i>
+        <i style="grid-area:1/1/2/6;background:#7C5C46"></i>
+        <i style="grid-area:2/1/3/6;background:#1F2937"></i>
+        <i style="grid-area:4/1/5/6;background:#3F3F46"></i>
+        <i style="grid-area:4/1;background:#E5E7EB;height:3px;align-self:center"></i>
+        <i style="grid-area:4/3;background:#E5E7EB;height:3px;align-self:center"></i>
+        <i style="grid-area:4/5;background:#E5E7EB;height:3px;align-self:center"></i>
+        <i style="grid-area:1/3;background:#3B2A20;border-radius:50%"></i>
+        <i style="grid-area:3/4;background:#4ADE80;border-radius:50%"></i>
+        <i style="grid-area:5/2;background:#D1D5DB;border-radius:50%"></i>
+      </div>
+      <div class="info">
+        <h3>Balkon</h3>
+        <p>Balkondan sokağa nişan al: rüzgâr, hareketli hedefler, süreli seviyeler. Kabak çekirdeği, su balonu ya da tükürük; üst üste isabetler megayı doldurur.</p>
+      </div>
+    </section>
+      </div>
+    </section>
 
+    <section class="group" id="bulmaca">
+      <h2>Bulmaca</h2>
+      <p class="group-desc">Sakin kafa oyunları; ızgara bulmacalarında tek çözüm garantisi.</p>
+      <div class="cards">
+    <section class="card g2048">
+      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(2,27px);grid-auto-rows:27px;gap:3px">
+        <i style="background:#EEE4DA"></i>
+        <i style="background:#F2B179"></i>
+        <i style="background:#EDCF72"></i>
+        <i style="background:#F65E3B"></i>
+      </div>
+      <div class="info">
+        <h3>2048</h3>
+        <p>Kaydır, birleştir, 2048'e ulaş — sonra da rekorunu büyüt.</p>
+      </div>
+    </section>
+    <section class="card sudoku">
+      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(3,18px);grid-auto-rows:18px;gap:2px">
+        <i style="background:#60A5FA"></i>
+        <i style="background:transparent;border:1.5px solid rgba(96,165,250,.4)"></i>
+        <i style="background:transparent;border:1.5px solid rgba(96,165,250,.4)"></i>
+        <i style="background:transparent;border:1.5px solid rgba(96,165,250,.4)"></i>
+        <i style="background:transparent;border:1.5px solid rgba(96,165,250,.4)"></i>
+        <i style="background:#60A5FA;opacity:.7"></i>
+        <i style="background:transparent;border:1.5px solid rgba(96,165,250,.4)"></i>
+        <i style="background:#60A5FA;opacity:.45"></i>
+        <i style="background:transparent;border:1.5px solid rgba(96,165,250,.4)"></i>
+      </div>
+      <div class="info">
+        <h3>Sudoku</h3>
+        <p>Klasik 9×9: üç zorluk, kalem notları, tek çözüm garantisi.</p>
+      </div>
+    </section>
+    <section class="card mines">
+      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(3,18px);grid-auto-rows:18px;gap:2px">
+        <i style="background:#223049">🚩</i>
+        <i style="background:rgba(255,255,255,.06)"></i>
+        <i style="background:#223049"></i>
+        <i style="background:rgba(255,255,255,.06)"></i>
+        <i style="background:#223049"></i>
+        <i style="background:rgba(255,255,255,.06)"></i>
+        <i style="background:#223049"></i>
+        <i style="background:rgba(255,255,255,.06)"></i>
+        <i style="background:#223049">💣</i>
+      </div>
+      <div class="info">
+        <h3>Mayın Tarlası</h3>
+        <p>Sayıları çöz, bayrak dik, mayına basma — ilk dokunuş hep güvenli.</p>
+      </div>
+    </section>
+    <section class="card kakuro">
+      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(5,11px);grid-auto-rows:11px;gap:2px">
+        <i style="grid-area:1/1/6/6;background:#0F1628"></i>
+        <i style="grid-area:1/1/2/6;background:#1E293B"></i>
+        <i style="grid-area:1/1/6/2;background:#1E293B"></i>
+        <i style="grid-area:2/2/3/6;background:#BBF7D0"></i>
+        <i style="grid-area:3/2/6/6;background:#E8ECF3"></i>
+        <i style="grid-area:4/4;background:#1E293B"></i>
+        <i style="grid-area:2/3;background:#0F172A;border-radius:50%;width:5px;height:5px;margin:3px"></i>
+        <i style="grid-area:3/2;background:#0F172A;border-radius:50%;width:5px;height:5px;margin:3px"></i>
+        <i style="grid-area:5/5;background:#0F172A;border-radius:50%;width:5px;height:5px;margin:3px"></i>
+      </div>
+      <div class="info">
+        <h3>Kakuro</h3>
+        <p>Toplam bulmacası: her koşu ipucuyla toplanır, rakamlar yinelenmez. Üç boy, notlar, kalan toplam yardımcısı ve tek çözüm garantisi.</p>
+      </div>
+    </section>
+      </div>
+    </section>
+
+    <section class="group" id="kelime">
+      <h2>Kelime</h2>
+      <p class="group-desc">Türkçe kelime oyunları: gömülü sözlük, günlük bulmacalar, elden ele tahta.</p>
+      <div class="cards">
+    <section class="card besharf">
+      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(5,11px);grid-auto-rows:11px;gap:2px">
+        <i style="background:#313A4E"></i>
+        <i style="background:#FACC15"></i>
+        <i style="background:#313A4E"></i>
+        <i style="background:#313A4E"></i>
+        <i style="background:#FACC15"></i>
+        <i style="background:#FACC15"></i>
+        <i style="background:#4ADE80"></i>
+        <i style="background:#313A4E"></i>
+        <i style="background:#4ADE80"></i>
+        <i style="background:#313A4E"></i>
+        <i style="background:#4ADE80"></i>
+        <i style="background:#4ADE80"></i>
+        <i style="background:#4ADE80"></i>
+        <i style="background:#4ADE80"></i>
+        <i style="background:#4ADE80"></i>
+      </div>
+      <div class="info">
+        <h3>Beş Harf</h3>
+        <p>Türkçe kelime tahmini: her gün herkese aynı kelime — tamamen çevrimdışı — artı serbest mod.</p>
+      </div>
+    </section>
+    <section class="card kiskac">
+      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(3,18px);grid-auto-rows:12px;gap:3px">
+        <i style="grid-column:1/4;background:#F472B6"></i>
+        <i style="grid-column:2/3;background:#FACC15"></i>
+        <i style="grid-column:1/4;background:rgba(244,114,182,.55)"></i>
+      </div>
+      <div class="info">
+        <h3>Kıskaç</h3>
+        <p>Alfabetik kıskaç: her tahmin "önce mi, sonra mı?" der; kelimeyi iki sınır arasında sıkıştır.</p>
+      </div>
+    </section>
+    <section class="card turetme">
+      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(3,16px);grid-auto-rows:16px;gap:3px">
+        <i class="round" style="grid-area:1/2;background:#A78BFA;opacity:.85"></i>
+        <i class="round" style="grid-area:2/1;background:#A78BFA;opacity:.6"></i>
+        <i class="round" style="grid-area:2/2;background:#A78BFA"></i>
+        <i class="round" style="grid-area:2/3;background:#A78BFA;opacity:.6"></i>
+        <i class="round" style="grid-area:3/1;background:#A78BFA;opacity:.45"></i>
+        <i class="round" style="grid-area:3/3;background:#A78BFA;opacity:.45"></i>
+      </div>
+      <div class="info">
+        <h3>Türetme</h3>
+        <p>Harf çarkından kelime türet: 6-7 harfin içinde saklı tüm kelimeleri bul — günlük ve serbest mod.</p>
+      </div>
+    </section>
+    <section class="card dizgi">
+      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(5,11px);grid-auto-rows:11px;gap:2px">
+        <i style="grid-area:1/3;background:#EADFC8;opacity:.85"></i>
+        <i style="grid-area:2/3;background:#EADFC8"></i>
+        <i style="grid-area:3/1;background:#EADFC8"></i>
+        <i style="grid-area:3/2;background:#EADFC8"></i>
+        <i style="grid-area:3/3;background:#FB923C"></i>
+        <i style="grid-area:3/4;background:#EADFC8"></i>
+        <i style="grid-area:3/5;background:#EADFC8"></i>
+        <i style="grid-area:4/3;background:#EADFC8"></i>
+        <i style="grid-area:5/3;background:#EADFC8;opacity:.85"></i>
+      </div>
+      <div class="info">
+        <h3>Dizgi</h3>
+        <p>Elden ele kelime tahtası: aynı telefonda 2-4 oyuncu, harfleri diz, kelimeleri kesiştir, premium karelerle puanı katla.</p>
+      </div>
+    </section>
+      </div>
+    </section>
+
+    <section class="group" id="masa">
+      <h2>Masa</h2>
+      <p class="group-desc">Masa ve sayı oyunları: bilgisayara ya da aynı telefonda arkadaşına karşı.</p>
+      <div class="cards">
     <section class="card tavla">
       <div class="art" aria-hidden="true" style="grid-template-columns:repeat(5,11px);grid-auto-rows:11px;gap:2px">
         <i style="grid-area:1/1/6/6;background:#2A1F1B"></i>
@@ -397,48 +475,10 @@
         <i style="grid-area:3/1;background:#292524;border-radius:50%"></i>
       </div>
       <div class="info">
-        <h2>Tavla</h2>
+        <h3>Tavla</h3>
         <p>Klasik, Tapa ve Hapis kuralları tek oyunda; bilgisayara ya da aynı telefonda arkadaşına karşı. Katlama küpü ve ev yasağı ayarlanabilir.</p>
       </div>
     </section>
-
-    <section class="card balkon">
-      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(5,11px);grid-auto-rows:11px;gap:2px">
-        <i style="grid-area:1/1/6/6;background:#A1A7B0"></i>
-        <i style="grid-area:1/1/2/6;background:#7C5C46"></i>
-        <i style="grid-area:2/1/3/6;background:#1F2937"></i>
-        <i style="grid-area:4/1/5/6;background:#3F3F46"></i>
-        <i style="grid-area:4/1;background:#E5E7EB;height:3px;align-self:center"></i>
-        <i style="grid-area:4/3;background:#E5E7EB;height:3px;align-self:center"></i>
-        <i style="grid-area:4/5;background:#E5E7EB;height:3px;align-self:center"></i>
-        <i style="grid-area:1/3;background:#3B2A20;border-radius:50%"></i>
-        <i style="grid-area:3/4;background:#4ADE80;border-radius:50%"></i>
-        <i style="grid-area:5/2;background:#D1D5DB;border-radius:50%"></i>
-      </div>
-      <div class="info">
-        <h2>Balkon</h2>
-        <p>Balkondan sokağa nişan al: rüzgâr, hareketli hedefler, süreli seviyeler. Kabak çekirdeği, su balonu ya da tükürük; üst üste isabetler megayı doldurur.</p>
-      </div>
-    </section>
-
-    <section class="card kakuro">
-      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(5,11px);grid-auto-rows:11px;gap:2px">
-        <i style="grid-area:1/1/6/6;background:#0F1628"></i>
-        <i style="grid-area:1/1/2/6;background:#1E293B"></i>
-        <i style="grid-area:1/1/6/2;background:#1E293B"></i>
-        <i style="grid-area:2/2/3/6;background:#BBF7D0"></i>
-        <i style="grid-area:3/2/6/6;background:#E8ECF3"></i>
-        <i style="grid-area:4/4;background:#1E293B"></i>
-        <i style="grid-area:2/3;background:#0F172A;border-radius:50%;width:5px;height:5px;margin:3px"></i>
-        <i style="grid-area:3/2;background:#0F172A;border-radius:50%;width:5px;height:5px;margin:3px"></i>
-        <i style="grid-area:5/5;background:#0F172A;border-radius:50%;width:5px;height:5px;margin:3px"></i>
-      </div>
-      <div class="info">
-        <h2>Kakuro</h2>
-        <p>Toplam bulmacası: her koşu ipucuyla toplanır, rakamlar yinelenmez. Üç boy, notlar, kalan toplam yardımcısı ve tek çözüm garantisi.</p>
-      </div>
-    </section>
-
     <section class="card vergici">
       <div class="art" aria-hidden="true" style="grid-template-columns:repeat(5,11px);grid-auto-rows:11px;gap:2px">
         <i style="grid-area:1/1/6/6;background:#14201C"></i>
@@ -453,11 +493,10 @@
         <i style="grid-area:4/4;background:#2E3B2F;border-radius:3px"></i>
       </div>
       <div class="info">
-        <h2>Vergici</h2>
+        <h3>Vergici</h3>
         <p>Böleni kalmış sayıyı al, vergici bölenlerini alsın. 1–12'den 1–40'a; en iyi olası puan hedef olarak gösterilir.</p>
       </div>
     </section>
-
     <section class="card toplam">
       <div class="art" aria-hidden="true" style="grid-template-columns:repeat(5,11px);grid-auto-rows:11px;gap:2px">
         <i style="grid-area:1/1/6/6;background:#1C1430"></i>
@@ -472,14 +511,16 @@
         <i style="grid-area:4/4;background:#4ADE80;border-radius:50%"></i>
       </div>
       <div class="info">
-        <h2>Toplam Kapma</h2>
+        <h3>Toplam Kapma</h3>
         <p>1–9'dan sırayla sayı al; üç sayın 15 ederse kazanırsın. Kusursuz ya da kolay bilgisayar, iki oyuncu; sonunda sihirli kare sırrı.</p>
+      </div>
+    </section>
       </div>
     </section>
 
     <section class="card muted">
       <div class="info">
-        <h2>Yeni oyunlar yolda…</h2>
+        <h3>Yeni oyunlar yolda…</h3>
         <p>Daha fazlası geliyor — hepsi aynı sözle: sıfır reklam.</p>
       </div>
     </section>
@@ -499,6 +540,8 @@
   <footer>
     <span>ZA · zero-ads games</span>
     <a href="https://github.com/aripdcem/za">GitHub'da kaynak kodu</a>
+    <a href="gizlilik.html">Gizlilik politikası</a>
+    <a href="https://github.com/aripdcem/za/issues/new">Sorun bildir</a>
   </footer>
 </div>
 </body>

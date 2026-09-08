@@ -19,6 +19,7 @@ import com.za.games.platform.ScoreStore
 import com.za.games.platform.SettingsStore
 import com.za.games.platform.SoundPlayer
 import com.za.games.platform.gatedBy
+import com.za.games.ui.about.AboutScreen
 import com.za.games.ui.hub.HubScreen
 
 /**
@@ -54,11 +55,14 @@ fun ZaApp() {
 
     var currentGameId by rememberSaveable { mutableStateOf<String?>(null) }
     val currentGame = GameRegistry.games.firstOrNull { it.id == currentGameId }
+    var showAbout by rememberSaveable { mutableStateOf(false) }
 
     BackHandler(enabled = currentGame != null) { currentGameId = null }
 
     CompositionLocalProvider(LocalZaSound provides soundPlayer, LocalZaHaptics provides gatedHaptics) {
-        if (currentGame == null) {
+        if (currentGame == null && showAbout) {
+            AboutScreen(onExit = { showAbout = false })
+        } else if (currentGame == null) {
             HubScreen(
                 games = GameRegistry.games,
                 highScores = highScores,
@@ -84,6 +88,7 @@ fun ZaApp() {
                     hapticsOn = !hapticsOn
                     settings.hapticsEnabled = hapticsOn
                 },
+                onAbout = { showAbout = true },
             )
         } else {
             currentGame.screen(

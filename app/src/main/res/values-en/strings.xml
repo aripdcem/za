@@ -12,9 +12,9 @@
     <string name="high_score_fmt">Best: %1$s</string>
     <string name="coming_soon">More games on the way…</string>
 
-    <!-- Tetris -->
-    <string name="game_tetris">Tetris</string>
-    <string name="game_tetris_tagline">The classic block puzzle: SRS rotation, hold and ghost piece</string>
+    <!-- Blok (falling blocks; renamed because Tetris is a registered trademark) -->
+    <string name="game_tetris">Blok</string>
+    <string name="game_tetris_tagline">Falling four-square blocks: complete lines, hold a piece, aim with the ghost</string>
     <string name="score">Score</string>
     <string name="high_score">Best</string>
     <string name="level">Level</string>
@@ -307,7 +307,7 @@
     <string name="tavla_off_tray">Bear-off tray</string>
 
     <!-- Board descriptions (screen reader) -->
-    <string name="tetris_board_desc">Tetris board: level %1$d, %2$d lines, score %3$d</string>
+    <string name="tetris_board_desc">Blok board: level %1$d, %2$d lines, score %3$d</string>
     <string name="snake_board_desc">Snake board: length %1$d, score %2$d</string>
     <string name="mines_board_desc">Minefield %1$d×%2$d: %3$d mines, %4$d flags</string>
 
@@ -463,4 +463,28 @@
     <string name="share_daily_fmt">Daily · %1$s</string>
     <string name="share_streak_fmt">Streak %1$d</string>
     <string name="share_wins_fmt">%1$d wins</string>
+
+    <!-- About -->
+    <string name="about_title">About</string>
+    <string name="about_version_fmt">Version %1$s</string>
+    <string name="about_privacy_summary">ZA collects no data, asks for no permissions and never connects to the network. Scores and settings live only on this device and go away when the app is uninstalled.</string>
+    <string name="about_links">Links</string>
+    <string name="about_website">Website</string>
+    <string name="about_source">Source code</string>
+    <string name="about_report">Report a problem</string>
+    <string name="about_privacy">Privacy policy</string>
+    <string name="about_open_failed">Could not open the link: no browser on this device</string>
+    <string name="about_licenses">Open source licenses</string>
+    <string name="about_licenses_intro">ZA uses the open source components below; tap one to open its source.</string>
+    <string name="about_lic_zemberek_name">Zemberek-NLP root dictionary</string>
+    <string name="about_lic_zemberek_desc">Source of the Turkish word lists (Beş Harf, Kıskaç, Türetme, Dizgi). Ahmet A. Akın and contributors.</string>
+    <string name="about_lic_freq_name">FrequencyWords tr_50k</string>
+    <string name="about_lic_freq_desc">Word frequency list used to pick the word pools. Hermit Dave, from OpenSubtitles data.</string>
+    <string name="about_lic_androidx_name">AndroidX Jetpack</string>
+    <string name="about_lic_androidx_desc">Compose, Material 3, Lifecycle, Activity and Core libraries. The Android Open Source Project.</string>
+    <string name="about_lic_kotlin_name">Kotlin and kotlinx.coroutines</string>
+    <string name="about_lic_kotlin_desc">Language standard library and concurrency. JetBrains and contributors.</string>
+    <string name="about_cc_note">Because the word lists derive from FrequencyWords they are shared under CC BY-SA 4.0; license text:</string>
+    <string name="about_license_show">Show the Apache 2.0 license text</string>
+    <string name="about_license_hide">Hide the license text</string>
 </resources>
