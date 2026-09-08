@@ -12,9 +12,9 @@
     <string name="high_score_fmt">Rekor: %1$s</string>
     <string name="coming_soon">Yeni oyunlar yolda…</string>
 
-    <!-- Tetris -->
-    <string name="game_tetris">Tetris</string>
-    <string name="game_tetris_tagline">Klasik blok bulmaca: SRS rotasyon, hold ve hayalet taş</string>
+    <!-- Blok (düşen bloklar; eski adı Tetris tescilli marka olduğundan değiştirildi) -->
+    <string name="game_tetris">Blok</string>
+    <string name="game_tetris_tagline">Düşen dörtlü bloklar: satırları tamamla, taşı tut, gölgesiyle nişan al</string>
     <string name="score">Skor</string>
     <string name="high_score">Rekor</string>
     <string name="level">Seviye</string>
@@ -307,7 +307,7 @@
     <string name="tavla_off_tray">Toplama tepsisi</string>
 
     <!-- Tahta açıklamaları (ekran okuyucu) -->
-    <string name="tetris_board_desc">Tetris tahtası: seviye %1$d, %2$d satır, skor %3$d</string>
+    <string name="tetris_board_desc">Blok tahtası: seviye %1$d, %2$d satır, skor %3$d</string>
     <string name="snake_board_desc">Yılan tahtası: uzunluk %1$d, skor %2$d</string>
     <string name="mines_board_desc">Mayın tarlası %1$d×%2$d: %3$d mayın, %4$d bayrak</string>
 
@@ -463,4 +463,28 @@
     <string name="share_daily_fmt">Günlük · %1$s</string>
     <string name="share_streak_fmt">Seri %1$d</string>
     <string name="share_wins_fmt">%1$d galibiyet</string>
+
+    <!-- Hakkında -->
+    <string name="about_title">Hakkında</string>
+    <string name="about_version_fmt">Sürüm %1$s</string>
+    <string name="about_privacy_summary">ZA hiçbir veri toplamaz, hiçbir izin istemez ve ağa bağlanmaz. Skorlar ve ayarlar yalnızca bu cihazda saklanır; uygulamayı silince silinir.</string>
+    <string name="about_links">Bağlantılar</string>
+    <string name="about_website">Web sitesi</string>
+    <string name="about_source">Kaynak kodu</string>
+    <string name="about_report">Sorun bildir</string>
+    <string name="about_privacy">Gizlilik politikası</string>
+    <string name="about_open_failed">Bağlantı açılamadı: cihazda tarayıcı yok</string>
+    <string name="about_licenses">Açık kaynak lisansları</string>
+    <string name="about_licenses_intro">ZA aşağıdaki açık kaynak bileşenleri kullanır; dokununca kaynağı açılır.</string>
+    <string name="about_lic_zemberek_name">Zemberek-NLP kök sözlüğü</string>
+    <string name="about_lic_zemberek_desc">Türkçe kelime listelerinin kaynağı (Beş Harf, Kıskaç, Türetme, Dizgi). Ahmet A. Akın ve katkıda bulunanlar.</string>
+    <string name="about_lic_freq_name">FrequencyWords tr_50k</string>
+    <string name="about_lic_freq_desc">Kelime sıklığı listesi; kelime havuzlarının seçiminde kullanılır. Hermit Dave, OpenSubtitles verilerinden.</string>
+    <string name="about_lic_androidx_name">AndroidX Jetpack</string>
+    <string name="about_lic_androidx_desc">Compose, Material 3, Lifecycle, Activity ve Core kütüphaneleri. The Android Open Source Project.</string>
+    <string name="about_lic_kotlin_name">Kotlin ve kotlinx.coroutines</string>
+    <string name="about_lic_kotlin_desc">Dil standart kütüphanesi ve eşzamanlılık. JetBrains ve katkıda bulunanlar.</string>
+    <string name="about_cc_note">Kelime listeleri FrequencyWords\'ten türetildiği için CC BY-SA 4.0 koşullarıyla paylaşılır; lisans metni:</string>
+    <string name="about_license_show">Apache 2.0 lisans metnini göster</string>
+    <string name="about_license_hide">Lisans metnini gizle</string>
 </resources>

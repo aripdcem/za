@@ -60,6 +60,7 @@ fun HubScreen(
     onToggleSound: () -> Unit = {},
     hapticsOn: Boolean = true,
     onToggleHaptics: () -> Unit = {},
+    onAbout: () -> Unit = {},
 ) {
     // Liste sırası kayıt sırasıdır (kararlı); hızlı erişim için ayrı bir "son oynananlar" şeridi var.
     val visible = if (category == null) games else games.filter { it.category == category }
@@ -75,7 +76,7 @@ fun HubScreen(
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        item { HubHeader(soundOn, onToggleSound, hapticsOn, onToggleHaptics) }
+        item { HubHeader(soundOn, onToggleSound, hapticsOn, onToggleHaptics, onAbout) }
         item { CategoryChips(selected = category, onSelect = onCategory) }
         if (category == null && recent.isNotEmpty()) {
             item { RecentRow(games = recent, onPlay = onPlay) }
@@ -201,6 +202,7 @@ private fun HubHeader(
     onToggleSound: () -> Unit,
     hapticsOn: Boolean,
     onToggleHaptics: () -> Unit,
+    onAbout: () -> Unit,
 ) {
     Column(modifier = Modifier.padding(bottom = 8.dp)) {
         Row(verticalAlignment = Alignment.Top) {
@@ -229,6 +231,13 @@ private fun HubHeader(
                 modifier = Modifier.semantics { contentDescription = hapticsToggleDescription },
             ) {
                 Text(text = if (hapticsOn) "📳" else "📴", fontSize = 22.sp)
+            }
+            val aboutDescription = stringResource(R.string.about_title)
+            IconButton(
+                onClick = onAbout,
+                modifier = Modifier.semantics { contentDescription = aboutDescription },
+            ) {
+                Text(text = "ⓘ", fontSize = 22.sp)
             }
         }
         Text(

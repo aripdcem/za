@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Tetris**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**.
 
 Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç çipleri, seçim kalıcı) ve en üstte son oynanan dört oyun için hızlı erişim şeridi bulunur.
 
@@ -15,6 +15,7 @@ Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç 
 | 0 izin | `AndroidManifest.xml` tek bir `uses-permission` içermez |
 | 0 satın alma | Ödeme/abonelik kodu yok |
 | Saf oyun | Skorlar yalnızca cihazda saklanır |
+| Gizlilik | Politika: [za.aripd.com/gizlilik.html](https://za.aripd.com/gizlilik.html); uygulama içi **Hakkında** ekranı sürümü, bağlantıları (site, kaynak, sorun bildirme) ve açık kaynak lisanslarını gösterir |
 
 ## Mimari
 
@@ -25,6 +26,7 @@ za/
 │       ├── platform/             # Çekirdek: GameRegistry, ScoreStore, SettingsStore, SoundPlayer, ShareCard
 │       ├── ui/common/            # Oyunların paylaştığı bileşenler (tuşlar, katmanlar, kartlar)
 │       ├── ui/hub/               # Ana menü (oyun listesi + manifesto + ses düğmesi)
+│       ├── ui/about/             # Hakkında: sürüm, bağlantılar, açık kaynak lisansları
 │       ├── ui/&lt;oyun&gt;/            # Oyunların Compose arayüzleri
 │       └── ui/theme/             # ZA teması
 ├── games/
@@ -47,7 +49,8 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 
 **Sonuç paylaşımı:** her oyunun bitiş kartındaki **Paylaş** düğmesi 1080 px genişliğinde bir sonuç kartı (PNG) ve kısa bir metin üretip Android'in paylaşım sayfasına verir (`platform/Share.kt`). Kakuro, Sudoku, Mayın Tarlası, Beş Harf, 2048 ve Dizgi'de karta bitmiş tahta da çizilir; Beş Harf metne 🟩🟨⬛ ızgarasını ekler ve günlük kelimeyi ele vermez. Kart uygulamanın önbelleğine yazılır, yalnızca seçilen uygulamaya ve yalnızca okuma için açılır (`FileProvider`): depolama izni gerekmez, "0 izin" sözü bozulmaz.
 
-### Tetris
+### Blok
+- Düşen bloklar; eski adı Tetris tescilli marka olduğundan yeniden adlandırıldı (modül adı `games/tetris` teknik olarak kaldı)
 - 10×20 tahta, **7'li torba** rastgeleliği, **SRS rotasyon** + tam duvar tekmesi tabloları
 - **Hold**, 3 taşlık sıradaki kuyruğu, **hayalet taş**, satır temizlemede parlamalı animasyon + ses
 - Guideline skorlaması (100/300/500/800 × seviye; yumuşak +1, sert +2/hücre) ve yerçekimi eğrisi
@@ -263,4 +266,4 @@ Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
 
 ### English summary
 
-**ZA** is an Android platform for truly ad-free games ("zero ad game play"): no ads, no trackers, no permissions (not even INTERNET), no purchases. It ships **Tetris** (SRS wall kicks, 7-bag, hold, ghost piece, line-clear flash + sound), **2048** and **Snake**. Game rules live in deterministic, fully unit-tested pure Kotlin modules under `games/`; the Compose UI lives in `app`. Sound effects are tiny procedurally generated WAVs (`tools/gen_sfx.py`) and can be muted from the hub. Add a game by writing an engine module, a Compose screen, and one `GameEntry` in `GameRegistry`. Build with `./gradlew :app:assembleDebug`, test engines with `./gradlew :games:tetris:test :games:g2048:test :games:snake:test`.
+**ZA** is an Android platform for truly ad-free games ("zero ad game play"): no ads, no trackers, no permissions (not even INTERNET), no purchases. It ships **Blok** (a falling-blocks puzzle: SRS-style wall kicks, 7-bag, hold, ghost piece, line-clear flash + sound), **2048** and **Snake**. Game rules live in deterministic, fully unit-tested pure Kotlin modules under `games/`; the Compose UI lives in `app`. Sound effects are tiny procedurally generated WAVs (`tools/gen_sfx.py`) and can be muted from the hub. Add a game by writing an engine module, a Compose screen, and one `GameEntry` in `GameRegistry`. Build with `./gradlew :app:assembleDebug`, test engines with `./gradlew :games:tetris:test :games:g2048:test :games:snake:test`.
