@@ -1,0 +1,22 @@
+ZA is an ad-free game platform: 16 games in one app. None of them shows ads, asks for permissions or collects data. There is not even an INTERNET permission; everything works offline.
+
+OUR PROMISE
+• 0 ads: no ad SDK
+• 0 trackers: no analytics or tracking library
+• 0 permissions: the app requests none
+• Pure play: scores and settings stay on your device
+
+GAMES
+Arcade: Blok (falling blocks), Snake, Kuyu (descend the well, daily well), Geçit (road crossing, daily mode), Balkon (aim from the balcony: pumpkin seeds, water balloons or spit)
+Puzzle: 2048, Sudoku (three levels, notes, unique solution), Minesweeper, Kakuro (three sizes, unique solution)
+Word (Turkish): Beş Harf (daily five-letter word), Kıskaç (alphabetical squeeze), Türetme (words from letters), Dizgi (pass-and-play word board, 2-4 players)
+Board and numbers: Tavla (backgammon: Classic, Tapa, Hapis; vs computer or a friend), Vergici (Taxman), Toplam Kapma (Number Scrabble)
+
+FEATURES
+• Daily puzzles: everyone gets the same puzzle on the same day, generated from the date with no server
+• Share your result: the Share button renders a result card and a short text
+• Turkish dictionaries built in; Turkish keyboard and alphabetical order
+• Sound and haptics toggle with one tap; left-hand mode
+• Open source (GPL-3.0): github.com/aripdcem/za
+
+Privacy policy: za.aripd.com/gizlilik.html

@@ -489,4 +489,11 @@
     <string name="about_license_hide">Lisans metnini gizle</string>
     <string name="about_app_license">ZA\'nın kaynak kodu GNU GPL v3 ile açıktır. "ZA" adı ve logosu lisansa dahil değildir.</string>
     <string name="about_app_license_link">Lisans metni (GitHub)</string>
+
+    <!-- Yenilikler -->
+    <string name="whats_new_title">Yenilikler</string>
+    <string name="whats_new_version_fmt">Sürüm %1$s · %2$s</string>
+    <string name="whats_new_dismiss">Tamam</string>
+    <string name="badge_new">Yeni</string>
+    <string name="about_release_notes">Sürüm notları</string>
 </resources>

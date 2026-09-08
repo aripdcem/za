@@ -1,0 +1,10 @@
+<tr-TR>
+• Güncellemeden sonra ana menüde Yenilikler kartı; yeni eklenen oyunlarda Yeni rozeti
+• Hakkında ekranında sürüm notları
+• Blok (eski adıyla Tetris), Hakkında ekranı, gizlilik politikası ve GPL-3.0 lisansı (0.21.x)
+</tr-TR>
+<en-US>
+• What's-new card on the hub after an update; New badge on recently added games
+• Release notes in the About screen
+• Blok (formerly Tetris), About screen, privacy policy and GPL-3.0 license (0.21.x)
+</en-US>

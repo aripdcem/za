@@ -18,6 +18,8 @@ data class GameEntry(
     @StringRes val taglineRes: Int,
     /** Menüdeki grup (süzgeç). */
     val category: GameCategory,
+    /** Oyunun eklendiği sürüm; güncellemeden sonra "Yeni" rozeti buna göre gösterilir. */
+    val since: String = "0.1.0",
     /** Menü kartında kullanılan vurgu rengi. */
     val accent: Color,
     /** Menü kartındaki küçük görsel. */
