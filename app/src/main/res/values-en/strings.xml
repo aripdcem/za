@@ -526,4 +526,37 @@
     <string name="viraj_hand_hint">The brake sits on your thumb\'s side; the setting is shared with Kuyu and Geçit</string>
     <string name="viraj_next_checkpoint">Checkpoint</string>
     <string name="viraj_board_desc">Viraj: %1$d km/h, %2$d m, %3$d overtakes</string>
+    <!-- Filo -->
+    <string name="game_filo">Filo</string>
+    <string name="game_filo_tagline">Vertical space shooter: drag the ship, auto-fire; waves, bosses, power-ups</string>
+    <string name="filo_intro">Drag the ship with your finger; firing is automatic. Clear the enemy waves; every 5th wave brings a boss. Consecutive hits raise the multiplier; collect the drops: W weapon, S shield, B bomb, + points. BOMB wipes bullets and damages everything on screen.</string>
+    <string name="filo_daily_desc">Everyone fights the same waves today; three attempts a day.</string>
+    <string name="filo_daily_status_fmt">Today: %1$d/%2$d attempts · best %3$d</string>
+    <string name="filo_daily_exhausted">No attempts left today; a new fleet tomorrow!</string>
+    <string name="filo_start">Start</string>
+    <string name="filo_retry_fmt">Try again (%1$d left)</string>
+    <string name="filo_to_menu">Back to start</string>
+    <string name="filo_wave">Wave</string>
+    <string name="filo_lives">Lives</string>
+    <string name="filo_boss_hp">Boss</string>
+    <string name="filo_multiplier_fmt">×%1$d</string>
+    <string name="filo_weapon_fmt">Gun %1$d</string>
+    <string name="filo_shield_on">Shield</string>
+    <string name="filo_over_title">Ship down</string>
+    <string name="filo_result_fmt">Wave %1$d · %2$d enemies</string>
+    <string name="filo_ctrl_bomb">Bomb</string>
+    <string name="filo_bomb_count_fmt">BOMB ×%1$d</string>
+    <string name="filo_drag_hint">Drag to steer the ship</string>
+    <string name="filo_points_fmt">+%1$d</string>
+    <string name="filo_hit">Hit!</string>
+    <string name="filo_shield">Shield!</string>
+    <string name="filo_shield_used">Shield saved you</string>
+    <string name="filo_weapon_up">Gun ↑</string>
+    <string name="filo_bomb_pickup">Bomb +1</string>
+    <string name="filo_wave_start_fmt">Wave %1$d</string>
+    <string name="filo_boss_incoming">Boss!</string>
+    <string name="filo_wave_clear_fmt">Wave clear +%1$d</string>
+    <string name="filo_boss_down">Boss down!</string>
+    <string name="filo_hand_hint">The bomb button sits on your thumb\'s side; the setting is shared with Kuyu, Geçit and Viraj</string>
+    <string name="filo_board_desc">Filo: wave %1$d, %2$d lives, %3$d bombs</string>
 </resources>

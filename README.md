@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**.
 
 Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç çipleri, seçim kalıcı) ve en üstte son oynanan dört oyun için hızlı erişim şeridi bulunur.
 
@@ -32,7 +32,7 @@ za/
 │       └── ui/theme/             # ZA teması
 ├── games/
 │   ├── tetris/  g2048/  snake/   # Oyun motorları: saf Kotlin/JVM, Android'e
-│   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ kuyu/ gecit/ tavla/ balkon/ kakuro/ sayi/ viraj/ # bağımsız, her biri kendi birim testleriyle
+│   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ kuyu/ gecit/ tavla/ balkon/ kakuro/ sayi/ viraj/ filo/ # bağımsız, her biri kendi birim testleriyle
 └── tools/                        # gen_sfx.py (sesler), gen_words.py + gen_turetme.py + gen_dizgi.py (kelime listeleri)
 ```
 
@@ -201,6 +201,22 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   zekâsı, çarpışma, eşyalar, sayaçlar); 13 test: determinizm, hızlanma/fren, yol dışı, kontrol noktası, süre, sollama,
   çarpışma ve kalkan, eşyalar, pist sınırları, rakiplerin yeniden doğması
 
+### Filo
+- **Dikey kaydırmalı uzay savaşı**: gemi altta, parmakla sürüklenir (bire bir), ateş otomatik; BOMBA tuşu sağ/sol el
+  ayarına göre başparmak tarafında (ayar Kuyu, Geçit ve Viraj ile ortak)
+- Dalgalar tohumdan üretilir: dalış, sinüs, süpürme, halka ve asteroit sürüklenmesi desenlerinde drone, eşek arısı,
+  tank ve asteroit grupları; her 5. dalga patron (salınan gövde, yelpaze + nişanlı ateş, canı yarılınca sertleşir).
+  Zorluk 26. dalgaya kadar artar (grup sayısı, hız, ateş sıklığı, ağır düşman oranı)
+- Puan: düşman türüne göre 50–2500; 2 sn içinde art arda vuruşlar zinciri büyütür, çarpan 1–4. Dalga temizleme bonusu
+  250 × dalga. Vurulunca can gider (3 can), 2 sn dokunulmazlık, silah bir seviye düşer, mermiler silinir; kalkan bir
+  vuruşu emer. Bomba (2 ile başlar, en çok 4) düşman mermilerini siler, ekrandakilere 3 (patrona 6) hasar verir
+- Güç artırımları (%14 düşme şansı; patron her zaman bomba bırakır): W silah (3 seviye: tek, çift, üçlü yelpaze),
+  S kalkan, B bomba, + puan (500 × çarpan)
+- **Günlük mod** herkese aynı dalgaları verir, günde 3 deneme; serbest mod rastgele tohum
+- Motor `games/filo`: `FiloWorld` (sabit adım, dalga üreteci, hareket desenleri, çarpışma, zincir, güç artırımları,
+  bomba, patron); 21 test: determinizm, otomatik ateş, vuruş/puan, zincir çarpanı, can/silah kaybı ve dokunulmazlık,
+  kalkan, çarpma, bomba, güç artırımları, dalga akışı, patron dalgası, kaçan düşmanlar, oyun sonu, sınırlar
+
 ### Kakuro
 - Toplam bulmacası: kara hücrelerdeki ipucu, sağındaki yatay ve altındaki dikey koşunun toplamı; koşudaki rakamlar
   farklı. Üç boy: 7×7, 9×9, 11×11 (ipucu kenarı hariç). Notlar, geri alma, çakışma ve tamamlanan koşu vurgusu,
@@ -222,7 +238,7 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 ## Derleme
 
 Arayüz testleri JVM'de koşar, emülatör gerekmez: `./gradlew :app:testDebugUnitTest` (Robolectric + Compose test kuralı;
-ana menü, gezinme, Sudoku/Kakuro/Mayın Tarlası/Beş Harf etkileşimleri, Hakkında ve 16 oyun ekranının duman testi).
+ana menü, gezinme, Sudoku/Kakuro/Mayın Tarlası/Beş Harf etkileşimleri, Hakkında ve 18 oyun ekranının duman testi).
 CI her itmede motor testleriyle birlikte koşturur; sürüm iş akışı da bunlar geçmeden APK üretmez.
 
 Gereksinimler: JDK 17+, Android SDK (compileSdk 35). Android Studio ile açıp çalıştırabilir veya komut satırından derleyebilirsiniz:

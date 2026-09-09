@@ -39,6 +39,11 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.24.0", "2026-09-09",
+            tr = listOf("Yeni oyun: Filo (dikey uzay savaşı; dalgalar, patronlar, güç artırımları; günlük filo, üç deneme)"),
+            en = listOf("New game: Filo (vertical space shooter; waves, bosses, power-ups; daily fleet, three attempts)"),
+        ),
+        ReleaseNote(
             "0.23.0", "2026-09-09",
             tr = listOf("Yeni oyun: Viraj (sözde-3D yarış; günlük pist, üç deneme)"),
             en = listOf("New game: Viraj (pseudo-3D racing; daily track, three attempts)"),
