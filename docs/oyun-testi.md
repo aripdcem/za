@@ -11,6 +11,12 @@ Bu belge, her oyunun yayına girmeden önce geçmesi gereken dört aşamayı tan
 > değiştiğinde A–D aşamaları koşulur ve sonuçları [Sonuç kütüğü](#sonuç-kütüğü)
 > bölümüne işlenir. Motor testleri yeşil diye bu adımlar atlanmaz.
 
+Tüm ölçüm koşumlarını birden çalıştırmak için:
+
+```bash
+ANDROID_HOME=$HOME/Android/Sdk ./gradlew probe
+```
+
 ## Neden
 
 Filo (v0.24.0) 41 birim testiyle yeşil olarak yayına hazırdı. Cihaz üstünde iki
@@ -287,15 +293,15 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Mayın Tarlası | ✅ | olay güdümlü (0 · 0) | — | ⚠️ tahmin zorunlu | 2026-09-09 |
 | Beş Harf | ✅ | olay güdümlü (0 · 0) | — | ✅ hepsi çözülebilir | 2026-09-09 |
 | Kıskaç | ✅ | olay güdümlü (0 · 0) | — | ⚠️ 12 hak yetmiyor | 2026-09-09 |
-| Türetme | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
-| Dizgi | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
+| Türetme | ✅ | olay güdümlü (0 · 0) | — | ✅ dengeli | 2026-09-09 |
+| Dizgi | ✅ | olay güdümlü (0 · 0) | — | ✅ torba sağlam | 2026-09-09 |
 | Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | bekliyor | ⚠️ RAPID takası | 2026-09-09 |
 | Geçit | ✅ | **60 · 1 · %1,2 · 22 ms** | — (ayrık hamle) | ✅ adil | 2026-09-09 |
 | Tavla | ✅ | olay güdümlü (0 · 0) | — | ⚠️ Hapis beraberliği | 2026-09-09 |
 | Balkon | ✅ | **60 · 2 · %39,6 · 25 ms** | — (nokta nişan) | ⚠️ scooter penceresi | 2026-09-09 |
 | Kakuro | ✅ | olay güdümlü (0 · 0) | — | ✅ üretim bütçesi | 2026-09-09 |
-| Vergici | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
-| Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
+| Vergici | ✅ | olay güdümlü (0 · 0) | — | ✅ düğüm bütçeli çözücü | 2026-09-09 |
+| Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | ✅ mevcut testlerle | 2026-09-09 |
 | Viraj | ✅ | **60 · 3 · %100 · 34 ms** | — (tuşla) | ✅ kusur yok | 2026-09-09 |
 | Filo | ✅ | **60 · 1 · %81 · 31 ms** | ✅ düzeltildi | ✅ düzeltildi | 2026-09-09 |
 
@@ -430,6 +436,36 @@ koşuyu bitiren şey tepki hızı değil, hız/süre sıkışması.
 Not: turbo sırasında `speedPct` 1,25'e çıktığı için tutulabilen viraj 2,67'ye
 iner — turboyu virajlı kesimde almak, frenlemeden kullanılırsa zarar. Hata
 değil, ama oyuncuya öğretilmesi gereken bir incelik.
+
+### Türetme · 2026-09-09
+
+**D — adillik** (`./gradlew :games:turetme:probe`). **Sorun yok.**
+
+Oyuncu taban kelimenin harflerinden başka kelimeler üretiyor. Denge iki yanlı:
+taban çok az kelime verirse tur sönük geçer, çok fazla verirse tamamlama bonusu
+ulaşılmaz olur.
+
+1200 taban, 15 829 geçerli kelime. Taban başına hedef sayısı:
+
+| En az | %10 | Ortanca | %90 | En çok | Ortalama |
+| --- | --- | --- | --- | --- | --- |
+| 15 | 17 | 27 | 47 | 66 | 29,6 |
+
+5'ten az hedefi olan taban **yok**; 60'tan çok hedefi olan yalnızca 10 taban
+(%0). Bütün tabanlar geçerli kelime listesinde ve kendi hedef kümelerinde
+(taban bonusu için gerekli). Günlük döngü: 1200 günde 1200 farklı taban.
+
+### Dizgi · 2026-09-09
+
+**D — torba ve el** (`./gradlew :games:dizgi:probe`). **Sorun yok.**
+
+100 taş, 2 joker; %40 sesli, %58 sessiz. Torba sözlük derleminin harf
+sıklığından türetilmiş ve ölçümde bunu tutuyor: en sık 12 harfte torba oranıyla
+sözlük oranı arasındaki en büyük sapma 2,68 puan.
+
+El oynanabilirliği: rastgele çekilen 7 taşın **%98'i** en az bir kelime
+kurabiliyor, ilk 40 elde ortalama 45 seçenek. Yani oyuncu nadiren pas geçmek
+zorunda kalıyor.
 
 ### Kıskaç · 2026-09-09
 
