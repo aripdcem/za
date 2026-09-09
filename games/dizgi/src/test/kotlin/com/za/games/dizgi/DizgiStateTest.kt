@@ -263,4 +263,37 @@ class DizgiStateTest {
             assertTrue(w, w in valid)
         }
     }
+
+    /**
+     * Rastgele çekilen elin ezici çoğunluğu bir kelime kurabilmeli; aksi hâlde
+     * oyuncu sık sık pas geçer ya da taş değiştirir. Ölçülen %98; eşik paylı.
+     * Ölçüm: `./gradlew :games:dizgi:probe`.
+     */
+    @Test
+    fun `most random racks can form a word`() {
+        val torba = DizgiLetters.bag()
+        val sozluk = DizgiWords.valid
+        val rng = kotlin.random.Random(11)
+        var oynanabilir = 0
+        val deneme = 60
+        repeat(deneme) {
+            val el = torba.shuffled(rng).take(DizgiState.RACK_SIZE).map { it.letter }
+            val stok = HashMap<Char, Int>()
+            var joker = 0
+            for (c in el) if (c == DizgiLetters.JOKER) joker++ else stok[c] = (stok[c] ?: 0) + 1
+            val kurulabilir = sozluk.any { kelime ->
+                if (kelime.length > DizgiState.RACK_SIZE) return@any false
+                var eksik = 0
+                val gerek = HashMap<Char, Int>()
+                for (c in kelime) gerek[c] = (gerek[c] ?: 0) + 1
+                for ((c, adet) in gerek) eksik += maxOf(0, adet - (stok[c] ?: 0))
+                eksik <= joker
+            }
+            if (kurulabilir) oynanabilir++
+        }
+        assertTrue(
+            "ellerin yalnızca $oynanabilir/$deneme'i kelime kurabiliyor",
+            oynanabilir >= deneme * 9 / 10,
+        )
+    }
 }
