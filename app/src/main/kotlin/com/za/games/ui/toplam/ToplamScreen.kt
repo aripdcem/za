@@ -86,8 +86,16 @@ fun ToplamScreen(
     LaunchedEffect(wins) {
         if (wins > 0) latestOnScore(wins.toLong())
     }
+    // Bitiş sesi yalnızca canlı bitişte bir kez: ViewModel etkinlik kapsamlı
+    // olduğundan biten oyunla menüye çıkıp geri gelince state.over hâlâ true'dur.
+    var endHeard by remember { mutableStateOf(state.over) }
     LaunchedEffect(state.over, gameId) {
-        if (!state.over) return@LaunchedEffect
+        if (!state.over) {
+            endHeard = false
+            return@LaunchedEffect
+        }
+        if (endHeard) return@LaunchedEffect
+        endHeard = true
         val humanWon = state.winner != null && (!vsComputer || state.winner == 0)
         sound?.play(if (state.winner == null) Sfx.CLEAR else if (humanWon) Sfx.BIG else Sfx.OVER)
         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
