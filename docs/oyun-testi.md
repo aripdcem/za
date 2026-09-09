@@ -281,12 +281,12 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Oyun | A | B (kare/s · kaçan vsync · jank · p50) | C | D | Tarih |
 | --- | --- | --- | --- | --- | --- |
 | Blok | ✅ | olay güdümlü (1 · 0) | — | ✅ 11. seviyede tavan | 2026-09-09 |
-| 2048 | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
-| Yılan | ✅ | **61 · 0 · %0 · 22 ms** | — | bekliyor | 2026-09-09 |
+| 2048 | ✅ | olay güdümlü (0 · 0) | — | ✅ kazanılabilir | 2026-09-09 |
+| Yılan | ✅ | **61 · 0 · %0 · 22 ms** | — | ✅ tutarlı | 2026-09-09 |
 | Sudoku | ✅ | olay güdümlü (1 · 0) | — | ✅ merdiven doğru | 2026-09-09 |
 | Mayın Tarlası | ✅ | olay güdümlü (0 · 0) | — | ⚠️ tahmin zorunlu | 2026-09-09 |
 | Beş Harf | ✅ | olay güdümlü (0 · 0) | — | ✅ hepsi çözülebilir | 2026-09-09 |
-| Kıskaç | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
+| Kıskaç | ✅ | olay güdümlü (0 · 0) | — | ⚠️ 12 hak yetmiyor | 2026-09-09 |
 | Türetme | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Dizgi | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | bekliyor | ⚠️ RAPID takası | 2026-09-09 |
@@ -431,6 +431,33 @@ Not: turbo sırasında `speedPct` 1,25'e çıktığı için tutulabilen viraj 2,
 iner — turboyu virajlı kesimde almak, frenlemeden kullanılırsa zarar. Hata
 değil, ama oyuncuya öğretilmesi gereken bir incelik.
 
+### Kıskaç · 2026-09-09
+
+**D — adillik** (`./gradlew :games:kiskac:probe`).
+
+Kıskaç bir **ikili arama** oyunudur: her tahminde gizli kelimenin alfabetik
+olarak önce mi sonra mı olduğu söylenir. Bu yüzden adillik tam olarak
+hesaplanabilir. Gizli kelime 1684'lük cevap havuzundan seçiliyor, ama oyuncunun
+ekranda gördüğü ve tahmin edebildiği sıralı liste 7797 kelimelik geçerli
+tahminler listesi.
+
+| Arama uzayı | Teorik alt sınır | Ölçülen en kötü | 12 hakka sığmayan |
+| --- | --- | --- | --- |
+| Cevap havuzu (1684) | 11 | 11 | **0** (%0) |
+| Geçerli tahminler (7797) | 13 | 13 | **820** (%48) |
+
+**Bulgu: oyuncunun gördüğü liste üzerinde 12 hak yetmiyor.** Doğal strateji
+ekrandaki sıralı liste üzerinde ikili aramadır; o uzayda cevapların **%48'i**
+12 hakla bulunamıyor (13 gerekiyor). Kazanmak için oyuncunun ayrıca "cevap
+yaygın bir kelimedir" sezgisiyle aramayı daraltması gerekiyor — yani oyun,
+tanıttığı mekaniğin ötesinde kelime dağarcığı istiyor.
+
+Cevap havuzu üzerinde arama yapılabilseydi 11 tahmin yeterdi (1 hak pay). Karar
+tasarımın: hak 13–14'e çıkarılabilir, ekranda cevap havuzu gösterilebilir, ya
+da mevcut hâl "ipucu gerektiren zorluk" olarak bilinçle korunabilir.
+
+Günlük döngü sağlam: 1684 günde 1684 farklı kelime, tekrar yok.
+
 ### Tavla · 2026-09-09
 
 **D — zar, denge ve rakip** (`./gradlew :games:tavla:probe`).
@@ -464,6 +491,40 @@ beraberlik oranı kabul edilebilir mi, yoksa kilitlenme başka bir kuralla mı
 **Bilgisayar rakip gücü** (rastgele yasal hamleye karşı, 120 oyun/mod):
 Klasik %100, Tapa %98, Hapis %79 (+21 beraberlik). Sezgisel çalışıyor;
 rastgeleye şans tanımıyor.
+
+### 2048 · 2026-09-09
+
+**D — kazanılabilirlik** (`./gradlew :games:g2048:probe`). **Sorun yok.**
+
+Taş doğuşu kurala uygun: 29 447 doğuşta %90,0 iki, %10,0 dört.
+
+Kazanılabilirlik, tekdüzelik + boş hücre + köşe sezgiseli ve bir kat ileri
+bakışla oynayan bir modelle ölçüldü (60 oyun): **%28'i 2048'e ulaşıyor**,
+32 oyun 1024'te bitiyor, ortalama skor 17 274.
+
+> Ölçüm yazarken kendi hatam öğreticiydi: ilk sezgisel yalnızca boş hücre ve
+> köşe bakıyordu ve 2048'e **hiç** ulaşamıyordu (en iyi 512). O sayı oyun
+> hakkında değil sezgisel hakkında bilgi verirdi. Tekdüzelik terimi eklenince
+> tablo gerçekçi oldu. Denge ölçümünde oyuncu modeli zayıfsa, sonuç oyunu değil
+> modeli ölçer.
+
+### Yılan · 2026-09-09
+
+**D — hız eğrisi** (`./gradlew :games:snake:probe`). **Sorun yok.**
+
+Tek zorluk kaynağı hız: adım aralığı `160 − yem×3`, taban 70 ms.
+
+| Yem | Adım aralığı | Saniyede adım |
+| --- | --- | --- |
+| 0 | 160 ms | 6,3 |
+| 20 | 100 ms | 10,0 |
+| 30 | **70 ms (taban)** | 14,3 |
+
+Hız 30 yemde tabana oturuyor; sonrası sabit. 70 ms insan tepki süresinin
+altında, yani tavan hızda oyuncu tek tek adımlara tepki veremez, önden plan
+yapar — yılan oyunlarında beklenen budur. Tahta 300 hücre olduğu için oyunun
+geri kalanı sabit hızda, artan uzunlukla oynanıyor: zorluk hızdan değil yerden
+geliyor. Tutarlı tasarım.
 
 ### Blok · 2026-09-09
 
