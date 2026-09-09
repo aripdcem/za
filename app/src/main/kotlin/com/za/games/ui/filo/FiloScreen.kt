@@ -3,7 +3,8 @@ package com.za.games.ui.filo
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -80,11 +81,11 @@ import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.ShareButton
 import com.za.games.ui.common.formatScore
 import com.za.games.ui.common.modeShareLabel
-import kotlinx.coroutines.isActive
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
+import kotlinx.coroutines.isActive
 
 private val SpaceTop = Color(0xFF060B1C)
 private val SpaceBottom = Color(0xFF111A3A)
@@ -341,6 +342,11 @@ private fun StatusChip(text: String, strong: Boolean, alpha: Float) {
 // ---------------------------------------------------------------------------
 
 /** Oyun alanı birimi başına piksel: alan tuvale sığacak şekilde ölçeklenir. */
+/** Sürükleme katsayısı: 1,0 birebir. Oyun alanını uçtan uca geçmek 1,0'da
+ *  55 mm parmak yolu istiyordu; 1,35 bunu ~41 mm'ye indirir (tek başparmak
+ *  hamlesi). Birebir his istenirse 1,0 yapmak yeterli. */
+private const val DRAG_GAIN = 1.35f
+
 private fun arenaScale(width: Float, height: Float): Float =
     min(width / FiloWorld.WIDTH, height / FiloWorld.HEIGHT)
 
@@ -357,22 +363,40 @@ private fun FiloCanvas(
     val textMeasurer = rememberTextMeasurer()
     val textCache = remember { HashMap<String, TextLayoutResult>() }
     val path = remember { Path() }
+    // Gradyan her karede yeniden kurulmaz: Brush örneği gölgelendiriciyi kendi
+    // içinde önbelleğe alır, yeni örnek her karede yeni gölgelendirici demektir.
+    val sky = remember { Brush.verticalGradient(listOf(SpaceTop, SpaceBottom)) }
     Canvas(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .semantics { contentDescription = desc }
             .pointerInput(viewModel) {
-                detectDragGestures { change, dragAmount ->
-                    change.consume()
-                    val scale = arenaScale(size.width.toFloat(), size.height.toFloat())
-                    if (scale > 0f) viewModel.drag(dragAmount.x / scale)
+                // detectDragGestures 8 dp'lik dokunma toleransını yutuyordu:
+                // her parmak basışının ilk ~1,3 mm'si kayboluyor, kısa
+                // düzeltmeler hiç işlemiyordu. Olaylar doğrudan okunarak gemi
+                // ilk pikselden itibaren sürükleniyor. Bkz. docs/oyun-testi.md.
+                awaitEachGesture {
+                    val ilk = awaitFirstDown(requireUnconsumed = false)
+                    var sonX = ilk.position.x
+                    while (true) {
+                        val olay = awaitPointerEvent()
+                        val nokta = olay.changes.firstOrNull { it.id == ilk.id } ?: break
+                        if (!nokta.pressed) break
+                        val dx = nokta.position.x - sonX
+                        sonX = nokta.position.x
+                        if (dx != 0f) {
+                            val scale = arenaScale(size.width.toFloat(), size.height.toFloat())
+                            if (scale > 0f) viewModel.drag(dx * DRAG_GAIN / scale)
+                        }
+                        nokta.consume()
+                    }
                 }
             },
     ) {
         // Kare sayaçları okunur ki her adımda yeniden çizilsin.
         val tick = frame + fxTick.longValue
         if (tick < 0L) return@Canvas
-        drawScene(viewModel.world, fx, path, textMeasurer, textCache)
+        drawScene(viewModel.world, fx, path, textMeasurer, textCache, sky)
     }
 }
 
@@ -382,6 +406,7 @@ private fun DrawScope.drawScene(
     path: Path,
     textMeasurer: TextMeasurer,
     cache: HashMap<String, TextLayoutResult>,
+    sky: Brush,
 ) {
     val w = size.width
     val h = size.height
@@ -389,7 +414,7 @@ private fun DrawScope.drawScene(
     val ox = (w - FiloWorld.WIDTH * s) / 2f
     val oy = (h - FiloWorld.HEIGHT * s) / 2f
 
-    drawRect(Brush.verticalGradient(listOf(SpaceTop, SpaceBottom)))
+    drawRect(sky)
     for (star in fx.stars) {
         drawCircle(StarColor.copy(alpha = star.alpha), radius = star.size * s, center = Offset(star.x * w, star.y * h))
     }

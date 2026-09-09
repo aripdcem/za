@@ -2,6 +2,10 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.24.1 (2026-09-09)
+- Filo: gemi parmağı ilk milimetreden izliyor (dokunma toleransı ölü bölgesi kalktı); sürükleme daha az yol istiyor
+- Filo: silah 3 artık patronlara karşı da en güçlü seviye (yan mermiler patron menzilinde ıskalıyordu)
+
 ## 0.24.0 (2026-09-09)
 - Yeni oyun: Filo (dikey uzay savaşı; dalgalar, patronlar, güç artırımları, bomba; günlük filo, üç deneme)
 

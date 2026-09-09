@@ -39,6 +39,17 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.24.1", "2026-09-09",
+            tr = listOf(
+                "Filo: gemi parmağı ilk milimetreden izliyor; sürükleme daha az yol istiyor",
+                "Filo: silah 3 artık patronlara karşı da en güçlü seviye",
+            ),
+            en = listOf(
+                "Filo: the ship follows your finger from the first millimetre; dragging needs less travel",
+                "Filo: weapon 3 is now the strongest level against bosses too",
+            ),
+        ),
+        ReleaseNote(
             "0.24.0", "2026-09-09",
             tr = listOf("Yeni oyun: Filo (dikey uzay savaşı; dalgalar, patronlar, güç artırımları; günlük filo, üç deneme)"),
             en = listOf("New game: Filo (vertical space shooter; waves, bosses, power-ups; daily fleet, three attempts)"),
