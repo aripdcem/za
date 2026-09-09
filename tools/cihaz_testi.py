@@ -5,6 +5,7 @@ Motor birim testleri kuralları doğrular; bu betik oyunun gerçek telefonda
 nasıl davrandığını ölçer: kare hızı, kare bütçesinin fazlara dağılımı,
 sürükleme hassasiyeti, oyun alanının piksel karşılığı. Kullanımı ve eşikler: docs/oyun-testi.md
 
+    python3 tools/cihaz_testi.py tarama            # tüm oyunlar: A + B
     python3 tools/cihaz_testi.py kare --sure 15
     python3 tools/cihaz_testi.py fazlar
     python3 tools/cihaz_testi.py alan
@@ -17,16 +18,26 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import shutil
 import statistics
 import subprocess
 import sys
 import tempfile
+import time
+import xml.etree.ElementTree as ET
 
 import numpy as np
 from PIL import Image
 
 PAKET = "com.za.games"
+
+# Hub'daki sırayla tüm oyunlar; `tarama` varsayılan olarak hepsini gezer.
+OYUNLAR = [
+    "Blok", "2048", "Yılan", "Sudoku", "Mayın Tarlası", "Beş Harf", "Kıskaç",
+    "Türetme", "Dizgi", "Kuyu", "Geçit", "Tavla", "Balkon", "Kakuro",
+    "Vergici", "Toplam Kapma", "Viraj", "Filo",
+]
 
 
 # ---------------------------------------------------------------------------
@@ -114,6 +125,118 @@ def alan_sinirlari(yol: str, satir: int | None = None):
     if len(kenar) < 2:
         return None
     return kenar[0] + 1, kenar[-1]
+
+
+# ---------------------------------------------------------------------------
+# Arayüz gezinme (uiautomator)
+# ---------------------------------------------------------------------------
+
+def tr_kucuk(s: str) -> str:
+    """Türkçe duyarlı küçük harf: İ→i, I→ı."""
+    return s.replace("\u0130", "i").replace("I", "\u0131").lower()
+
+
+def arayuz() -> list[dict]:
+    """Ekrandaki metinli öğeler: etiket ve dokunma koordinatı."""
+    for _ in range(3):
+        if "dumped" in kabuk("uiautomator dump /sdcard/za_ui.xml"):
+            break
+        time.sleep(0.7)
+    else:
+        return []
+    with tempfile.TemporaryDirectory() as gecici:
+        yol = os.path.join(gecici, "ui.xml")
+        adb("pull", "/sdcard/za_ui.xml", yol)
+        try:
+            kok = ET.parse(yol).getroot()
+        except (ET.ParseError, FileNotFoundError):
+            return []
+    ogeler = []
+    for d in kok.iter("node"):
+        m = re.match(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]", d.get("bounds", ""))
+        if not m:
+            continue
+        x1, y1, x2, y2 = map(int, m.groups())
+        # Görünmeyen öğeler [0,0][0,0] sınırıyla gelir; dokunulursa ekranın
+        # köşesine basılır ve gezinme sessizce yanlış yere gider.
+        if x2 - x1 < 2 or y2 - y1 < 2:
+            continue
+        etiket = (d.get("text") or "").strip() or (d.get("content-desc") or "").strip()
+        if etiket:
+            ogeler.append({"t": etiket, "cx": (x1 + x2) // 2, "cy": (y1 + y2) // 2, "y1": y1})
+    return ogeler
+
+
+def dokun(oge: dict) -> None:
+    kabuk(f"input tap {oge['cx']} {oge['cy']}")
+    time.sleep(1.2)
+
+
+def kaydir() -> None:
+    kabuk("input swipe 540 1800 540 900 400")
+    time.sleep(1.6)   # savrulma otursun; erken okuma kaymış koordinat verir
+
+
+def hub_ac(paket: str) -> None:
+    # Uzun taramada ekran uyursa okumalar kilit ekranını görür.
+    kabuk("input keyevent KEYCODE_WAKEUP")
+    kabuk("wm dismiss-keyguard")
+    time.sleep(0.5)
+    kabuk(f"am force-stop {paket}")
+    kabuk(f"am start -n {paket}/.MainActivity")
+    time.sleep(2.5)
+
+
+def oyun_ekraninda(ad: str, ogeler: list[dict] | None = None) -> bool:
+    """Üst çubukta [ad] yazan oyun ekranında mıyız?
+
+    Başlığın büyük harfli olmasına güvenilemez ("2048"in büyük hâli yok),
+    bu yüzden doğrudan beklenen adla karşılaştırılır.
+    """
+    hedef = tr_kucuk(ad)
+    return any(o["y1"] < 400 and tr_kucuk(o["t"]) == hedef
+               for o in (arayuz() if ogeler is None else ogeler))
+
+
+def oyunu_ac(ad: str) -> bool:
+    """Hub'da oyunu açar ve gerçekten o oyunun açıldığını doğrular.
+
+    Hub'ın üstündeki "son oynananlar" şeridi oyun adlarını tekrarladığı için
+    ilk eşleşmeye güvenmek başka bir oyunu açabiliyor; bu yüzden her adaydan
+    sonra üst çubuk doğrulanır, yanlışsa geri dönülüp sonraki aday denenir.
+    """
+    hedef = tr_kucuk(ad)
+    for _ in range(14):
+        for _aday in [o for o in arayuz() if tr_kucuk(o["t"]) == hedef]:
+            taze = arayuz()
+            eslesen = [o for o in taze if tr_kucuk(o["t"]) == hedef]
+            if not eslesen:
+                break
+            aday = eslesen[0]
+            oynalar = [o for o in taze if o["t"] == "Oyna" and abs(o["cy"] - aday["cy"]) < 250]
+            dokun(oynalar[0] if oynalar else aday)
+            ekran = arayuz()
+            if oyun_ekraninda(ad, ekran) and any(o["t"] in ("Geri", "Duraklat") for o in ekran):
+                return True
+            kabuk("input keyevent KEYCODE_BACK")
+            time.sleep(1.2)
+        kaydir()
+    return False
+
+
+def turu_baslat() -> str | None:
+    """Başlangıç kartını geçer; serbest mod varsa onu seçer (günlük hak yanmasın)."""
+    ogeler = arayuz()
+    serbest = next((o for o in ogeler if o["t"] == "Serbest"), None)
+    if serbest:
+        dokun(serbest)
+        ogeler = arayuz()
+    for etiket in ("Başla", "Yeniden başlat", "Tekrar dene", "Oyna"):
+        o = next((x for x in ogeler if etiket.lower() in x["t"].lower()), None)
+        if o:
+            dokun(o)
+            return etiket
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -240,6 +363,50 @@ def komut_surukle(args) -> None:
     print("Hareketi sıfır çıkan en büyük mesafe = ölü bölge.")
 
 
+def komut_tarama(args) -> None:
+    """Her oyunu açıp bir tur başlatır ve kare ölçümü alır (A + B aşamaları).
+
+    Çıktıdaki "kare/s" gerçek kare hızıdır (kare sayısı ÷ pencere). Sıra
+    tabanlı oyunlar boşta çizim yapmaz; onlarda 0 kare beklenen sonuçtur,
+    başarısızlık değil.
+    """
+    oyunlar = args.oyunlar or OYUNLAR
+    adb("logcat", "-c")
+    print(f"{'oyun':16}{'kare/s':>8}{'kare':>7}{'jank':>14}{'p50':>7}{'kaçan':>7}  durum")
+    for ad in oyunlar:
+        hub_ac(args.paket)
+        if not oyunu_ac(ad):
+            print(f"{ad:16}  — açılamadı")
+            continue
+        turu_baslat()
+        time.sleep(1.5)
+        kabuk(f"dumpsys gfxinfo {args.paket} reset")
+        time.sleep(args.sure)
+        c = kabuk(f"dumpsys gfxinfo {args.paket}")
+        al = [l.strip() for l in c.splitlines()]
+
+        def deger(k, vars=""):
+            for l in al:
+                if l.startswith(k):
+                    return l.split(":")[1].strip()
+            return vars
+
+        try:
+            kare = int(deger("Total frames rendered", "0"))
+        except ValueError:
+            print(f"{ad:16}  — gfxinfo okunamadı")
+            continue
+        fps = kare / args.sure
+        durum = "sürekli çizim" if fps > 30 else ("olay güdümlü" if kare < 60 else "kısmi")
+        if not oyun_ekraninda(ad):
+            durum += " (ekran değişti!)"
+        print(f"{ad:16}{fps:>8.0f}{kare:>7}{deger('Janky frames', '?'):>14}"
+              f"{deger('50th percentile', '?'):>7}{deger('Number Missed Vsync', '0'):>7}  {durum}")
+    hata = adb("logcat", "-d", "AndroidRuntime:E", "*:S").strip()
+    print("\n=== logcat hataları ===")
+    print(hata if hata else "(yok)")
+
+
 def main() -> None:
     ayristirici = argparse.ArgumentParser(description=__doc__,
                                           formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -266,6 +433,11 @@ def main() -> None:
     s.add_argument("--tekrar", type=int, default=3)
     s.add_argument("--sure-ms", dest="sure_ms", type=int, default=300)
     s.set_defaults(func=komut_surukle)
+
+    t = alt.add_parser("tarama", help="tüm oyunları açıp A+B aşamalarını koşar")
+    t.add_argument("oyunlar", nargs="*", help="oyun adları; boşsa hepsi")
+    t.add_argument("--sure", type=int, default=12, help="oyun başına ölçüm penceresi (s)")
+    t.set_defaults(func=komut_tarama)
 
     args = ayristirici.parse_args()
     cihaz_var()

@@ -13,15 +13,24 @@ Bu belge, her oyunun yayına girmeden önce geçmesi gereken dört aşamayı tan
 
 ## Neden
 
-Filo (v0.24.0) 41 birim testiyle yeşil olarak yayına hazırdı. Cihaz üstü ilk
-ölçümde üç sorun çıktı: silah 3 patronlara karşı silah 2'den yavaş, her parmak
-basışında 8 dp ölü bölge, ve orta seviye bir telefonda hedeflenen 60 kare/s
-yerine ~34. Hiçbiri birim testiyle görünmezdi.
+Filo (v0.24.0) 41 birim testiyle yeşil olarak yayına hazırdı. Cihaz üstünde iki
+gerçek sorun çıktı: silah 3 patronlara karşı silah 2'den yavaştı ve her parmak
+basışında 8 dp ölü bölge vardı. İkisi de birim testiyle görünmezdi.
 
-Ölçümün kendisi de ders verdi: kare hızı sorunu önce Filo'nun çizim koduna
-yazıldı, `framestats` sütunları doğru eşlenince maliyetin GPU tarafında ve
-**uygulama geneli** olduğu çıktı (bkz. [Açık konu](#açık-konu-uygulama-geneli-kare-hızı)).
-Tahmine göre değil, faz dökümüne göre düzeltin.
+Aynı koşumda **yanlış bir bulgu da üretildi** ve düzeltmesi belgenin en değerli
+parçası oldu. Önce "orta seviye telefonda 60 yerine ~34 kare/s" denmişti; oysa:
+
+- `~34` rakamı kare sayısından değil, **`p50` kare gecikmesinden** türetilmişti.
+  Gecikme kare periyodu değildir: boru hattı derinleştikçe kare süresi 30 ms
+  görünürken oyun 60 kare/s akmaya devam eder.
+- Ölçüm pencereleri **koşu bitince** çizim durduğu için kirlenmişti; ortalama
+  düşük çıkıyordu.
+- `framestats` sütunları klasik 14 sütunlu düzene göre eşlenmişti; bu ROM 23
+  sütun kullanıyor, dolayısıyla "çizim kaydı 31 ms" tamamen uydurmaydı.
+
+Doğru ölçümde 18 oyunun tamamı 60 kare/s tutuyor ve kare düşürmüyor
+(bkz. [Sonuç kütüğü](#sonuç-kütüğü)). Ders: **ölçtüğünüz sayının ne olduğunu
+doğrulayın**, ve bir bulguyu koda yazmadan önce bulgunun kendisini sınayın.
 
 ## Gereksinimler
 
@@ -58,27 +67,39 @@ Kontrol listesi:
 
 Amaç: oyun 60 kare/s hedefini tutuyor mu?
 
-Oyun **oynanırken** (duraklatılmış ya da bitmiş değil):
-
 ```bash
-python3 tools/cihaz_testi.py kare --sure 15
+python3 tools/cihaz_testi.py tarama          # tüm oyunlar
+python3 tools/cihaz_testi.py kare --sure 15  # ön plandaki oyun
 ```
 
-Eşikler:
+**Önce oyunun türünü belirleyin.** ZA oyunlarının çoğu olay güdümlüdür: boşta
+hiç çizmezler (2048, Sudoku, Mayın, Beş Harf, Kıskaç, Türetme, Dizgi, Tavla,
+Kakuro, Vergici, Toplam Kapma) ya da saniyede bir çizerler (Blok'ta yerçekimi
+tik'i). Onlarda boşta ölçülen 0 kare **beklenen sonuçtur, başarısızlık değil**;
+kare hızı ancak etkileşim sırasında anlamlıdır. Sürekli çizenler: Yılan, Kuyu,
+Geçit, Balkon, Viraj, Filo.
 
-| Ölçüt | Hedef | Uyarı |
+Eşikler (yalnızca sürekli çizen oyunlar için):
+
+| Ölçüt | Nasıl okunur | Hedef |
 | --- | --- | --- |
-| Ortanca kare süresi | ≤ 16 ms | > 20 ms |
-| Takılan kare oranı | < %5 | > %20 |
-| 90. yüzdelik | ≤ 20 ms | > 32 ms |
+| **kare/s** = kare ÷ pencere | asıl kare hızı | ≥ 58 |
+| **Number Missed Vsync** | gerçekten düşen kare | ~0 |
+| Janky frames % | kare **gecikmesi**, düşen kare değil | bilgi amaçlı |
+| 50. yüzdelik | kare başına uçtan uca gecikme | ≤ ~25 ms iyi |
+
+> Takılma oranını kare hızı sanmayın. Geçit %100 "janky" görünürken 60 kare/s
+> akıyor ve tek kare düşürmüyor; oradaki tek gerçek, kare gecikmesinin bütçeyi
+> aşması. Karar `kare/s` ve `Missed Vsync` ile verilir.
 
 Notlar:
 
 - **Sürüm (release) derlemesiyle ölçün.** Hata ayıklama derlemesinde Compose
-  belirgin biçimde yavaştır; ama tersi de doğru değil — Filo'da sürüm derlemesi
-  hata ayıklamadan daha iyi çıkmadı, yani sorun gerçek.
-- `Total frames rendered: 0` çıkarsa oyun çizmiyordur (tur bitmiş olabilir):
-  ölçüm geçersizdir, turu yeniden başlatıp tekrarlayın.
+  belirgin biçimde yavaştır.
+- **Pencerenin tamamının oynandığını doğrulayın.** Koşu ortada biterse çizim
+  durur ve ortalama düşük çıkar: kare sayısı ≈ 60 × pencere değilse ölçüm
+  kirlidir, turu yeniden başlatıp tekrarlayın. (Filo'da sabit duran gemi ~10 s
+  içinde ölüp ölçümü 48 kare/s'e düşürüyor; oysa oynanan pencerede 60.)
 - Ölçüm penceresinde ekran görüntüsü almayın; `screencap` kare süresini bozar.
 
 Toplam yavaşsa **nerede** yavaş olduğunu sorun:
@@ -236,31 +257,52 @@ düzeltildi. Kakuro ile Vergici'de kalan süre ölçümleri yalnızca rapor ama�
 
 ## Sonuç kütüğü
 
-| Oyun | A koşum | B kare | C giriş | D denge | Tarih |
+Ölçüm cihazı: SM-A515F (Galaxy A51), Android 13, 1080×2400 @420 dpi, 60 Hz,
+sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölçümü.
+
+| Oyun | A | B (kare/s · kaçan vsync · jank · p50) | C | D | Tarih |
 | --- | --- | --- | --- | --- | --- |
-| Filo | ✅ | ⚠️ ~34 kare/s (uygulama geneli) | ✅ düzeltildi | ✅ düzeltildi | 2026-09-09 |
-| Viraj | ⚠️ ölçüldü | ⚠️ ~31 kare/s (uygulama geneli) | — (tuşla sürülüyor) | ✅ ölçüldü, kusur yok | 2026-09-09 |
-| Blok, 2048, Yılan, Sudoku, Mayın Tarlası, Beş Harf, Kıskaç, Türetme, Dizgi, Kuyu, Geçit, Tavla, Balkon, Kakuro, Vergici, Toplam Kapma | — | — | — | — | bekliyor |
+| Blok | ✅ | olay güdümlü (1 · 0) | — | bekliyor | 2026-09-09 |
+| 2048 | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
+| Yılan | ✅ | **61 · 0 · %0 · 22 ms** | — | bekliyor | 2026-09-09 |
+| Sudoku | ✅ | olay güdümlü (1 · 0) | — | bekliyor | 2026-09-09 |
+| Mayın Tarlası | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
+| Beş Harf | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
+| Kıskaç | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
+| Türetme | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
+| Dizgi | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
+| Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | bekliyor | bekliyor | 2026-09-09 |
+| Geçit | ✅ | **60 · 1 · %1,2 · 22 ms** | bekliyor | bekliyor | 2026-09-09 |
+| Tavla | ✅ | olay güdümlü (0 · 0) | bekliyor | bekliyor | 2026-09-09 |
+| Balkon | ✅ | **60 · 2 · %39,6 · 25 ms** | bekliyor | bekliyor | 2026-09-09 |
+| Kakuro | ✅ | olay güdümlü (0 · 0) | — | ✅ üretim bütçesi | 2026-09-09 |
+| Vergici | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
+| Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
+| Viraj | ✅ | **60 · 3 · %100 · 34 ms** | — (tuşla) | ✅ kusur yok | 2026-09-09 |
+| Filo | ✅ | **60 · 1 · %81 · 31 ms** | ✅ düzeltildi | ✅ düzeltildi | 2026-09-09 |
+
+18 oyunun tamamı açıldı, oynandı ve **hiçbirinde çökme yok** (`logcat` temiz).
+Sürekli çizen altı oyunun tamamı 60 kare/s tutuyor; kaçan vsync 0–3 (≈%0,4).
+Yani **kare hızı sorunu yok**.
 
 ### Filo · 2026-09-09 (SM-A515F, Android 13, 1080×2400 @420 dpi)
 
 Oyun alanı ölçeği: 1 birim = 1016 px = 61,4 mm (ekranın tamamı değil).
 
 **A — koşum:** açıldı, oynandı, çökme yok. Ölçüm sırasında kaydedilen sapma:
-oyun bittiğinde çizim döngüsü durduğu için `gfxinfo` sıfır kare gösterir.
+oyun bittiğinde çizim döngüsü durduğu için `gfxinfo` sıfır kare gösterir; bu,
+ölçüm penceresini de kirletir (bkz. B aşamasındaki not).
 
-**B — kare hızı (sürüm derlemesi, 15 s oyun içi):**
+**B — kare hızı (sürüm derlemesi):** pencere boyunca kesintisiz oynandığında
+**60 kare/s** (904 kare / 15 s), kaçan vsync 3. Kare düşmüyor.
 
-| | ölçülen | hedef |
-| --- | --- | --- |
-| Ortanca kare | 29 ms | ≤ 16 ms |
-| 90. yüzdelik | 61 ms | ≤ 20 ms |
-| Takılan kare | %62,8 | < %5 |
-| GPU ortanca | 12 ms | — |
+Kare gecikmesi yüksek: p50 31 ms, jank %81. Faz dökümü maliyetin GPU tarafında
+olduğunu söylüyor (çizim kaydı 1,3 ms, GPU 17 ms), ama tam ekran gradyan **ve**
+70 yıldız birlikte kaldırıldığında ölçülebilir kazanç çıkmadı.
 
-18 ms'nin altında **tek bir kare bile** yok. GPU süresi toplamın yarısından az;
-darboğaz çizim kaydında (CPU). Hata ayıklama derlemesi ~40 kare/s, sürüm ~34:
-sorun derleme türünden bağımsız.
+> Bu satırın ilk hâlinde "~34 kare/s" yazıyordu; rakam kare sayısından değil
+> `p50`'den türetilmiş, ölçüm penceresi de koşu ortada bitince kirlenmişti.
+> Düzeltildi. Ayrıntı: [Kare gecikmesi](#kare-gecikmesi-kapanan-bir-konu-ve-kalan-bir-nüans).
 
 **C — sürükleme (düzeltme öncesi):** `detectDragGestures` + 1:1, yumuşatma yok
 (`playerX = targetX`, hız sınırı yok).
@@ -335,8 +377,9 @@ Bot bir alt sınırdır.
 
 ### Viraj · 2026-09-09
 
-**B — kare hızı:** 15 s oyun içi, sürüm derlemesi: ortanca 32 ms, %73,3 takılma,
-GPU 12 ms. Filo ile aynı profil; aşağıdaki açık konunun parçası.
+**B — kare hızı:** **60 kare/s** (723 kare / 12 s), kaçan vsync 3. Kare
+düşmüyor; kare gecikmesi ölçülen oyunlar içinde en yüksek (p50 34 ms, jank
+%100). İlk kayıttaki "~31 kare/s" yanlıştı, düzeltildi.
 
 **C — giriş:** Viraj tuşla sürülüyor (◄ ► ve FREN), sürükleme yok; bu aşama
 uygulanmaz. Tuş yinelemesi ayrı bir ölçüm konusu.
@@ -370,31 +413,30 @@ Not: turbo sırasında `speedPct` 1,25'e çıktığı için tutulabilen viraj 2,
 iner — turboyu virajlı kesimde almak, frenlemeden kullanılırsa zarar. Hata
 değil, ama oyuncuya öğretilmesi gereken bir incelik.
 
-## Açık konu: uygulama geneli kare hızı
+## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
-Filo'nun çizimi **suçlu değil**. Faz dökümü (sürüm derlemesi, oyun içi):
+Bu belgenin ilk hâlinde "uygulama geneli kare hızı sorunu" diye bir açık konu
+vardı. **Yoktu.** 18 oyunun ölçümü sonrası tablo net: sürekli çizen altı oyunun
+hepsi 60 kare/s akıyor ve pratikte kare düşürmüyor.
 
-| Faz | Ortanca |
-| --- | --- |
-| çizim kaydı (CPU) | 1,3 ms |
-| ölçüm/yerleşim | 0,2 ms |
-| komut→swap | 6,7 ms |
-| **GPU** | **17,0 ms** |
-| toplam | 32,7 ms |
+Geriye gerçek ama küçük bir nüans kalıyor: aynı 60 kare/s'te kare **gecikmesi**
+oyunlar arasında ikiye katlanıyor.
 
-Doğrulama olarak tam ekran gradyan **ve** 70 yıldızın ikisi birden çizimden
-çıkarıldı: takılma %62,8 → %52,3, GPU 12 → 11 ms, yani ölçülebilir kazanç yok.
-Aynı ölçüm **Viraj**'da da benzer çıkıyor (%73 takılma, ortanca 32 ms, GPU
-12 ms). Cihazda güç tasarrufu kapalı, ekran 60 Hz, termal kısıt yok.
+| Oyun | p50 kare gecikmesi | jank |
+| --- | --- | --- |
+| Kuyu | 21 ms | %0 |
+| Yılan · Geçit | 22 ms | %0–1 |
+| Balkon | 25 ms | %40 |
+| Filo | 31 ms | %81 |
+| Viraj | 34 ms | %100 |
 
-Sonuç: ~30 kare/s tavanı tek bir oyunun çizim kodundan değil, uygulama
-kabuğundan ya da bu cihaz sınıfının GPU dolgu kapasitesinden geliyor. Kare
-başına toplam iş (~19 ms) 16,7 ms bütçesini biraz aşıyor ve kare hızı yarıya
-düşüyor. Bu, tek tek oyunlarda değil **uygulama düzeyinde** ele alınmalı:
-pencerenin tamamının aşırı çizimi, Material yüzeylerin katman maliyeti ve
-sprite'ların kenar yumuşatma yükü ölçülmeli (Perfetto / Mali profil).
+Filo ve Viraj kare başına ~10 ms fazla harcıyor. Kare düşmediği için görüntü
+akıcı; etkilenen şey parmak-ekran gecikmesi. Filo'da faz dökümü maliyetin GPU
+tarafında olduğunu gösteriyor (çizim kaydı 1,3 ms, GPU 17 ms), ama tam ekran
+gradyan **ve** 70 yıldızın ikisi birden çizimden çıkarıldığında ölçülebilir
+kazanç çıkmadı — yani maliyet tek bir çizim çağrısında değil.
 
-Bu koşumda uygulanan tek çizim değişikliği: arka plan gradyanı artık her
-karede yeniden kurulmuyor (`remember`); ölçülebilir kazanç vermedi ama kare
-başına gölgelendirici ayırmayı kaldırdığı için tutuldu. Ölçümle kazanç
-göstermeyen kırpma/yeniden yapılandırma denemeleri geri alındı.
+Bu bir hata değil, iyileştirme fırsatı. Kovalanacaksa önce ölçülmeli
+(`tools/cihaz_testi.py fazlar`, `debug.hwui.overdraw show`); tahminle
+optimizasyon bu belgede bir kez denendi ve boşa gitti.
+
