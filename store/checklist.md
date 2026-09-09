@@ -28,6 +28,26 @@
 - [ ] Geri bildirimleri düzelt, sürüm notlarını `store/play/release-notes/` altında tut
 - [ ] Üretim: aşamalı yayın (ör. %20 → %100)
 
+## Oyun testi (cihazda, sürüm öncesi)
+
+Protokol ve eşikler: [`docs/oyun-testi.md`](../docs/oyun-testi.md). D aşaması
+(denge) ve türetilen değişmezler CI'da koşar; **A, B ve C gerçek cihaz ister**
+ve otomatikleşmez — emülatörün kare süreleri ve dokunma ölçeği gerçeği
+temsil etmez.
+
+- [ ] Sürüm derlemesini gerçek cihaza kur (hata ayıklama derlemesiyle ölçme):
+      `./gradlew :app:assembleRelease` → `apksigner sign` → `adb install -r`
+- [ ] **A · koşum:** `python3 tools/cihaz_testi.py tarama` — 18 oyun açılıyor,
+      oynanıyor, `logcat` temiz
+- [ ] **B · kare hızı:** sürekli çizen oyunlarda (Yılan, Kuyu, Geçit, Balkon,
+      Viraj, Filo) `python3 tools/cihaz_testi.py kare --sure 15`; kare/s ≥ 58
+      ve kaçan vsync ~0. Pencerenin tamamı oynanmalı, yoksa ölçüm kirlidir.
+- [ ] **C · giriş:** sürüklemeli oyunlarda `python3 tools/cihaz_testi.py alan`
+      ve `surukle`; ölü bölge ve oran beklenen mi
+- [ ] Sonuçları `docs/oyun-testi.md` içindeki sonuç kütüğüne işle
+- [ ] Yeni oyun eklendiyse D aşaması için `*Probe` yazılmış olmalı
+      (`./gradlew :games:<oyun>:probe`)
+
 ## Yapı
 - [ ] Android App Bundle (AAB) üret: `./gradlew :app:bundleRelease` (release.yml'e AAB çıktısı eklenmeli)
 - [ ] `versionCode` her yüklemede artmalı (release.yml etiketten türetir)

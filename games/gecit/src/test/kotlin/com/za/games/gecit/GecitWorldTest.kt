@@ -326,4 +326,48 @@ class GecitWorldTest {
             assertEquals(world.score, world.maxRow.toLong())
         }
     }
+
+    /**
+     * Hiçbir şerit, oyuncunun bekleyebileceğinden uzun süre kapalı kalmamalı.
+     * Beklemek zorunludur (trafikte boşluk aranır) ama beklerken kamera
+     * yaklaşır ve kartal kapar; kapalı süre bütçeyi aşarsa o sütundan geçmek
+     * imkânsızlaşır. Ölçüm: `./gradlew :games:gecit:probe`.
+     */
+    @Test
+    fun `no lane stays closed longer than the waiting budget`() {
+        // En dar bütçe: kamera tam hızdayken (ileri satırlar).
+        val enHizliKamera = 0.35f + 0.9f
+        val butce = minOf(GecitWorld.IDLE_LIMIT, GecitWorld.BEHIND / enHizliKamera)
+        for (seed in 1L..2L) {
+            val gen = GecitGen(seed)
+            val lanes = ArrayList<Lane>()
+            repeat(80) { lanes += gen.next(lanes) }
+            for (lane in lanes) {
+                if (lane.kind == LaneKind.GRASS) continue
+                // Tüm sütunların aynı anda kapalı kaldığı en uzun süre.
+                var suan = 0f
+                var enUzun = 0f
+                repeat(1800) {
+                    lane.update(GecitWorld.STEP)
+                    val hepsiKapali = (0 until GecitGen.WIDTH).all { c ->
+                        when (lane.kind) {
+                            LaneKind.ROAD, LaneKind.RAIL -> lane.hits(c.toFloat())
+                            LaneKind.RIVER -> lane.logUnder(c + 0.5f) == null
+                            LaneKind.GRASS -> false
+                        }
+                    }
+                    if (hepsiKapali) {
+                        suan += GecitWorld.STEP
+                        if (suan > enUzun) enUzun = suan
+                    } else {
+                        suan = 0f
+                    }
+                }
+                assertTrue(
+                    "satır ${lane.row} (${lane.kind}) ${"%.2f".format(enUzun)}s tamamen kapalı; bütçe ${"%.2f".format(butce)}s",
+                    enUzun < butce,
+                )
+            }
+        }
+    }
 }

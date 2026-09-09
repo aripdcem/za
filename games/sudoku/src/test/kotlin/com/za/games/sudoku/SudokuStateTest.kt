@@ -120,4 +120,38 @@ class SudokuStateTest {
         // Dolu hücreye not yazılamaz.
         assertEquals(placed, placed.toggleNote(index, 3))
     }
+
+    /**
+     * "Kolay" gerçekten kolay olmalı: tahtaların ezici çoğunluğu en basit
+     * teknikle (hücrede tek aday kalması) çözülebilmeli. İpucu sayısı tek
+     * başına zorluğun zayıf göstergesidir; bu test tekniğe bakar.
+     * Ölçüm: `./gradlew :games:sudoku:probe`.
+     */
+    @Test
+    fun `easy boards are solvable with naked singles`() {
+        var tekAdayla = 0
+        val n = 12
+        for (seed in 1L..n.toLong()) {
+            val s = SudokuState.newGame(SudokuDifficulty.EASY, seed)
+            val v = s.values.toIntArray()
+            var ilerledi = true
+            while (ilerledi && v.any { it == 0 }) {
+                ilerledi = false
+                for (i in 0 until 81) {
+                    if (v[i] != 0) continue
+                    val kullanilan = SudokuState.peers(i).map { v[it] }.toSet()
+                    val adaylar = (1..9).filterNot { it in kullanilan }
+                    if (adaylar.size == 1) {
+                        v[i] = adaylar.first()
+                        ilerledi = true
+                    }
+                }
+            }
+            if (v.none { it == 0 }) tekAdayla++
+        }
+        assertTrue(
+            "kolay tahtaların yalnızca $tekAdayla/$n'i tek adayla çözülüyor",
+            tekAdayla >= n * 8 / 10,
+        )
+    }
 }

@@ -141,4 +141,33 @@ class BesHarfStateTest {
         assertFalse(BesHarfWords.isAllowed("qqqqq"))
         assertEquals(BesHarfWords.answers.size, BesHarfWords.answers.toSet().size)
     }
+
+    /**
+     * Her cevap hak içinde çözülebilmeli. Tuzak kelimeler (aynı deseni
+     * paylaşan kalabalık aileler) altı hakkı yakarsa o gün herkes kaybeder.
+     * Örneklem taranır; çözücü her adımda en kötü durumda en çok eleyeni
+     * seçer. Ölçüm: `./gradlew :games:besharf:probe`.
+     */
+    @Test
+    fun `every sampled answer is solvable within the guess limit`() {
+        val cevaplar = BesHarfWords.answers
+        val ornek = cevaplar.filterIndexed { i, _ -> i % 40 == 0 }
+        val acilis = cevaplar.first()
+        for (cevap in ornek) {
+            var adaylar = cevaplar
+            var tahmin = acilis
+            var tur = 0
+            while (tur < BesHarfState.MAX_GUESSES && tahmin != cevap) {
+                tur++
+                val isaret = BesHarfState.mark(cevap, tahmin)
+                val onceki = tahmin
+                adaylar = adaylar.filter { BesHarfState.mark(it, onceki) == isaret }
+                tahmin = adaylar.minByOrNull { aday ->
+                    adaylar.groupingBy { BesHarfState.mark(it, aday) }.eachCount().values.max()
+                } ?: break
+            }
+            if (tahmin == cevap) tur = maxOf(tur, 1)
+            assertTrue("$cevap ${BesHarfState.MAX_GUESSES} hakka sığmadı", tahmin == cevap)
+        }
+    }
 }

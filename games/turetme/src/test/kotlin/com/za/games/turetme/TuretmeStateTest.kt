@@ -182,4 +182,21 @@ class TuretmeStateTest {
             assertTrue("$base: $count", count in 15..70)
         }
     }
+
+    /**
+     * Her taban oynanabilir bir tur vermeli: harflerinden en az birkaç kelime
+     * türetilebilmeli, yoksa tur sönük geçer. Ölçülen en düşük 15 hedefti;
+     * eşik paylı tutuluyor ki kelime listesi ayarlanınca gereksiz kırmızı
+     * çıkmasın. Ölçüm: `./gradlew :games:turetme:probe`.
+     */
+    @Test
+    fun `every base yields enough targets`() {
+        val tabanlar = TuretmeWords.bases.filterIndexed { i, _ -> i % 6 == 0 }
+        val gecerli = TuretmeWords.valid
+        for (taban in tabanlar) {
+            val hedefler = TuretmeState.targetsFor(taban, gecerli)
+            assertTrue("$taban yalnızca ${hedefler.size} hedef veriyor", hedefler.size >= 8)
+            assertTrue("$taban kendi hedef kümesinde yok", taban in hedefler)
+        }
+    }
 }

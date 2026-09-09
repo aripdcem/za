@@ -17,6 +17,39 @@ Tüm ölçüm koşumlarını birden çalıştırmak için:
 ANDROID_HOME=$HOME/Android/Sdk ./gradlew probe
 ```
 
+### Protokolün CI'daki karşılığı
+
+Aşamalar farklı otomatikleşiyor; ayrımı bilerek koruyoruz:
+
+| Aşama | Nerede koşar |
+| --- | --- |
+| **A** cihaz koşumu | Sürüm öncesi, gerçek cihazda ([`store/checklist.md`](../store/checklist.md)) |
+| **B** kare hızı | Sürüm öncesi, gerçek cihazda — emülatörün kare süreleri gerçeği temsil etmez |
+| **C** giriş kalibrasyonu | Sürüm öncesi, gerçek cihazda — gerçek dokunma ve ekran ölçeği gerekir |
+| **D** denge | **CI**: değişmez testleri `test` görevinde, ölçüm koşumları `probe` adımında |
+
+CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
+çürümesini engellemek**. Asıl koruma, ölçülen doğruların değişmez testine
+çevrilmesidir:
+
+| Değişmez | Nerede |
+| --- | --- |
+| Silah yükseltmesi patron hasarını düşürmez | `FiloWorldTest` |
+| Yükseltme havada kalma bütçesini kısaltmaz | `KuyuWorldTest` |
+| Üretilen tahta tahminsiz çözülebilir | `MinesStateTest` |
+| Tahmin hakkı ikili arama derinliğini karşılar | `KiskacStateTest` |
+| Kilitlenme berabere değil kararla biter | `TavlaStateTest` |
+| Hiçbir şerit bekleme bütçesinden uzun kapalı kalmaz | `GecitWorldTest` |
+| Her cevap hak içinde çözülebilir | `BesHarfStateTest` |
+| Her taban yeterli hedef verir | `TuretmeStateTest` |
+| Rastgele ellerin çoğu kelime kurar | `DizgiStateTest` |
+| Kolay tahtalar en basit teknikle çözülür | `SudokuStateTest` |
+| Üretim iş bütçesini aşmaz | `KakuroTest` |
+
+Yeni bir ölçüm bulgusu düzeltildiğinde, mümkünse **paylı bir değişmez** olarak
+buraya eklenir: ölçülen değerin kendisi değil, altına düşülmemesi gereken
+sınır iddia edilir (ör. "en az 8 hedef", ölçülen 15 iken).
+
 ## Neden
 
 Filo (v0.24.0) 41 birim testiyle yeşil olarak yayına hazırdı. Cihaz üstünde iki
