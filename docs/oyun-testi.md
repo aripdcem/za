@@ -291,7 +291,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Dizgi | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | bekliyor | ⚠️ RAPID takası | 2026-09-09 |
 | Geçit | ✅ | **60 · 1 · %1,2 · 22 ms** | — (ayrık hamle) | ✅ adil | 2026-09-09 |
-| Tavla | ✅ | olay güdümlü (0 · 0) | bekliyor | bekliyor | 2026-09-09 |
+| Tavla | ✅ | olay güdümlü (0 · 0) | — | ⚠️ Hapis beraberliği | 2026-09-09 |
 | Balkon | ✅ | **60 · 2 · %39,6 · 25 ms** | — (nokta nişan) | ⚠️ scooter penceresi | 2026-09-09 |
 | Kakuro | ✅ | olay güdümlü (0 · 0) | — | ✅ üretim bütçesi | 2026-09-09 |
 | Vergici | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
@@ -430,6 +430,40 @@ koşuyu bitiren şey tepki hızı değil, hız/süre sıkışması.
 Not: turbo sırasında `speedPct` 1,25'e çıktığı için tutulabilen viraj 2,67'ye
 iner — turboyu virajlı kesimde almak, frenlemeden kullanılırsa zarar. Hata
 değil, ama oyuncuya öğretilmesi gereken bir incelik.
+
+### Tavla · 2026-09-09
+
+**D — zar, denge ve rakip** (`./gradlew :games:tavla:probe`).
+
+**Zar düzgün.** 47 880 zar atışında ki-kare 2,33 (5 sd, %99 eşiği 15,09); en
+büyük yüz sapması %1,2. Oyuncunun ilk şüphesi hep zar olduğu için bu ölçüm
+kütükte durmalı.
+
+**İlk oynayan avantajı** (yapay zekâ – yapay zekâ, 120 oyun/mod):
+
+| Mod | Başlayan kazandı | Kilitlenme | Berabere |
+| --- | --- | --- | --- |
+| Klasik | %59 | 0 | 0 |
+| Tapa | %44 | 1 | 1 |
+| Hapis | %35 | **31** | **31** |
+
+Klasik %59 ile beklenen bantta. Hapis'te tablo başka bir şey söylüyor:
+**oyunların dörtte biri kilitlenmeyle berabere bitiyor.**
+
+**Bulgu: Hapis'te kilitlenme her zaman berabere.** 31 kilitlenmenin 31'i de
+beraberlikle sonuçlandı. Nedeni yapısal: karşılıklı tam blokaj konumunda iki
+taraf da tam olarak 38 pip, bar ve toplanan boş oluyor — konum simetrik.
+Dolayısıyla `finishDeadlock` içindeki "pip sayısı az olan kazanır" kuralı
+pratikte hiç devreye girmiyor; Hapis'te kilitlenme = berabere.
+
+Rastgele rakibe karşı da benzer (120 oyunda 21 beraberlik), yani iki tarafın
+aynı sezgiseli oynamasından kaynaklanan bir yapaylık değil. Karar tasarımın:
+beraberlik oranı kabul edilebilir mi, yoksa kilitlenme başka bir kuralla mı
+çözülmeli (örneğin son hamleyi yapan kaybeder, ya da toplanan pula bakmak)?
+
+**Bilgisayar rakip gücü** (rastgele yasal hamleye karşı, 120 oyun/mod):
+Klasik %100, Tapa %98, Hapis %79 (+21 beraberlik). Sezgisel çalışıyor;
+rastgeleye şans tanımıyor.
 
 ### Blok · 2026-09-09
 
