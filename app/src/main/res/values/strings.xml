@@ -526,4 +526,37 @@
     <string name="viraj_hand_hint">Fren tuşu başparmağının olduğu tarafa gelir; ayar Kuyu ve Geçit ile ortaktır</string>
     <string name="viraj_next_checkpoint">Kontrol noktası</string>
     <string name="viraj_board_desc">Viraj: %1$d km/s, %2$d m, %3$d sollama</string>
+    <!-- Filo -->
+    <string name="game_filo">Filo</string>
+    <string name="game_filo_tagline">Dikey uzay savaşı: gemiyi sürükle, ateş otomatik; dalgalar, patronlar, güç artırımları</string>
+    <string name="filo_intro">Gemiyi parmağınla sürükle; ateş otomatik. Düşman dalgalarını temizle, her 5. dalgada patron gelir. Art arda vuruşlar çarpanı büyütür; düşen güçleri topla: W silah, S kalkan, B bomba, + puan. BOMBA mermileri siler, ekrandaki herkese hasar verir.</string>
+    <string name="filo_daily_desc">Herkes bugün aynı dalgalarla savaşır; günde 3 deneme.</string>
+    <string name="filo_daily_status_fmt">Bugün: %1$d/%2$d deneme · en iyi %3$d</string>
+    <string name="filo_daily_exhausted">Bugünkü denemeler bitti; yarın yeni filo!</string>
+    <string name="filo_start">Başla</string>
+    <string name="filo_retry_fmt">Tekrar dene (%1$d kaldı)</string>
+    <string name="filo_to_menu">Başa dön</string>
+    <string name="filo_wave">Dalga</string>
+    <string name="filo_lives">Can</string>
+    <string name="filo_boss_hp">Patron</string>
+    <string name="filo_multiplier_fmt">×%1$d</string>
+    <string name="filo_weapon_fmt">Silah %1$d</string>
+    <string name="filo_shield_on">Kalkan</string>
+    <string name="filo_over_title">Gemi düştü</string>
+    <string name="filo_result_fmt">Dalga %1$d · %2$d düşman</string>
+    <string name="filo_ctrl_bomb">Bomba</string>
+    <string name="filo_bomb_count_fmt">BOMBA ×%1$d</string>
+    <string name="filo_drag_hint">Gemiyi sürükleyerek yönlendir</string>
+    <string name="filo_points_fmt">+%1$d</string>
+    <string name="filo_hit">Vuruldun!</string>
+    <string name="filo_shield">Kalkan!</string>
+    <string name="filo_shield_used">Kalkan korudu</string>
+    <string name="filo_weapon_up">Silah ↑</string>
+    <string name="filo_bomb_pickup">Bomba +1</string>
+    <string name="filo_wave_start_fmt">Dalga %1$d</string>
+    <string name="filo_boss_incoming">Patron!</string>
+    <string name="filo_wave_clear_fmt">Dalga temiz +%1$d</string>
+    <string name="filo_boss_down">Patron düştü!</string>
+    <string name="filo_hand_hint">Bomba tuşu başparmağının olduğu tarafa gelir; ayar Kuyu, Geçit ve Viraj ile ortaktır</string>
+    <string name="filo_board_desc">Filo: dalga %1$d, %2$d can, %3$d bomba</string>
 </resources>

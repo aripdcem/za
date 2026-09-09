@@ -1,0 +1,6 @@
+<tr-TR>
+• Yeni oyun: Filo. Dikey uzay savaşı: gemiyi sürükle, ateş otomatik; dalgaları temizle, her beşinci dalgada patron; silah, kalkan ve bomba güçleri. Günlük filo, üç deneme.
+</tr-TR>
+<en-US>
+• New game: Filo. Vertical space shooter: drag the ship, auto-fire; clear the waves, a boss every fifth wave; weapon, shield and bomb power-ups. Daily fleet, three attempts.
+</en-US>

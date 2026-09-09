@@ -16,6 +16,7 @@ import com.za.games.ui.hub.BalkonArt
 import com.za.games.ui.hub.KakuroArt
 import com.za.games.ui.hub.VergiciArt
 import com.za.games.ui.hub.ToplamArt
+import com.za.games.ui.hub.FiloArt
 import com.za.games.ui.hub.VirajArt
 import com.za.games.ui.hub.MinesArt
 import com.za.games.ui.hub.SnakeArt
@@ -31,6 +32,7 @@ import com.za.games.ui.balkon.BalkonScreen
 import com.za.games.ui.kakuro.KakuroScreen
 import com.za.games.ui.vergici.VergiciScreen
 import com.za.games.ui.toplam.ToplamScreen
+import com.za.games.ui.filo.FiloScreen
 import com.za.games.ui.viraj.VirajScreen
 import com.za.games.ui.snake.SnakeScreen
 import com.za.games.ui.sudoku.SudokuScreen
@@ -246,6 +248,18 @@ object GameRegistry {
             art = { modifier -> VirajArt(modifier) },
             screen = { highScore, onScore, onExit ->
                 VirajScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "filo",
+            since = "0.24.0",
+            titleRes = R.string.game_filo,
+            taglineRes = R.string.game_filo_tagline,
+            category = GameCategory.ARCADE,
+            accent = Color(0xFFFB7185),
+            art = { modifier -> FiloArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                FiloScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
     )

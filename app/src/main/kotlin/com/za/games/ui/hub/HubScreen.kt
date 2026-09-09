@@ -914,3 +914,55 @@ fun VirajArt(modifier: Modifier = Modifier) {
         drawCircle(Color(0xFFF8FAFC), radius = w * 0.035f, center = Offset(w * 0.5f, w * 0.7f))
     }
 }
+
+/** Filo kartı: yıldızlı uzay, üstte düşman üçlüsü, altta gemi, mermi ve alev. */
+@Composable
+fun FiloArt(modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        drawRoundRect(Color(0xFF0B1226), size = Size(w, w), cornerRadius = CornerRadius(w * 0.12f, w * 0.12f))
+        val star = Color(0xFFE2E8F0)
+        listOf(0.12f to 0.2f, 0.3f to 0.55f, 0.55f to 0.1f, 0.82f to 0.4f, 0.9f to 0.75f, 0.2f to 0.85f, 0.7f to 0.62f).forEach { (x, y) ->
+            drawCircle(star.copy(alpha = 0.7f), radius = w * 0.018f, center = Offset(w * x, w * y))
+        }
+        val drone = Color(0xFFF87171)
+        for (i in 0 until 3) {
+            val cx = w * (0.3f + i * 0.2f)
+            val cy = w * (if (i == 1) 0.32f else 0.24f)
+            val r = w * 0.075f
+            val p = Path().apply {
+                moveTo(cx, cy + r)
+                lineTo(cx + r, cy - r * 0.6f)
+                lineTo(cx, cy - r * 0.25f)
+                lineTo(cx - r, cy - r * 0.6f)
+                close()
+            }
+            drawPath(p, drone)
+        }
+        drawRoundRect(Color(0xFF67E8F9), Offset(w * 0.485f, w * 0.48f), Size(w * 0.03f, w * 0.12f), CornerRadius(w * 0.015f, w * 0.015f))
+        val sx = w * 0.5f
+        val sy = w * 0.76f
+        val r = w * 0.1f
+        val flame = Path().apply {
+            moveTo(sx - r * 0.35f, sy + r * 0.75f)
+            lineTo(sx, sy + r * 1.8f)
+            lineTo(sx + r * 0.35f, sy + r * 0.75f)
+            close()
+        }
+        drawPath(flame, Color(0xFFFB923C))
+        val ship = Path().apply {
+            moveTo(sx, sy - r * 1.35f)
+            lineTo(sx + r * 0.45f, sy - r * 0.1f)
+            lineTo(sx + r * 1.25f, sy + r * 0.85f)
+            lineTo(sx + r * 0.4f, sy + r * 0.75f)
+            lineTo(sx, sy + r * 0.5f)
+            lineTo(sx - r * 0.4f, sy + r * 0.75f)
+            lineTo(sx - r * 1.25f, sy + r * 0.85f)
+            lineTo(sx - r * 0.45f, sy - r * 0.1f)
+            close()
+        }
+        drawPath(ship, Color(0xFFE2E8F0))
+        drawRect(Color(0xFFFB7185), Offset(sx - r * 0.12f, sy - r * 0.9f), Size(r * 0.24f, r * 1.3f))
+        drawCircle(Color(0xFF22D3EE), radius = r * 0.2f, center = Offset(sx, sy - r * 0.45f))
+    }
+}
