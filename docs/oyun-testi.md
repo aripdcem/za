@@ -283,7 +283,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Blok | ✅ | olay güdümlü (1 · 0) | — | bekliyor | 2026-09-09 |
 | 2048 | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Yılan | ✅ | **61 · 0 · %0 · 22 ms** | — | bekliyor | 2026-09-09 |
-| Sudoku | ✅ | olay güdümlü (1 · 0) | — | bekliyor | 2026-09-09 |
+| Sudoku | ✅ | olay güdümlü (1 · 0) | — | ✅ merdiven doğru | 2026-09-09 |
 | Mayın Tarlası | ✅ | olay güdümlü (0 · 0) | — | ⚠️ tahmin zorunlu | 2026-09-09 |
 | Beş Harf | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Kıskaç | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
@@ -430,6 +430,31 @@ koşuyu bitiren şey tepki hızı değil, hız/süre sıkışması.
 Not: turbo sırasında `speedPct` 1,25'e çıktığı için tutulabilen viraj 2,67'ye
 iner — turboyu virajlı kesimde almak, frenlemeden kullanılırsa zarar. Hata
 değil, ama oyuncuya öğretilmesi gereken bir incelik.
+
+### Sudoku · 2026-09-09
+
+**D — adillik ve zorluk** (`./gradlew :games:sudoku:probe`). **Sorun yok.**
+
+Üretici tek çözümü zaten garantiliyor (`countSolutions == 1`), yani adillik
+tarafı sağlam. Açık soru zorluğun ne anlama geldiğiydi: zorluk yalnızca ipucu
+sayısıyla tanımlanıyor (40/32/26) ve ipucu sayısı zorluğun zayıf bir
+göstergesidir. Tahtaların hangi insan teknikleriyle çözülebildiği ölçüldü
+(40 tohum/zorluk):
+
+| Zorluk | İpucu (hedef / gerçek) | Tek adayla | Gizli tekle | Daha ileri |
+| --- | --- | --- | --- | --- |
+| Kolay | 40 / 40,0 | **%95** | %5 | %0 |
+| Orta | 32 / 32,0 | %42 | %50 | %7 |
+| Zor | 26 / 26,1 | %2 | %52 | **%45** |
+
+Merdiven gerçekten çalışıyor: kolay tahtaların neredeyse tamamı en basit
+teknikle (hücrede tek seçenek) çözülüyor, orta seviye gizli tek gerektiriyor,
+zorun yarısı bu iki tekniğin ötesine geçiyor. Üretici hedef ipucu sayısını da
+birebir tutturuyor.
+
+Not: zor tahtaların %45'i çift/üçlü çıkarımı ya da deneme gerektiriyor. Tek
+çözüm garantisi durduğu için bu adaletsizlik değil, "zor"un tanımı — ama not
+alma desteğinin neden gerekli olduğunu açıklıyor.
 
 ### Mayın Tarlası · 2026-09-09
 
