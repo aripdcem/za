@@ -242,6 +242,24 @@ Tüm motor testleri bu açıdan tarandı (`nanoTime`, `currentTimeMillis`,
 `Thread.sleep`): duvar saatine **iddia bağlayan** tek yer Kakuro'ydu ve
 düzeltildi. Kakuro ile Vergici'de kalan süre ölçümleri yalnızca rapor amaçlı.
 
+### Sıra tabanlı oyunlarda soru farklıdır
+
+Tepki oyunlarında ölçüm "yetişilebilir mi" diye sorar; sıra tabanlı oyunlarda
+zaman baskısı yoktur, o yüzden soru **adilliğe** kayar:
+
+| Ölçüt | Soru |
+| --- | --- |
+| Tek çözüm | Bulmacanın tek bir çözümü olduğu garanti mi? |
+| Tahminsizlik | Çözüm baştan sona mantıkla ilerliyor mu, yoksa kör seçim gerekiyor mu? |
+| Üretim bütçesi | Üretim, cihazı bekletmeyecek kadar ucuz mu? (bkz. duvar saati notu) |
+| Zorluk dağılımı | "Zor" gerçekten daha mı zor, yoksa yalnızca daha mı büyük? |
+
+Tahminsizlik ölçmek için oyunun çözücüsünü değil, **oyuncunun görebildiği
+bilgiyle** çalışan ayrı bir çözücü yazılır: bilinen kısıtlardan kesin sonuç
+çıkarır, çıkaramayınca "burada tahmin gerekti" der. Böyle bir çözücü kısıtları
+bağımsız bileşenlere ayırmalı; yoksa sayım üstel patlar ve ölçüm tahmini
+olduğundan fazla gösterir.
+
 ### Her oyunda bakılacaklar
 
 | Ölçüt | Soru |
@@ -262,18 +280,18 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 
 | Oyun | A | B (kare/s · kaçan vsync · jank · p50) | C | D | Tarih |
 | --- | --- | --- | --- | --- | --- |
-| Blok | ✅ | olay güdümlü (1 · 0) | — | bekliyor | 2026-09-09 |
+| Blok | ✅ | olay güdümlü (1 · 0) | — | ✅ 11. seviyede tavan | 2026-09-09 |
 | 2048 | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Yılan | ✅ | **61 · 0 · %0 · 22 ms** | — | bekliyor | 2026-09-09 |
-| Sudoku | ✅ | olay güdümlü (1 · 0) | — | bekliyor | 2026-09-09 |
-| Mayın Tarlası | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
-| Beş Harf | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
+| Sudoku | ✅ | olay güdümlü (1 · 0) | — | ✅ merdiven doğru | 2026-09-09 |
+| Mayın Tarlası | ✅ | olay güdümlü (0 · 0) | — | ⚠️ tahmin zorunlu | 2026-09-09 |
+| Beş Harf | ✅ | olay güdümlü (0 · 0) | — | ✅ hepsi çözülebilir | 2026-09-09 |
 | Kıskaç | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Türetme | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Dizgi | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | bekliyor | ⚠️ RAPID takası | 2026-09-09 |
 | Geçit | ✅ | **60 · 1 · %1,2 · 22 ms** | — (ayrık hamle) | ✅ adil | 2026-09-09 |
-| Tavla | ✅ | olay güdümlü (0 · 0) | bekliyor | bekliyor | 2026-09-09 |
+| Tavla | ✅ | olay güdümlü (0 · 0) | — | ⚠️ Hapis beraberliği | 2026-09-09 |
 | Balkon | ✅ | **60 · 2 · %39,6 · 25 ms** | — (nokta nişan) | ⚠️ scooter penceresi | 2026-09-09 |
 | Kakuro | ✅ | olay güdümlü (0 · 0) | — | ✅ üretim bütçesi | 2026-09-09 |
 | Vergici | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
@@ -412,6 +430,141 @@ koşuyu bitiren şey tepki hızı değil, hız/süre sıkışması.
 Not: turbo sırasında `speedPct` 1,25'e çıktığı için tutulabilen viraj 2,67'ye
 iner — turboyu virajlı kesimde almak, frenlemeden kullanılırsa zarar. Hata
 değil, ama oyuncuya öğretilmesi gereken bir incelik.
+
+### Tavla · 2026-09-09
+
+**D — zar, denge ve rakip** (`./gradlew :games:tavla:probe`).
+
+**Zar düzgün.** 47 880 zar atışında ki-kare 2,33 (5 sd, %99 eşiği 15,09); en
+büyük yüz sapması %1,2. Oyuncunun ilk şüphesi hep zar olduğu için bu ölçüm
+kütükte durmalı.
+
+**İlk oynayan avantajı** (yapay zekâ – yapay zekâ, 120 oyun/mod):
+
+| Mod | Başlayan kazandı | Kilitlenme | Berabere |
+| --- | --- | --- | --- |
+| Klasik | %59 | 0 | 0 |
+| Tapa | %44 | 1 | 1 |
+| Hapis | %35 | **31** | **31** |
+
+Klasik %59 ile beklenen bantta. Hapis'te tablo başka bir şey söylüyor:
+**oyunların dörtte biri kilitlenmeyle berabere bitiyor.**
+
+**Bulgu: Hapis'te kilitlenme her zaman berabere.** 31 kilitlenmenin 31'i de
+beraberlikle sonuçlandı. Nedeni yapısal: karşılıklı tam blokaj konumunda iki
+taraf da tam olarak 38 pip, bar ve toplanan boş oluyor — konum simetrik.
+Dolayısıyla `finishDeadlock` içindeki "pip sayısı az olan kazanır" kuralı
+pratikte hiç devreye girmiyor; Hapis'te kilitlenme = berabere.
+
+Rastgele rakibe karşı da benzer (120 oyunda 21 beraberlik), yani iki tarafın
+aynı sezgiseli oynamasından kaynaklanan bir yapaylık değil. Karar tasarımın:
+beraberlik oranı kabul edilebilir mi, yoksa kilitlenme başka bir kuralla mı
+çözülmeli (örneğin son hamleyi yapan kaybeder, ya da toplanan pula bakmak)?
+
+**Bilgisayar rakip gücü** (rastgele yasal hamleye karşı, 120 oyun/mod):
+Klasik %100, Tapa %98, Hapis %79 (+21 beraberlik). Sezgisel çalışıyor;
+rastgeleye şans tanımıyor.
+
+### Blok · 2026-09-09
+
+**D — zorluk eğrisi** (`./gradlew :games:tetris:probe`). **Sorun yok.**
+
+Blok'ta zaman baskısı tek yerden gelir: yerçekimi. Seviye her 10 satırda artar,
+düşme aralığı Guideline formülüyle kısalır ve 50 ms tabanında durur.
+
+| Seviye | Satır | Hücre başına | Tepeden dibe | 8 girişlik tempo |
+| --- | --- | --- | --- | --- |
+| 1 | 0 | 1000 ms | 20,0 s | 2500 ms — rahat |
+| 5 | 40 | 355 ms | 7,1 s | 888 ms — rahat |
+| 9 | 80 | 93 ms | 1,86 s | 233 ms — rahat |
+| 11 | 100 | **50 ms (taban)** | 1,00 s | 125 ms — sıkı |
+| 20 | 190 | 50 ms | 1,00 s | 125 ms — sıkı |
+
+Yerçekimi **11. seviyede (100. satır) tabana oturuyor**; sonrasında oyun
+hızlanmıyor. Tabandaki 1 saniyelik düşüş, en kötü durumda gereken 8 girişe
+(3 dönüş + 5 yatay adım) 125 ms'lik tempoyla tam yetiyor — sıkı ama insan üstü
+değil. Yani usta oyuncu 100. satırdan sonra teorik olarak sonsuza dek oynar.
+Birçok Blok uyarlaması böyledir; bilinçliyse sorun yok.
+
+### Beş Harf · 2026-09-09
+
+**D — adillik** (`./gradlew :games:besharf:probe`). **Sorun yok.**
+
+Kelime oyunlarında adillik sorusu: her cevap hakla çözülebiliyor mu? Tuzak
+kelimeler altı hakkı yakabilir ve o gün herkes kaybeder.
+
+Havuz sağlamlığı: 1684 cevap, 7797 geçerli tahmin; yanlış uzunlukta cevap yok,
+tahmin olarak kabul edilmeyen cevap yok, tekrar eden cevap yok. Günlük kelime
+kalıcı bir permütasyondan seçildiği için havuz tükenmeden tekrar gelmiyor —
+1684 günlük (≈4,6 yıl) döngü.
+
+Çözülebilirlik (421 cevaplık örneklem, her adımda en kötü durumda en çok
+eleyeni seçen çözücü, açılış "amber"):
+
+| Tahmin | Cevap sayısı |
+| --- | --- |
+| 2 | 21 |
+| 3 | 147 |
+| 4 | 199 |
+| 5 | 51 |
+| 6 | 3 |
+
+**Altı hakka sığmayan cevap yok (%0).** Çoğu cevap 3–4 tahminde çözülüyor.
+Çözücü örneklemeyle zayıflatıldığı için bu bir üst sınır: kusursuz oyun daha
+da iyisini yapar.
+
+### Sudoku · 2026-09-09
+
+**D — adillik ve zorluk** (`./gradlew :games:sudoku:probe`). **Sorun yok.**
+
+Üretici tek çözümü zaten garantiliyor (`countSolutions == 1`), yani adillik
+tarafı sağlam. Açık soru zorluğun ne anlama geldiğiydi: zorluk yalnızca ipucu
+sayısıyla tanımlanıyor (40/32/26) ve ipucu sayısı zorluğun zayıf bir
+göstergesidir. Tahtaların hangi insan teknikleriyle çözülebildiği ölçüldü
+(40 tohum/zorluk):
+
+| Zorluk | İpucu (hedef / gerçek) | Tek adayla | Gizli tekle | Daha ileri |
+| --- | --- | --- | --- | --- |
+| Kolay | 40 / 40,0 | **%95** | %5 | %0 |
+| Orta | 32 / 32,0 | %42 | %50 | %7 |
+| Zor | 26 / 26,1 | %2 | %52 | **%45** |
+
+Merdiven gerçekten çalışıyor: kolay tahtaların neredeyse tamamı en basit
+teknikle (hücrede tek seçenek) çözülüyor, orta seviye gizli tek gerektiriyor,
+zorun yarısı bu iki tekniğin ötesine geçiyor. Üretici hedef ipucu sayısını da
+birebir tutturuyor.
+
+Not: zor tahtaların %45'i çift/üçlü çıkarımı ya da deneme gerektiriyor. Tek
+çözüm garantisi durduğu için bu adaletsizlik değil, "zor"un tanımı — ama not
+alma desteğinin neden gerekli olduğunu açıklıyor.
+
+### Mayın Tarlası · 2026-09-09
+
+**D — adillik** (`./gradlew :games:mines:probe`).
+
+İlk tık hep güvenli: mayınlar ilk tıktan sonra, tıklanan hücre ve komşuları
+hariç yerleştiriliyor. Ama tahtanın **kalanının** mantıkla çözülebileceği
+garanti edilmiyor. Oyuncunun görebildiği bilgiyle çalışan bir çözücü yazılıp
+her tahtada kaç kez kör tahmine zorlandığı sayıldı (60 tohum/zorluk):
+
+| Zorluk | Tahta | Mayın | Yoğunluk | Tahminsiz biten | Ort. tahmin | En kötü |
+| --- | --- | --- | --- | --- | --- | --- |
+| Kolay | 9×12 | 14 | %13 | **%80** | 0,38 | 6 |
+| Orta | 10×14 | 25 | %18 | **%26** | 2,50 | 11 |
+| Zor | 12×17 | 40 | %20 | **%3** | 5,67 | 16 |
+
+Yani orta zorlukta tahtaların dörtte üçü, zor zorlukta neredeyse tamamı bir
+noktada **kör seçim** gerektiriyor. Bu seçimler yazı tura: kaybı beceriyle
+önlenemez, üstelik zor tahtada ortalama beş kez üst üste tutturmak gerekiyor.
+
+Sayılar muhafazakâr bir alt sınırdır: çözücü 24 hücreden büyük bileşenleri ve
+toplam mayın sayısı kısıtını atlıyor, yani gerçek "tahminsiz" oranı bir miktar
+daha yüksek olabilir — ama yön değişmez.
+
+Karar tasarımın. Klasik Mayın Tarlası da böyledir; ama "tahminsiz üretim"
+(üretirken çözücüyü çalıştırıp tahmin gerektiren tahtayı atmak) yaygın bir
+iyileştirmedir ve bu depoda gereken çözücü zaten yazıldı. Maliyeti üretim
+süresidir; Kakuro'da olduğu gibi iş sayacıyla sınırlanabilir.
 
 ### Balkon · 2026-09-09
 
