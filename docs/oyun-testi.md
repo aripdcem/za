@@ -274,7 +274,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | bekliyor | ⚠️ RAPID takası | 2026-09-09 |
 | Geçit | ✅ | **60 · 1 · %1,2 · 22 ms** | — (ayrık hamle) | ✅ adil | 2026-09-09 |
 | Tavla | ✅ | olay güdümlü (0 · 0) | bekliyor | bekliyor | 2026-09-09 |
-| Balkon | ✅ | **60 · 2 · %39,6 · 25 ms** | bekliyor | bekliyor | 2026-09-09 |
+| Balkon | ✅ | **60 · 2 · %39,6 · 25 ms** | — (nokta nişan) | ⚠️ scooter penceresi | 2026-09-09 |
 | Kakuro | ✅ | olay güdümlü (0 · 0) | — | ✅ üretim bütçesi | 2026-09-09 |
 | Vergici | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
@@ -412,6 +412,45 @@ koşuyu bitiren şey tepki hızı değil, hız/süre sıkışması.
 Not: turbo sırasında `speedPct` 1,25'e çıktığı için tutulabilen viraj 2,67'ye
 iner — turboyu virajlı kesimde almak, frenlemeden kullanılırsa zarar. Hata
 değil, ama oyuncuya öğretilmesi gereken bir incelik.
+
+### Balkon · 2026-09-09
+
+**D — denge** (`./gradlew :games:balkon:probe`).
+
+Balkon bir **öndeleme** oyunu: atış 0,45–0,95 s havada kalır, bu sırada hedef
+yürür ve rüzgâr iniş noktasını kaydırır. Nişan, hedefin şimdiki değil
+inişteki yerine alınır.
+
+Gereken öndeleme, isabet yarıçapıyla karşılaştırıldığında (11. seviye ve
+sonrası, hız çarpanı tavanda):
+
+| Hedef | Öndeleme | Yarıçapın katı | Zamanlama penceresi |
+| --- | --- | --- | --- |
+| SIMIT · NEIGHBOR | 0,08 | 1,0× | 675–731 ms |
+| PIGEON | 0,11 | 1,7× | 401 ms |
+| CAT · CAR | 0,16–0,24 | 2,3× | 307 ms |
+| BALL · BIKE | 0,27–0,32 | 4,3× | 161 ms |
+| **SCOOTER** | **0,49** | **6,7×** | **104 ms** |
+
+Öndeleme her hedefte yarıçaptan büyük, yani "olduğu yere at" hiçbir zaman
+çalışmıyor — oyunun temel becerisi bu ve doğru kurulmuş. Ama **scooter 11.
+seviyeden sonra 104 ms'lik pencereye iniyor**; insan dokunma hassasiyeti
+~50–100 ms olduğuna göre bu, nişanı büyük ölçüde şansa bırakıyor. Mega atış
+(yarıçap 0,10) pencereyi 197 ms'ye çıkarıp sorunu çözüyor; yani scooter fiilen
+"mega ile vurulacak hedef" hâline geliyor. Bilinçliyse sorun yok, değilse
+scooter'ın hız aralığı ya da yarıçapı gözden geçirilmeli.
+
+Rüzgâr telafi edilebilir: kayma `rüzgâr × uçuş` ile atış anında sabitlenir ve
+HUD'da gösterilir, yani tahmin değil hesap işi. Azami rüzgârda uzak atışta
+kayma yarıçapın 3,8 katı — telafi edilmezse uzak hedef vurulamaz.
+
+Seviye hedefi (`6 + 2 × seviye`) atış hızını hiç zorlamıyor: 20. seviyede bile
+gereken isabet hızı, atış tavanının yalnızca %24'ü. Yani baskı isabet
+oranında, tempo değil.
+
+**Kusursuz nişan tavanı (5 tohum):** öndelemeyi ve rüzgârı tam hesaplayan bot
+18–24. seviyede (ortalama 21,8) süreye takılıyor. İnsan bunun altında kalır;
+oyunun doğal tavanı burası.
 
 ### Geçit · 2026-09-09
 
