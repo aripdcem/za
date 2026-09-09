@@ -23,4 +23,19 @@ dependencies {
 
 tasks.test {
     useJUnit()
+    // Ölçüm koşumları (*Probe) birim testi değildir: yavaştır ve geçme/kalma
+    // yerine rapor üretir. CI'daki `test` görevinden çıkarılır.
+    filter { excludeTestsMatching("*Probe") }
+}
+
+// Denge ölçümü: ./gradlew :games:filo:probe  (bkz. docs/oyun-testi.md)
+tasks.register<Test>("probe") {
+    description = "Denge ölçüm koşumunu çalıştırır ve raporu basar."
+    group = "verification"
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
+    useJUnit()
+    filter { includeTestsMatching("*Probe") }
+    outputs.upToDateWhen { false }
+    testLogging { showStandardStreams = true }
 }

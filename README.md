@@ -33,7 +33,9 @@ za/
 ├── games/
 │   ├── tetris/  g2048/  snake/   # Oyun motorları: saf Kotlin/JVM, Android'e
 │   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ kuyu/ gecit/ tavla/ balkon/ kakuro/ sayi/ viraj/ filo/ # bağımsız, her biri kendi birim testleriyle
-└── tools/                        # gen_sfx.py (sesler), gen_words.py + gen_turetme.py + gen_dizgi.py (kelime listeleri)
+├── tools/                        # gen_sfx.py (sesler), gen_words.py + gen_turetme.py + gen_dizgi.py (kelime listeleri)
+│                                 # cihaz_testi.py (cihaz üstü kare hızı / giriş ölçümü)
+└── docs/oyun-testi.md            # her oyunun geçmesi gereken test protokolü ve sonuç kütüğü
 ```
 
 Temel ilke: **oyun kuralları saf Kotlin modüllerinde, arayüz `app` içinde** yaşar. Motorlar Android'e bağımlı olmadığı için cihazsız test edilir ve ileride başka platformlara taşınabilir.
@@ -43,6 +45,7 @@ Temel ilke: **oyun kuralları saf Kotlin modüllerinde, arayüz `app` içinde** 
 1. `games/<oyun>/` altında saf Kotlin motor modülü oluşturun (testleriyle birlikte) ve `settings.gradle.kts`'e ekleyin.
 2. `app/src/main/kotlin/com/za/games/ui/<oyun>/` altında Compose ekranını yazın.
 3. `GameRegistry.games` listesine bir `GameEntry` ekleyin — ana menü kartı ve rekor takibi kendiliğinden çalışır.
+4. **Oyunu cihazda test protokolünden geçirin** ([`docs/oyun-testi.md`](docs/oyun-testi.md)): cihaz koşumu, kare hızı, giriş kalibrasyonu ve denge ölçümü. Birim testleri kuralları doğrular, oynanabilirliği değil.
 
 ## Oyunlar
 
