@@ -2,6 +2,9 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.23.0 (2026-09-09)
+- Yeni oyun: Viraj (sözde-3D yarış; rakipler, eşyalar, kontrol noktaları; günlük pist, üç deneme)
+
 ## 0.22.0 (2026-09-08)
 - Güncellemeden sonra ana menüde Yenilikler kartı; yeni eklenen oyunlarda Yeni rozeti
 - Hakkında ekranında sürüm notları

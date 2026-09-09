@@ -39,6 +39,11 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.23.0", "2026-09-09",
+            tr = listOf("Yeni oyun: Viraj (sözde-3D yarış; günlük pist, üç deneme)"),
+            en = listOf("New game: Viraj (pseudo-3D racing; daily track, three attempts)"),
+        ),
+        ReleaseNote(
             "0.22.0", "2026-09-08",
             tr = listOf(
                 "Güncellemeden sonra ana menüde Yenilikler kartı; yeni eklenen oyunlarda Yeni rozeti",

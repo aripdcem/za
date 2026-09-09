@@ -16,6 +16,7 @@ import com.za.games.ui.hub.BalkonArt
 import com.za.games.ui.hub.KakuroArt
 import com.za.games.ui.hub.VergiciArt
 import com.za.games.ui.hub.ToplamArt
+import com.za.games.ui.hub.VirajArt
 import com.za.games.ui.hub.MinesArt
 import com.za.games.ui.hub.SnakeArt
 import com.za.games.ui.hub.SudokuArt
@@ -30,6 +31,7 @@ import com.za.games.ui.balkon.BalkonScreen
 import com.za.games.ui.kakuro.KakuroScreen
 import com.za.games.ui.vergici.VergiciScreen
 import com.za.games.ui.toplam.ToplamScreen
+import com.za.games.ui.viraj.VirajScreen
 import com.za.games.ui.snake.SnakeScreen
 import com.za.games.ui.sudoku.SudokuScreen
 import com.za.games.ui.tetris.TetrisScreen
@@ -232,6 +234,18 @@ object GameRegistry {
             art = { modifier -> ToplamArt(modifier) },
             screen = { highScore, onScore, onExit ->
                 ToplamScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "viraj",
+            since = "0.23.0",
+            titleRes = R.string.game_viraj,
+            taglineRes = R.string.game_viraj_tagline,
+            category = GameCategory.ARCADE,
+            accent = Color(0xFF4DE1FF),
+            art = { modifier -> VirajArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                VirajScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
     )

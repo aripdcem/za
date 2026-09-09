@@ -1,0 +1,6 @@
+<tr-TR>
+• Yeni oyun: Viraj. Sözde-3D yarış: rakipleri solla, kontrol noktalarında süre kap, turbo şeridine bin, koni ve yağdan kaçın. Günlük pist, üç deneme.
+</tr-TR>
+<en-US>
+• New game: Viraj. Pseudo-3D racing: overtake rivals, grab time at checkpoints, ride turbo strips, avoid cones and oil. Daily track, three attempts.
+</en-US>

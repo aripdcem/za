@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#F3F6FB" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0B0F1A" media="(prefers-color-scheme: dark)">
 <title>ZA · zero-ads games</title>
-<meta name="description" content="ZA: Android için sıfır reklam, sıfır izleyici, sıfır izin oyun platformu. Blok, 2048, Yılan, Sudoku, Mayın Tarlası, Kakuro, Tavla ve Türkçe kelime oyunları — saf oyun.">
+<meta name="description" content="ZA: Android için sıfır reklam, sıfır izleyici, sıfır izin oyun platformu. Blok, Viraj, 2048, Yılan, Sudoku, Mayın Tarlası, Kakuro, Tavla ve Türkçe kelime oyunları — saf oyun.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B0F1A'/%3E%3Cg fill='%234DE1FF'%3E%3Crect x='7' y='7' width='4' height='4' rx='1'/%3E%3Crect x='12' y='7' width='4' height='4' rx='1'/%3E%3Crect x='17' y='7' width='4' height='4' rx='1'/%3E%3Crect x='22' y='7' width='4' height='4' rx='1'/%3E%3Crect x='17' y='12' width='4' height='4' rx='1'/%3E%3Crect x='12' y='16' width='4' height='4' rx='1'/%3E%3Crect x='7' y='21' width='4' height='4' rx='1'/%3E%3Crect x='12' y='21' width='4' height='4' rx='1'/%3E%3Crect x='17' y='21' width='4' height='4' rx='1'/%3E%3Crect x='22' y='21' width='4' height='4' rx='1'/%3E%3C/g%3E%3C/svg%3E">
 <style>
   /* Tema: düğme yok; sistem tercihine (prefers-color-scheme) uyulur. */
@@ -139,6 +139,7 @@
   .card.kakuro { background-image: linear-gradient(90deg, rgba(20, 184, 166, 0.10), transparent 60%); }
   .card.vergici { background-image: linear-gradient(90deg, rgba(163, 230, 53, 0.10), transparent 60%); }
   .card.toplam { background-image: linear-gradient(90deg, rgba(192, 132, 252, 0.10), transparent 60%); }
+  .card.viraj { background-image: linear-gradient(90deg, rgba(77, 225, 255, 0.10), transparent 60%); }
   .card.muted { opacity: .65; }
   .art {
     flex: 0 0 auto;
@@ -204,7 +205,7 @@
 
   <main>
     <nav class="groups" aria-label="Oyun grupları">
-      <a href="#arcade">Arcade <span>5</span></a>
+      <a href="#arcade">Arcade <span>6</span></a>
       <a href="#bulmaca">Bulmaca <span>4</span></a>
       <a href="#kelime">Kelime <span>4</span></a>
       <a href="#masa">Masa <span>3</span></a>
@@ -304,6 +305,25 @@
       <div class="info">
         <h3>Balkon</h3>
         <p>Balkondan sokağa nişan al: rüzgâr, hareketli hedefler, süreli seviyeler. Kabak çekirdeği, su balonu ya da tükürük; üst üste isabetler megayı doldurur.</p>
+      </div>
+    </section>
+    <section class="card viraj">
+      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(5,11px);grid-auto-rows:11px;gap:2px">
+        <i style="grid-area:1/1/6/6;background:#0B1E3D"></i>
+        <i style="grid-area:3/1/6/6;background:#2F6B2F"></i>
+        <i style="grid-area:3/3;background:#3B4252"></i>
+        <i style="grid-area:4/2/5/5;background:#3B4252"></i>
+        <i style="grid-area:5/1/6/6;background:#3B4252"></i>
+        <i style="grid-area:4/2;background:#DC2626"></i>
+        <i style="grid-area:5/1;background:#DC2626"></i>
+        <i style="grid-area:4/4;background:#E5E7EB"></i>
+        <i style="grid-area:5/5;background:#E5E7EB"></i>
+        <i style="grid-area:1/4;background:#FDE68A;border-radius:50%"></i>
+        <i style="grid-area:5/3;background:#4DE1FF;border-radius:3px"></i>
+      </div>
+      <div class="info">
+        <h3>Viraj</h3>
+        <p>Sözde-3D yarış: gaz otomatik, direksiyon ve fren sende. Rakipleri solla, kontrol noktalarında süre kap, turbo şeridine bin, koni ve yağdan kaçın. Günlük pist, üç deneme.</p>
       </div>
     </section>
       </div>

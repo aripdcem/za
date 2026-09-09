@@ -496,4 +496,34 @@
     <string name="whats_new_dismiss">Tamam</string>
     <string name="badge_new">Yeni</string>
     <string name="about_release_notes">Sürüm notları</string>
+
+    <!-- Viraj -->
+    <string name="game_viraj">Viraj</string>
+    <string name="game_viraj_tagline">Sözde-3D yarış: süreye karşı sür, rakipleri solla, virajlara hâkim ol</string>
+    <string name="viraj_intro">Gaz otomatik; ◀ ▶ ile direksiyon, FREN ile yavaşla. Kontrol noktaları süre ekler, süre bitince yarış biter. Rakipleri sollamak puan; koni ve yağdan kaçın, turbo şeridine bin, sarı kutuyu kap.</string>
+    <string name="viraj_daily_desc">Herkes bugün aynı pisti sürer; günde 3 deneme.</string>
+    <string name="viraj_daily_status_fmt">Bugün: %1$d/%2$d deneme · en iyi %3$d</string>
+    <string name="viraj_daily_exhausted">Bugünkü denemeler bitti; yarın yeni pist!</string>
+    <string name="viraj_start">Başla</string>
+    <string name="viraj_retry_fmt">Tekrar dene (%1$d kaldı)</string>
+    <string name="viraj_to_menu">Başa dön</string>
+    <string name="viraj_speed">Hız</string>
+    <string name="viraj_kmh_fmt">%1$d km/s</string>
+    <string name="viraj_time_up">Süre doldu</string>
+    <string name="viraj_result_fmt">%1$s km · %2$d sollama · %3$d kontrol noktası</string>
+    <string name="viraj_ctrl_left">Sola kır</string>
+    <string name="viraj_ctrl_right">Sağa kır</string>
+    <string name="viraj_ctrl_brake">FREN</string>
+    <string name="viraj_checkpoint_fmt">Kontrol noktası +%1$d sn</string>
+    <string name="viraj_overtake_fmt">Sollama +%1$d</string>
+    <string name="viraj_turbo">Turbo!</string>
+    <string name="viraj_shield">Kalkan!</string>
+    <string name="viraj_shield_used">Kalkan korudu</string>
+    <string name="viraj_time_gift_fmt">+%1$d sn</string>
+    <string name="viraj_oil">Yağ!</string>
+    <string name="viraj_cone">Koni</string>
+    <string name="viraj_km_fmt">%1$d km</string>
+    <string name="viraj_hand_hint">Fren tuşu başparmağının olduğu tarafa gelir; ayar Kuyu ve Geçit ile ortaktır</string>
+    <string name="viraj_next_checkpoint">Kontrol noktası</string>
+    <string name="viraj_board_desc">Viraj: %1$d km/s, %2$d m, %3$d sollama</string>
 </resources>

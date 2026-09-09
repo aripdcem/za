@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**.
 
 Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç çipleri, seçim kalıcı) ve en üstte son oynanan dört oyun için hızlı erişim şeridi bulunur.
 
@@ -32,7 +32,7 @@ za/
 │       └── ui/theme/             # ZA teması
 ├── games/
 │   ├── tetris/  g2048/  snake/   # Oyun motorları: saf Kotlin/JVM, Android'e
-│   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ kuyu/ gecit/ tavla/ balkon/ kakuro/ sayi/ # bağımsız, her biri kendi birim testleriyle
+│   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ kuyu/ gecit/ tavla/ balkon/ kakuro/ sayi/ viraj/ # bağımsız, her biri kendi birim testleriyle
 └── tools/                        # gen_sfx.py (sesler), gen_words.py + gen_turetme.py + gen_dizgi.py (kelime listeleri)
 ```
 
@@ -186,6 +186,20 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   isabet alanı, iki kat puan, ekran sarsıntısı
 - Süreli seviyeler: 45 saniyede gereken isabete ulaş (8, 10, 12…); kalan süre ×10 bonus; hız, hedef sayısı ve
   rüzgâr seviyeyle artar. 60 Hz sabit adım, deterministik hedef akışı (`games/balkon`, 11 test)
+
+### Viraj
+- **Sözde-3D yarış** (OutRun türü yol izdüşümü, kendi tasarımımız): dikey ekranda arkadan görünüm, parça parça
+  üretilen yol, yumuşatılmış virajlar ve tepeler, yol kenarı ağaç/çalı/kaya/tabela, uzak tepelerde paralaks
+- Gaz otomatik; ◀ ▶ basılı tutarak direksiyon, FREN tuşu (sağ/sol el ayarı Kuyu ve Geçit ile ortak). Yüksek hızda
+  merkezkaç aracı virajın dışına iter; yol dışı yavaşlatır, kenar nesnelerine çarpmak hızı keser
+- Rakip kartlar sollamadan kaçınır ve kendi aralarında yol verir; daha yavaş bir rakibe çarpmak hızı düşürüp geriye
+  iter, rakibi geçmek +50. Her 600 parçada (3 km) kontrol noktası süre ekler (zorlukla azalır); süre bitince yarış biter
+- Eşyalar: turbo şeridi (2,5 s tavan hız), yağ (direksiyon ters, kayma), koni (yavaşlama), sarı kutu (turbo, bir
+  çarpışmayı emen kalkan ya da +5 sn)
+- Skor = geçilen parça + sollama + kontrol noktası + eşya; **günlük mod** herkese aynı pisti verir, günde 3 deneme
+- Motor `games/viraj`: `VirajTrack` (kesit üreteci, `easeIn`/`easeInOut`), `VirajWorld` (sabit adım, rakip yapay
+  zekâsı, çarpışma, eşyalar, sayaçlar); 13 test: determinizm, hızlanma/fren, yol dışı, kontrol noktası, süre, sollama,
+  çarpışma ve kalkan, eşyalar, pist sınırları, rakiplerin yeniden doğması
 
 ### Kakuro
 - Toplam bulmacası: kara hücrelerdeki ipucu, sağındaki yatay ve altındaki dikey koşunun toplamı; koşudaki rakamlar
