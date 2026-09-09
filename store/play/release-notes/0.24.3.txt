@@ -1,0 +1,8 @@
+<tr-TR>
+• Tavla Hapis: karşılıklı kilitlenme artık berabere bitmiyor; hapis savaşını kazanan taraf oyunu alıyor.
+• Kuyu: RAPID yükseltmesi şarjörü de artırıyor, havada kalma süresi kısalmıyor.
+</tr-TR>
+<en-US>
+• Tavla Hapis: a mutual lock is now decided by the pinning battle instead of ending in a draw.
+• Kuyu: the RAPID upgrade now also grants ammo, so your hover time no longer shrinks.
+</en-US>

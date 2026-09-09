@@ -3,6 +3,7 @@ package com.za.games.tavla
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -219,5 +220,38 @@ class TavlaStateTest {
         // Dengeli açılış: katlamak istemez.
         val even = base.openingRoll().let { playTurn(it) }
         assertFalse(TavlaAi.wantsDouble(even))
+    }
+
+    /**
+     * Karşılıklı kilitlenme berabere değil, kararla bitmeli. Hapis modunda
+     * oyunların dörtte biri tam blokajla kilitleniyordu ve bitiş konumu her
+     * seferinde birebir ayna olduğu için (iki taraf da 14 pulu son hanesinde,
+     * 15. pulu hapis) pip karşılaştırması hiç ayrım yapamıyor, hepsi berabere
+     * bitiyordu. Kademeli ölçüt son kademede çıkmazın oluştuğu andaki
+     * üstünlüğü kullanır; bu test kilitlenen oyunların kazananı olduğunu
+     * doğrular.
+     */
+    @Test
+    fun `deadlock is decided rather than drawn`() {
+        val rules = TavlaRules(mode = TavlaMode.HAPIS)
+        var deadlocks = 0
+        for (seed in 1L..40L) {
+            var state = TavlaState.newMatch(rules, seed).openingRoll()
+            var guard = 0
+            while (state.phase != Phase.GAME_OVER && state.phase != Phase.MATCH_OVER && guard++ < 20_000) {
+                when (state.phase) {
+                    Phase.TO_ROLL -> state = state.roll()
+                    Phase.MOVING -> {
+                        for (m in TavlaAi.chooseTurn(state)) state = state.move(m.from, m.to)
+                        state = state.endTurn()
+                    }
+                    else -> break
+                }
+            }
+            if (!state.deadlock) continue
+            deadlocks++
+            assertNotNull("tohum $seed: kilitlenme berabere bitti", state.winner)
+        }
+        assertTrue("hiç kilitlenme oluşmadı; test bir şey doğrulamıyor", deadlocks > 0)
     }
 }

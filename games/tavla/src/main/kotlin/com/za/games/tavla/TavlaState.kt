@@ -35,8 +35,19 @@ data class TavlaState(
     val cubeOwner: Int? = null,
     /** Oyun pes ile bittiyse (küp teklifi reddedildi). */
     val resigned: Boolean = false,
-    /** Karşılıklı kilitlenmeyle bittiyse: pip sayısı az olan kazanır, eşitse berabere ([winner] null). */
+    /** Karşılıklı kilitlenmeyle bittiyse; kazanan [finishDeadlock] kademeleriyle belirlenir. */
     val deadlock: Boolean = false,
+    /**
+     * Karşılıklı hapis ilk oluştuğunda önde olan oyuncu (yoksa null).
+     *
+     * Kilitlenmiş oyunlar ortanca 15. turda çıkmaza giriyor ama ancak 74. turda
+     * fark ediliyor; aradaki ~59 tur zorunlu mekik hareketiyle geçtiği için
+     * bitiş konumu **her seferinde birebir ayna** oluyor (iki taraf da 14 pulu
+     * son hanesinde, 15. pulu rakibin altında hapis). Bu yüzden konuma bakan
+     * hiçbir ölçüt bitişte ayrım yapamaz. Çıkmazın oluştuğu andaki üstünlük
+     * burada saklanır ve son kademe olarak kullanılır.
+     */
+    val lockEdge: Int? = null,
     val rng: Long = 0L,
 ) {
     /** Sıradaki oyuncu zar atmadan önce katlama teklif edebilir mi? */
@@ -157,6 +168,7 @@ data class TavlaState(
         if (phase != Phase.MOVING) return this
         if (played.isEmpty() && isStuck(turn) && isStuck(opponent)) return finishDeadlock()
         return copy(
+            lockEdge = lockEdge ?: currentLockEdge(),
             turn = opponent,
             phase = Phase.TO_ROLL,
             dice = emptyList(),
@@ -172,10 +184,50 @@ data class TavlaState(
         return finishGame(gain = cubeValue * (if (isMars) 2 else 1), isMars = isMars, resigned = false)
     }
 
+    /**
+     * Karşılıklı hapis var mı, ve varsa kim önde? Kademeler sırayla denenir:
+     * pip, hapsedilen pulun geriliği, ev içi kapı sayısı. Hepsi eşitse null.
+     */
+    private fun currentLockEdge(): Int? {
+        if (!rules.mode.pinning) return null
+        val pinned0 = points.any { it.pinned && it.owner == 1 }   // 0'ın pulu hapis
+        val pinned1 = points.any { it.pinned && it.owner == 0 }
+        if (!pinned0 || !pinned1) return null
+        return leader(points, bar)
+    }
+
+    /** Kademeli üstünlük; hiçbir kademe ayırmazsa null. */
+    private fun leader(points: List<Point>, bar: List<Int>): Int? {
+        // 1. Pip: az olan önde.
+        val p0 = TavlaLogic.pips(points, bar, 0)
+        val p1 = TavlaLogic.pips(points, bar, 1)
+        if (p0 != p1) return if (p0 < p1) 0 else 1
+
+        // 2. Hapsedilen pulun geriliği: kendi pulu daha geride hapsedilen geride.
+        fun tutsakGeriligi(player: Int): Int = points.withIndex().sumOf { (i, pt) ->
+            if (pt.pinned && pt.owner == 1 - player) TavlaLogic.distance(player, i) else 0
+        }
+        val t0 = tutsakGeriligi(0)
+        val t1 = tutsakGeriligi(1)
+        if (t0 != t1) return if (t0 < t1) 0 else 1
+
+        // 3. Ev içi kapı sayısı: kendi evinde iki ve üzeri pullu hane.
+        fun kapilar(player: Int): Int =
+            TavlaLogic.home(player).count { points[it].owner == player && points[it].count >= 2 }
+        val k0 = kapilar(0)
+        val k1 = kapilar(1)
+        if (k0 != k1) return if (k0 > k1) 0 else 1
+        return null
+    }
+
+    /**
+     * Kilitlenmeyi sonuçlandırır. Önce bitiş konumuna kademeli ölçüt uygulanır
+     * (nadir asimetrik kilitlenmeler için); konum tam simetrikse çıkmazın
+     * oluştuğu andaki üstünlük ([lockEdge]) kullanılır. O da yoksa berabere.
+     */
     private fun finishDeadlock(): TavlaState {
-        val p0 = pips(0)
-        val p1 = pips(1)
-        if (p0 == p1) {
+        val better = leader(points, bar) ?: lockEdge
+        if (better == null) {
             return copy(
                 phase = Phase.GAME_OVER,
                 winner = null,
@@ -186,7 +238,6 @@ data class TavlaState(
                 snapshots = emptyList(),
             )
         }
-        val better = if (p0 < p1) 0 else 1
         return copy(turn = better).finishGame(gain = cubeValue, isMars = false, resigned = false).copy(deadlock = true)
     }
 

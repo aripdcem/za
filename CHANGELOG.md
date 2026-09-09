@@ -2,6 +2,10 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.24.3 (2026-09-10)
+- Tavla Hapis: karşılıklı kilitlenme kademeli ölçütle (pip → hapis geriliği → ev kapıları → çıkmaz anındaki üstünlük) karara bağlanıyor; beraberlik oranı %26'dan sıfıra indi
+- Kuyu: RAPID yükseltmesi artık şarjörü de artırıyor (+4); havada kalma süresi kısalmıyor, şarjör başına hasar %50 artıyor
+
 ## 0.24.2 (2026-09-09)
 - Mayın Tarlası: tahtalar tahminsiz çözülebilir; üretim çözücüyle doğruluyor (kör tahminle kaybetme kalktı)
 - Kıskaç: tahmin hakkı 12 → 13; gösterilen kelime listesinde ikili arama en kötü durumda 13 tahmin istiyordu

@@ -324,4 +324,25 @@ class KuyuWorldTest {
             assertTrue(world.viewTop <= world.player.y + 0.001f)
         }
     }
+
+    /**
+     * Hiçbir yükseltme havada kalma bütçesini kısaltmamalı. Şarjör atış
+     * *başına* düştüğü için bütçe = şarjör × atış aralığı; RAPID tek başına
+     * aralığı kısaltınca bütçe %33 düşüyor ve oyuncu "yükseltme" alıp hayatta
+     * kalma süresinden oluyordu. Ölçüm: `./gradlew :games:kuyu:probe`.
+     */
+    @Test
+    fun `upgrades never shorten the hover budget`() {
+        val tabanBütçe = KuyuWorld.AMMO * KuyuWorld.SHOT_INTERVAL
+        for (upgrade in Upgrade.entries) {
+            val perks = KuyuPerks()
+            val player = Player(0f, 0f)
+            perks.apply(upgrade, player)
+            val bütçe = perks.maxAmmo * perks.shotInterval
+            assertTrue(
+                "$upgrade havada kalmayı kısaltıyor: $bütçe kare, taban $tabanBütçe",
+                bütçe >= tabanBütçe,
+            )
+        }
+    }
 }

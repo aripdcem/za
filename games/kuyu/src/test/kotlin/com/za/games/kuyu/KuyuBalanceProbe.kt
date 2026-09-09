@@ -61,7 +61,7 @@ class KuyuBalanceProbe {
         data class Kur(val ad: String, val ammo: Int, val aralik: Int, val spread: Boolean)
         val kurulumlar = listOf(
             Kur("taban", KuyuWorld.AMMO, KuyuWorld.SHOT_INTERVAL, false),
-            Kur("+RAPID", KuyuWorld.AMMO, 4, false),
+            Kur("+RAPID", KuyuWorld.AMMO + 4, 4, false),
             Kur("+AMMO ×1", KuyuWorld.AMMO + 2, KuyuWorld.SHOT_INTERVAL, false),
             Kur("+AMMO ×2", KuyuWorld.AMMO + 4, KuyuWorld.SHOT_INTERVAL, false),
             Kur("+SPREAD", KuyuWorld.AMMO, KuyuWorld.SHOT_INTERVAL, true),
@@ -77,7 +77,8 @@ class KuyuBalanceProbe {
         }
         println()
         println("Not: şarjör atış başına düşer, mermi başına değil. SPREAD tek atışta üç")
-        println("mermi attığı için şarjör başına hasarı üçe katlar; RAPID hasarı değiştirmez.")
+        println("mermi attığı için şarjör başına hasarı üçe katlar; RAPID ise aralığı")
+        println("kısaltırken şarjörü de artırdığı için havada kalmayı korur.")
     }
 
     // ------------------------------------------------------------------
@@ -93,7 +94,7 @@ class KuyuBalanceProbe {
         data class Y(val ad: String, val ammo: Int, val aralik: Int, val carpan: Int)
         val liste = listOf(
             Y("AMMO", KuyuWorld.AMMO + 2, KuyuWorld.SHOT_INTERVAL, 1),
-            Y("RAPID", KuyuWorld.AMMO, 4, 1),
+            Y("RAPID", KuyuWorld.AMMO + 4, 4, 1),
             Y("SPREAD", KuyuWorld.AMMO, KuyuWorld.SHOT_INTERVAL, 3),
         )
         for (y in liste) {
@@ -108,9 +109,9 @@ class KuyuBalanceProbe {
             )
         }
         println()
-        println("RAPID havada kalma süresini kısaltır (aynı şarjör daha çabuk biter) ama")
-        println("hasarı değiştirmez; karşılığında düşüşü daha sık frenler. Tasarım kararı:")
-        println("hız/kontrol takası mı, yoksa gerileme mi?")
+        println("RAPID atış aralığını kısaltırken şarjörü de artırır (+4): havada kalma")
+        println("korunur, düşüş daha sık frenlenir, şarjör başına hasar artar. Tek başına")
+        println("aralık kısaltmak havada kalmayı %33 kısaltıp hasarı değiştirmiyordu.")
     }
 
     // ------------------------------------------------------------------
