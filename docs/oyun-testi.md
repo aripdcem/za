@@ -212,6 +212,15 @@ denemeye başlarsa büyür (cihazdaki yavaşlamanın da sebebi budur).
   hedefi olmadığını yorumda belirtin.
 - Sayacı olmayan bir motorda önce sayacı ekleyin; ölçülemeyen şey korunamaz.
 
+Depodaki iyi örnek Vergici: çözücü süreye değil **düğüm bütçesine** bakıyor
+(`VergiciSolver.optimal(n, budget = 400_000)`), test de sonucu deterministik
+bir ölçütle karşılaştırıyor (`opt >= greedyScore`). Süre yalnızca rapora
+basılıyor, iddiaya girmiyor — doğru kullanım budur.
+
+Tüm motor testleri bu açıdan tarandı (`nanoTime`, `currentTimeMillis`,
+`Thread.sleep`): duvar saatine **iddia bağlayan** tek yer Kakuro'ydu ve
+düzeltildi. Kakuro ile Vergici'de kalan süre ölçümleri yalnızca rapor amaçlı.
+
 ### Her oyunda bakılacaklar
 
 | Ölçüt | Soru |
@@ -230,7 +239,8 @@ denemeye başlarsa büyür (cihazdaki yavaşlamanın da sebebi budur).
 | Oyun | A koşum | B kare | C giriş | D denge | Tarih |
 | --- | --- | --- | --- | --- | --- |
 | Filo | ✅ | ⚠️ ~34 kare/s (uygulama geneli) | ✅ düzeltildi | ✅ düzeltildi | 2026-09-09 |
-| Blok, 2048, Yılan, Sudoku, Mayın Tarlası, Beş Harf, Kıskaç, Türetme, Dizgi, Kuyu, Geçit, Tavla, Balkon, Kakuro, Vergici, Toplam Kapma, Viraj | — | — | — | — | bekliyor |
+| Viraj | ⚠️ ölçüldü | ⚠️ ~31 kare/s (uygulama geneli) | — (tuşla sürülüyor) | ✅ ölçüldü, kusur yok | 2026-09-09 |
+| Blok, 2048, Yılan, Sudoku, Mayın Tarlası, Beş Harf, Kıskaç, Türetme, Dizgi, Kuyu, Geçit, Tavla, Balkon, Kakuro, Vergici, Toplam Kapma | — | — | — | — | bekliyor |
 
 ### Filo · 2026-09-09 (SM-A515F, Android 13, 1080×2400 @420 dpi)
 
@@ -322,6 +332,43 @@ atılan mermide 26. dalgada 0,40 s kalıyor; 350 ms tepkiyle acemi oyuncunun pay
 
 İnsan sınırlı bot (10 tohum): ortalama 10–11. dalga, ilk ölüm 5–7. dalga.
 Bot bir alt sınırdır.
+
+### Viraj · 2026-09-09
+
+**B — kare hızı:** 15 s oyun içi, sürüm derlemesi: ortanca 32 ms, %73,3 takılma,
+GPU 12 ms. Filo ile aynı profil; aşağıdaki açık konunun parçası.
+
+**C — giriş:** Viraj tuşla sürülüyor (◄ ► ve FREN), sürükleme yok; bu aşama
+uygulanmaz. Tuş yinelemesi ayrı bir ölçüm konusu.
+
+**D — denge** (`./gradlew :games:viraj:probe`): kusur bulunmadı, ama zorluk
+eğrisi iki ucundan aynı anda sıkıyor; tasarım kararı olarak kayda değer.
+
+Direksiyon yetkisi `2·speedPct`, merkezkaç `2·speedPct²·viraj·0,3`. Yani tam
+karşı direksiyona rağmen dışarı savrulma koşulu `speedPct·viraj·0,3 > 1`:
+
+| Viraj | Tutulabilen azami hız |
+| --- | --- |
+| ≤ 3,33 | tam gaz (240 km/s) |
+| 4,0 | %83 (200 km/s) |
+| 5,0 | %66 (160 km/s) |
+| 6,5 | %51 (123 km/s) |
+
+Yol, zorlukla birlikte daha sert viraj üretiyor (0'da 1,5–3,0; 1'de 1,5–6,5),
+yani ileride en sert virajlarda hız yarıya inmek zorunda.
+
+Aynı anda süre bütçesi daralıyor: kontrol noktası arası 120 000 birim ve ödül
+16 s'den 12 s'ye düşüyor. Başa baş ortalama hız **zorluk 0'da %62, zorluk 1'de
+%83**. Yani geç aşamada ortalama %83 tutmak gerekirken en sert virajlar %51'e
+zorluyor — koşu doğal olarak burada bitiyor.
+
+İnsan sınırlı sürücü (8 tohum, ayrık ◄ ► + fren): acemi 19,3 · orta 19,9 ·
+usta 20,6 kontrol noktası (~60 km). Beceri sonucu neredeyse değiştirmiyor;
+koşuyu bitiren şey tepki hızı değil, hız/süre sıkışması.
+
+Not: turbo sırasında `speedPct` 1,25'e çıktığı için tutulabilen viraj 2,67'ye
+iner — turboyu virajlı kesimde almak, frenlemeden kullanılırsa zarar. Hata
+değil, ama oyuncuya öğretilmesi gereken bir incelik.
 
 ## Açık konu: uygulama geneli kare hızı
 
