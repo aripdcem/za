@@ -27,7 +27,14 @@ enum class Upgrade(val stackable: Boolean) {
     /** Her atışta üç mermi. */
     SPREAD(false),
 
-    /** Atış aralığı 6 → 4 kare: daha sık ateş, daha iyi askı. */
+    /**
+     * Atış aralığı 6 → 4 kare ve +4 şarjör: daha sık ateş, aynı havada kalma.
+     *
+     * Şarjör atış *başına* düştüğü için tek başına aralık kısaltmak havada
+     * kalmayı %33 kısaltıyordu (0,80 s → 0,53 s) ve şarjör başına hasarı hiç
+     * artırmıyordu: yükseltme bir eksende gerileme oluyordu. Ek şarjör tabanı
+     * geri veriyor. Ölçüm: `./gradlew :games:kuyu:probe`.
+     */
     RAPID(false),
 
     /** Mermi menzili 9 → 14 kare. */
@@ -88,7 +95,11 @@ class KuyuPerks {
                 player.hp = min(maxHp, player.hp + 1)
             }
             Upgrade.SPREAD -> spread = true
-            Upgrade.RAPID -> shotInterval = 4
+            Upgrade.RAPID -> {
+                shotInterval = 4
+                maxAmmo = min(maxAmmo + 4, MAX_AMMO)
+                player.ammo = maxAmmo
+            }
             Upgrade.RANGE -> bulletRange = 14f
             Upgrade.MAGNET -> magnetRange = KuyuWorld.MAGNET_RANGE * 2f
             Upgrade.COMBO -> comboGems = KuyuWorld.COMBO_GEMS * 2

@@ -39,6 +39,17 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.24.3", "2026-09-10",
+            tr = listOf(
+                "Tavla Hapis: karşılıklı kilitlenme artık berabere değil, hapis savaşını kazanan lehine biter",
+                "Kuyu: RAPID yükseltmesi şarjörü de artırıyor; havada kalma süresi kısalmıyor",
+            ),
+            en = listOf(
+                "Tavla Hapis: a mutual lock is now decided by the pinning battle instead of ending in a draw",
+                "Kuyu: the RAPID upgrade now also grants ammo, so hover time no longer shrinks",
+            ),
+        ),
+        ReleaseNote(
             "0.24.2", "2026-09-09",
             tr = listOf(
                 "Mayın Tarlası: tahtalar artık tahmin gerektirmeden çözülebiliyor",

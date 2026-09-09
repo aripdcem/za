@@ -295,9 +295,9 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Kıskaç | ✅ | olay güdümlü (0 · 0) | — | ✅ düzeltildi | 2026-09-09 |
 | Türetme | ✅ | olay güdümlü (0 · 0) | — | ✅ dengeli | 2026-09-09 |
 | Dizgi | ✅ | olay güdümlü (0 · 0) | — | ✅ torba sağlam | 2026-09-09 |
-| Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | bekliyor | ⚠️ RAPID takası | 2026-09-09 |
+| Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | bekliyor | ✅ düzeltildi | 2026-09-09 |
 | Geçit | ✅ | **60 · 1 · %1,2 · 22 ms** | — (ayrık hamle) | ✅ adil | 2026-09-09 |
-| Tavla | ✅ | olay güdümlü (0 · 0) | — | ⚠️ Hapis beraberliği | 2026-09-09 |
+| Tavla | ✅ | olay güdümlü (0 · 0) | — | ✅ düzeltildi | 2026-09-09 |
 | Balkon | ✅ | **60 · 2 · %39,6 · 25 ms** | — (nokta nişan) | ✅ bilinçli tercih | 2026-09-09 |
 | Kakuro | ✅ | olay güdümlü (0 · 0) | — | ✅ üretim bütçesi | 2026-09-09 |
 | Vergici | ✅ | olay güdümlü (0 · 0) | — | ✅ düğüm bütçeli çözücü | 2026-09-09 |
