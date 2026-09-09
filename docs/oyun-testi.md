@@ -272,7 +272,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Türetme | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Dizgi | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | bekliyor | ⚠️ RAPID takası | 2026-09-09 |
-| Geçit | ✅ | **60 · 1 · %1,2 · 22 ms** | bekliyor | bekliyor | 2026-09-09 |
+| Geçit | ✅ | **60 · 1 · %1,2 · 22 ms** | — (ayrık hamle) | ✅ adil | 2026-09-09 |
 | Tavla | ✅ | olay güdümlü (0 · 0) | bekliyor | bekliyor | 2026-09-09 |
 | Balkon | ✅ | **60 · 2 · %39,6 · 25 ms** | bekliyor | bekliyor | 2026-09-09 |
 | Kakuro | ✅ | olay güdümlü (0 · 0) | — | ✅ üretim bütçesi | 2026-09-09 |
@@ -412,6 +412,45 @@ koşuyu bitiren şey tepki hızı değil, hız/süre sıkışması.
 Not: turbo sırasında `speedPct` 1,25'e çıktığı için tutulabilen viraj 2,67'ye
 iner — turboyu virajlı kesimde almak, frenlemeden kullanılırsa zarar. Hata
 değil, ama oyuncuya öğretilmesi gereken bir incelik.
+
+### Geçit · 2026-09-09
+
+**D — denge** (`./gradlew :games:gecit:probe`). **Adillik sorunu bulunmadı.**
+
+Geçit'in dengesi tek gerilime iner: geçmek için trafikte boşluk beklemek
+gerekir, ama beklerken kamera yaklaşır ve 3,5 saniyede kartal kapar. Ölçüm bu
+iki tarafı karşılaştırıyor.
+
+Bekleme bütçesi (hangisi önce dolarsa):
+
+| Satır | Kamera hızı | Kamera payı | Geçerli bütçe |
+| --- | --- | --- | --- |
+| 0 | 0,35 sat/s | 11,4 s | 3,50 s (kartal) |
+| 100 | 0,80 sat/s | 5,0 s | 3,50 s (kartal) |
+| 200+ | 1,25 sat/s | 3,2 s | **3,20 s (kamera)** |
+
+Şeritlerin en uzun kesintisiz kapalı kalma süresi (sütun başına, en kötü):
+
+| Tür | Derinlik 10 | 60 | 250 | Bütçe |
+| --- | --- | --- | --- | --- |
+| ROAD | 1,17 s | 0,67 s | 0,47 s | 3,2–3,5 s |
+| RAIL | — | 0,53 s | 0,53 s | 3,2–3,5 s |
+| RIVER | **3,15 s** | 2,27 s | 1,93 s | 3,2–3,5 s |
+
+Ölçülen hiçbir sütun bütçeyi aşmıyor (**%0**), ve bir şeridin *bütün*
+sütunlarının aynı anda kapalı kaldığı en uzun süre 0,23 s (tren). Yani her an
+geçilebilir bir sütun var; oyun adil.
+
+Dikkat çeken tek yer: **erken nehirler**. 10. satırda bir sütun 3,15 s kapalı
+kalabiliyor, bütçe 3,50 s — payı 0,35 s. Üstelik yana hamle kartal sayacını
+sıfırlamaz, 1,75 s'e çeker. Zorluk arttıkça nehir hızlandığı için bu süre
+kısalıyor (250. satırda 1,93 s), yani en dar an oyunun en acemi anında.
+
+**İlerleme botu (8 tohum):** acemi 27 · orta 19 · usta 39 satır (en iyi 104).
+Bot yazarken kendi hatam öğreticiydi: ilk sürüm yalnızca "şu an boş mu" diye
+bakıyordu ve ölümlerin tamamı CAR'dı — zıplama 0,12 s sürerken trafik akıyor.
+Bot inişi öngörecek biçimde düzeltildi. Ölçüm koşumunda bot yazarken **hamlenin
+tamamlandığı anı** modellemek şart.
 
 ### Kuyu · 2026-09-09
 
