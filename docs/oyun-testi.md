@@ -242,6 +242,24 @@ Tüm motor testleri bu açıdan tarandı (`nanoTime`, `currentTimeMillis`,
 `Thread.sleep`): duvar saatine **iddia bağlayan** tek yer Kakuro'ydu ve
 düzeltildi. Kakuro ile Vergici'de kalan süre ölçümleri yalnızca rapor amaçlı.
 
+### Sıra tabanlı oyunlarda soru farklıdır
+
+Tepki oyunlarında ölçüm "yetişilebilir mi" diye sorar; sıra tabanlı oyunlarda
+zaman baskısı yoktur, o yüzden soru **adilliğe** kayar:
+
+| Ölçüt | Soru |
+| --- | --- |
+| Tek çözüm | Bulmacanın tek bir çözümü olduğu garanti mi? |
+| Tahminsizlik | Çözüm baştan sona mantıkla ilerliyor mu, yoksa kör seçim gerekiyor mu? |
+| Üretim bütçesi | Üretim, cihazı bekletmeyecek kadar ucuz mu? (bkz. duvar saati notu) |
+| Zorluk dağılımı | "Zor" gerçekten daha mı zor, yoksa yalnızca daha mı büyük? |
+
+Tahminsizlik ölçmek için oyunun çözücüsünü değil, **oyuncunun görebildiği
+bilgiyle** çalışan ayrı bir çözücü yazılır: bilinen kısıtlardan kesin sonuç
+çıkarır, çıkaramayınca "burada tahmin gerekti" der. Böyle bir çözücü kısıtları
+bağımsız bileşenlere ayırmalı; yoksa sayım üstel patlar ve ölçüm tahmini
+olduğundan fazla gösterir.
+
 ### Her oyunda bakılacaklar
 
 | Ölçüt | Soru |
@@ -266,7 +284,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | 2048 | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Yılan | ✅ | **61 · 0 · %0 · 22 ms** | — | bekliyor | 2026-09-09 |
 | Sudoku | ✅ | olay güdümlü (1 · 0) | — | bekliyor | 2026-09-09 |
-| Mayın Tarlası | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
+| Mayın Tarlası | ✅ | olay güdümlü (0 · 0) | — | ⚠️ tahmin zorunlu | 2026-09-09 |
 | Beş Harf | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Kıskaç | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Türetme | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
@@ -412,6 +430,34 @@ koşuyu bitiren şey tepki hızı değil, hız/süre sıkışması.
 Not: turbo sırasında `speedPct` 1,25'e çıktığı için tutulabilen viraj 2,67'ye
 iner — turboyu virajlı kesimde almak, frenlemeden kullanılırsa zarar. Hata
 değil, ama oyuncuya öğretilmesi gereken bir incelik.
+
+### Mayın Tarlası · 2026-09-09
+
+**D — adillik** (`./gradlew :games:mines:probe`).
+
+İlk tık hep güvenli: mayınlar ilk tıktan sonra, tıklanan hücre ve komşuları
+hariç yerleştiriliyor. Ama tahtanın **kalanının** mantıkla çözülebileceği
+garanti edilmiyor. Oyuncunun görebildiği bilgiyle çalışan bir çözücü yazılıp
+her tahtada kaç kez kör tahmine zorlandığı sayıldı (60 tohum/zorluk):
+
+| Zorluk | Tahta | Mayın | Yoğunluk | Tahminsiz biten | Ort. tahmin | En kötü |
+| --- | --- | --- | --- | --- | --- | --- |
+| Kolay | 9×12 | 14 | %13 | **%80** | 0,38 | 6 |
+| Orta | 10×14 | 25 | %18 | **%26** | 2,50 | 11 |
+| Zor | 12×17 | 40 | %20 | **%3** | 5,67 | 16 |
+
+Yani orta zorlukta tahtaların dörtte üçü, zor zorlukta neredeyse tamamı bir
+noktada **kör seçim** gerektiriyor. Bu seçimler yazı tura: kaybı beceriyle
+önlenemez, üstelik zor tahtada ortalama beş kez üst üste tutturmak gerekiyor.
+
+Sayılar muhafazakâr bir alt sınırdır: çözücü 24 hücreden büyük bileşenleri ve
+toplam mayın sayısı kısıtını atlıyor, yani gerçek "tahminsiz" oranı bir miktar
+daha yüksek olabilir — ama yön değişmez.
+
+Karar tasarımın. Klasik Mayın Tarlası da böyledir; ama "tahminsiz üretim"
+(üretirken çözücüyü çalıştırıp tahmin gerektiren tahtayı atmak) yaygın bir
+iyileştirmedir ve bu depoda gereken çözücü zaten yazıldı. Maliyeti üretim
+süresidir; Kakuro'da olduğu gibi iş sayacıyla sınırlanabilir.
 
 ### Balkon · 2026-09-09
 
