@@ -11,6 +11,12 @@ Bu belge, her oyunun yayına girmeden önce geçmesi gereken dört aşamayı tan
 > değiştiğinde A–D aşamaları koşulur ve sonuçları [Sonuç kütüğü](#sonuç-kütüğü)
 > bölümüne işlenir. Motor testleri yeşil diye bu adımlar atlanmaz.
 
+Tüm ölçüm koşumlarını birden çalıştırmak için:
+
+```bash
+ANDROID_HOME=$HOME/Android/Sdk ./gradlew probe
+```
+
 ## Neden
 
 Filo (v0.24.0) 41 birim testiyle yeşil olarak yayına hazırdı. Cihaz üstünde iki
@@ -281,21 +287,21 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Oyun | A | B (kare/s · kaçan vsync · jank · p50) | C | D | Tarih |
 | --- | --- | --- | --- | --- | --- |
 | Blok | ✅ | olay güdümlü (1 · 0) | — | ✅ 11. seviyede tavan | 2026-09-09 |
-| 2048 | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
-| Yılan | ✅ | **61 · 0 · %0 · 22 ms** | — | bekliyor | 2026-09-09 |
+| 2048 | ✅ | olay güdümlü (0 · 0) | — | ✅ kazanılabilir | 2026-09-09 |
+| Yılan | ✅ | **61 · 0 · %0 · 22 ms** | — | ✅ tutarlı | 2026-09-09 |
 | Sudoku | ✅ | olay güdümlü (1 · 0) | — | ✅ merdiven doğru | 2026-09-09 |
 | Mayın Tarlası | ✅ | olay güdümlü (0 · 0) | — | ⚠️ tahmin zorunlu | 2026-09-09 |
 | Beş Harf | ✅ | olay güdümlü (0 · 0) | — | ✅ hepsi çözülebilir | 2026-09-09 |
-| Kıskaç | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
-| Türetme | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
-| Dizgi | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
+| Kıskaç | ✅ | olay güdümlü (0 · 0) | — | ⚠️ 12 hak yetmiyor | 2026-09-09 |
+| Türetme | ✅ | olay güdümlü (0 · 0) | — | ✅ dengeli | 2026-09-09 |
+| Dizgi | ✅ | olay güdümlü (0 · 0) | — | ✅ torba sağlam | 2026-09-09 |
 | Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | bekliyor | ⚠️ RAPID takası | 2026-09-09 |
 | Geçit | ✅ | **60 · 1 · %1,2 · 22 ms** | — (ayrık hamle) | ✅ adil | 2026-09-09 |
 | Tavla | ✅ | olay güdümlü (0 · 0) | — | ⚠️ Hapis beraberliği | 2026-09-09 |
 | Balkon | ✅ | **60 · 2 · %39,6 · 25 ms** | — (nokta nişan) | ⚠️ scooter penceresi | 2026-09-09 |
 | Kakuro | ✅ | olay güdümlü (0 · 0) | — | ✅ üretim bütçesi | 2026-09-09 |
-| Vergici | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
-| Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
+| Vergici | ✅ | olay güdümlü (0 · 0) | — | ✅ düğüm bütçeli çözücü | 2026-09-09 |
+| Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | ✅ mevcut testlerle | 2026-09-09 |
 | Viraj | ✅ | **60 · 3 · %100 · 34 ms** | — (tuşla) | ✅ kusur yok | 2026-09-09 |
 | Filo | ✅ | **60 · 1 · %81 · 31 ms** | ✅ düzeltildi | ✅ düzeltildi | 2026-09-09 |
 
@@ -431,6 +437,63 @@ Not: turbo sırasında `speedPct` 1,25'e çıktığı için tutulabilen viraj 2,
 iner — turboyu virajlı kesimde almak, frenlemeden kullanılırsa zarar. Hata
 değil, ama oyuncuya öğretilmesi gereken bir incelik.
 
+### Türetme · 2026-09-09
+
+**D — adillik** (`./gradlew :games:turetme:probe`). **Sorun yok.**
+
+Oyuncu taban kelimenin harflerinden başka kelimeler üretiyor. Denge iki yanlı:
+taban çok az kelime verirse tur sönük geçer, çok fazla verirse tamamlama bonusu
+ulaşılmaz olur.
+
+1200 taban, 15 829 geçerli kelime. Taban başına hedef sayısı:
+
+| En az | %10 | Ortanca | %90 | En çok | Ortalama |
+| --- | --- | --- | --- | --- | --- |
+| 15 | 17 | 27 | 47 | 66 | 29,6 |
+
+5'ten az hedefi olan taban **yok**; 60'tan çok hedefi olan yalnızca 10 taban
+(%0). Bütün tabanlar geçerli kelime listesinde ve kendi hedef kümelerinde
+(taban bonusu için gerekli). Günlük döngü: 1200 günde 1200 farklı taban.
+
+### Dizgi · 2026-09-09
+
+**D — torba ve el** (`./gradlew :games:dizgi:probe`). **Sorun yok.**
+
+100 taş, 2 joker; %40 sesli, %58 sessiz. Torba sözlük derleminin harf
+sıklığından türetilmiş ve ölçümde bunu tutuyor: en sık 12 harfte torba oranıyla
+sözlük oranı arasındaki en büyük sapma 2,68 puan.
+
+El oynanabilirliği: rastgele çekilen 7 taşın **%98'i** en az bir kelime
+kurabiliyor, ilk 40 elde ortalama 45 seçenek. Yani oyuncu nadiren pas geçmek
+zorunda kalıyor.
+
+### Kıskaç · 2026-09-09
+
+**D — adillik** (`./gradlew :games:kiskac:probe`).
+
+Kıskaç bir **ikili arama** oyunudur: her tahminde gizli kelimenin alfabetik
+olarak önce mi sonra mı olduğu söylenir. Bu yüzden adillik tam olarak
+hesaplanabilir. Gizli kelime 1684'lük cevap havuzundan seçiliyor, ama oyuncunun
+ekranda gördüğü ve tahmin edebildiği sıralı liste 7797 kelimelik geçerli
+tahminler listesi.
+
+| Arama uzayı | Teorik alt sınır | Ölçülen en kötü | 12 hakka sığmayan |
+| --- | --- | --- | --- |
+| Cevap havuzu (1684) | 11 | 11 | **0** (%0) |
+| Geçerli tahminler (7797) | 13 | 13 | **820** (%48) |
+
+**Bulgu: oyuncunun gördüğü liste üzerinde 12 hak yetmiyor.** Doğal strateji
+ekrandaki sıralı liste üzerinde ikili aramadır; o uzayda cevapların **%48'i**
+12 hakla bulunamıyor (13 gerekiyor). Kazanmak için oyuncunun ayrıca "cevap
+yaygın bir kelimedir" sezgisiyle aramayı daraltması gerekiyor — yani oyun,
+tanıttığı mekaniğin ötesinde kelime dağarcığı istiyor.
+
+Cevap havuzu üzerinde arama yapılabilseydi 11 tahmin yeterdi (1 hak pay). Karar
+tasarımın: hak 13–14'e çıkarılabilir, ekranda cevap havuzu gösterilebilir, ya
+da mevcut hâl "ipucu gerektiren zorluk" olarak bilinçle korunabilir.
+
+Günlük döngü sağlam: 1684 günde 1684 farklı kelime, tekrar yok.
+
 ### Tavla · 2026-09-09
 
 **D — zar, denge ve rakip** (`./gradlew :games:tavla:probe`).
@@ -464,6 +527,40 @@ beraberlik oranı kabul edilebilir mi, yoksa kilitlenme başka bir kuralla mı
 **Bilgisayar rakip gücü** (rastgele yasal hamleye karşı, 120 oyun/mod):
 Klasik %100, Tapa %98, Hapis %79 (+21 beraberlik). Sezgisel çalışıyor;
 rastgeleye şans tanımıyor.
+
+### 2048 · 2026-09-09
+
+**D — kazanılabilirlik** (`./gradlew :games:g2048:probe`). **Sorun yok.**
+
+Taş doğuşu kurala uygun: 29 447 doğuşta %90,0 iki, %10,0 dört.
+
+Kazanılabilirlik, tekdüzelik + boş hücre + köşe sezgiseli ve bir kat ileri
+bakışla oynayan bir modelle ölçüldü (60 oyun): **%28'i 2048'e ulaşıyor**,
+32 oyun 1024'te bitiyor, ortalama skor 17 274.
+
+> Ölçüm yazarken kendi hatam öğreticiydi: ilk sezgisel yalnızca boş hücre ve
+> köşe bakıyordu ve 2048'e **hiç** ulaşamıyordu (en iyi 512). O sayı oyun
+> hakkında değil sezgisel hakkında bilgi verirdi. Tekdüzelik terimi eklenince
+> tablo gerçekçi oldu. Denge ölçümünde oyuncu modeli zayıfsa, sonuç oyunu değil
+> modeli ölçer.
+
+### Yılan · 2026-09-09
+
+**D — hız eğrisi** (`./gradlew :games:snake:probe`). **Sorun yok.**
+
+Tek zorluk kaynağı hız: adım aralığı `160 − yem×3`, taban 70 ms.
+
+| Yem | Adım aralığı | Saniyede adım |
+| --- | --- | --- |
+| 0 | 160 ms | 6,3 |
+| 20 | 100 ms | 10,0 |
+| 30 | **70 ms (taban)** | 14,3 |
+
+Hız 30 yemde tabana oturuyor; sonrası sabit. 70 ms insan tepki süresinin
+altında, yani tavan hızda oyuncu tek tek adımlara tepki veremez, önden plan
+yapar — yılan oyunlarında beklenen budur. Tahta 300 hücre olduğu için oyunun
+geri kalanı sabit hızda, artan uzunlukla oynanıyor: zorluk hızdan değil yerden
+geliyor. Tutarlı tasarım.
 
 ### Blok · 2026-09-09
 
