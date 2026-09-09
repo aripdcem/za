@@ -280,12 +280,12 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 
 | Oyun | A | B (kare/s · kaçan vsync · jank · p50) | C | D | Tarih |
 | --- | --- | --- | --- | --- | --- |
-| Blok | ✅ | olay güdümlü (1 · 0) | — | bekliyor | 2026-09-09 |
+| Blok | ✅ | olay güdümlü (1 · 0) | — | ✅ 11. seviyede tavan | 2026-09-09 |
 | 2048 | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Yılan | ✅ | **61 · 0 · %0 · 22 ms** | — | bekliyor | 2026-09-09 |
 | Sudoku | ✅ | olay güdümlü (1 · 0) | — | ✅ merdiven doğru | 2026-09-09 |
 | Mayın Tarlası | ✅ | olay güdümlü (0 · 0) | — | ⚠️ tahmin zorunlu | 2026-09-09 |
-| Beş Harf | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
+| Beş Harf | ✅ | olay güdümlü (0 · 0) | — | ✅ hepsi çözülebilir | 2026-09-09 |
 | Kıskaç | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Türetme | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Dizgi | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
@@ -430,6 +430,54 @@ koşuyu bitiren şey tepki hızı değil, hız/süre sıkışması.
 Not: turbo sırasında `speedPct` 1,25'e çıktığı için tutulabilen viraj 2,67'ye
 iner — turboyu virajlı kesimde almak, frenlemeden kullanılırsa zarar. Hata
 değil, ama oyuncuya öğretilmesi gereken bir incelik.
+
+### Blok · 2026-09-09
+
+**D — zorluk eğrisi** (`./gradlew :games:tetris:probe`). **Sorun yok.**
+
+Blok'ta zaman baskısı tek yerden gelir: yerçekimi. Seviye her 10 satırda artar,
+düşme aralığı Guideline formülüyle kısalır ve 50 ms tabanında durur.
+
+| Seviye | Satır | Hücre başına | Tepeden dibe | 8 girişlik tempo |
+| --- | --- | --- | --- | --- |
+| 1 | 0 | 1000 ms | 20,0 s | 2500 ms — rahat |
+| 5 | 40 | 355 ms | 7,1 s | 888 ms — rahat |
+| 9 | 80 | 93 ms | 1,86 s | 233 ms — rahat |
+| 11 | 100 | **50 ms (taban)** | 1,00 s | 125 ms — sıkı |
+| 20 | 190 | 50 ms | 1,00 s | 125 ms — sıkı |
+
+Yerçekimi **11. seviyede (100. satır) tabana oturuyor**; sonrasında oyun
+hızlanmıyor. Tabandaki 1 saniyelik düşüş, en kötü durumda gereken 8 girişe
+(3 dönüş + 5 yatay adım) 125 ms'lik tempoyla tam yetiyor — sıkı ama insan üstü
+değil. Yani usta oyuncu 100. satırdan sonra teorik olarak sonsuza dek oynar.
+Birçok Blok uyarlaması böyledir; bilinçliyse sorun yok.
+
+### Beş Harf · 2026-09-09
+
+**D — adillik** (`./gradlew :games:besharf:probe`). **Sorun yok.**
+
+Kelime oyunlarında adillik sorusu: her cevap hakla çözülebiliyor mu? Tuzak
+kelimeler altı hakkı yakabilir ve o gün herkes kaybeder.
+
+Havuz sağlamlığı: 1684 cevap, 7797 geçerli tahmin; yanlış uzunlukta cevap yok,
+tahmin olarak kabul edilmeyen cevap yok, tekrar eden cevap yok. Günlük kelime
+kalıcı bir permütasyondan seçildiği için havuz tükenmeden tekrar gelmiyor —
+1684 günlük (≈4,6 yıl) döngü.
+
+Çözülebilirlik (421 cevaplık örneklem, her adımda en kötü durumda en çok
+eleyeni seçen çözücü, açılış "amber"):
+
+| Tahmin | Cevap sayısı |
+| --- | --- |
+| 2 | 21 |
+| 3 | 147 |
+| 4 | 199 |
+| 5 | 51 |
+| 6 | 3 |
+
+**Altı hakka sığmayan cevap yok (%0).** Çoğu cevap 3–4 tahminde çözülüyor.
+Çözücü örneklemeyle zayıflatıldığı için bu bir üst sınır: kusursuz oyun daha
+da iyisini yapar.
 
 ### Sudoku · 2026-09-09
 
