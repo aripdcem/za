@@ -34,7 +34,7 @@ class HubScreenTest {
     fun registryHoldsTheKnownGames() {
         val expected = listOf(
             "tetris", "2048", "snake", "sudoku", "mines", "kiskac", "besharf", "turetme",
-            "dizgi", "kuyu", "gecit", "tavla", "balkon", "kakuro", "vergici", "toplam", "viraj", "filo",
+            "dizgi", "kuyu", "gecit", "tavla", "balkon", "kakuro", "vergici", "toplam", "viraj", "filo", "reyon",
         )
         assertEquals(expected, games.map { it.id })
     }

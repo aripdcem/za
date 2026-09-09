@@ -45,6 +45,7 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Rastgele ellerin çoğu kelime kurar | `DizgiStateTest` |
 | Kolay tahtalar en basit teknikle çözülür | `SudokuStateTest` |
 | Üretim iş bütçesini aşmaz | `KakuroTest` |
+| Her bulmaca tahminsiz çözülür, brif kısa kalır, üretim bütçede | `ReyonGeneratorTest` |
 
 Yeni bir ölçüm bulgusu düzeltildiğinde, mümkünse **paylı bir değişmez** olarak
 buraya eklenir: ölçülen değerin kendisi değil, altına düşülmemesi gereken
@@ -337,6 +338,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | ✅ mevcut testlerle | 2026-09-09 |
 | Viraj | ✅ | **60 · 3 · %100 · 34 ms** | — (tuşla) | ✅ kusur yok | 2026-09-09 |
 | Filo | ✅ | **60 · 1 · %81 · 31 ms** | ✅ düzeltildi | ✅ düzeltildi | 2026-09-09 |
+| Reyon | bekliyor | — (olay güdümlü) | — (dokun-yerleştir) | ✅ ölçüldü | 2026-09-09 |
 
 18 oyunun tamamı açıldı, oynandı ve **hiçbirinde çökme yok** (`logcat` temiz).
 Sürekli çizen altı oyunun tamamı 60 kare/s tutuyor; kaçan vsync 0–3 (≈%0,4).
@@ -824,6 +826,41 @@ bu yüzden bot Filo/Viraj'dakilerden farklı olarak yol bulmak zorunda. Bot kaba
 beceri sırası ters çıkıyor (düşük gecikme yön kararını sık değiştirip
 salınıma sokuyor), o yüzden bu sayılar **yalnızca kaba bir alt sınır**;
 zorluk eğrisi yorumu için yeterli değil. Kuyu'nun ilerleme ölçümü açık kalıyor.
+
+### Reyon · 2026-09-09
+
+**D — adillik ve zorluk** (`./gradlew :games:reyon:probe`, 40 tohum/zorluk).
+A–C cihazda henüz koşulmadı (v0.25.0 ile birlikte).
+
+Üretici tek çözümü (`ReyonSolver.count == 1`) ve tahminsizliği (oyuncunun
+gördüğü bilgiyle çalışan `ReyonDeducer` sonuna kadar gidiyor) üretim anında
+garantiliyor; ipucu kümesi bu iki koşul korunarak en küçüğe indiriliyor.
+Ölçülen, zorluk merdiveninin ne anlama geldiği:
+
+| Zorluk | Raf | Ürün | Brif (sınır) | Verili | Yalnız tekil+ikili | +örtü | +kapasite | Tüm teknikler |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Kolay | 3×4 | 6,8 | 3,7 (6) | 1,4 | %0 | %98 | %100 | %100 |
+| Orta | 4×5 | 9,6 | 7,5 (9) | 0,6 | %0 | %70 | %80 | %100 |
+| Zor | 4×6 | 11,6 | 10,8 (12) | 0,0 | %0 | %63 | %88 | %100 |
+
+Okuma: hiçbir bulmaca yalnız tekil ve ikili ipuçlarıyla bitmiyor; **örtü**
+(her göz tam bir ürünle dolar: son ürün kalan boşluğa oturur) her seviyede
+gerekli ve bu bilerek böyle — rafın tam dolması bulmacanın temel fikri.
+Kolay'ın tamamı örtü ve kapasiteyle bitiyor; Orta'nın beşte biri, Zor'un
+yaklaşık yedide biri **çoklu** teknik (marka dikey bloğunu birlikte
+düşünme) istiyor. Merdiven gerçek: zorluk yalnız boyuttan değil, gereken
+akıl yürütmeden geliyor.
+
+İpucu karışımı ayarlandı: ilk ölçümde "üstünde" ipucu brifin %40'ını
+kaplıyordu; ağırlıklar düşürülünce Orta'da %19'a indi ve planogram ilkeleri
+(göz hizası, kategori bloğu, marka dikey, boy akışı, kategoriler ayrı, ağır
+alt) brifin dörtte birinden fazlasına çıktı. Zor'da en sık ipucu artık
+"yan yana" (%29).
+
+Üretim bütçesi: deneme ort 2–7 (en kötü 26), çözücü düğümü ort 74–2626
+(en kötü 56 bin), süre ort 2–16 ms (en kötü 67 ms, yalnız rapor).
+`ReyonGeneratorTest.generationStaysWithinWorkBudget` sınırları 80 deneme ve
+400 bin düğüm (gözlenenin 3–7 katı).
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

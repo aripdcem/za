@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Reyon**.
 
 Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç çipleri, seçim kalıcı) ve en üstte son oynanan dört oyun için hızlı erişim şeridi bulunur.
 
@@ -32,7 +32,7 @@ za/
 │       └── ui/theme/             # ZA teması
 ├── games/
 │   ├── tetris/  g2048/  snake/   # Oyun motorları: saf Kotlin/JVM, Android'e
-│   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ kuyu/ gecit/ tavla/ balkon/ kakuro/ sayi/ viraj/ filo/ # bağımsız, her biri kendi birim testleriyle
+│   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ kuyu/ gecit/ tavla/ balkon/ kakuro/ sayi/ viraj/ filo/ reyon/ # bağımsız, her biri kendi birim testleriyle
 ├── tools/                        # gen_sfx.py (sesler), gen_words.py + gen_turetme.py + gen_dizgi.py (kelime listeleri)
 │                                 # cihaz_testi.py (cihaz üstü kare hızı / giriş ölçümü)
 └── docs/oyun-testi.md            # her oyunun geçmesi gereken test protokolü ve sonuç kütüğü
@@ -229,6 +229,24 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   farklı hücreler yeniden dağıtılır; birkaç aday arasından koşuları en sıkı kılan seçilir. Tohumdan deterministik
   (`games/kakuro`, 8 test)
 
+### Reyon
+- **Planogram mantık bulmacası** (kendi tasarımımız): bir raf ünitesi (3×4, 4×5 ya da 4×6 göz), rafı tam dolduran
+  ürünler (1–3 yüz, boy, marka, kategori, ★ yüksek marj, ▼ ağır) ve bir planogram brifi. Brifteki kurallar gerçek
+  yerleşim ilkeleridir: göz hizası (yüksek marjlılar 2. rafta), ağırlar en alta, kategori bloğu, kategoriler ayrı,
+  marka dikey bloğu, boy akışı (soldan sağa büyür); ayrıca raf/göz/kenar, yan yana, solunda, aynı/farklı raf, üstünde
+- Ürüne dokun, göze dokun: blok oturur; uzun basınca tepsiye döner. Brif satırları tutunca ✓, çelişince ✗ olur ve
+  ilgili ürünler kırmızı çerçevelenir; satıra dokununca ilgili ürünler vurgulanır. Geri alma; ipucu önce yanlış
+  duranı gösterir, sonra mevcut yerleşimlerden mantıkla çıkan sıradaki adımı yerleştirir (ipucusuz çözümler rekor)
+- **Tek çözüm ve tahminsizlik garantisi**: üretici planogram yapısında bir düzen örnekler (kategori bantları, marka
+  blokları), doğru olan tüm ipucu adaylarını türetir, ağırlıklı sırayla tek çözüm sağlanana dek ekler, sonra
+  oyuncunun gördüğü bilgiyle çalışan çıkarım çözücüsü (tekil, ikili, örtü, kapasite, çoklu teknikleri) sonuna kadar
+  gidebildiği sürece ipuçlarını atar: en küçük, çıkarılabilir brif. Günlük mod herkese aynı rafı verir; yarım kalan
+  bulmaca cihazda saklanır
+- Motor `games/reyon`: `ReyonGenerator` (düzen örnekleme, aday ipuçları, seçim/küçültme, iş
+  sayaçları), `Propagator`/`ReyonSolver`/`ReyonDeducer` (kısıt yayılımı, geri izleme, çıkarım izi), `ReyonState`
+  (yerleştirme, geri alma, durum, ipucu, kayıt); 28 test: kural değerlendirme, kaba kuvvetle çapraz doğrulama,
+  çözümü düşürmeyen yayılım, determinizm, tek çözüm, tahminsizlik, brif uzunluğu, üretim bütçesi; `ReyonBalanceProbe`
+
 ### Vergici ve Toplam Kapma (`games/sayi`)
 - **Vergici** (Taxman): 1–N tahtası; böleni kalmış bir sayıyı alırsın, vergici o sayının tahtadaki tüm bölenlerini
   alır; alınacak sayı kalmayınca kalanlar vergiciye. Aralıklar 1–12, 20, 30, 40; dokununca vergicinin alacakları
@@ -241,7 +259,7 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 ## Derleme
 
 Arayüz testleri JVM'de koşar, emülatör gerekmez: `./gradlew :app:testDebugUnitTest` (Robolectric + Compose test kuralı;
-ana menü, gezinme, Sudoku/Kakuro/Mayın Tarlası/Beş Harf etkileşimleri, Hakkında ve 18 oyun ekranının duman testi).
+ana menü, gezinme, Sudoku/Kakuro/Mayın Tarlası/Beş Harf etkileşimleri, Hakkında ve 19 oyun ekranının duman testi).
 CI her itmede motor testleriyle birlikte koşturur; sürüm iş akışı da bunlar geçmeden APK üretmez.
 
 Gereksinimler: JDK 17+, Android SDK (compileSdk 35). Android Studio ile açıp çalıştırabilir veya komut satırından derleyebilirsiniz:
