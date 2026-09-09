@@ -39,6 +39,17 @@ class FiloWorld(val seed: Long) {
         const val BOMBS = 2
         const val MAX_BOMBS = 4
         const val MAX_WEAPON = 3
+
+        /**
+         * Silah 3'ün yan mermilerinin yatay hızı. Üst sınırı patron menzili
+         * belirler: mermi oyuncudan ([PLAYER_Y]) patrona ([BOSS_Y]) giderken
+         * yanal kayma = vx × yol/dikey hız ≈ vx × 0,47 s. Patron yarıçapı
+         * [EnemyKind.BOSS].radius + mermi yarıçapı ≈ 0,122 olduğundan, yan
+         * mermilerin de isabet etmesi için vx ≲ 0,21 olmalı. 0,5 ile yan
+         * mermiler ıskalıyordu: silah 3, silah 2'den zayıftı (yükseltme
+         * gerilemeye dönüyordu). Bkz. docs/oyun-testi.md.
+         */
+        const val SPREAD_VX = 0.15f
         const val INVULN_TIME = 2f
         const val SHIELD_INVULN_TIME = 0.8f
         const val CHAIN_WINDOW = 2f
@@ -457,8 +468,8 @@ class FiloWorld(val seed: Long) {
             }
             else -> {
                 bullets += Bullet(playerX, y, 0f, -BULLET_SPEED, BULLET_RADIUS)
-                bullets += Bullet(playerX - 0.02f, y, -0.5f, -BULLET_SPEED * 0.95f, BULLET_RADIUS)
-                bullets += Bullet(playerX + 0.02f, y, 0.5f, -BULLET_SPEED * 0.95f, BULLET_RADIUS)
+                bullets += Bullet(playerX - 0.02f, y, -SPREAD_VX, -BULLET_SPEED * 0.95f, BULLET_RADIUS)
+                bullets += Bullet(playerX + 0.02f, y, SPREAD_VX, -BULLET_SPEED * 0.95f, BULLET_RADIUS)
             }
         }
         events += FiloEvent.Shot

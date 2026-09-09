@@ -1,0 +1,8 @@
+<tr-TR>
+• Filo: gemi artık parmağı ilk milimetreden izliyor ve sürüklemek daha az yol istiyor.
+• Filo: silah 3 patronlara karşı da en güçlü seviye oldu.
+</tr-TR>
+<en-US>
+• Filo: the ship now follows your finger from the first millimetre, and dragging needs less travel.
+• Filo: weapon 3 is now the strongest level against bosses too.
+</en-US>

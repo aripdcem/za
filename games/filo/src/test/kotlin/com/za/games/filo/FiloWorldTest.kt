@@ -368,4 +368,32 @@ class FiloWorldTest {
         assertEquals(FiloWorld.dailySeed(20_000L), FiloWorld.dailySeed(20_000L))
         assertNotEquals(FiloWorld.dailySeed(20_000L), FiloWorld.dailySeed(20_001L))
     }
+
+    /**
+     * Silah yükseltmesi asla gerileme olmamalı. Silah 3'ün yan mermileri fazla
+     * açılıysa patron menzilinde ıskalar ve silah 3, silah 2'den zayıf düşer;
+     * bu test o dengesizliği yakalar (bkz. FiloWorld.SPREAD_VX).
+     */
+    @Test
+    fun silahYukseltmesiPatronHasariniDusurmez() {
+        val kare = (1..FiloWorld.MAX_WEAPON).map { silah ->
+            val w = FiloWorld(11L)
+            w.jumpToWaveForTest(10)
+            w.setLivesForTest(999_999)
+            var f = 0
+            var dustu = -1
+            while (f < 60 * 180 && dustu < 0) {
+                w.boss?.let { w.steerTo(it.x) }
+                w.setWeaponForTest(silah)
+                for (e in w.step()) {
+                    if (e is FiloEvent.EnemyDown && e.kind == EnemyKind.BOSS) dustu = f
+                }
+                f++
+            }
+            assertTrue("silah $silah patronu indiremedi", dustu > 0)
+            dustu
+        }
+        assertTrue("silah 2 silah 1'den hızlı olmalı (${kare[1]} / ${kare[0]} kare)", kare[1] < kare[0])
+        assertTrue("silah 3 silah 2'den hızlı olmalı (${kare[2]} / ${kare[1]} kare)", kare[2] < kare[1])
+    }
 }
