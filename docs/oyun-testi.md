@@ -271,7 +271,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Kıskaç | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Türetme | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
 | Dizgi | ✅ | olay güdümlü (0 · 0) | — | bekliyor | 2026-09-09 |
-| Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | bekliyor | bekliyor | 2026-09-09 |
+| Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | bekliyor | ⚠️ RAPID takası | 2026-09-09 |
 | Geçit | ✅ | **60 · 1 · %1,2 · 22 ms** | bekliyor | bekliyor | 2026-09-09 |
 | Tavla | ✅ | olay güdümlü (0 · 0) | bekliyor | bekliyor | 2026-09-09 |
 | Balkon | ✅ | **60 · 2 · %39,6 · 25 ms** | bekliyor | bekliyor | 2026-09-09 |
@@ -412,6 +412,47 @@ koşuyu bitiren şey tepki hızı değil, hız/süre sıkışması.
 Not: turbo sırasında `speedPct` 1,25'e çıktığı için tutulabilen viraj 2,67'ye
 iner — turboyu virajlı kesimde almak, frenlemeden kullanılırsa zarar. Hata
 değil, ama oyuncuya öğretilmesi gereken bir incelik.
+
+### Kuyu · 2026-09-09
+
+**D — denge** (`./gradlew :games:kuyu:probe`).
+
+Kuyu Downwell düzenindedir: ayrı zıplama tuşu yok, tek tuş yerdeyken zıplatır,
+havada basılı tutulunca aşağı ateş eder ve düşüşü `SHOT_FALL` ile sınırlar.
+Şarjör inişte dolar. Yani şarjör = **havada kalma bütçesi**, oyunun çekirdek
+kaynağı budur ve ölçüm buna odaklandı.
+
+Bir şarjörün karşılığı:
+
+| Kurulum | Atış | Havada süre | Düşüş (kare) | Hasar/şarjör |
+| --- | --- | --- | --- | --- |
+| taban | 8 | 0,80 s | 4,15 | 8 |
+| +RAPID | 8 | **0,53 s** | 2,46 | 8 |
+| +AMMO ×1 | 10 | 1,00 s | 5,18 | 10 |
+| +SPREAD | 8 | 0,80 s | 4,15 | **24** |
+
+Motor üstünde dipsiz kuyuda doğrulandı: taban 0,72 s / 3,37 kare, RAPID
+0,48 s / 1,94 kare (kestirimle uyumlu; küçük fark ilk atışın düşüş başladıktan
+sonra gelmesinden).
+
+**Bulgu: RAPID bir takas, yükseltme değil.** Şarjör atış *başına* düşer, mermi
+başına değil; RAPID atış aralığını 6→4 kareye indirdiği için aynı 8 atış daha
+çabuk tükenir: havada kalma **%33 kısalır**, şarjör başına hasar **değişmez**.
+Karşılığında düşüşü daha sık frenler (şarjör başına 4,15 yerine 2,46 kare iner)
+ve anlık atış hızı %50 artar. Filo'daki silah 3 gibi düpedüz gerileme değil —
+ama "yükseltme" olarak sunulan bir kutunun hayatta kalma süresini kısaltması
+oyuncuya ceza gibi gelebilir. Karar tasarımın: takas kalacaksa RAPID'in şarjörü
+de artırmalı (`+RAPID +AMMO ×2` ölçümü tabanla aynı 0,80 s'i geri veriyor).
+
+Buna karşılık **SPREAD güçlü ve tutarlı**: tek atışta üç mermi attığı, şarjör
+ise atış başına düştüğü için hasarı üçe katlar, havada kalmayı hiç kısaltmaz.
+
+**İniş botu (6 tohum):** acemi 74 · orta 56 · usta 11 satır (en iyi 218).
+Kuyu'da kendiliğinden düşülmez — zemindeki deliği bulup oraya yürümek gerekir,
+bu yüzden bot Filo/Viraj'dakilerden farklı olarak yol bulmak zorunda. Bot kaba:
+beceri sırası ters çıkıyor (düşük gecikme yön kararını sık değiştirip
+salınıma sokuyor), o yüzden bu sayılar **yalnızca kaba bir alt sınır**;
+zorluk eğrisi yorumu için yeterli değil. Kuyu'nun ilerleme ölçümü açık kalıyor.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
