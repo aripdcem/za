@@ -50,6 +50,9 @@ import com.za.games.platform.Changelog
 import com.za.games.platform.GameEntry
 import com.za.games.platform.ReleaseNote
 import java.util.Locale
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
 
 /** Ana menü: platform manifestosu ve oyun listesi. */
 @Composable
@@ -964,5 +967,49 @@ fun FiloArt(modifier: Modifier = Modifier) {
         drawPath(ship, Color(0xFFE2E8F0))
         drawRect(Color(0xFFFB7185), Offset(sx - r * 0.12f, sy - r * 0.9f), Size(r * 0.24f, r * 1.3f))
         drawCircle(Color(0xFF22D3EE), radius = r * 0.2f, center = Offset(sx, sy - r * 0.45f))
+    }
+}
+
+/** Reyon kartı: üç raf, marka renkli ürün blokları ve göz hizasında bir ★. */
+@Composable
+fun ReyonArt(modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        drawRoundRect(Color(0xFF0F1628), size = Size(w, w), cornerRadius = CornerRadius(w * 0.12f, w * 0.12f))
+        val plank = Color(0xFF475569)
+        val rows = 3
+        val sh = w * 0.8f / rows
+        val top = w * 0.1f
+        for (r in 0 until rows) {
+            val y = top + (r + 1) * sh - sh * 0.14f
+            drawRoundRect(plank, topLeft = Offset(w * 0.05f, y), size = Size(w * 0.9f, sh * 0.14f), cornerRadius = CornerRadius(w * 0.02f, w * 0.02f))
+        }
+        val blocks = listOf(
+            Triple(0, 0.08f, 0.36f) to Color(0xFF60A5FA),
+            Triple(0, 0.48f, 0.44f) to Color(0xFF60A5FA),
+            Triple(1, 0.08f, 0.26f) to Color(0xFFFBBF24),
+            Triple(1, 0.38f, 0.54f) to Color(0xFF4ADE80),
+            Triple(2, 0.08f, 0.54f) to Color(0xFF4ADE80),
+            Triple(2, 0.66f, 0.26f) to Color(0xFFF472B6),
+        )
+        for ((spec, color) in blocks) {
+            val (r, x, bw) = spec
+            val y = top + r * sh + sh * 0.1f
+            drawRoundRect(color, topLeft = Offset(w * x, y), size = Size(w * bw, sh * 0.62f), cornerRadius = CornerRadius(w * 0.03f, w * 0.03f))
+        }
+        val cx = w * 0.65f
+        val cy = top + sh * 1.41f
+        val radius = w * 0.06f
+        val star = Path().apply {
+            for (i in 0 until 10) {
+                val a = -PI.toFloat() / 2f + i * PI.toFloat() / 5f
+                val rr = if (i % 2 == 0) radius else radius * 0.45f
+                val px = cx + rr * cos(a)
+                val py = cy + rr * sin(a)
+                if (i == 0) moveTo(px, py) else lineTo(px, py)
+            }
+            close()
+        }
+        drawPath(star, Color(0xFF0F172A))
     }
 }

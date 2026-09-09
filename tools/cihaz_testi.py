@@ -36,7 +36,7 @@ PAKET = "com.za.games"
 OYUNLAR = [
     "Blok", "2048", "Yılan", "Sudoku", "Mayın Tarlası", "Beş Harf", "Kıskaç",
     "Türetme", "Dizgi", "Kuyu", "Geçit", "Tavla", "Balkon", "Kakuro",
-    "Vergici", "Toplam Kapma", "Viraj", "Filo",
+    "Vergici", "Toplam Kapma", "Viraj", "Filo", "Reyon",
 ]
 
 

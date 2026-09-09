@@ -1,0 +1,6 @@
+<tr-TR>
+• Yeni oyun: Reyon. Planogram bulmacası: ürünleri brifteki yerleşim kurallarına göre rafa diz; tek doğru diziliş, tahmin gerekmez. Üç zorluk, günlük raf, ipucu ve geri alma.
+</tr-TR>
+<en-US>
+• New game: Reyon. Planogram puzzle: arrange products on the shelf by the rules in the brief; one correct layout, no guessing. Three levels, daily shelf, hints and undo.
+</en-US>
