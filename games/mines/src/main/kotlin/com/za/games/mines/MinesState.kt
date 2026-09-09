@@ -105,15 +105,35 @@ data class MinesState(
         return state
     }
 
+    /**
+     * Mayınları ilk tıktan sonra yerleştirir: tıklanan hücre ve komşuları hep
+     * güvenlidir. Ayrıca tahtanın **tahminsiz** çözülebilmesi aranır — aksi
+     * hâlde oyuncu bir noktada kör seçim yapmak zorunda kalır ve kaybı
+     * beceriyle önleyemez.
+     *
+     * Deneme sayısı [PLACEMENT_TRIES] ile sınırlıdır: yoğun tahtalarda
+     * tahminsiz yerleşim bulmak zorlaşır ve üretimin cihazı bekletmemesi
+     * gerekir. Sınıra gelinirse son yerleşim kullanılır, yani oyun her hâlükârda
+     * başlar. Ölçüm: `./gradlew :games:mines:probe`.
+     */
     private fun placeMines(firstIndex: Int): MinesState {
         val rng = Random(seed)
         val safeZone = (neighbors(firstIndex) + firstIndex).toSet()
         val candidates = (0 until cellCount).filter { it !in safeZone }
-        val mines = candidates.shuffled(rng).take(mineCount).toSet()
-        return copy(mines = mines, status = MinesStatus.RUNNING)
+        var last = this
+        repeat(PLACEMENT_TRIES) {
+            val mines = candidates.shuffled(rng).take(mineCount).toSet()
+            val aday = copy(mines = mines, status = MinesStatus.RUNNING)
+            if (MinesSolver.solvableWithoutGuessing(aday, firstIndex)) return aday
+            last = aday
+        }
+        return last
     }
 
     companion object {
+        /** Tahminsiz yerleşim için azami deneme; bkz. [placeMines]. */
+        const val PLACEMENT_TRIES = 200
+
         fun newGame(
             difficulty: MinesDifficulty,
             seed: Long = Random.nextLong(),
