@@ -872,3 +872,45 @@ fun ToplamArt(modifier: Modifier = Modifier) {
         }
     }
 }
+
+/** Viraj kartı: ufka giden yol, kırmızı-beyaz bordürler ve bir kart. */
+@Composable
+fun VirajArt(modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        val sky = Color(0xFF0B1E3D)
+        val grass = Color(0xFF2F6B2F)
+        val road = Color(0xFF3B4252)
+        drawRoundRect(sky, size = Size(w, w), cornerRadius = CornerRadius(w * 0.12f, w * 0.12f))
+        drawRect(grass, topLeft = Offset(0f, w * 0.42f), size = Size(w, w * 0.58f))
+        val roadPath = Path().apply {
+            moveTo(w * 0.44f, w * 0.42f)
+            lineTo(w * 0.56f, w * 0.42f)
+            lineTo(w * 1.02f, w)
+            lineTo(-w * 0.02f, w)
+            close()
+        }
+        drawPath(roadPath, road)
+        val curb = Path().apply {
+            moveTo(w * 0.44f, w * 0.42f)
+            lineTo(w * 0.47f, w * 0.42f)
+            lineTo(w * 0.12f, w)
+            lineTo(-w * 0.02f, w)
+            close()
+        }
+        drawPath(curb, Color(0xFFDC2626))
+        val curb2 = Path().apply {
+            moveTo(w * 0.56f, w * 0.42f)
+            lineTo(w * 0.53f, w * 0.42f)
+            lineTo(w * 0.88f, w)
+            lineTo(w * 1.02f, w)
+            close()
+        }
+        drawPath(curb2, Color(0xFFE5E7EB))
+        drawCircle(Color(0xFFFDE68A), radius = w * 0.07f, center = Offset(w * 0.74f, w * 0.2f))
+        val r = CornerRadius(w * 0.05f, w * 0.05f)
+        drawRoundRect(Color(0xFF1F2937), Offset(w * 0.36f, w * 0.78f), Size(w * 0.28f, w * 0.14f), r)
+        drawRoundRect(Color(0xFF4DE1FF), Offset(w * 0.4f, w * 0.7f), Size(w * 0.2f, w * 0.16f), r)
+        drawCircle(Color(0xFFF8FAFC), radius = w * 0.035f, center = Offset(w * 0.5f, w * 0.7f))
+    }
+}

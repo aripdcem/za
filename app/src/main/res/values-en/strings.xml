@@ -496,4 +496,34 @@
     <string name="whats_new_dismiss">Got it</string>
     <string name="badge_new">New</string>
     <string name="about_release_notes">Release notes</string>
+
+    <!-- Viraj -->
+    <string name="game_viraj">Viraj</string>
+    <string name="game_viraj_tagline">Pseudo-3D racing: drive against the clock, overtake rivals, master the curves</string>
+    <string name="viraj_intro">The throttle is automatic; steer with ◀ ▶, slow down with BRAKE. Checkpoints add time; the race ends when time runs out. Overtaking scores; avoid cones and oil, ride the turbo strips, grab the yellow box.</string>
+    <string name="viraj_daily_desc">Everyone drives the same track today; three attempts a day.</string>
+    <string name="viraj_daily_status_fmt">Today: %1$d/%2$d attempts · best %3$d</string>
+    <string name="viraj_daily_exhausted">No attempts left today; a new track tomorrow!</string>
+    <string name="viraj_start">Start</string>
+    <string name="viraj_retry_fmt">Try again (%1$d left)</string>
+    <string name="viraj_to_menu">Back to start</string>
+    <string name="viraj_speed">Speed</string>
+    <string name="viraj_kmh_fmt">%1$d km/h</string>
+    <string name="viraj_time_up">Time is up</string>
+    <string name="viraj_result_fmt">%1$s km · %2$d overtakes · %3$d checkpoints</string>
+    <string name="viraj_ctrl_left">Steer left</string>
+    <string name="viraj_ctrl_right">Steer right</string>
+    <string name="viraj_ctrl_brake">BRAKE</string>
+    <string name="viraj_checkpoint_fmt">Checkpoint +%1$d s</string>
+    <string name="viraj_overtake_fmt">Overtake +%1$d</string>
+    <string name="viraj_turbo">Turbo!</string>
+    <string name="viraj_shield">Shield!</string>
+    <string name="viraj_shield_used">Shield saved you</string>
+    <string name="viraj_time_gift_fmt">+%1$d s</string>
+    <string name="viraj_oil">Oil!</string>
+    <string name="viraj_cone">Cone</string>
+    <string name="viraj_km_fmt">%1$d km</string>
+    <string name="viraj_hand_hint">The brake sits on your thumb\'s side; the setting is shared with Kuyu and Geçit</string>
+    <string name="viraj_next_checkpoint">Checkpoint</string>
+    <string name="viraj_board_desc">Viraj: %1$d km/h, %2$d m, %3$d overtakes</string>
 </resources>
