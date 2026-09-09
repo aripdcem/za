@@ -193,6 +193,25 @@ taşımalı:
 > geldiğini gösterir. Bot kalitesine bağlı olmayan ölçümleri (öldürme süresi,
 > düşman hızı, mermi iniş süresi) ayrıca raporlayın.
 
+### Başarım testleri duvar saatine bağlanmaz
+
+Üretim/çözüm süresi ölçen testler paylaşımlı CI koşucularında kırılgandır.
+Kakuro'nun `generationIsFastEnough` testi 3000 ms sınırı koyuyordu; geliştirme
+makinesinde en kötü değer 1868 ms olduğu için pay 1,6 katıydı ve CI'da ara ara
+kırmızı yanıyordu — üretici hiç değişmeden.
+
+Motorlar deterministik olduğundan daha iyi bir ölçüt var: **işin kendisini**
+sayın. Kakuro üreticisi zaten düzen/doldurma/onarım sayaçları tutuyor; bunlar
+tohumdan türediği için her makinede aynı çıkar ve üretici gerçekten daha çok
+denemeye başlarsa büyür (cihazdaki yavaşlamanın da sebebi budur).
+
+- Sınırı gözlenen en kötü değerin birkaç katına koyun: küçük ayarlar testi
+  kırmasın, blokaj yakalansın. (Kakuro: gözlenen 2/10, sınır 8/40.)
+- Duvar saatini tümüyle atmak gerekmez; **felaket freni** olarak bol paylı bir
+  üst sınır bırakın (Kakuro: yerel ~3 s, sınır 30 s) ve bunun bir başarım
+  hedefi olmadığını yorumda belirtin.
+- Sayacı olmayan bir motorda önce sayacı ekleyin; ölçülemeyen şey korunamaz.
+
 ### Her oyunda bakılacaklar
 
 | Ölçüt | Soru |

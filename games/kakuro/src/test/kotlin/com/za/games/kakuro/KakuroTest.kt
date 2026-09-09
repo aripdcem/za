@@ -8,6 +8,26 @@ import kotlin.random.Random
 
 class KakuroTest {
 
+    private companion object {
+        /** Ölçüm tohumları: üretim deterministik olduğu için sayaçlar her makinede aynı. */
+        const val SEEDS = 8
+
+        /**
+         * Üretim bütçesi. Üretici rastgele arama yapar: düzen kurar, koşuları
+         * doldurur, tek çözüm bulunamazsa yeniden dener. Bu sayaçlar o
+         * denemelerin sayısıdır ve tohumdan türedikleri için makineden makineye
+         * değişmez — duvar saati ise paylaşımlı CI koşucularında değişir.
+         * (Önceki hâli 3000 ms sınırı koyuyordu ve yerelde en kötü HARD 1868 ms
+         * olduğundan CI'da ara ara kırmızı yanıyordu; bkz. docs/oyun-testi.md.)
+         * Bu tohumlarda gözlenen en kötü değerler: düzen 2, doldurma 10.
+         * Sınırlar dört kat pay bırakır: küçük ayarlar testi kırmaz, ama
+         * üreticinin belirgin biçimde daha çok deneme yapması gerekiyorsa
+         * cihazda da yavaşlar ve test bunu yakalar.
+         */
+        const val MAX_LAYOUTS = 8
+        const val MAX_FILLS = 40
+    }
+
     /** Küçük el yapımı bulmaca: 4×4, iç 3×3'te sol üst köşe kara. */
     private fun sample(): KakuroState {
         val n = 4
@@ -146,19 +166,30 @@ class KakuroTest {
     }
 
     @Test
-    fun generationIsFastEnough() {
+    fun generationWorkIsBounded() {
+        val t0 = System.nanoTime()
         for (difficulty in KakuroDifficulty.entries) {
-            var worst = 0L
-            var total = 0L
-            repeat(8) {
-                val t0 = System.nanoTime()
+            var layouts = 0
+            var fills = 0
+            var repairs = 0
+            repeat(SEEDS) {
                 KakuroState.newGame(difficulty, 200L + it)
-                val ms = (System.nanoTime() - t0) / 1_000_000
-                total += ms
-                worst = maxOf(worst, ms)
+                layouts = maxOf(layouts, KakuroLogic.lastLayouts)
+                fills = maxOf(fills, KakuroLogic.lastFills)
+                repairs = maxOf(repairs, KakuroLogic.lastRepairs)
             }
-            println("${difficulty.name}: ortalama ${total / 8} ms, en kötü $worst ms")
-            assertTrue("${difficulty.name} üretimi çok yavaş: en kötü $worst ms", worst < 3000)
+            // Onarım sayısı üst sınırına (REPAIR_TRIES) dayanıp yeniden
+            // denemeye geçtiği için doyuma ulaşır; sınır konmaz, yalnızca
+            // ayıklamaya yardımcı olsun diye basılır.
+            println("${difficulty.name}: en kötü düzen $layouts, doldurma $fills, onarım $repairs")
+            assertTrue("${difficulty.name} çok fazla düzen deniyor: $layouts", layouts <= MAX_LAYOUTS)
+            assertTrue("${difficulty.name} çok fazla doldurma deniyor: $fills", fills <= MAX_FILLS)
         }
+        // Yalnızca felaket freni: sayaçlar sabit kalırken birim başına maliyetin
+        // katlanmasını yakalar, başarım hedefi değildir. Bu yüzden pay bol
+        // tutulur (yerelde tüm döngü ~3 s); sınır bir başarım ölçütü sanılmamalı.
+        val ms = (System.nanoTime() - t0) / 1_000_000
+        println("toplam üretim süresi: $ms ms")
+        assertTrue("üretim felaket derecede yavaşladı: $ms ms", ms < 30_000)
     }
 }
