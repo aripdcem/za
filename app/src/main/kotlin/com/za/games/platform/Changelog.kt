@@ -39,6 +39,17 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.24.2", "2026-09-09",
+            tr = listOf(
+                "Mayın Tarlası: tahtalar artık tahmin gerektirmeden çözülebiliyor",
+                "Kıskaç: tahmin hakkı 13 (ikili arama her kelimeye yetiyor)",
+            ),
+            en = listOf(
+                "Minesweeper: boards can now be solved without guessing",
+                "Kıskaç: 13 guesses, enough for binary search to reach every word",
+            ),
+        ),
+        ReleaseNote(
             "0.24.1", "2026-09-09",
             tr = listOf(
                 "Filo: gemi parmağı ilk milimetreden izliyor; sürükleme daha az yol istiyor",

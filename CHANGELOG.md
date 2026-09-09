@@ -2,6 +2,10 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.24.2 (2026-09-09)
+- Mayın Tarlası: tahtalar tahminsiz çözülebilir; üretim çözücüyle doğruluyor (kör tahminle kaybetme kalktı)
+- Kıskaç: tahmin hakkı 12 → 13; gösterilen kelime listesinde ikili arama en kötü durumda 13 tahmin istiyordu
+
 ## 0.24.1 (2026-09-09)
 - Filo: gemi parmağı ilk milimetreden izliyor (dokunma toleransı ölü bölgesi kalktı); sürükleme daha az yol istiyor
 - Filo: silah 3 artık patronlara karşı da en güçlü seviye (yan mermiler patron menzilinde ıskalıyordu)

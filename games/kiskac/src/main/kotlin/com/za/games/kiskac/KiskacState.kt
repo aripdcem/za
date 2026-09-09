@@ -165,7 +165,14 @@ data class KiskacState(
 
     companion object {
         const val WORD_LENGTH = 5
-        const val MAX_GUESSES = 12
+        /**
+         * Tahmin hakkı. Kıskaç ikili aramadır ve oyuncunun ekranda gördüğü
+         * sıralı liste geçerli tahminlerin tamamıdır (~7800 kelime); o uzayda
+         * en kötü durum ⌈log2(7798)⌉ = 13 tahmindir. 12 hakla cevapların
+         * %48'i bulunamıyordu — kayıp beceriyle önlenemiyordu. Ölçüm:
+         * `./gradlew :games:kiskac:probe`, ayrıntı docs/oyun-testi.md.
+         */
+        const val MAX_GUESSES = 13
         private const val DAILY_SEED = 0x4B15_4AC0_77E1L
 
         val ALPHABET: Set<Char> = TurkishOrder.LETTERS.toSet()

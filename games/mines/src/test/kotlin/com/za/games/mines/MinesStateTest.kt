@@ -122,4 +122,24 @@ class MinesStateTest {
         assertEquals(MinesStatus.WON, cleared.status)
         assertEquals(24, cleared.revealed.size)
     }
+
+    /**
+     * Üretilen tahta mantıkla çözülebilmeli: oyuncu hiçbir noktada kör tahmin
+     * yapmak zorunda kalmamalı, yoksa kaybı beceriyle önlenemez. Üretim bunu
+     * [MinesState.PLACEMENT_TRIES] denemeyle arar; bu test garantinin
+     * korunduğunu doğrular.
+     */
+    @Test
+    fun `generated boards are solvable without guessing`() {
+        for (difficulty in MinesDifficulty.entries) {
+            for (seed in 1L..12L) {
+                val state = MinesState.newGame(difficulty, seed)
+                val first = state.cellCount / 2
+                assertTrue(
+                    "${difficulty.name} tohum $seed tahmin gerektiriyor",
+                    MinesSolver.solvableWithoutGuessing(state, first),
+                )
+            }
+        }
+    }
 }

@@ -290,15 +290,15 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | 2048 | ✅ | olay güdümlü (0 · 0) | — | ✅ kazanılabilir | 2026-09-09 |
 | Yılan | ✅ | **61 · 0 · %0 · 22 ms** | — | ✅ tutarlı | 2026-09-09 |
 | Sudoku | ✅ | olay güdümlü (1 · 0) | — | ✅ merdiven doğru | 2026-09-09 |
-| Mayın Tarlası | ✅ | olay güdümlü (0 · 0) | — | ⚠️ tahmin zorunlu | 2026-09-09 |
+| Mayın Tarlası | ✅ | olay güdümlü (0 · 0) | — | ✅ düzeltildi | 2026-09-09 |
 | Beş Harf | ✅ | olay güdümlü (0 · 0) | — | ✅ hepsi çözülebilir | 2026-09-09 |
-| Kıskaç | ✅ | olay güdümlü (0 · 0) | — | ⚠️ 12 hak yetmiyor | 2026-09-09 |
+| Kıskaç | ✅ | olay güdümlü (0 · 0) | — | ✅ düzeltildi | 2026-09-09 |
 | Türetme | ✅ | olay güdümlü (0 · 0) | — | ✅ dengeli | 2026-09-09 |
 | Dizgi | ✅ | olay güdümlü (0 · 0) | — | ✅ torba sağlam | 2026-09-09 |
 | Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | bekliyor | ⚠️ RAPID takası | 2026-09-09 |
 | Geçit | ✅ | **60 · 1 · %1,2 · 22 ms** | — (ayrık hamle) | ✅ adil | 2026-09-09 |
 | Tavla | ✅ | olay güdümlü (0 · 0) | — | ⚠️ Hapis beraberliği | 2026-09-09 |
-| Balkon | ✅ | **60 · 2 · %39,6 · 25 ms** | — (nokta nişan) | ⚠️ scooter penceresi | 2026-09-09 |
+| Balkon | ✅ | **60 · 2 · %39,6 · 25 ms** | — (nokta nişan) | ✅ bilinçli tercih | 2026-09-09 |
 | Kakuro | ✅ | olay güdümlü (0 · 0) | — | ✅ üretim bütçesi | 2026-09-09 |
 | Vergici | ✅ | olay güdümlü (0 · 0) | — | ✅ düğüm bütçeli çözücü | 2026-09-09 |
 | Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | ✅ mevcut testlerle | 2026-09-09 |
@@ -658,10 +658,20 @@ Sayılar muhafazakâr bir alt sınırdır: çözücü 24 hücreden büyük bile�
 toplam mayın sayısı kısıtını atlıyor, yani gerçek "tahminsiz" oranı bir miktar
 daha yüksek olabilir — ama yön değişmez.
 
-Karar tasarımın. Klasik Mayın Tarlası da böyledir; ama "tahminsiz üretim"
-(üretirken çözücüyü çalıştırıp tahmin gerektiren tahtayı atmak) yaygın bir
-iyileştirmedir ve bu depoda gereken çözücü zaten yazıldı. Maliyeti üretim
-süresidir; Kakuro'da olduğu gibi iş sayacıyla sınırlanabilir.
+**Düzeltildi (v0.24.2).** Çözücü ana kaynağa taşındı (`MinesSolver`) ve üretim
+onu kullanıyor: mayın yerleşimi, tahta tahminsiz çözülebilene dek yeniden
+deneniyor (en çok `PLACEMENT_TRIES` = 200 deneme, sonra son yerleşim kullanılır
+ki oyun her hâlükârda başlasın).
+
+| Zorluk | Önce tahminsiz | Sonra | Ort. tahmin (önce → sonra) | Üretim |
+| --- | --- | --- | --- | --- |
+| Kolay | %80 | **%100** | 0,38 → 0,00 | 1,7 ms |
+| Orta | %26 | **%100** | 2,50 → 0,00 | 7,3 ms |
+| Zor | %3 | **%100** | 5,67 → 0,00 | 14,0 ms |
+
+Üretim maliyeti ihmal edilebilir (en yavaş 14 ms). `MinesStateTest`'teki
+`generated boards are solvable without guessing` testi garantiyi kalıcı kılıyor;
+üretimdeki kontrol kaldırıldığında kırmızıya döndüğü doğrulandı.
 
 ### Balkon · 2026-09-09
 

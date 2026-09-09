@@ -1,5 +1,6 @@
 package com.za.games.kiskac
 
+import com.za.games.besharf.BesHarfWords
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
@@ -60,13 +61,11 @@ class KiskacStateTest {
     }
 
     @Test
-    fun `twelve wrong guesses lose the game`() {
+    fun `using every guess loses the game`() {
         var state = KiskacState(answer = "kalem")
-        // Hepsi farklı, hepsi yanlış 12 tahmin:
-        val words = listOf(
-            "aaaaa", "bbbbb", "ccccc", "ddddd", "eeeee", "fffff",
-            "ggggg", "hhhhh", "jjjjj", "lllll", "mmmmm", "nnnnn",
-        )
+        // Hepsi farklı, hepsi yanlış: hak sayısı kadar tahmin (sabitten türetilir).
+        val harfler = "abcdfghjlmnprs"
+        val words = (0 until KiskacState.MAX_GUESSES).map { harfler[it].toString().repeat(5) }
         for (w in words) state = guessed(state, w)
         assertEquals(KiskacStatus.LOST, state.status)
         assertEquals(KiskacState.MAX_GUESSES, state.guesses.size)
@@ -185,5 +184,22 @@ class KiskacStateTest {
         assertEquals(6, TurkishOrder.indexOf(sorted, "zzzzz"))
         assertEquals(2, TurkishOrder.indexOf(sorted, "cccca")) // c < ç
         assertTrue(TurkishOrder.compare("abcde", "abxde") < 0) // tablo dışı harf çökmez
+    }
+
+    /**
+     * Hak, oyuncunun arayabildiği uzayın ikili arama derinliğini karşılamalı.
+     * Kıskaç ikili aramadır ve ekranda sıralı olarak geçerli tahminlerin
+     * tamamı gösterilir; hak ⌈log2(n+1)⌉'in altına düşerse cevapların bir
+     * kısmı kusursuz oynayan biri için bile ulaşılmaz olur. Kelime listesi
+     * büyüdüğünde bu test uyarır.
+     */
+    @Test
+    fun `guess budget covers binary search over the guessable list`() {
+        val uzay = BesHarfWords.allowed.size
+        val gereken = kotlin.math.ceil(kotlin.math.ln(uzay + 1.0) / kotlin.math.ln(2.0)).toInt()
+        assertTrue(
+            "arama uzayı $uzay kelime → $gereken tahmin gerekiyor, hak ${KiskacState.MAX_GUESSES}",
+            KiskacState.MAX_GUESSES >= gereken,
+        )
     }
 }

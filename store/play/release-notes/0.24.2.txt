@@ -1,0 +1,8 @@
+<tr-TR>
+• Mayın Tarlası: tahtalar artık tahmin gerektirmeden çözülebiliyor; kör seçimle kaybetme kalktı.
+• Kıskaç: tahmin hakkı 13 oldu, ikili arama her kelimeye yetiyor.
+</tr-TR>
+<en-US>
+• Minesweeper: boards can now be solved without guessing; no more blind-luck losses.
+• Kıskaç: 13 guesses, enough for binary search to reach every word.
+</en-US>
