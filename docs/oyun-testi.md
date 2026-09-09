@@ -212,6 +212,15 @@ denemeye başlarsa büyür (cihazdaki yavaşlamanın da sebebi budur).
   hedefi olmadığını yorumda belirtin.
 - Sayacı olmayan bir motorda önce sayacı ekleyin; ölçülemeyen şey korunamaz.
 
+Depodaki iyi örnek Vergici: çözücü süreye değil **düğüm bütçesine** bakıyor
+(`VergiciSolver.optimal(n, budget = 400_000)`), test de sonucu deterministik
+bir ölçütle karşılaştırıyor (`opt >= greedyScore`). Süre yalnızca rapora
+basılıyor, iddiaya girmiyor — doğru kullanım budur.
+
+Tüm motor testleri bu açıdan tarandı (`nanoTime`, `currentTimeMillis`,
+`Thread.sleep`): duvar saatine **iddia bağlayan** tek yer Kakuro'ydu ve
+düzeltildi. Kakuro ile Vergici'de kalan süre ölçümleri yalnızca rapor amaçlı.
+
 ### Her oyunda bakılacaklar
 
 | Ölçüt | Soru |
