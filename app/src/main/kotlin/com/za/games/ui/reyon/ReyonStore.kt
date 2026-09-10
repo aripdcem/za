@@ -5,6 +5,9 @@ import com.za.games.reyon.ReyonLevel
 
 enum class ReyonMode { DAILY, FREE }
 
+/** Oyun türü: diziliş bulmacası ya da uyum denetimi. */
+enum class ReyonKind { PUZZLE, AUDIT }
+
 /**
  * Reyon kalıcı durumu: son seçilen zorluk ve mod, devam eden bulmaca
  * (tohumdan yeniden üretilir; yalnızca yerleşimler, ipucu sayısı ve süre
@@ -27,6 +30,84 @@ class ReyonStore(context: Context) {
     )
 
     data class Record(val time: Int, val hints: Int)
+
+    data class AuditRecord(val time: Int, val mistakes: Int, val hints: Int)
+
+    class SavedAudit(
+        val seed: Long,
+        val level: ReyonLevel,
+        val mode: ReyonMode,
+        val day: Long,
+        val snapshot: IntArray,
+        val elapsed: Int,
+    )
+
+    fun lastKind(): ReyonKind =
+        ReyonKind.entries.firstOrNull { it.name == prefs.getString(KEY_KIND, null) } ?: ReyonKind.PUZZLE
+
+    fun saveKind(kind: ReyonKind) {
+        prefs.edit().putString(KEY_KIND, kind.name).apply()
+    }
+
+    fun saveAudit(seed: Long, level: ReyonLevel, mode: ReyonMode, day: Long, snapshot: IntArray, elapsed: Int) {
+        prefs.edit()
+            .putLong(KEY_A_SEED, seed)
+            .putString(KEY_A_LEVEL, level.name)
+            .putString(KEY_A_MODE, mode.name)
+            .putLong(KEY_A_DAY, day)
+            .putString(KEY_A_SNAPSHOT, snapshot.joinToString(","))
+            .putInt(KEY_A_ELAPSED, elapsed)
+            .apply()
+    }
+
+    fun clearAudit() {
+        prefs.edit()
+            .remove(KEY_A_SEED)
+            .remove(KEY_A_LEVEL)
+            .remove(KEY_A_MODE)
+            .remove(KEY_A_DAY)
+            .remove(KEY_A_SNAPSHOT)
+            .remove(KEY_A_ELAPSED)
+            .apply()
+    }
+
+    fun restoreAudit(): SavedAudit? {
+        if (!prefs.contains(KEY_A_SEED)) return null
+        val level = ReyonLevel.entries.firstOrNull { it.name == prefs.getString(KEY_A_LEVEL, null) } ?: return null
+        val mode = ReyonMode.entries.firstOrNull { it.name == prefs.getString(KEY_A_MODE, null) } ?: return null
+        val raw = prefs.getString(KEY_A_SNAPSHOT, null) ?: return null
+        val snapshot = raw.split(',').map { it.toIntOrNull() ?: return null }.toIntArray()
+        if (snapshot.size < 3) return null
+        return SavedAudit(prefs.getLong(KEY_A_SEED, 0L), level, mode, prefs.getLong(KEY_A_DAY, 0L), snapshot, prefs.getInt(KEY_A_ELAPSED, 0).coerceAtLeast(0))
+    }
+
+    fun auditDailyRecord(day: Long, level: ReyonLevel): AuditRecord? {
+        if (prefs.getLong(KEY_A_DAILY_DAY + level.name, Long.MIN_VALUE) != day) return null
+        return AuditRecord(
+            prefs.getInt(KEY_A_DAILY_TIME + level.name, 0),
+            prefs.getInt(KEY_A_DAILY_MISTAKES + level.name, 0),
+            prefs.getInt(KEY_A_DAILY_HINTS + level.name, 0),
+        )
+    }
+
+    fun saveAuditDaily(day: Long, level: ReyonLevel, time: Int, mistakes: Int, hints: Int) {
+        if (auditDailyRecord(day, level) != null) return
+        prefs.edit()
+            .putLong(KEY_A_DAILY_DAY + level.name, day)
+            .putInt(KEY_A_DAILY_TIME + level.name, time)
+            .putInt(KEY_A_DAILY_MISTAKES + level.name, mistakes)
+            .putInt(KEY_A_DAILY_HINTS + level.name, hints)
+            .apply()
+    }
+
+    fun auditBest(level: ReyonLevel): Int = prefs.getInt(KEY_A_BEST + level.name, 0)
+
+    fun saveAuditBest(level: ReyonLevel, time: Int): Boolean {
+        val current = auditBest(level)
+        if (current in 1..time) return false
+        prefs.edit().putInt(KEY_A_BEST + level.name, time).apply()
+        return true
+    }
 
     fun lastLevel(): ReyonLevel =
         ReyonLevel.entries.firstOrNull { it.name == prefs.getString(KEY_LEVEL, null) } ?: ReyonLevel.KOLAY
@@ -121,5 +202,17 @@ class ReyonStore(context: Context) {
         const val KEY_DAILY_TIME = "daily_time_"
         const val KEY_DAILY_HINTS = "daily_hints_"
         const val KEY_BEST = "best_"
+        const val KEY_KIND = "kind"
+        const val KEY_A_SEED = "audit_seed"
+        const val KEY_A_LEVEL = "audit_level"
+        const val KEY_A_MODE = "audit_mode"
+        const val KEY_A_DAY = "audit_day"
+        const val KEY_A_SNAPSHOT = "audit_snapshot"
+        const val KEY_A_ELAPSED = "audit_elapsed"
+        const val KEY_A_DAILY_DAY = "audit_daily_day_"
+        const val KEY_A_DAILY_TIME = "audit_daily_time_"
+        const val KEY_A_DAILY_MISTAKES = "audit_daily_mistakes_"
+        const val KEY_A_DAILY_HINTS = "audit_daily_hints_"
+        const val KEY_A_BEST = "audit_best_"
     }
 }

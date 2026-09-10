@@ -650,4 +650,30 @@
     <string name="reyon_kind_tiras_kopugu">Tıraş köpüğü</string>
     <string name="reyon_kind_islak_mendil">Islak mendil</string>
     <string name="reyon_kind_pamuk">Pamuk</string>
+    <!-- Reyon: Denetim -->
+    <string name="reyon_kind_puzzle">Diziliş</string>
+    <string name="reyon_kind_audit">Denetim</string>
+    <string name="reyon_audit_intro">Üstte plan, altta gerçek raf. Raf plandan birkaç yerde sapıyor: yer değişimi, boş göz, yabancı ürün, yanlış marka ya da boy, komşu göze taşma. Sapmalara dokun; yanlış dokunuş hata sayılır.</string>
+    <string name="reyon_audit_level_desc_fmt">%1$d raf × %2$d göz · %3$d sapma</string>
+    <string name="reyon_audit_daily_desc">Herkes bugün aynı rafı denetler; süren ve hataların kaydedilir.</string>
+    <string name="reyon_audit_daily_done_fmt">Bugün denetlendi: %1$s · %2$d hata</string>
+    <string name="reyon_audit_free_desc">Rastgele raf; hatasız ve ipucusuz denetimler rekor sayılır.</string>
+    <string name="reyon_audit_start">Denetime başla</string>
+    <string name="reyon_audit_generating">Denetim hazırlanıyor…</string>
+    <string name="reyon_audit_plan_label">Plan</string>
+    <string name="reyon_audit_shelf_label">Raf: sapmalara dokun</string>
+    <string name="reyon_audit_found_label">Bulunan</string>
+    <string name="reyon_audit_mistakes_label">Hata</string>
+    <string name="reyon_audit_remaining_fmt">%1$d sapma daha bulunacak</string>
+    <string name="reyon_audit_done_title">Denetim tamam</string>
+    <string name="reyon_audit_result_fmt">%1$s · %2$d hata · %3$d ipucu</string>
+    <string name="reyon_audit_board_desc_fmt">Denetim rafı %1$d raf × %2$d göz, %3$d/%4$d sapma bulundu</string>
+    <string name="reyon_audit_plan_desc_fmt">Plan %1$d raf × %2$d göz</string>
+    <string name="reyon_dev_swap_fmt">Yer değişimi: %1$s ↔ %2$s</string>
+    <string name="reyon_dev_gap_fmt">Boş göz: %1$s bir yüz eksik</string>
+    <string name="reyon_dev_missing_fmt">Boş göz: %1$s rafta yok</string>
+    <string name="reyon_dev_foreign_fmt">Yabancı ürün: %1$s yerine %2$s</string>
+    <string name="reyon_dev_brand_fmt">Yanlış marka: %1$s (%2$s yerine %3$s)</string>
+    <string name="reyon_dev_size_fmt">Yanlış boy: %1$s</string>
+    <string name="reyon_dev_spill_fmt">Taşma: %1$s, %2$s gözüne taşmış</string>
 </resources>

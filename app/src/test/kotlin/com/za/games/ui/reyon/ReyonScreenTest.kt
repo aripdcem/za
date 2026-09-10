@@ -3,6 +3,7 @@ package com.za.games.ui.reyon
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -25,6 +26,7 @@ class ReyonScreenTest {
     @Test
     fun hintsPlaceProductsUndoReturnsThemAndThePuzzleGetsSolved() {
         rule.setZaContent { game("reyon").screen(0L, {}, {}) }
+        rule.onNodeWithText(str(R.string.reyon_kind_puzzle)).performClick()
         rule.onNodeWithText(str(R.string.mode_free)).performClick()
         rule.onNodeWithText(str(R.string.difficulty_easy)).performClick()
         rule.onNodeWithText(str(R.string.reyon_start)).performClick()
@@ -46,5 +48,26 @@ class ReyonScreenTest {
             rule.onNodeWithText(str(R.string.reyon_hint)).performClick()
         }
         rule.onNodeWithText(str(R.string.congrats)).assertIsDisplayed()
+    }
+
+    @Test
+    fun auditHintsRevealEveryDeviation() {
+        rule.setZaContent { game("reyon").screen(0L, {}, {}) }
+        rule.onNodeWithText(str(R.string.reyon_kind_audit)).performClick()
+        rule.onNodeWithText(str(R.string.mode_free)).performClick()
+        rule.onNodeWithText(str(R.string.difficulty_easy)).performClick()
+        rule.onNodeWithText(str(R.string.reyon_audit_start)).performClick()
+
+        val shelfDesc = str(R.string.reyon_audit_board_desc_fmt, 0, 0, 0, 0).substringBefore(' ')
+        fun shelf() = rule.onAllNodes(hasContentDescription(shelfDesc, substring = true))
+        rule.waitUntil(timeoutMillis = 30_000) { shelf().fetchSemanticsNodes().isNotEmpty() }
+        rule.onNodeWithText(str(R.string.reyon_audit_plan_label)).assertIsDisplayed()
+
+        // Her ipucu bir sapma açar; Kolay'da iki sapma var.
+        var guard = 0
+        while (rule.onAllNodesWithText(str(R.string.reyon_audit_done_title)).fetchSemanticsNodes().isEmpty() && guard++ < 8) {
+            rule.onNodeWithText(str(R.string.reyon_hint)).performClick()
+        }
+        rule.onNodeWithText(str(R.string.reyon_audit_done_title)).assertIsDisplayed()
     }
 }

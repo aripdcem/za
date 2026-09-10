@@ -1,0 +1,6 @@
+<tr-TR>
+• Reyon: Denetim modu. Plan ile gerçek rafı karşılaştır, sapmaları bul: yer değişimi, boş göz, yabancı ürün, yanlış marka ya da boy, taşma. Günlük raf, üç zorluk, süre ve hata kaydı.
+</tr-TR>
+<en-US>
+• Reyon: Audit mode. Compare the plan with the real shelf and spot the deviations: swaps, empty slots, foreign products, wrong brand or size, spills. Daily shelf, three levels, time and mistake records.
+</en-US>

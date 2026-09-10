@@ -650,4 +650,30 @@
     <string name="reyon_kind_tiras_kopugu">Shaving foam</string>
     <string name="reyon_kind_islak_mendil">Wet wipes</string>
     <string name="reyon_kind_pamuk">Cotton</string>
+    <!-- Reyon: Audit -->
+    <string name="reyon_kind_puzzle">Arrange</string>
+    <string name="reyon_kind_audit">Audit</string>
+    <string name="reyon_audit_intro">Plan on top, the real shelf below. The shelf deviates from the plan in a few places: a swap, an empty slot, a foreign product, a wrong brand or size, a spill into the next slot. Tap the deviations; a wrong tap counts as a mistake.</string>
+    <string name="reyon_audit_level_desc_fmt">%1$d shelves × %2$d slots · %3$d deviations</string>
+    <string name="reyon_audit_daily_desc">Everyone audits the same shelf today; your time and mistakes are recorded.</string>
+    <string name="reyon_audit_daily_done_fmt">Audited today: %1$s · %2$d mistakes</string>
+    <string name="reyon_audit_free_desc">Random shelf; audits with no mistakes and no hints count as records.</string>
+    <string name="reyon_audit_start">Start the audit</string>
+    <string name="reyon_audit_generating">Preparing the audit…</string>
+    <string name="reyon_audit_plan_label">Plan</string>
+    <string name="reyon_audit_shelf_label">Shelf: tap the deviations</string>
+    <string name="reyon_audit_found_label">Found</string>
+    <string name="reyon_audit_mistakes_label">Mistakes</string>
+    <string name="reyon_audit_remaining_fmt">%1$d more to find</string>
+    <string name="reyon_audit_done_title">Audit complete</string>
+    <string name="reyon_audit_result_fmt">%1$s · %2$d mistakes · %3$d hints</string>
+    <string name="reyon_audit_board_desc_fmt">Audit shelf %1$d shelves × %2$d slots, %3$d/%4$d deviations found</string>
+    <string name="reyon_audit_plan_desc_fmt">Plan %1$d shelves × %2$d slots</string>
+    <string name="reyon_dev_swap_fmt">Swapped: %1$s ↔ %2$s</string>
+    <string name="reyon_dev_gap_fmt">Empty slot: %1$s is one facing short</string>
+    <string name="reyon_dev_missing_fmt">Empty slot: %1$s is missing</string>
+    <string name="reyon_dev_foreign_fmt">Foreign product: %2$s instead of %1$s</string>
+    <string name="reyon_dev_brand_fmt">Wrong brand: %1$s (%3$s instead of %2$s)</string>
+    <string name="reyon_dev_size_fmt">Wrong size: %1$s</string>
+    <string name="reyon_dev_spill_fmt">Spill: %1$s spills into %2$s</string>
 </resources>

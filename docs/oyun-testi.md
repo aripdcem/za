@@ -46,6 +46,7 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Kolay tahtalar en basit teknikle çözülür | `SudokuStateTest` |
 | Üretim iş bütçesini aşmaz | `KakuroTest` |
 | Her bulmaca tahminsiz çözülür, brif kısa kalır, üretim bütçede | `ReyonGeneratorTest` |
+| Denetim sapmaları ayrık ve görünür; plan ile raf yalnızca sapma gözlerinde ayrışır | `ReyonAuditTest` |
 
 Yeni bir ölçüm bulgusu düzeltildiğinde, mümkünse **paylı bir değişmez** olarak
 buraya eklenir: ölçülen değerin kendisi değil, altına düşülmemesi gereken
@@ -338,7 +339,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | ✅ mevcut testlerle | 2026-09-09 |
 | Viraj | ✅ | **60 · 3 · %100 · 34 ms** | — (tuşla) | ✅ kusur yok | 2026-09-09 |
 | Filo | ✅ | **60 · 1 · %81 · 31 ms** | ✅ düzeltildi | ✅ düzeltildi | 2026-09-09 |
-| Reyon | bekliyor | — (olay güdümlü) | — (dokun-yerleştir) | ✅ ölçüldü | 2026-09-09 |
+| Reyon | bekliyor | — (olay güdümlü) | — (dokun-yerleştir) | ✅ ölçüldü (diziliş + denetim) | 2026-09-10 |
 
 18 oyunun tamamı açıldı, oynandı ve **hiçbirinde çökme yok** (`logcat` temiz).
 Sürekli çizen altı oyunun tamamı 60 kare/s tutuyor; kaçan vsync 0–3 (≈%0,4).
@@ -861,6 +862,25 @@ alt) brifin dörtte birinden fazlasına çıktı. Zor'da en sık ipucu artık
 (en kötü 56 bin), süre ort 2–16 ms (en kötü 67 ms, yalnız rapor).
 `ReyonGeneratorTest.generationStaysWithinWorkBudget` sınırları 80 deneme ve
 400 bin düğüm (gözlenenin 3–7 katı).
+
+**D — Denetim modu** (`auditReport`, 40 tohum/zorluk, v0.26.0). Denetimde
+adillik sorusu "sapma gerçekten görünür mü ve görünenden başka fark var mı"
+diye sorulur; üretici her denetimde bunu doğrular (`ReyonAuditGenerator.verify`:
+sapma maskeleri ayrık, plan ile raf yalnızca bu gözlerde ayrışır, her sapmanın
+en az bir ayrışan gözü var). Ölçülen, tür karışımı ve incelik:
+
+| Zorluk | Sapma | Tür karışımı | İnce sapma (marka/boy) | Sapma başına ayrışan göz |
+| --- | --- | --- | --- | --- |
+| Kolay | 2 | boş göz %44, yer değişimi %29, yabancı %28 | %0 | 1,98 |
+| Orta | 3 | yer değişimi %23, yabancı %21, boş göz %19, marka %19, taşma %18 | %19 | 2,07 |
+| Zor | 5 | boş göz %20, yer değişimi %18, yabancı %17, marka %16, boy %16, taşma %14 | %32 | 2,12 |
+
+Okuma: Kolay yalnızca bariz sapmalarla (boş göz, yer değişimi, yabancı ürün)
+oynanıyor; Orta marka ve taşmayı, Zor boyu ekliyor ve sapmaların üçte biri
+"ince" oluyor (yalnızca renk şeridi ya da boy noktası değişir). Zorluk
+merdiveni sapma sayısından çok sapmanın inceliğinden geliyor. Sapma başına
+ayrışan göz sayısı 2 civarında: her sapma en az bir, çoğunlukla iki gözde
+görünür.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
