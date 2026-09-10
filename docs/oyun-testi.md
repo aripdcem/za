@@ -55,6 +55,7 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Raket: orta bir oyuncu botu kolay bilgisayarı yener, zora yenilir, seviyeler sıralı ve her maç biter; tavan hızda vuruş kaçmaz (tünelleme yok) | `RaketWorldTest` |
 | Tuşe: şerit dizisi tohumdan deterministik, her şerit kullanılır, tekrar payı sınırlı; Sonsuz'da sıradaki karo tamamen çıkana dek vurulabilir; parçalar aralıkta ve oktav sıçramasız; sentez notanın frekansını %3 içinde tutar | `TuseWorldTest` |
 | Uçurtma: üretilen dünya her sütunda ≥ 0,3 birim boşluk bırakır (tavan zorlukta da); rakibin üstünden geçen keser, altından geçen kesilir; dikkatli pilot 12 uçuşun en az 8'inde 300 m'yi geçer | `UcurtmaWorldTest` |
+| Dalgıç: doğan her şey şeritlerde ve suda kalır, mayınlar alt şeritlerde ve en çok üç; boş yüzeye çıkış can götürür ama başta değil; pilot 20 dalışın en az 14'ünde teslim eder | `DalgicWorldTest` |
 | Metin kontrastı WCAG AA eşiğini tutar | `ThemeContrastTest` |
 
 Yeni bir ölçüm bulgusu düzeltildiğinde, mümkünse **paylı bir değişmez** olarak
@@ -1366,6 +1367,36 @@ tohum), kesme kuralı ve pilotun açılışı geçmesi. A–C cihazda koşulmad�
 cihazda bakılacak: basılı tutma gecikmesi, ip ve tel çizgilerinin
 kalınlığı (tel öldürücü, görünür olmalı), 360 dp'de menü kartının görev
 listesiyle kayması.
+
+### Dalgıç · 2026-09-10
+
+**D — pilot ölçümü** (`./gradlew :games:dalgic:probe`, 20 dalış/pilot,
+v0.32.0). Pilot en yakın dalgıca gider, yük dolunca ya da oksijen 9 s'nin
+altına inip elinde dalgıç varsa yüzeye çıkar, önündeki tehditten bir şerit
+kayarak kaçar.
+
+**Bulgu 1 (pilot).** İlk sürümde pilot oksijen azalınca dalgıçsız da yüzeye
+çıkıyordu; 60 can kaybının 20–25'i "boş yüzeye çıkış"tı. Kural doğru (yüzeyi
+bedava oksijen deposu yapmanın bedeli), pilot yanlıştı: dalgıç yoksa sonuna
+dek aramak, can bedeli aynı olduğundan hep daha iyi. Düzeltildi. Ayrıca ilk
+dalga yumuşatıldı: doğum aralığı 1,5 → 1,7 s, köpekbalığı hızı 0,25–0,40 →
+0,22–0,36 birim/s.
+
+| pilot | tepki | ort. skor | ort. dalga | ort. dalgıç | ort. süre | köpekbalığı | düşman | torpido | mayın | oksijen | boş çıkış |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| acemi | 0,35 s | 1566 | 6,1 | 13,8 | 75 s | 25 | 13 | 2 | 8 | 12 | 0 |
+| orta | 0,20 s | 1412 | 6,3 | 13,4 | 71 s | 14 | 9 | 2 | 16 | 19 | 0 |
+| uzman | 0,10 s | 1000 | 5,5 | 10,5 | 67 s | 22 | 6 | 1 | 10 | 21 | 0 |
+
+Okuma: üç canla 65–75 s, iki–üç tam yük; can kayıpları köpekbalığı, mayın
+ve oksijen arasında dağılıyor, tek bir tehdit baskın değil. "Uzman" pilotun
+daha kötü olması pilotun sık hedef değiştirip titremesinden, oyundan değil;
+insan için ilk hedef 1000 puan ve 5. dalga. Değişmez teste çevrilen: doğum
+şeritlerde kalır (6 tohum × 60 s), boş yüzeye çıkış kuralı, pilot 20
+dalışın en az 14'ünde teslim eder. A–C cihazda koşulmadı; cihazda bakılacak:
+2B sürükleme kazancı 1,3 (Filo 1,35 ile aynı his mi), akıntı bantlarının
+okunurluğu, mayın zincirlerinin küçük ekranda görünürlüğü, oksijen uyarısının
+duyulabilirliği.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

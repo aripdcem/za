@@ -1,0 +1,6 @@
+<tr-TR>
+• Yeni oyun: Dalgıç. Denizaltıyla dalgıç kurtar: altışar topla, yüzeyde teslim et, oksijene dikkat. Köpekbalıkları, düşman denizaltılar, mayınlar ve Boğaz akıntısı; günlük deniz.
+</tr-TR>
+<en-US>
+• New game: Dalgıç. Rescue divers by submarine: collect six, surface to deliver, watch your oxygen. Sharks, enemy subs, mines and the Bosphorus current; daily sea.
+</en-US>

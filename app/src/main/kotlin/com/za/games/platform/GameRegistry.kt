@@ -21,6 +21,7 @@ import com.za.games.ui.hub.ReyonArt
 import com.za.games.ui.hub.RaketArt
 import com.za.games.ui.hub.TuseArt
 import com.za.games.ui.hub.UcurtmaArt
+import com.za.games.ui.hub.DalgicArt
 import com.za.games.ui.hub.VirajArt
 import com.za.games.ui.hub.MinesArt
 import com.za.games.ui.hub.SnakeArt
@@ -41,6 +42,7 @@ import com.za.games.ui.reyon.ReyonScreen
 import com.za.games.ui.raket.RaketScreen
 import com.za.games.ui.tuse.TuseScreen
 import com.za.games.ui.ucurtma.UcurtmaScreen
+import com.za.games.ui.dalgic.DalgicScreen
 import com.za.games.ui.viraj.VirajScreen
 import com.za.games.ui.snake.SnakeScreen
 import com.za.games.ui.sudoku.SudokuScreen
@@ -316,6 +318,18 @@ object GameRegistry {
             art = { modifier -> UcurtmaArt(modifier) },
             screen = { highScore, onScore, onExit ->
                 UcurtmaScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "dalgic",
+            since = "0.32.0",
+            titleRes = R.string.game_dalgic,
+            taglineRes = R.string.game_dalgic_tagline,
+            category = GameCategory.ARCADE,
+            accent = Color(0xFFFACC15),
+            art = { modifier -> DalgicArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                DalgicScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
     )
