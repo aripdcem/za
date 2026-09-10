@@ -109,7 +109,8 @@ class ReyonAuditLayoutTest {
             val b = node.boundsInRoot
             assertTrue("plan ekranın içinde olmalı: $b / $rootPx", b.left >= rootPx.left - 1f && b.right <= rootPx.right + 1f && b.bottom <= rootPx.bottom + 1f)
         }
-        assertTrue("büyük plan küçüğünden geniş olmalı", plans.maxOf { it.boundsInRoot.width } > plans.minOf { it.boundsInRoot.width } * 1.05f)
+        // Büyütme, genişlik zaten tamken yüksekliği artırır (raf satırı 0,95'e çıkar).
+        assertTrue("büyük plan küçüğünden yüksek olmalı", plans.maxOf { it.boundsInRoot.height } > plans.minOf { it.boundsInRoot.height } * 1.05f)
         rule.onNode(hasContentDescription(zoomDesc)).performClick()
         rule.onNode(hasContentDescription(zoomDesc)).assertDoesNotExist()
         assertEquals(1, rule.onAllNodes(hasContentDescription(planDesc)).fetchSemanticsNodes().size)

@@ -3,6 +3,7 @@ package com.za.games.ui.reyon
 import android.content.Context
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
@@ -34,8 +35,9 @@ fun ComposeContentTestRule.reyonOpenMenu() {
         onAllNodesWithText(back).fetchSemanticsNodes().isNotEmpty() ||
             onAllNodesWithText(chip).fetchSemanticsNodes().isNotEmpty()
     }
+    // Bitmiş bir tur geri yüklendiyse hem üst çubukta hem sonuç kartında "Başa dön" olur; ilki yeter.
     if (onAllNodesWithText(back).fetchSemanticsNodes().isNotEmpty()) {
-        onNodeWithText(back).performClick()
+        onAllNodesWithText(back).onFirst().performClick()
         waitUntil(timeoutMillis = 10_000) { onAllNodesWithText(chip).fetchSemanticsNodes().isNotEmpty() }
     }
 }
@@ -51,7 +53,7 @@ fun ComposeContentTestRule.reyonLeaveRound() {
     val back = str(R.string.reyon_to_menu)
     try {
         if (onAllNodesWithText(back).fetchSemanticsNodes().isNotEmpty()) {
-            onNodeWithText(back).performClick()
+            onAllNodesWithText(back).onFirst().performClick()
             waitForIdle()
         }
     } catch (e: IllegalStateException) {
