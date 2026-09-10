@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Reyon**, **Raket**, **Tuşe**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Reyon**, **Raket**, **Tuşe**, **Uçurtma**.
 
 Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç çipleri, seçim kalıcı) ve en üstte son oynanan dört oyun için hızlı erişim şeridi bulunur.
 
@@ -308,6 +308,23 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   9 test: şerit determinizmi ve tekrar payı, Klasik akış ve süre, yanlış tuş, kayma, Sonsuz hızlanma ve kaçan karo,
   son ana kadar vuruş, yarıda bırakma, parça geçerliliği (aralık, oktav sıçraması), sentez frekansı ve WAV başlığı;
   Sonsuz eğrisi ölçümü `:games:tuse:probe`
+
+### Uçurtma
+- **Basılı tut, uç** (Jetpack Joyride türü, kendi tasarımımız): dünya sağdan sola akar, basılı tutunca ip çekilir
+  ve uçurtma yükselir, bırakınca alçalır; zemin güvenli, gök tavanı sert sınır. Akış hızı metreyle artar
+  (6,4'ten 10,4 m/s'ye), öbekler arası boşluk ve çatı yüksekliği 1500 m'ye kadar zorlaşır
+- **Engeller**: bacalı çatılar, elektrik telleri (alçak, **yüksek** — altından geçmek şart —, çift ya da altında
+  çatılı), rakip uçurtmalar, kurdele yayları. **Uçurtma kavgası**: rakibin ipi rakipten sol-alta iner, seninki
+  senden; rakibin üstünden geçince ipin onu keser (bonus), altından geçince rakibin ipi seni keser. Gövdeler
+  çarpışırsa üstteki kazanır
+- **Görevler ve ekipman**: üç görev aynı anda açık (mesafe, kurdele, tel altı, çatı sıyırma, kesme), tamamlanan
+  yerine deterministik dizideki sıradaki gelir; 2, 5 ve 9 görevde Kuyruk (alçalma ×0,75), Makara (yükseliş ×1,25)
+  ve Cam tozu (rakip ipine bağışık, kesme bonusu 50) açılır. Skor = metre + kurdele × 5 + kesme × 25
+- **Günlük mod** herkese aynı gökyüzü, günde 3 deneme; serbest mod rastgele tohum. Ana menü rekoru skor
+- Motor `games/ucurtma`: `UcurtmaWorld` (fizik, öbek üretimi, çarpışma, kesme kuralı, görev sayaçları), `Missions`;
+  10 test: determinizm, fizik sınırları, ekipman etkisi, hız rampası, çatı/baca/tel/ip çarpmaları, üstten kesme ve
+  cam tozu bağışıklığı, kurdele/tel altı/sıyırma sayımı, **geçilebilirlik değişmezi** (her sütunda ≥ 0,3 birim
+  boşluk, tavan zorlukta da), görev ilerlemesi, dikkatli pilotun açılışı geçmesi; pilot ölçümü `:games:ucurtma:probe`
 
 ### Vergici ve Toplam Kapma (`games/sayi`)
 - **Vergici** (Taxman): 1–N tahtası; böleni kalmış bir sayıyı alırsın, vergici o sayının tahtadaki tüm bölenlerini

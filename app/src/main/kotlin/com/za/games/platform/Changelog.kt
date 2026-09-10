@@ -39,6 +39,15 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.31.0", "2026-09-10",
+            tr = listOf(
+                "Yeni oyun: Uçurtma — basılı tut yüksel, bırak alçal; çatılar, teller ve rakip uçurtmalar arasında sonsuz uçuş. Rakibin üstünden geç, ipini kes; görevleri tamamla, kuyruk, makara ve cam tozunu aç",
+            ),
+            en = listOf(
+                "New game: Uçurtma — hold to climb, release to dive; an endless flight between rooftops, wires and rival kites. Pass above a rival to cut its string; complete missions to unlock the tail, the reel and glass powder",
+            ),
+        ),
+        ReleaseNote(
             "0.30.0", "2026-09-10",
             tr = listOf(
                 "Yeni oyun: Tuşe — piyano karoları. Sıradaki karonun şeridine dokun, ezgi parmaklarında çalsın; Klasik (50 karo, en kısa süre), Sonsuz (hızlanan akış) ve Günlük. Yedi telifsiz parça, notalar cihazda sentezleniyor",
