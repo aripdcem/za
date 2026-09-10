@@ -51,14 +51,14 @@ import com.za.games.kiskac.KiskacStatus
 import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
+import com.za.games.platform.ShareContent
 import com.za.games.ui.common.GameTopBar
 import com.za.games.ui.common.OverlayCard
-import com.za.games.platform.ShareContent
 import com.za.games.ui.common.ShareButton
 import com.za.games.ui.common.modeShareLabel
+import java.util.Locale
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
-import java.util.Locale
 
 private val TrLocale: Locale = Locale.forLanguageTag("tr")
 
@@ -250,7 +250,14 @@ private fun EasyModeRow(enabled: Boolean, onToggle: (Boolean) -> Unit) {
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             )
         }
-        Switch(checked = enabled, onCheckedChange = onToggle)
+        // Anahtarın kendi metni yok: ekran okuyucu neyi açıp kapattığını
+        // söyleyebilsin diye satırın etiketi anahtara veriliyor.
+        val etiket = stringResource(R.string.kiskac_easy_mode)
+        Switch(
+            checked = enabled,
+            onCheckedChange = onToggle,
+            modifier = Modifier.semantics { contentDescription = etiket },
+        )
     }
 }
 

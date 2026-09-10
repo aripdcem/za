@@ -8,6 +8,7 @@ sürükleme hassasiyeti, oyun alanının piksel karşılığı. Kullanımı ve e
     python3 tools/cihaz_testi.py tarama            # tüm oyunlar: A + B
     python3 tools/cihaz_testi.py kare --sure 15
     python3 tools/cihaz_testi.py fazlar
+    python3 tools/cihaz_testi.py erisim
     python3 tools/cihaz_testi.py alan
     python3 tools/cihaz_testi.py surukle --y 1500 --mesafeler 20,40,80,160
 
@@ -136,8 +137,12 @@ def tr_kucuk(s: str) -> str:
     return s.replace("\u0130", "i").replace("I", "\u0131").lower()
 
 
-def arayuz() -> list[dict]:
-    """Ekrandaki metinli öğeler: etiket ve dokunma koordinatı."""
+def arayuz(hepsi: bool = False) -> list[dict]:
+    """Ekrandaki öğeler: etiket ve dokunma koordinatı.
+
+    Varsayılan olarak yalnızca etiketli öğeler döner (gezinme bunları kullanır);
+    [hepsi] ile etiketsiz düğümler de eklenir (erişilebilirlik taraması için).
+    """
     for _ in range(3):
         if "dumped" in kabuk("uiautomator dump /sdcard/za_ui.xml"):
             break
@@ -162,8 +167,10 @@ def arayuz() -> list[dict]:
         if x2 - x1 < 2 or y2 - y1 < 2:
             continue
         etiket = (d.get("text") or "").strip() or (d.get("content-desc") or "").strip()
-        if etiket:
-            ogeler.append({"t": etiket, "cx": (x1 + x2) // 2, "cy": (y1 + y2) // 2, "y1": y1})
+        tiklanir = d.get("clickable") == "true"
+        if etiket or (hepsi and tiklanir):
+            ogeler.append({"t": etiket, "cx": (x1 + x2) // 2, "cy": (y1 + y2) // 2,
+                           "x1": x1, "y1": y1, "x2": x2, "y2": y2, "tik": tiklanir})
     return ogeler
 
 
@@ -363,6 +370,41 @@ def komut_surukle(args) -> None:
     print("Hareketi sıfır çıkan en büyük mesafe = ölü bölge.")
 
 
+def komut_erisim(args) -> None:
+    """Erişilebilirlik: etkileşimli öğelerin ekran okuyucu etiketi var mı?
+
+    Her dokunulabilir düğümün sınırları içinde bir etiket (text ya da
+    content-desc) bulunmalı; yoksa TalkBack "düğme" der ama ne yaptığını
+    söylemez. Etiket çoğu zaman çocuk düğümdedir, bu yüzden düğümün kendisine
+    değil **sınırlarını kapsayan** etikete bakılır.
+
+    Dokunma hedefi boyutu bilerek ölçülmez: Compose'da `Surface(onClick)` gibi
+    bileşenlerde semantik düğüm, dokunma alanını değil içindeki metnin
+    sınırlarını bildirebiliyor. Geçit'in 84 dp'lik yön tuşları bu yüzden 11 dp
+    görünüyordu; şeridin dışına dokunmak çalıştığı için ölçüm yanlış alarmdı.
+    Buton boyutu kodda tanımlı olduğundan kod incelemesiyle korunur.
+    """
+    ogeler = arayuz(hepsi=True)
+    if not ogeler:
+        sys.exit("Arayüz okunamadı; uygulama ön planda mı?")
+    tiklanabilir = [o for o in ogeler if o.get("tik")]
+    etiketli = [o for o in ogeler if o["t"]]
+
+    def kapsiyor(dis: dict, ic: dict) -> bool:
+        return (ic["x1"] >= dis["x1"] - 2 and ic["y1"] >= dis["y1"] - 2 and
+                ic["x2"] <= dis["x2"] + 2 and ic["y2"] <= dis["y2"] + 2)
+
+    etiketsiz = [t for t in tiklanabilir
+                 if not t["t"] and not any(kapsiyor(t, e) for e in etiketli)]
+    print(f"dokunulabilir öğe: {len(tiklanabilir)}")
+    print(f"etiketsiz: {len(etiketsiz)}")
+    for o in etiketsiz:
+        print(f"  [{o['x1']},{o['y1']}][{o['x2']},{o['y2']}]  "
+              f"({(o['x2'] - o['x1']) / 2.625:.0f}×{(o['y2'] - o['y1']) / 2.625:.0f} dp)")
+    if not etiketsiz:
+        print("Her dokunulabilir öğenin bir etiketi var.")
+
+
 def komut_tarama(args) -> None:
     """Her oyunu açıp bir tur başlatır ve kare ölçümü alır (A + B aşamaları).
 
@@ -433,6 +475,9 @@ def main() -> None:
     s.add_argument("--tekrar", type=int, default=3)
     s.add_argument("--sure-ms", dest="sure_ms", type=int, default=300)
     s.set_defaults(func=komut_surukle)
+
+    e = alt.add_parser("erisim", help="etkileşimli öğelerin ekran okuyucu etiketi")
+    e.set_defaults(func=komut_erisim)
 
     t = alt.add_parser("tarama", help="tüm oyunları açıp A+B aşamalarını koşar")
     t.add_argument("oyunlar", nargs="*", help="oyun adları; boşsa hepsi")
