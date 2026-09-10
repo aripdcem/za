@@ -56,6 +56,7 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Tuşe: şerit dizisi tohumdan deterministik, her şerit kullanılır, tekrar payı sınırlı; Sonsuz'da sıradaki karo tamamen çıkana dek vurulabilir; parçalar aralıkta ve oktav sıçramasız; sentez notanın frekansını %3 içinde tutar | `TuseWorldTest` |
 | Uçurtma: üretilen dünya her sütunda ≥ 0,3 birim boşluk bırakır (tavan zorlukta da); rakibin üstünden geçen keser, altından geçen kesilir; dikkatli pilot 12 uçuşun en az 8'inde 300 m'yi geçer | `UcurtmaWorldTest` |
 | Dalgıç: doğan her şey şeritlerde ve suda kalır, mayınlar alt şeritlerde ve en çok üç; boş yüzeye çıkış can götürür ama başta değil; pilot 20 dalışın en az 14'ünde teslim eder | `DalgicWorldTest` |
+| Bostan: üretilen her seviye uzman politikasıyla kazanılır (6 tohum × 3 zorluk), türler dalga dizinine göre açılır, bütçe aşılmaz, zorluklar saldırgan sayısında sıralı; tuzak kurulmadan kemirilir, kurulunca kemirene patlar | `BostanStateTest` |
 | Metin kontrastı WCAG AA eşiğini tutar | `ThemeContrastTest` |
 
 Yeni bir ölçüm bulgusu düzeltildiğinde, mümkünse **paylı bir değişmez** olarak
@@ -1546,6 +1547,49 @@ denizaltıyı 22 saniye boyunca su altında tutamadığı için (düşmanlar can
 götürüyor, denizaltı yüzeye dönüyor) **olayın kendisi yerinde yakalanamadı**.
 Duyulabilirlik kararı için sesin çalındığı hâli WAV olarak üretildi ve
 dinlenmek üzere gönderildi.
+
+### Bostan · 2026-09-10
+
+**D — uzman ölçümü** (`./gradlew :games:bostan:probe`, 30 tohum/zorluk,
+v0.33.0). Uzman politika yarım saniyede bir karar verir: yaşı 0,8 s'yi
+geçen damlayı toplar, sonra öncelik sırasıyla en fazla bir savunma koyar
+(acil kesme, erken kuyular, her şeride bir fıskiye, tehdit altındaki şeride
+korkuluk ya da vakti varsa tuzak, kovanlar, ek kuyular, ek fıskiyeler).
+Üretici aynı politikayla doğrular: uzman kaybederse bütçe ×0,85 küçültülüp
+yeniden üretilir (en çok altı ölçek, taban 0,44).
+
+| zorluk | dalga | ölçek 1,0 kazanma | ort. can | ort. süre | ort. saldırgan | ort. yerleşim | üretici ölçek dağılımı |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| kolay | 6 | 30/30 | 2,80 | 123 s | 25,6 | 24,4 | 1,00 × 30 |
+| orta | 8 | 20/30 | 1,77 | 166 s | 50,9 | 28,7 | 1,00 × 20 · 0,85 × 3 · 0,72 × 6 · 0,52 × 1 (ort. 0,91) |
+| zor | 10 | 20/30 | 1,83 | 240 s | 92,4 | 36,6 | 1,00 × 20 · 0,85 × 4 · 0,72 × 6 (ort. 0,92) |
+
+Bütçeler (ölçek 1,0; `*` büyük dalga): kolay 2,4 4,0 8,4* 7,2 8,8 15,6*;
+orta 3,6 6,0 12,6* 10,8 13,2 23,4* 18,0 20,4; zor 4,8 8,0 16,8* 14,4 17,6
+31,2* 24,0 27,2 45,6* 33,6. Zor/tohum 1 örneği: 10 dalga, 96 saldırgan,
+ölçek 1,00, uzman 3 can ve 2855 puan.
+
+**Bulgu 1 (tuzak).** Test yazarken çıktı: domuzun önüne konan tuzak
+kurulamıyor — domuz saniyede 2 kemirir, tuzak 4 can, kurulma 3 s; tuzak 2
+s'de biter. Kural doğru (tuzak pusudur, siper değil), uzman ona göre
+yazıldı: tuzağı yalnızca saldırgan hücreye 3,5 s'den uzakken koyar.
+Değişmez teste çevrildi: karga (1/s) kemirirken tuzak kurulup patlar, domuz
+kurulmadan yer.
+
+**Bulgu 2 (ölçek).** Ölçek 1,0'da uzman kolayda 30/30, orta ve zorda 20/30
+kazanır; kaybedilenleri üretici 0,85–0,52'ye çeker, ortalama ölçek 0,91–0,92.
+Yani seviyelerin üçte ikisi tam bütçeyle, üçte biri küçültülerek gelir;
+kazanılamayan seviye üretilmez (6 tohum × 3 zorluk testi). Uzman insan
+gibi yavaş tutuldu (damla gecikmesi, adım başına tek yerleşim) ki ölçek
+insanın erişemeyeceği bir standarda göre kesilmesin.
+
+Okuma: kolay 2, zor 4 dakika. Uzmanın kolayda ortalama 2,8, ortada 1,8 can
+bırakması insan için hedef: kolayı üç yıldızla, ortayı bir–iki yıldızla
+bitirmek. A–C cihazda koşulmadı; cihazda bakılacak: kart ve hücre dokunma
+hedefi (hücre ~54 dp), damlanın 6 s içinde fark edilip dokunulabilirliği,
+seviye üretiminin ("Bostan hazırlanıyor…") telefondaki süresi (JVM'de
+seviye başına ~20 ms), büyük dalga duyurusunun ve kart bekleme örtüsünün
+okunurluğu.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

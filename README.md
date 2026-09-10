@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Reyon**, **Raket**, **Tuşe**, **Uçurtma**, **Dalgıç**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Reyon**, **Raket**, **Tuşe**, **Uçurtma**, **Dalgıç**, **Bostan**.
 
 Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç çipleri, seçim kalıcı) ve en üstte son oynanan dört oyun için hızlı erişim şeridi bulunur.
 
@@ -341,6 +341,30 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   determinizm, sürüş sınırları ve yön, oksijen döngüsü, kapasite ve teslim bonusu, boş yüzeye çıkış kuralı,
   köpekbalığı/mayın ve dokunulmazlık, torpido davranışları (ileri atış, düşman ateşi, torpido çarpışması, dalga puanı),
   akıntılar, doğumun şeritlerde kalması, pilotun teslim edebilmesi; pilot ölçümü `:games:dalgic:probe`
+
+### Bostan
+- **Şerit savunması** (Plants vs. Zombies türü, kendi tasarımımız): 5 şerit × 7 hücre tarla; saldırganlar ormandan
+  iner, kulübeye ulaşan can götürür (3 can). Karta dokun, hücreye dokun; kürek kaldırır. Su: başlangıç 150/125/100,
+  kuyu 8 s'de bir 25, gökten ~7 s'de bir düşen damla dokununca 25 (6 s durur)
+- **Savunmalar**: kuyu (50), fıskiye (100; önünde saldırgan varsa 1,4 s'de bir 3 hücre/s jet, 1 hasar), korkuluk
+  (50; 24 can, yolu keser), kovan (125; 2 s'de bir çevresindeki üç şeride ±2 satır 2 hasar), tuzak (75; 3 s'de
+  kurulur, basana ve ±1 satırına 30 hasar, tükenir; kurulmadan kemirilir). Kart bekleme 5–15 s
+- **Saldırganlar**: karga (5 can, 0,18 hücre/s), tavşan (4; 0,36), keçi (12; 0,14), domuz (24; 0,11), ayı (60;
+  0,08); önlerine çıkan savunmayı saniyede 0,6–3 kemirir. Puan: karga/tavşan 10, keçi 20, domuz 40, ayı 100,
+  temizlenen dalga 50, bitişte can × 100 + su / 5
+- **Dalgalar**: Kolay 6, Orta 8, Zor 10; bütçe `zorluk × (0,6 + 0,4 × dalga) × (her 3. dalga 1,5)`, türler dalga
+  dizinine göre açılır (tavşan 2., keçi 3., domuz 4., ayı 6. dalga). Dalga temizlenince 4 s sonra sıradaki gelir,
+  temizlenmese de süresi + 12 s'de gelir. **Kazanılabilirlik**: üretilen seviye uzman politikasıyla (`BostanExpert`)
+  oynatılır, uzman kaybederse bütçe ×0,85 ile yeniden üretilir (en çok altı ölçek); sonuç kartı uzmanın aynı
+  bostandaki can ve puanını gösterir
+- **Günlük mod** herkese aynı bostan (zorluk başına), günde 3 deneme; serbest mod rastgele tohum; rekorlar zorluk
+  başına. Ana menü rekoru skor
+- Motor `games/bostan`: `BostanState` (tarla, su, savunma ve saldırgan kuralları, dalga akışı), `BostanExpert`
+  (betikli savunma politikası), `BostanGenerator` (dalga üretimi + uzman doğrulaması); 15 test: yerleşim, bekleme
+  ve kürek, kuyu ve damla, fıskiye şerit hedefi, korkuluk kesme ve düşüşü, can kaybı ve yenilgi, kovan kapsamı,
+  tuzak kurulma/patlama/kemirilme, dalga akışı ve kazanma puanı, bekleme payıyla geçiş, üretici determinizmi ve
+  tür açılışı, zorluk sıralaması, her üretilen seviyenin uzmanla kazanılması, günlük tohum; ölçüm
+  `:games:bostan:probe`
 
 ### Vergici ve Toplam Kapma (`games/sayi`)
 - **Vergici** (Taxman): 1–N tahtası; böleni kalmış bir sayıyı alırsın, vergici o sayının tahtadaki tüm bölenlerini

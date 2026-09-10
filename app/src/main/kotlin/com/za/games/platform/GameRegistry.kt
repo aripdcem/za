@@ -21,6 +21,7 @@ import com.za.games.ui.hub.ReyonArt
 import com.za.games.ui.hub.RaketArt
 import com.za.games.ui.hub.TuseArt
 import com.za.games.ui.hub.UcurtmaArt
+import com.za.games.ui.hub.BostanArt
 import com.za.games.ui.hub.DalgicArt
 import com.za.games.ui.hub.VirajArt
 import com.za.games.ui.hub.MinesArt
@@ -42,6 +43,7 @@ import com.za.games.ui.reyon.ReyonScreen
 import com.za.games.ui.raket.RaketScreen
 import com.za.games.ui.tuse.TuseScreen
 import com.za.games.ui.ucurtma.UcurtmaScreen
+import com.za.games.ui.bostan.BostanScreen
 import com.za.games.ui.dalgic.DalgicScreen
 import com.za.games.ui.viraj.VirajScreen
 import com.za.games.ui.snake.SnakeScreen
@@ -330,6 +332,18 @@ object GameRegistry {
             art = { modifier -> DalgicArt(modifier) },
             screen = { highScore, onScore, onExit ->
                 DalgicScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "bostan",
+            since = "0.33.0",
+            titleRes = R.string.game_bostan,
+            taglineRes = R.string.game_bostan_tagline,
+            category = GameCategory.ARCADE,
+            accent = Color(0xFF84CC16),
+            art = { modifier -> BostanArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                BostanScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
     )

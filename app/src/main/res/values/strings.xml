@@ -934,4 +934,44 @@
     <string name="dalgic_life_oxygen">Oksijen bitti</string>
     <string name="dalgic_life_empty">Boş yüzeye çıkış!</string>
     <string name="dalgic_board_desc_fmt">Deniz: skor %1$d, %2$d dalgıç, oksijen %%%3$d</string>
+
+    <!-- Bostan -->
+    <string name="game_bostan">Bostan</string>
+    <string name="game_bostan_tagline">Şerit savunması: kuyu, fıskiye, korkuluk, kovan ve tuzakla bostanı karga, tavşan, keçi, domuz ve ayıdan koru</string>
+    <string name="bostan_intro">Saldırganlar ormandan beş şeritten iner; kulübeye ulaşan her biri can götürür (3 can). Karta dokun, sonra hücreye dokun: kuyu su üretir, fıskiye şeridine jet atar, korkuluk yolu keser, kovan üç şeride arı salar, tuzak kurulunca üstüne basanı patlatır. Gökten düşen damlalara dokun: +25 su. Kürek savunmayı kaldırır.</string>
+    <string name="bostan_rules">Dalga temizlenince sıradaki erken gelir · her 3. dalga büyük · her seviye uzman politikasıyla kazanılabilir üretilir</string>
+    <string name="bostan_daily_desc">Herkes bugün aynı bostanı savunur; günde 3 deneme (zorluk fark etmez)</string>
+    <string name="bostan_daily_status_fmt">Bugün: %1$d/%2$d deneme · en iyi %3$d</string>
+    <string name="bostan_daily_exhausted">Bugünkü denemeler bitti; yarın yeni bostan!</string>
+    <string name="bostan_best_fmt">Rekor (%1$s): %2$d puan</string>
+    <string name="bostan_start">Savun</string>
+    <string name="bostan_retry_fmt">Yeniden savun (%1$d kaldı)</string>
+    <string name="bostan_to_menu">Başa dön</string>
+    <string name="bostan_loading">Bostan hazırlanıyor…</string>
+    <string name="bostan_wave">Dalga</string>
+    <string name="bostan_lives">Can</string>
+    <string name="bostan_best">Rekor</string>
+    <string name="bostan_next_wave_fmt">Sıradaki dalga %1$d s</string>
+    <string name="bostan_alive_fmt">%1$d saldırgan</string>
+    <string name="bostan_wave_fmt">%1$d. dalga</string>
+    <string name="bostan_big_wave">Büyük dalga!</string>
+    <string name="bostan_life_lost">Kulübeye ulaştı!</string>
+    <string name="bostan_no_water">Su yetmez</string>
+    <string name="bostan_cooldown">Kart dolmadı</string>
+    <string name="bostan_occupied">Hücre dolu</string>
+    <string name="bostan_tap_hint">Karta dokun, sonra hücreye dokun</string>
+    <string name="bostan_def_kuyu">Kuyu</string>
+    <string name="bostan_def_fiskiye">Fıskiye</string>
+    <string name="bostan_def_korkuluk">Korkuluk</string>
+    <string name="bostan_def_kovan">Kovan</string>
+    <string name="bostan_def_tuzak">Tuzak</string>
+    <string name="bostan_shovel">Kürek</string>
+    <string name="bostan_card_desc_fmt">%1$s · %2$d su</string>
+    <string name="bostan_won_title">Bostan kurtuldu!</string>
+    <string name="bostan_lost_title">Bostan çiğnendi</string>
+    <string name="bostan_result_fmt">%1$d/%2$d dalga · %3$d saldırgan · %4$d can</string>
+    <string name="bostan_expert_fmt">Uzman aynı bostanda: %1$d can · %2$d puan</string>
+    <string name="bostan_share_won_fmt">Bostanı kurtardım · %1$d puan</string>
+    <string name="bostan_share_lost_fmt">Bostan %1$d. dalgada çiğnendi · %2$d puan</string>
+    <string name="bostan_board_desc_fmt">Tarla: su %1$d, dalga %2$d/%3$d, %4$d saldırgan</string>
 </resources>
