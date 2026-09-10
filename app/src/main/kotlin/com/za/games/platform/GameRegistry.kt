@@ -19,6 +19,7 @@ import com.za.games.ui.hub.ToplamArt
 import com.za.games.ui.hub.FiloArt
 import com.za.games.ui.hub.ReyonArt
 import com.za.games.ui.hub.RaketArt
+import com.za.games.ui.hub.TuseArt
 import com.za.games.ui.hub.VirajArt
 import com.za.games.ui.hub.MinesArt
 import com.za.games.ui.hub.SnakeArt
@@ -37,6 +38,7 @@ import com.za.games.ui.toplam.ToplamScreen
 import com.za.games.ui.filo.FiloScreen
 import com.za.games.ui.reyon.ReyonScreen
 import com.za.games.ui.raket.RaketScreen
+import com.za.games.ui.tuse.TuseScreen
 import com.za.games.ui.viraj.VirajScreen
 import com.za.games.ui.snake.SnakeScreen
 import com.za.games.ui.sudoku.SudokuScreen
@@ -288,6 +290,18 @@ object GameRegistry {
             art = { modifier -> RaketArt(modifier) },
             screen = { highScore, onScore, onExit ->
                 RaketScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "tuse",
+            since = "0.30.0",
+            titleRes = R.string.game_tuse,
+            taglineRes = R.string.game_tuse_tagline,
+            category = GameCategory.ARCADE,
+            accent = Color(0xFFE879F9),
+            art = { modifier -> TuseArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                TuseScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
     )

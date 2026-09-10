@@ -1,0 +1,6 @@
+<tr-TR>
+• Yeni oyun: Tuşe. Piyano karoları: sıradaki karonun şeridine dokun, ezgi parmaklarında çalsın. Klasik (50 karo, en kısa süre), Sonsuz (hızlanan akış) ve Günlük; yedi telifsiz parça.
+</tr-TR>
+<en-US>
+• New game: Tuşe. Piano tiles: tap the lane of the next tile and the melody plays under your fingers. Classic (50 tiles, fastest time), Endless (accelerating flow) and Daily; seven public-domain pieces.
+</en-US>

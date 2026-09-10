@@ -35,6 +35,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -1030,5 +1031,24 @@ fun RaketArt(modifier: Modifier = Modifier) {
         }
         drawCircle(ball, radius = w * 0.05f, center = Offset(w * 0.6f, w * 0.7f))
         drawCircle(Color(0xFFFFFBEB), radius = w * 0.02f, center = Offset(w * 0.585f, w * 0.685f))
+    }
+}
+
+@Composable
+fun TuseArt(modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        drawRoundRect(Color(0xFFF7F3EA), size = Size(w, w), cornerRadius = CornerRadius(w * 0.12f, w * 0.12f))
+        for (l in 1 until 4) {
+            drawRect(Color(0x1F000000), Offset(w * 0.25f * l - w * 0.005f, w * 0.06f), Size(w * 0.01f, w * 0.88f))
+        }
+        val tile = Color(0xFF1F2937)
+        val cellW = w * 0.25f
+        val cellH = w * 0.2f
+        listOf(2 to 0, 0 to 1, 3 to 2, 1 to 3, 2 to 4).forEach { (lane, row) ->
+            val alpha = if (row == 4) 0.18f else 1f
+            drawRoundRect(tile.copy(alpha = alpha), Offset(cellW * lane + w * 0.02f, cellH * row + w * 0.02f), Size(cellW - w * 0.04f, cellH - w * 0.04f), CornerRadius(w * 0.03f, w * 0.03f))
+        }
+        drawRoundRect(Color(0xFFE879F9), Offset(cellW * 1 + w * 0.02f, cellH * 3 + w * 0.02f), Size(cellW - w * 0.04f, cellH - w * 0.04f), CornerRadius(w * 0.03f, w * 0.03f), style = Stroke(width = w * 0.02f))
     }
 }

@@ -2,6 +2,10 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.30.0 (2026-09-10)
+- Yeni oyun: **Tuşe** — piyano karoları. Dört şerit, her satırda bir karo; sıradaki karonun şeridine dokun, ezginin bir notası çalar, yanlış şerit koşuyu bitirir. Klasik (50 karo, en kısa süre), Sonsuz (vurulan karo başına hızlanan akış, kaçan karo bitirir) ve Günlük (günün parçası ve şeritleri herkese aynı, 3 deneme). Yedi telifsiz parça: Neşeye Övgü, Für Elise, Türk Marşı, Daha Dün Annemizin, Mutlu Yıllar, Sol Majör Menuet, Greensleeves
+- Notalar uygulamaya ses dosyası olarak konmadı: kısa piyano tonları cihazda sentezlenip önbelleğe yazılıyor (`NoteSynth`, izin gerekmez); ana menüdeki ses düğmesi notaları da kapatıyor. Ana menü rekoru Sonsuz'daki karo sayısı
+
 ## 0.29.0 (2026-09-10)
 - Yeni oyun: **Raket** — dikey kortta raket oyunu; vuruş noktası açıyı, raketin hareketi falsoyu verir, her vuruşta top %6 hızlanır, 11 sayıya iki farkla ulaşan kazanır. Üç seviyeli bilgisayar (kolay topu izler, orta düşüşü tahmin eder, zor kenarla rakibin uzağına vurur), aynı telefonda iki kişi (herkes kendi yarısında sürükler, üst oyuncunun sayısı ona dönük) ve duvara karşı ralli (günlük top ya da serbest; her 8 vuruşta raket daralır). Ana menü rekoru en uzun ralli
 - Motor `games/raket`: süpürmeli çarpışma (tavan hızda tünelleme yok); seviye botları tepki gecikmesi, hız sınırı ve topla birlikte büyüyen nişan hatasıyla insanı taklit eder — hata büyümeyince iki tahmin eden raket sonsuz ralli yapıyordu (denge ölçümü `:games:raket:probe`)
