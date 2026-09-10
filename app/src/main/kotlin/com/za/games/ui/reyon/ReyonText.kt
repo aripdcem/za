@@ -55,6 +55,19 @@ object ReyonText {
         },
     )
 
+    /** Sipariş haftasının gün adı: 0 pazartesi … 6 pazar. */
+    fun dow(res: Resources, day: Int): String = res.getString(
+        when (day.coerceIn(0, 6)) {
+            0 -> R.string.reyon_order_dow_1
+            1 -> R.string.reyon_order_dow_2
+            2 -> R.string.reyon_order_dow_3
+            3 -> R.string.reyon_order_dow_4
+            4 -> R.string.reyon_order_dow_5
+            5 -> R.string.reyon_order_dow_6
+            else -> R.string.reyon_order_dow_7
+        },
+    )
+
     fun category(res: Resources, category: Category): String = res.getString(
         when (category) {
             Category.ICECEK -> R.string.reyon_cat_icecek

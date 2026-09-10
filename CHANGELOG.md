@@ -2,6 +2,9 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.28.0 (2026-09-10)
+- Reyon: Sipariş modu (stok devri). Raf planı sabit; beş–yedi gün boyunca her gün ürün başına kaç koli sipariş edileceğine karar verilir. Talep aralık olarak görünür, gerçekleşen talep tohumdan gelir; siparişler ertesi sabah (Zor'da ağırlar iki gün sonra) gelir, rafa sığmayan iade olur; satış marj kazandırır, akşam stoğu bekleme bedeli öder, raf ömrü dolan fire olur; hafta sonu ve promosyon talebi yükseltir. Hedef, aynı tahminleri gören uzman politikanın kârı; yıldızlar hedefe göre; stok devri ve hizmet düzeyi uzmanla karşılaştırılır; gün kapanış dökümü, ipucu (uzman önerisi), günlük hafta, en iyi kâr kaydı
+
 ## 0.27.1 (2026-09-10)
 - Reyon: blok adları göze sığdırılıyor: önce tek satır, sığmazsa boşluktan iki satır, sonra hafif yatay daraltma; üç nokta en son çare (tek yüzlü gözde "Bulaşık deterjanı" artık okunuyor)
 - Reyon Denetim: plan ve raf tuvalleri yükseklik bütçesinden boyutlanıyor; kısa ekranda raf daralıp sola yaslanmıyor, bulunanlar listesi kaybolmuyor; uzun ekranda bloklar büyüyor; plana dokununca büyütülmüş plan açılıyor; son bulunan sapma listenin başında

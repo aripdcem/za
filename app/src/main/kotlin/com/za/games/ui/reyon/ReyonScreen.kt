@@ -77,8 +77,9 @@ import com.za.games.ui.common.formatTime
 import com.za.games.ui.common.modeShareLabel
 
 /**
- * Reyon: iki tür, tek ekran. Diziliş (planogram bulmacası) ve Denetim
- * (uyum sapmalarını bulma). Rekor = çözülen bulmaca + tamamlanan denetim.
+ * Reyon: dört tür, tek ekran. Diziliş (planogram bulmacası), Denetim (uyum
+ * sapmalarını bulma), Satış (serbest diziliş) ve Sipariş (stok haftası).
+ * Rekor = tamamlanan tur sayısı.
  */
 @Composable
 fun ReyonScreen(
@@ -95,7 +96,14 @@ fun ReyonScreen(
         solvedSession++
         latestOnScore(baseline + solvedSession)
     }
-    if (kind == ReyonKind.SALES) {
+    if (kind == ReyonKind.ORDER) {
+        ReyonOrderContent(
+            solved = baseline + solvedSession,
+            onCompleted = onCompleted,
+            onKind = viewModel::setKind,
+            onExit = onExit,
+        )
+    } else if (kind == ReyonKind.SALES) {
         ReyonSalesContent(
             solved = baseline + solvedSession,
             onCompleted = onCompleted,
@@ -562,7 +570,7 @@ private fun Controls(canUndo: Boolean, canRemove: Boolean, onUndo: () -> Unit, o
 // ---------------------------------------------------------------------------
 
 @Composable
-internal fun Chip(label: String, selected: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
+internal fun Chip(label: String, selected: Boolean, modifier: Modifier = Modifier, compact: Boolean = false, onClick: () -> Unit) {
     Surface(
         onClick = onClick,
         shape = CircleShape,
@@ -571,22 +579,24 @@ internal fun Chip(label: String, selected: Boolean, modifier: Modifier = Modifie
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.labelLarge,
+            style = if (compact) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge,
             fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
             textAlign = TextAlign.Center,
+            maxLines = 1,
             color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
+            modifier = Modifier.padding(horizontal = if (compact) 4.dp else 10.dp, vertical = 8.dp),
         )
     }
 }
 
-/** Tür seçimi: Diziliş / Denetim. */
+/** Tür seçimi: Diziliş / Denetim / Satış / Sipariş; dört çip dar ekrana sığsın diye sıkı. */
 @Composable
 internal fun KindChips(kind: ReyonKind, onKind: (ReyonKind) -> Unit) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Chip(stringResource(R.string.reyon_kind_puzzle), kind == ReyonKind.PUZZLE, Modifier.weight(1f)) { onKind(ReyonKind.PUZZLE) }
-        Chip(stringResource(R.string.reyon_kind_audit), kind == ReyonKind.AUDIT, Modifier.weight(1f)) { onKind(ReyonKind.AUDIT) }
-        Chip(stringResource(R.string.reyon_kind_sales), kind == ReyonKind.SALES, Modifier.weight(1f)) { onKind(ReyonKind.SALES) }
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Chip(stringResource(R.string.reyon_kind_puzzle), kind == ReyonKind.PUZZLE, Modifier.weight(1f), compact = true) { onKind(ReyonKind.PUZZLE) }
+        Chip(stringResource(R.string.reyon_kind_audit), kind == ReyonKind.AUDIT, Modifier.weight(1f), compact = true) { onKind(ReyonKind.AUDIT) }
+        Chip(stringResource(R.string.reyon_kind_sales), kind == ReyonKind.SALES, Modifier.weight(1f), compact = true) { onKind(ReyonKind.SALES) }
+        Chip(stringResource(R.string.reyon_kind_order), kind == ReyonKind.ORDER, Modifier.weight(1f), compact = true) { onKind(ReyonKind.ORDER) }
     }
 }
 

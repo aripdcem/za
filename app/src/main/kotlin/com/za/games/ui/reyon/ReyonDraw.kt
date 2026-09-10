@@ -43,6 +43,7 @@ internal object ReyonPalette {
     val FoundRing = Color(0xFF4ADE80)
     val MissRing = Color(0xFFF87171)
     val EmptySlot = Color(0x14FFFFFF)
+    val EmptyShade = Color(0x73000000)
     val Satisfied = Color(0xFF4ADE80)
     val Violated = Color(0xFFF87171)
 }

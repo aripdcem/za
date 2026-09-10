@@ -1,0 +1,6 @@
+<tr-TR>
+• Reyon: Sipariş modu. Bir haftalık stok yönetimi: talep tahmini, koli siparişi, teslim süresi, raf kapasitesi, raf ömrü ve promosyonlar. Uzmanın kârına göre yıldız, stok devri ve hizmet düzeyi.
+</tr-TR>
+<en-US>
+• Reyon: Ordering mode. A week of stock management: demand forecasts, case orders, lead times, shelf capacity, shelf life and promotions. Stars against the expert's profit, stock turnover and service level.
+</en-US>

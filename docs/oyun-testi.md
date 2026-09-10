@@ -49,6 +49,7 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Her bulmaca tahminsiz çözülür, brif kısa kalır, üretim bütçede | `ReyonGeneratorTest` |
 | Denetim sapmaları ayrık ve görünür; plan ile raf yalnızca sapma gözlerinde ayrışır | `ReyonAuditTest` |
 | Satış hedefi tabanı geçer, geçerli tam doluluktur; iyileştirici bütçede | `ReyonSalesTest` |
+| Sipariş: gerçekleşen talep tahmin aralığında; uzman siparişlerinin tekrar oynanışı hedefi birebir verir; gün kuralları elle izlenen haftayla eşleşir; kayıt tur dönüşü | `ReyonOrderTest` |
 | Reyon blok adları en dar gerçek gözde kırpılmaz (35 ad, TR ve EN; 360 dp telefonda Zor planı, tek yüz) | `ReyonBlockLabelTest` |
 | Denetimde plan ve raf 360×640'ta da aynı genişlikte ve ekran içinde; plan büyütme açılıp kapanır | `ReyonAuditLayoutTest` |
 | Metin kontrastı WCAG AA eşiğini tutar | `ThemeContrastTest` |
@@ -384,7 +385,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | ✅ mevcut testlerle | 2026-09-09 |
 | Viraj | ✅ | **60 · 3 · %100 · 34 ms** | — (tuşla) | ✅ kusur yok | 2026-09-09 |
 | Filo | ✅ | **60 · 1 · %81 · 31 ms** | ✅ düzeltildi | ✅ düzeltildi | 2026-09-09 |
-| Reyon | ✅ | olay güdümlü (1 · 0) | — (dokun-yerleştir) | ✅ ölçüldü (diziliş + denetim + satış) | 2026-09-10 |
+| Reyon | ✅ | olay güdümlü (1 · 0) | — (dokun-yerleştir) | ✅ ölçüldü (diziliş + denetim + satış + sipariş) | 2026-09-10 |
 
 **E · erişilebilirlik:** tüm oyunlarda etiketsiz dokunulabilir öğe kalmadı
 (tek bulgu Kıskaç'ın kolay mod anahtarıydı, düzeltildi). Kontrast CI'da
@@ -970,6 +971,33 @@ katsayıda bile sığmazsa iki tuval birlikte daraltılıp ortalanıyor;
 planında en dar durum yazı alanı 45 dp, ad bölgesi 19 dp, 8 sp; 35 adın hepsi
 (TR ve EN) bu alanda kırpılmadan sığıyor (`ReyonBlockLabelTest`, gerçek yazı
 ölçümüyle). Cihazda doğrulama (A) yerel oturuma kaldı.
+
+**D — Sipariş modu** (`orderReport`, 40 tohum/zorluk, v0.28.0). Siparişte
+adillik sorusu "hedef dürüst mü ve ulaşılabilir mi" diye sorulur. Hedef,
+oyuncunun gördüğü bilgiyle (tahmin ortası ve aralık) çalışan uzman
+politikanın aynı haftadaki kârı; ölçüm onu üç referansla karşılaştırır:
+hiç sipariş vermeyen (yalnız başlangıç stoğunu satan), tahmin ortasını
+emniyetsiz karşılayan naif politika ve gerçekleşen talebi bilen kâhin
+(oyuncu bilmez; üst sınır).
+
+| Zorluk | Gün | Ürün | Sipariş yok | Naif | Uzman | Kâhin | Uzman/kâhin | Kayıp satış | Hizmet | Devir (kâhin) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Kolay | 5 | 6,7 | 101 | 319 | 319 | 321 | %99 | %4,1 | %95 | 8,1 (7,1) |
+| Orta | 6 | 9,7 | 152 | 616 | 613 | 629 | %98 | %6,9 | %92 | 11,2 (9,5) |
+| Zor | 7 | 11,6 | 185 | 901 | 889 | 921 | %96 | %7,9 | %92 | 13,1 (11,6) |
+
+Okuma: uzman, tam bilgili kâhinin %96–99'una geliyor; yani tahmin
+belirsizliğinin bedeli küçük ve hedef bir tavan değil, ulaşılabilir bir
+çıta. Naif politika (yarının tahmin ortasını karşıla, emniyet ve sığma
+düşünme) uzmanla başa baş (±%1): parametre taraması (emniyet payı 0–1,5 ×
+aralık, sipariş eşiği, sığma payı) kâr yüzeyinin tepede düz olduğunu
+gösterdi; uzmanın ayırt edici yanı daha yüksek devir (aynı kâra daha az
+stokla). Kârın bileşimi uzmanda: bekleme marjın ~%14'ü, iade %1'in altı,
+fire sıfıra yakın (bozulan ürünler yalnızca fazla siparişi cezalandırır;
+bu yüzden raf ömürleri 2–4 güne çekildi). Kayıp satış %4–8: tahmin
+aralığı ±%25–35 iken bir kısım talep kaçınılmaz olarak karşılanamıyor,
+hizmet düzeyi %92–95. Üretim süresi ölçülemeyecek kadar kısa (uzman
+simülasyonu dahil 1 ms altı). Cihazda doğrulama (A–C) yerel oturuma kaldı.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

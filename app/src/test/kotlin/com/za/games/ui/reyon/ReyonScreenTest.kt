@@ -2,6 +2,7 @@ package com.za.games.ui.reyon
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
@@ -84,6 +85,47 @@ class ReyonScreenTest {
             rule.onNodeWithText(str(R.string.reyon_hint)).performClick()
         }
         rule.onNodeWithText(str(R.string.reyon_audit_done_title)).assertIsDisplayed()
+    }
+
+    @Test
+    fun orderStepperClosesDaysAndTheWeekEnds() {
+        rule.setZaContent { game("reyon").screen(0L, {}, {}) }
+        openMenu()
+        rule.reyonPickKind(str(R.string.reyon_kind_order))
+        rule.onNodeWithText(str(R.string.mode_free)).performClick()
+        rule.onNodeWithText(str(R.string.difficulty_easy)).performClick()
+        rule.onNodeWithText(str(R.string.reyon_order_start)).performClick()
+
+        val boardPrefix = str(R.string.reyon_order_board_desc_fmt, 0, 0, 0, 0).substringBefore(' ')
+        rule.waitUntil(timeoutMillis = 30_000) {
+            rule.onAllNodes(hasContentDescription(boardPrefix, substring = true)).fetchSemanticsNodes().isNotEmpty()
+        }
+        // İlk ürünün "Artır" düğmesi: sipariş 1 koli olur.
+        val morePrefix = str(R.string.reyon_order_more) + ":"
+        rule.onAllNodes(hasContentDescription(morePrefix, substring = true))[0].performClick()
+        val oneCase = str(R.string.reyon_order_case_fmt, 1, 0).substringBefore(" = ")
+        assertTrue("1 koli görünmeli", rule.onAllNodes(hasText(oneCase, substring = true)).fetchSemanticsNodes().isNotEmpty())
+
+        // Günü kapat → döküm kartı → Devam.
+        rule.onNodeWithText(str(R.string.reyon_order_close_day)).performClick()
+        rule.onNodeWithText(str(R.string.reyon_order_continue)).assertIsDisplayed()
+        rule.onNodeWithText(str(R.string.reyon_order_continue)).performClick()
+
+        // Kalan günler: uzman ipuçlarıyla sipariş ver, kapat; Kolay beş gün.
+        val done = str(R.string.reyon_order_done_title)
+        val closeWeek = str(R.string.reyon_order_close_week)
+        val closeDay = str(R.string.reyon_order_close_day)
+        var guard = 0
+        while (rule.onAllNodesWithText(done).fetchSemanticsNodes().isEmpty() && guard++ < 10) {
+            repeat(3) { rule.onNodeWithText(str(R.string.reyon_hint)).performClick() }
+            if (rule.onAllNodesWithText(closeWeek).fetchSemanticsNodes().isNotEmpty()) {
+                rule.onNodeWithText(closeWeek).performClick()
+            } else {
+                rule.onNodeWithText(closeDay).performClick()
+            }
+            rule.onNodeWithText(str(R.string.reyon_order_continue)).performClick()
+        }
+        rule.onNodeWithText(done).assertIsDisplayed()
     }
 
     @Test

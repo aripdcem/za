@@ -132,4 +132,86 @@ class ReyonBalanceProbe {
             println("  brif: " + sample.brief.joinToString(" · ") { kindOf(it) + " " + it.toString().substringAfter('(').substringBefore(')') })
         }
     }
+
+    // -----------------------------------------------------------------------
+    // Sipariş
+    // -----------------------------------------------------------------------
+
+    private fun runWeek(o: ReyonOrder, policy: (ReyonOrderState, Int) -> Int): ReyonOrderState {
+        val s = ReyonOrderState(o)
+        while (!s.isComplete) {
+            for (i in o.items.indices) s.setOrder(i, policy(s, i))
+            s.closeDay()
+        }
+        return s
+    }
+
+    /** Naif: tahmin ortasını emniyetsiz karşıla, sığmaya bakma. */
+    private fun naiveCases(s: ReyonOrderState, i: Int): Int {
+        val o = s.order
+        val it = o.items[i]
+        val t = s.day
+        val a = t + it.leadTime
+        if (a >= o.days) return 0
+        var position = s.stockOf(i).toFloat()
+        for (d in t + 1..a) position += s.incoming(i, d)
+        var consume = 0f
+        for (d in t until a) consume += it.forecast[d]
+        val q = it.forecast[a] - maxOf(0f, position - consume)
+        if (q <= 0f) return 0
+        return kotlin.math.ceil(q / it.caseSize).toInt().coerceIn(0, it.maxCases)
+    }
+
+    /** Kâhin: gerçekleşen talebi bilir (oyuncu bilmez); uzmanın üst sınırı olarak. */
+    private fun oracleCases(s: ReyonOrderState, i: Int): Int {
+        val o = s.order
+        val it = o.items[i]
+        val t = s.day
+        val a = t + it.leadTime
+        if (a >= o.days) return 0
+        var position = s.stockOf(i).toFloat()
+        for (d in t + 1..a) position += s.incoming(i, d)
+        var consume = 0f
+        for (d in t until a) consume += o.demand[d][i]
+        val expected = maxOf(0f, position - consume)
+        val q = o.demand[a][i] - expected
+        if (q <= 0f) return 0
+        val cases = kotlin.math.ceil(q / it.caseSize).toInt()
+        val fit = kotlin.math.floor((it.capacity - expected + 0.5f * it.caseSize) / it.caseSize).toInt()
+        return cases.coerceIn(0, minOf(it.maxCases, maxOf(0, fit)))
+    }
+
+    /** Sipariş: uzman hedefi, kâhin ve naif politikalarla karşılaştırılır; hizmet, fire, iade, devir. */
+    @Test
+    fun orderReport() {
+        println("=== Reyon sipariş ölçümü (${seeds.count()} tohum/zorluk) ===")
+        for (level in ReyonLevel.entries) {
+            var timeMs = 0L
+            val weeks = seeds.map { seed ->
+                val t0 = System.nanoTime()
+                val w = ReyonOrderGenerator.generate(seed, level)
+                timeMs += (System.nanoTime() - t0) / 1_000_000
+                w
+            }
+            val none = weeks.map { runWeek(it) { _, _ -> 0 } }
+            val naive = weeks.map { runWeek(it) { s, i -> naiveCases(s, i) } }
+            val expert = weeks.map { runWeek(it) { s, i -> OrderExpert.cases(s, i) } }
+            val oracle = weeks.map { runWeek(it) { s, i -> oracleCases(s, i) } }
+            fun avg(xs: List<Int>) = xs.average()
+            fun pct(a: List<ReyonOrderState>, b: List<ReyonOrderState>) = 100.0 * a.map { it.profit }.average() / b.map { it.profit }.average()
+            fun lostShare(xs: List<ReyonOrderState>) = 100.0 * xs.sumOf { it.lostUnits } / xs.sumOf { it.soldUnits + it.lostUnits }
+            fun wasteShare(xs: List<ReyonOrderState>) = 100.0 * xs.sumOf { it.wastedUnits } / xs.sumOf { it.soldUnits + it.wastedUnits }.coerceAtLeast(1)
+            val sales = expert.map { it.marginPts }
+            println("--- $level (${level.rows}×${level.cols}) · ${weeks[0].days} gün · ürün ort %.1f · promosyon ${weeks[0].promos.size} ---".format(weeks.map { it.items.size }.average()))
+            println("kâr ort: sipariş yok %.0f · naif %.0f · uzman %.0f · kâhin %.0f → uzman/kâhin %%%.0f, naif/uzman %%%.0f".format(
+                avg(none.map { it.profit }), avg(naive.map { it.profit }), avg(expert.map { it.profit }), avg(oracle.map { it.profit }), pct(expert, oracle), pct(naive, expert)))
+            println("uzman: satış marjı ort %.0f · bekleme %.0f · fire %.0f · iade %.0f · kayıp satış %%%.1f · fire payı %%%.1f · hizmet %%%.0f · devir %.2f (kâhin %.2f)".format(
+                avg(sales), avg(expert.map { it.holdingPts }), avg(expert.map { it.wastePts }), avg(expert.map { it.returnPts }),
+                lostShare(expert), wasteShare(expert), expert.map { it.serviceLevel() }.average(), expert.map { it.turnover() }.average(), oracle.map { it.turnover() }.average()))
+            println("naif: kayıp satış %%%.1f · iade ort %.0f · devir %.2f · süre ort %d ms".format(lostShare(naive), avg(naive.map { it.returnPts }), naive.map { it.turnover() }.average(), timeMs / weeks.size))
+            val heavyLead = weeks.sumOf { w -> w.items.count { it.leadTime == 2 } }
+            val perishable = weeks.sumOf { w -> w.items.count { it.perishable } }
+            println("teslim 2 gün ürün toplam %d · bozulan ürün toplam %d · hedef en az %d en çok %d".format(heavyLead, perishable, weeks.minOf { it.target }, weeks.maxOf { it.target }))
+        }
+    }
 }
