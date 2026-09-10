@@ -39,6 +39,17 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.28.2", "2026-09-10",
+            tr = listOf(
+                "Reyon Sipariş: hafta sonunda kâr ve stok devri grafiği — hangi gün ne kazandırdı, devir uzmanın nerede kaldı",
+                "Ekran okuyucu açıkken en alttaki düğmeler erişilebilirlik ağacının dışında kalmıyor (alta durum çubuğu kadar pay)",
+            ),
+            en = listOf(
+                "Reyon Ordering: a profit and stock-turnover chart at the end of the week — which day earned what, and where turnover sits against the expert",
+                "With a screen reader on, the bottom buttons no longer fall outside the accessibility tree (extra bottom inset the height of the status bar)",
+            ),
+        ),
+        ReleaseNote(
             "0.28.1", "2026-09-10",
             tr = listOf(
                 "Menü ve bitiş kartları kısa ekranda kayıyor; 360 dp'de Reyon menüsünün düğmeleri ekran dışında kalıyordu",

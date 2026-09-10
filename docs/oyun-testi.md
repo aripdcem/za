@@ -228,7 +228,9 @@ doğrular. Palet değiştiğinde okunabilirlik sessizce bozulamaz.
 > düğüm" satırı 0 değilse ekran okuyucu o düğmelere dokunarak inemez; gizli
 > sistem çubuğunun bölgesine çizilen öğeler bazı cihazlarda böyle gelir.
 > Uygulama TalkBack açıkken çubukları gizlemez; ölçümü TalkBack açıkken de
-> yineleyin.
+> yineleyin. Uyarı: SM-A515F'te bu tek başına yetmiyor — çubuklar görünürken
+> bile uygulama alanının son 33 dp'si ağaçtan düşüyor (aşağıda, Reyon Sipariş
+> doğrulama turu).
 
 ```bash
 python3 tools/cihaz_testi.py erisim
@@ -391,7 +393,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | ✅ mevcut testlerle | 2026-09-09 |
 | Viraj | ✅ | **60 · 3 · %100 · 34 ms** | — (tuşla) | ✅ kusur yok | 2026-09-09 |
 | Filo | ✅ | **60 · 1 · %81 · 31 ms** | ✅ düzeltildi | ✅ düzeltildi | 2026-09-09 |
-| Reyon | ✅ | olay güdümlü (boşta 0) · kaydırmada **60 · 0 · %6,8 · 20 ms** | ✅ adımlayıcı 48×44 dp | ✅ ölçüldü (diziliş + denetim + satış + sipariş) | 2026-09-10 |
+| Reyon | ✅ | olay güdümlü (boşta 0) · kaydırmada **60 · 0 · %6,8 · 20 ms** | ✅ adımlayıcı 48×48 dp (v0.28.1) | ✅ ölçüldü (diziliş + denetim + satış + sipariş) | 2026-09-10 |
 
 **E · erişilebilirlik:** tüm oyunlarda etiketsiz dokunulabilir öğe kalmadı
 (tek bulgu Kıskaç'ın kolay mod anahtarıydı, düzeltildi). Kontrast CI'da
@@ -1107,6 +1109,43 @@ beklenir). C: sipariş satırının alt payı 10 dp, adımlayıcının 48 dp dok
 alanı kartın kırpma sınırında kesilmiyor. Cihazda doğrulanacaklar: TalkBack
 açıkken `erisim` çıktısında sıfır sınırlı düğüm 0; adımlayıcı dikey bandı
 ±24 dp; 360 dp'de menü kaydırılarak başlıyor.
+
+**Doğrulama turu (v0.28.1, aynı cihaz, kullanıcının kendi sürüm derlemesi).**
+
+- **Adımlayıcı bandı ✅.** İki eksende de ±24 dp kayıt alıyor, ±26 dp almıyor:
+  etkin dokunma alanı **48×48 dp** (önce 48×44). Satır kartının alt payı 9,9 dp
+  ölçüldü; büyütme artık kartın kenarında kesilmiyor.
+- **360 dp'de menü ✅.** Kart kayıyor ve dört türün başlatma düğmesi de kaydırma
+  sonrası geliyor: Sipariş "Haftaya başla" (dokunuldu, hafta başladı), Diziliş
+  "Başla", Denetim "Denetime başla", Satış "Dizmeye başla" — "Menüye dön" de
+  erişilebilir. Tür çipleri 360 dp'de 2×2 diziliyor ve dört ad da tam;
+  "Denetim" artık kırpılmıyor.
+- **TalkBack açıkken `erisim` ⚠️ yarım.** Dokunarak keşif açılınca uygulama
+  çubukları gerçekten gösteriyor (ekranda doğrulandı, içerik çubukların üstünde)
+  ve tarayıcı sıfır sınırlı düğümleri artık sayıp listeliyor. Ama sayı **0
+  değil, 2**: "İpucu" ve "Günü kapat" TalkBack açıkken de `[0,0][0,0]` geliyor.
+
+  Ölçülen sebep, çubukları göstermenin çözemediği bir çerçeve kayması: çubuklar
+  görünürken uygulama alanı ekranda y = 88…2274, erişilebilirlik pencere
+  dikdörtgeni ise **(0,0)–(1080,2186)** — yani uygulama sınırının *boyutu*
+  (2274 − 88) y = 0'a çakılmış. Alanın **son 88 px'i (33 dp)** ağaçtan düşüyor;
+  eylem satırının dolgusu tam orada (ölçülen y = 2190…2266), kural metni de
+  2186'da kırpılıyor. Bu ROM'da çare çubukları göstermek değil, **son 33 dp'ye
+  dokunulabilir öğe koymamak**: dokunarak keşif açıkken alta durum çubuğu
+  kadar ek pay vermek ya da eylem satırını kural metninin üstüne almak.
+
+  **Düzeltme (v0.28.2):** dokunarak keşif açıkken uygulama kökü alta durum
+  çubuğu yüksekliği kadar pay veriyor (`MainActivity.ExplorationInset`); içerik
+  2186 px'te bitiyor, eylem satırı bandın üstünde kalıyor. Cihazda
+  doğrulanacak: TalkBack açıkken `erisim` → "sınırı sıfır … 0".
+
+**Hafta grafiği (v0.28.2, cihazda).** Kolay bir hafta sonuna kadar oynanıp sonuç
+kartı 411 dp ve 360 dp'de bakıldı: çubuklar (1. gün +32, 2. gün +26, kalan üç
+gün 0), biriken devir çizgisi kartın yazdığı sayıya varıyor (12,5), uzman devri
+kesikli çizgide (3,9). 360 dp'de kart kayıyor; grafik de altındaki düğmeler de
+okunuyor. Ekran okuyucu açıklaması günleri kârıyla veriyor: "Hafta grafiği:
+1. gün +32, 2. gün +26, … · stok devri 12,5 (uzman 3,9)". Çökme yok, `logcat`
+temiz.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

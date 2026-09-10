@@ -765,6 +765,11 @@
     <string name="reyon_order_done_title">Week complete</string>
     <string name="reyon_order_result_fmt">%1$d / %2$d profit (%3$d%% of the target)</string>
     <string name="reyon_order_stats_fmt">Stock turnover %1$s (expert %2$s) · service level %3$d%% (expert %4$d%%)</string>
+    <string name="reyon_order_chart_profit">Daily profit</string>
+    <string name="reyon_order_chart_turnover">Turnover</string>
+    <string name="reyon_order_chart_expert_fmt">expert %1$s</string>
+    <string name="reyon_order_chart_day_fmt">day %1$d %2$+d</string>
+    <string name="reyon_order_chart_desc_fmt">Week chart: %1$s · stock turnover %2$s (expert %3$s)</string>
     <string name="reyon_order_beat_target">You beat the expert! 🏆</string>
     <string name="reyon_order_rules">Sales +4 per unit (★ +6) · holding −1 per unit per night · waste −2 (★ −4) · returns −1</string>
     <string name="reyon_order_board_desc_fmt">Order shelf %1$d shelves × %2$d slots, day %3$d, profit %4$d</string>

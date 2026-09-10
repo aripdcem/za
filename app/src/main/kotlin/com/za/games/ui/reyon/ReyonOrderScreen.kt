@@ -46,6 +46,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -615,6 +617,119 @@ private fun OrderMenuCard(
     }
 }
 
+/**
+ * Hafta grafiği: her günün kârı çubuk, biriken stok devri çizgi. Devir, kapanan
+ * günlerin satışını ortalama akşam stoğuna bölen aynı hesap olduğu için çizgi
+ * hafta sonunda kartın yazdığı sayıya varır; uzmanın devri kesikli çizgi.
+ * Akşam stoğu 0.28.1 öncesi kayıtlarda tutulmuyordu; bilinmiyorsa yalnız
+ * çubuklar çizilir (bkz. [DaySummary.evening]).
+ */
+@Composable
+private fun WeekChart(state: ReyonOrderState, result: OrderResult) {
+    val history = state.history
+    if (history.isEmpty()) return
+    val profits = history.map { it.profit }
+    val known = history.none { it.evening < 0 }
+    val turnovers = if (!known) emptyList() else buildList {
+        var sold = 0
+        var evening = 0
+        history.forEachIndexed { i, s ->
+            sold += s.soldUnits
+            evening += s.evening
+            add(if (evening == 0) 0f else sold / (evening.toFloat() / (i + 1)))
+        }
+    }
+    val top = maxOf(profits.max(), 0)
+    val bottom = minOf(profits.min(), 0)
+    val span = (top - bottom).coerceAtLeast(1).toFloat()
+    val turnTop = maxOf(turnovers.maxOrNull() ?: 0f, result.targetTurnover) * 1.2f
+
+    val barUp = ReyonPalette.Satisfied
+    val barDown = ReyonPalette.Violated
+    val line = ReyonPalette.HighlightRing
+    val axis = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f)
+    val res = LocalContext.current.resources
+    val desc = stringResource(
+        R.string.reyon_order_chart_desc_fmt,
+        history.joinToString(", ") { res.getString(R.string.reyon_order_chart_day_fmt, it.day + 1, it.profit) },
+        turnoverText(result.turnover),
+        turnoverText(result.targetTurnover),
+    )
+
+    Column(modifier = Modifier.fillMaxWidth().semantics { contentDescription = desc }) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                text = stringResource(R.string.reyon_order_chart_profit),
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold,
+                color = barUp,
+            )
+            if (known) {
+                Text(
+                    text = stringResource(R.string.reyon_order_chart_turnover),
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = line,
+                )
+                Text(
+                    text = stringResource(R.string.reyon_order_chart_expert_fmt, turnoverText(result.targetTurnover)),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = axis,
+                )
+            }
+        }
+        Canvas(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(84.dp)
+                .padding(top = 4.dp),
+        ) {
+            val n = profits.size
+            val slot = size.width / n
+            val zeroY = size.height * (top / span)
+            drawLine(axis, Offset(0f, zeroY), Offset(size.width, zeroY), strokeWidth = 1.dp.toPx())
+            profits.forEachIndexed { i, p ->
+                val h = size.height * (kotlin.math.abs(p) / span)
+                drawRect(
+                    color = if (p >= 0) barUp else barDown,
+                    topLeft = Offset(slot * i + slot * 0.28f, if (p >= 0) zeroY - h else zeroY),
+                    size = Size(slot * 0.44f, maxOf(h, 1.dp.toPx())),
+                    alpha = 0.85f,
+                )
+            }
+            if (known && turnTop > 0f) {
+                val expertY = size.height - size.height * (result.targetTurnover / turnTop)
+                drawLine(
+                    color = axis,
+                    start = Offset(0f, expertY),
+                    end = Offset(size.width, expertY),
+                    strokeWidth = 1.dp.toPx(),
+                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(6.dp.toPx(), 4.dp.toPx())),
+                )
+                val path = Path()
+                turnovers.forEachIndexed { i, t ->
+                    val x = slot * i + slot / 2f
+                    val y = size.height - size.height * (t / turnTop)
+                    if (i == 0) path.moveTo(x, y) else path.lineTo(x, y)
+                    drawCircle(line, radius = 2.5.dp.toPx(), center = Offset(x, y))
+                }
+                drawPath(path, line, style = Stroke(width = 2.dp.toPx()))
+            }
+        }
+        Row(modifier = Modifier.fillMaxWidth().padding(top = 2.dp)) {
+            for (s in history) {
+                Text(
+                    text = "${s.day + 1}",
+                    style = MaterialTheme.typography.labelSmall,
+                    textAlign = TextAlign.Center,
+                    color = axis,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        }
+    }
+}
+
 @Composable
 private fun OrderResultCard(
     state: ReyonOrderState,
@@ -658,6 +773,7 @@ private fun OrderResultCard(
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
         )
+        WeekChart(state = state, result = result)
         Text(
             text = stats,
             style = MaterialTheme.typography.labelSmall,

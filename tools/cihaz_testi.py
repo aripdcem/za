@@ -414,7 +414,8 @@ def komut_erisim(args) -> None:
     print(f"sınırı sıfır dokunulabilir düğüm: {len(sinirsiz)}")
     if sinirsiz:
         print("  Ekran okuyucu bunlara dokunarak inemez; gizli sistem çubuğunun bölgesine çizilen")
-        print("  öğeler böyle gelir. TalkBack açıkken uygulama çubukları gizlemez; o durumda 0 beklenir.")
+        print("  öğeler böyle gelir. TalkBack açıkken uygulama çubukları gizlemez, ama bu her ROM'da")
+        print("  yetmiyor: SM-A515F'te alanın son 33 dp'si yine düşüyor (docs/oyun-testi.md).")
         for o in sinirsiz:
             print(f"  {o['t'] or '(etiketsiz)'}")
 

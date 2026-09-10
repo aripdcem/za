@@ -5,6 +5,16 @@ import android.view.accessibility.AccessibilityManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -12,17 +22,27 @@ import com.za.games.ui.theme.ZaTheme
 
 class MainActivity : ComponentActivity() {
 
-    /** Dokunarak keşif açılıp kapanınca çubuk kararı yenilenir. */
-    private val touchExplorationListener = AccessibilityManager.TouchExplorationStateChangeListener { hideSystemBars() }
+    /** Dokunarak keşif (TalkBack) açık mı; çubuk kararı ve alt pay buna bakar. */
+    private val touchExploring = mutableStateOf(false)
+
+    /** Dokunarak keşif açılıp kapanınca çubuk kararı ve alt pay yenilenir. */
+    private val touchExplorationListener = AccessibilityManager.TouchExplorationStateChangeListener { enabled ->
+        touchExploring.value = enabled
+        hideSystemBars()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        getSystemService(AccessibilityManager::class.java)?.addTouchExplorationStateChangeListener(touchExplorationListener)
+        val accessibility = getSystemService(AccessibilityManager::class.java)
+        touchExploring.value = accessibility?.isTouchExplorationEnabled == true
+        accessibility?.addTouchExplorationStateChangeListener(touchExplorationListener)
         hideSystemBars()
         setContent {
             ZaTheme {
-                ZaApp()
+                ExplorationInset(exploring = touchExploring.value) {
+                    ZaApp()
+                }
             }
         }
     }
@@ -57,5 +77,21 @@ class MainActivity : ComponentActivity() {
         }
         controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         controller.hide(WindowInsetsCompat.Type.systemBars())
+    }
+}
+
+/**
+ * Dokunarak keşif açıkken alta durum çubuğu yüksekliği kadar ek pay. SM-A515F'te
+ * erişilebilirlik penceresi uygulama alanının boyunda ama y = 0'a çakılı
+ * geliyor; alanın son 33 dp'si (durum çubuğu kadar) ağaçtan düşüyor ve oradaki
+ * düğmelere ekran okuyucu inemiyor (docs/oyun-testi.md, Reyon Sipariş doğrulama
+ * turu). Pay, en alttaki eylem satırını o bandın üstüne çeker; keşif kapalıyken
+ * sıfırdır.
+ */
+@Composable
+private fun ExplorationInset(exploring: Boolean, content: @Composable () -> Unit) {
+    val bottom = if (exploring) WindowInsets.statusBars.asPaddingValues().calculateTopPadding() else 0.dp
+    Box(modifier = Modifier.fillMaxSize().padding(bottom = bottom)) {
+        content()
     }
 }

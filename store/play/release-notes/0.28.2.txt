@@ -1,0 +1,6 @@
+<tr-TR>
+• Reyon Sipariş: hafta bitince kâr ve stok devri grafiği. Hangi günün ne kazandırdığı çubuklarda, devrin uzmana göre nerede olduğu çizgide.
+</tr-TR>
+<en-US>
+• Reyon Ordering: a profit and stock-turnover chart when the week ends. Bars show what each day earned; the line shows how turnover tracks the expert.
+</en-US>
