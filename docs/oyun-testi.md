@@ -402,6 +402,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Reyon | ✅ | olay güdümlü (boşta 0) · kaydırmada **60 · 0 · %6,8 · 20 ms** | ✅ adımlayıcı 48×48 dp (v0.28.1) | ✅ ölçüldü (diziliş + denetim + satış + sipariş) | 2026-09-10 |
 | Raket | ✅ | **58 · 15 · %48 · 26 ms** (GPU 21 ms) | ✅ kazanç 1,24 · ölü bölge yok · iki parmak ayrı | ✅ seviyeler sıralı | 2026-09-10 |
 | Tuşe | ✅ | olay güdümlü (vuruşta 21 ms, GPU 15,5) | ✅ iki parmak 15 ms arayla da sayılıyor | ✅ Sonsuz eğrisi | 2026-09-10 |
+| Uçurtma | ✅ | **59 · 5 · %60 · 34 ms** (GPU 20 ms) | ✅ tutuşa yanıt ~100 ms · tel 2,3 dp / 8,2:1 | ✅ pilot eğrisi | 2026-09-10 |
 
 **E · erişilebilirlik:** tüm oyunlarda etiketsiz dokunulabilir öğe kalmadı
 (tek bulgu Kıskaç'ın kolay mod anahtarıydı, düzeltildi). Kontrast CI'da
@@ -1363,10 +1364,73 @@ tozu 1079 / 2213 (kesme bonusu 50). Okuma: ölümlerin neredeyse tamamı tel;
 0,5 s göründüğünden reaksiyonu belirleyen engel; pilotlar 700–1150 m
 arasında, insan için 300–600 m makul bir ilk hedef. Değişmez teste
 çevrilen: geçilebilirlik (her sütunda ≥ 0,3 birim boşluk, 3 mesafede 12
-tohum), kesme kuralı ve pilotun açılışı geçmesi. A–C cihazda koşulmadı;
-cihazda bakılacak: basılı tutma gecikmesi, ip ve tel çizgilerinin
-kalınlığı (tel öldürücü, görünür olmalı), 360 dp'de menü kartının görev
-listesiyle kayması.
+tohum), kesme kuralı ve pilotun açılışı geçmesi. Cihaz koşumu (A–C) aşağıda.
+
+### Uçurtma · cihazda · 2026-09-10
+
+Sürüm sayfasındaki v0.31.0 APK'sıyla (aynı imza, yerinde güncelleme).
+
+**A — koşum.** Serbest modda birkaç uçuş yapıldı. Hiç dokunulmayan uçuş 20 m'de
+çatıya çarpıyor ve kart geliyor ("Çatıya çarptın", mesafe · kurdele · kesme,
+Paylaş / Yeniden başlat / Başa dön / Menüye dön). Enjekte edilen basılı-tut
+örüntüleriyle 49–84 m uçuldu; bir uçuşta "tel altı 2/2" görevi tamamlandı. Ana
+ekrana alıp dönünce mesafe ve uçuş korunuyor, geri tuşu hub'a çıkıyor, `logcat`
+`AndroidRuntime:E` boş. Günlük modun günde üç denemesi olduğu için ölçümler
+Serbest'te yapıldı.
+
+**B — kare hızı.** Uçuş süren 7 s'lik pencerede 414 kare (**59,1 kare/s**),
+kaçan vsync 5, jank %60, p50 34 ms, p90 40 ms. Fazlar: **GPU 20,0 ms** (90p
+29,9), çizim kaydı 1,4 ms, girdi→traversal 1,6 ms, toplam 26,6 ms. Raket'le
+aynı desen: kare hızı hedefi tutuyor ama GPU 16,7 ms bütçesinin üstünde ve p50
+34 ms ile kütüğün en yüksek kare gecikmesi (Viraj'la aynı). Sebep aynı yerde
+aranmalı: tam ekran gökyüzü gradyanı + bulut/bina katmanları.
+
+**C — basılı tutma gecikmesi.** 60 kare/s ekran kaydı alınıp uçurtmanın y'si
+kare kare izlendi; dokunuşlar `uinput` ile bilinen örüntüyle basıldı (1000 ms
+tut / 700 ms bırak).
+
+| ölçüt | değer |
+| --- | --- |
+| parmak indi → gözle görülür ilk hareket (10 px ≈ 3,8 dp) | 83–119 ms (medyan ~100 ms) |
+| bunun sistem payı (girdi→kare tamamlandı) | ~26 ms |
+| yerden tavana çıkış | ~2,1 s (1330 px) |
+| yükseliş / alçalış hızı (90p) | 0,72 / 0,90 birim/s (VMAX 1,15) |
+
+Okuma: kontrol aç-kapa değil rampalı; kısa tutuşlarda tavan hıza varılmıyor ve
+parmak kalkınca dönüş yumuşak. Gecikmenin büyük kısmı fizik rampası, sistem
+payı değil. **His yargısı ölçümle verilemez**: gecikme ve rampa bunlar, ama
+"iyi hissettiriyor mu" sorusunu gerçek bir parmak yanıtlar.
+
+**C — tel görünürlüğü.** Aynı kayıttan telin dikey kesiti:
+
+- koyu çekirdek **6 px = 2,3 dp**, hemen üstünde 2 px beyaz vurgu
+- gökyüzüne karşı kontrast **8,2:1** (gök 156,211,248 · tel 32,49,71); grafik
+  ögeleri için WCAG eşiği 3:1
+- telin sağ kenardan uçurtma sütununa (732 px) gelişi: ölçülen kayma hızı
+  **850 px/s = 0,80 birim/s** (BASE_SPEED) → **0,86 s**; tavan hızda
+  (1,3 birim/s) **0,53 s**. D bölümündeki "tavan hızda 0,5 s" cihazda doğrulandı.
+- o 0,53 s'de uçurtmanın alabileceği dikey yol ≈ 0,31 birim.
+
+Yani telin sorunu kalınlık ya da kontrast değil, **süre**: çizgi ince ama koyu
+ve beyaz vurgusuyla ayırt ediliyor; öldüren şey ekranda kaldığı yarım saniye.
+Görünürlük artırılacaksa kalınlıktan çok erken uyarı (direk gölgesi, telin
+ekrana girmeden önce beliren işareti) işe yarar.
+
+**360 dp.** Menü kartı görev listesi + ekipman satırıyla ekranı aşıyor:
+"Başla" ve "Menüye dön" ilk ekranda görünmüyor, **bir kaydırmayla geliyor** ve
+kart içeriği kırpılmıyor. (0.28.1'deki `OverlayCard` kaydırması burada da
+tutuyor.)
+
+**Gerçek zorluk hissi — ölçülemedi.** Sürücü insan değil: ekranı okuyup karar
+veremediği için sabit örüntüyle uçtu ve 20–84 m'de kaldı; motor içi pilot
+ölçümü ise 700–1150 m. İkisi de bir insanın ne yaşayacağını söylemiyor.
+Cihazda söylenebilecek olan tepki bütçesi: **tel ekrana girdikten sonra
+0,53–0,86 s**, o sürede en çok ~0,3 birim dikey yol. Gerisi gerçek bir el ister.
+
+> Ölçüm notu: sonuç kartı ekranın ortasını kapladığı için kör enjekte edilen
+> basılı-tutuşlar iki kez "Paylaş" düğmesine denk geldi ve sistem paylaşım
+> sayfasını açtı. Uçuş örüntüleri kartın üstünde kalan bir noktaya (y ≈ 600)
+> alınmalı.
 
 ### Dalgıç · 2026-09-10
 
