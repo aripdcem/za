@@ -12,6 +12,8 @@ import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.za.games.R
 import com.za.games.game
+import com.za.games.reyon.OrderRules
+import com.za.games.reyon.ReyonLevel
 import com.za.games.setZaContent
 import com.za.games.str
 import org.junit.Assert.assertEquals
@@ -141,6 +143,14 @@ class ReyonScreenTest {
             rule.onNodeWithText(str(R.string.reyon_order_continue)).performClick()
         }
         rule.onNodeWithText(done).assertIsDisplayed()
+
+        // Sonuç kartındaki hafta grafiği: kapanan her gün ve devir açıklamada olmalı.
+        val chartPrefix = str(R.string.reyon_order_chart_desc_fmt, "", "", "").substringBefore(':')
+        val chart = rule.onAllNodes(hasContentDescription(chartPrefix, substring = true)).fetchSemanticsNodes()
+        assertTrue("hafta grafiği görünmeli", chart.isNotEmpty())
+        val desc = chart.first().config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString().orEmpty()
+        val lastDay = str(R.string.reyon_order_chart_day_fmt, ReyonLevel.KOLAY.let { OrderRules.days(it) }, 0).substringBeforeLast(' ')
+        assertTrue("son gün grafikte olmalı ($desc)", desc.contains(lastDay))
     }
 
     @Test

@@ -2,6 +2,10 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.28.2 (2026-09-10)
+- Reyon Sipariş: hafta sonucu kartında hafta grafiği — her günün kârı çubuk, biriken stok devri çizgi, uzmanın devri kesikli çizgi; grafiğin ekran okuyucu açıklaması gün gün kârı okuyor
+- Gün kapanışında rafta kalan stok gün özetine yazılıyor (kayıtla birlikte); 0.28.1 öncesi kaydedilmiş haftalar da yükleniyor, o günlerde devir çizgisi çizilmiyor
+
 ## 0.28.1 (2026-09-10)
 - Menü, duraklatma ve bitiş kartları (`OverlayCard`) kabın yüksekliğine sığmazsa içi kayıyor; 360×640'ta Reyon menü kartı ekrandan taşıyor, "Haftaya başla" dokunulamıyordu (cihaz bulgusu)
 - Reyon: dört tür çipi dar kartta iki satıra bölünüyor ("Denetim" 360 dp'de "Deneti" diye kırpılıyordu), çip metni sığmazsa üç nokta; dört brif kısaltıldı

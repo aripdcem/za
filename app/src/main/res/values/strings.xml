@@ -765,6 +765,11 @@
     <string name="reyon_order_done_title">Hafta tamam</string>
     <string name="reyon_order_result_fmt">%1$d / %2$d kâr (hedefin yüzde %3$d kadarı)</string>
     <string name="reyon_order_stats_fmt">Stok devri %1$s (uzman %2$s) · hizmet düzeyi yüzde %3$d (uzman %4$d)</string>
+    <string name="reyon_order_chart_profit">Gün kârı</string>
+    <string name="reyon_order_chart_turnover">Devir</string>
+    <string name="reyon_order_chart_expert_fmt">uzman %1$s</string>
+    <string name="reyon_order_chart_day_fmt">%1$d. gün %2$+d</string>
+    <string name="reyon_order_chart_desc_fmt">Hafta grafiği: %1$s · stok devri %2$s (uzman %3$s)</string>
     <string name="reyon_order_beat_target">Uzmanı geçtin! 🏆</string>
     <string name="reyon_order_rules">Satış +4 / birim (★ +6) · bekleme −1 / birim / gece · fire −2 (★ −4) · iade −1</string>
     <string name="reyon_order_board_desc_fmt">Sipariş rafı %1$d raf × %2$d göz, %3$d. gün, kâr %4$d</string>

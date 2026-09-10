@@ -125,8 +125,16 @@ class DaySummary(
     val holding: Int,
     val waste: Int,
     val returns: Int,
+    /** Gün kapanışında rafta kalan birim; bekleme bedelini ödeyen stok.
+     *  Eski kayıtlardan yüklenen günlerde [UNKNOWN] olur. */
+    val evening: Int = UNKNOWN,
 ) {
     val profit: Int get() = margin - holding - waste - returns
+
+    companion object {
+        /** Akşam stoğu kaydedilmemiş (0.28.1 öncesi kayıt). */
+        const val UNKNOWN = -1
+    }
 }
 
 /** Bir sipariş haftası: ürünler, gizli gerçekleşen talep, promosyonlar ve uzman hedefi. */
@@ -398,6 +406,7 @@ class ReyonOrderState(val order: ReyonOrder) {
         var wasted = 0
         var waste = 0
         var holding = 0
+        var evening = 0
         for (i in 0 until n) {
             val it = order.items[i]
             var d = order.demand[t][i]
@@ -423,8 +432,9 @@ class ReyonOrderState(val order: ReyonOrder) {
                 }
             }
             holding += stockOf(i) * OrderRules.HOLDING
-            eveningSum += stockOf(i)
+            evening += stockOf(i)
         }
+        eveningSum += evening
         day = t + 1
         var delivered = 0
         var returned = 0
@@ -448,7 +458,7 @@ class ReyonOrderState(val order: ReyonOrder) {
         holdingPts += holding
         wastePts += waste
         returnPts += returns
-        val summary = DaySummary(t, sold, lost, wasted, returned, delivered, margin, holding, waste, returns)
+        val summary = DaySummary(t, sold, lost, wasted, returned, delivered, margin, holding, waste, returns, evening)
         summaries += summary
         return summary
     }
@@ -497,6 +507,8 @@ class ReyonOrderState(val order: ReyonOrder) {
             }
             for (v in pipeline[i]) out += v
         }
+        // Akşam stokları en sonda: eski kayıtlarda bu blok yok ve okuma onsuz da tutar.
+        for (s in summaries) out += s.evening
         return out.toIntArray()
     }
 
@@ -524,6 +536,7 @@ class ReyonOrderState(val order: ReyonOrder) {
             repeat(count) {
                 summaries += DaySummary(next(), next(), next(), next(), next(), next(), next(), next(), next(), next())
             }
+            val fromDay = summaries.size
             for (i in 0 until n) {
                 stock[i].clear()
                 orders[i] = next().coerceIn(0, order.items[i].maxCases)
@@ -535,6 +548,14 @@ class ReyonOrderState(val order: ReyonOrder) {
                     if (units > 0) stock[i] += Batch(units, if (exp < 0) Int.MAX_VALUE else exp)
                 }
                 for (j in pipeline[i].indices) pipeline[i][j] = next().coerceAtLeast(0)
+            }
+            if (p < snapshot.size) {
+                for (k in 0 until fromDay) {
+                    val e = next().coerceAtLeast(0)
+                    val old = summaries[k]
+                    summaries[k] = DaySummary(old.day, old.soldUnits, old.lostUnits, old.wastedUnits,
+                        old.returnedUnits, old.deliveredUnits, old.margin, old.holding, old.waste, old.returns, e)
+                }
             }
             if (p != snapshot.size) return fail()
         } catch (e: IndexOutOfBoundsException) {

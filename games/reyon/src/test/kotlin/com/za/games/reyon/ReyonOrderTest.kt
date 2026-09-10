@@ -149,6 +149,44 @@ class ReyonOrderTest {
         assertNull(s.hint())
     }
 
+    /**
+     * Hafta grafiği gün gün akşam stoğunu okur: toplamı motorun devir hesabındaki
+     * [ReyonOrderState.eveningSum] ile aynı olmalı, yoksa çizgi kartın yazdığı
+     * sayıya varmaz. Akşam stoğu tutulmayan (0.28.1 öncesi) kayıtlar da yüklenebilmeli.
+     */
+    @Test
+    fun historyCarriesEveningStockAndSurvivesOldSnapshots() {
+        for (seed in seeds.take(5)) {
+            val o = ReyonOrderGenerator.generate(seed, ReyonLevel.ORTA)
+            val rng = Random(seed)
+            val s = ReyonOrderState(o)
+            while (!s.isComplete) {
+                for (i in o.items.indices) s.setOrder(i, rng.nextInt(0, o.items[i].maxCases + 1))
+                s.closeDay()
+            }
+            assertEquals(o.days, s.history.size)
+            assertTrue(s.history.all { it.evening >= 0 })
+            assertEquals(s.eveningSum, s.history.sumOf { it.evening })
+            // Grafiğin son noktası kartın yazdığı devirle aynı olmalı.
+            val sold = s.history.sumOf { it.soldUnits }
+            val avgEvening = s.history.sumOf { it.evening }.toFloat() / s.history.size
+            assertEquals(s.turnover(), sold / avgEvening, 0.0001f)
+
+            val snap = s.snapshot()
+            val yeniden = ReyonOrderState(o)
+            assertTrue(yeniden.restore(snap))
+            assertEquals(s.history.map { it.evening }, yeniden.history.map { it.evening })
+
+            // Eski kayıt: akşam stoğu bloğu yok; hafta yine yüklenir, akşam stoğu bilinmez.
+            val eski = snap.copyOf(snap.size - o.days)
+            val eskiden = ReyonOrderState(o)
+            assertTrue(eskiden.restore(eski))
+            assertEquals(s.profit, eskiden.profit)
+            assertEquals(s.history.size, eskiden.history.size)
+            assertTrue(eskiden.history.all { it.evening == DaySummary.UNKNOWN })
+        }
+    }
+
     @Test
     fun snapshotRoundTripsMidWeek() {
         for (seed in seeds.take(10)) {
