@@ -39,6 +39,15 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.30.0", "2026-09-10",
+            tr = listOf(
+                "Yeni oyun: Tuşe — piyano karoları. Sıradaki karonun şeridine dokun, ezgi parmaklarında çalsın; Klasik (50 karo, en kısa süre), Sonsuz (hızlanan akış) ve Günlük. Yedi telifsiz parça, notalar cihazda sentezleniyor",
+            ),
+            en = listOf(
+                "New game: Tuşe — piano tiles. Tap the lane of the next tile and the melody plays under your fingers; Classic (50 tiles, fastest time), Endless (accelerating flow) and Daily. Seven public-domain pieces, notes synthesized on the device",
+            ),
+        ),
+        ReleaseNote(
             "0.29.0", "2026-09-10",
             tr = listOf(
                 "Yeni oyun: Raket — raketi sürükle; vuruş noktası açıyı, hareketin falsoyu verir, her vuruşta top hızlanır. Üç seviyeli bilgisayar, aynı telefonda iki kişi ya da duvara karşı ralli (günlük top)",

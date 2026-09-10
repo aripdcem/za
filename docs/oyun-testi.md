@@ -53,6 +53,7 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Reyon blok adları en dar gerçek gözde kırpılmaz (35 ad, TR ve EN; 360 dp telefonda Zor planı, tek yüz) | `ReyonBlockLabelTest` |
 | Denetimde plan ve raf 360×640'ta da aynı genişlikte ve ekran içinde; plan büyütme açılıp kapanır | `ReyonAuditLayoutTest` |
 | Raket: orta bir oyuncu botu kolay bilgisayarı yener, zora yenilir, seviyeler sıralı ve her maç biter; tavan hızda vuruş kaçmaz (tünelleme yok) | `RaketWorldTest` |
+| Tuşe: şerit dizisi tohumdan deterministik, her şerit kullanılır, tekrar payı sınırlı; Sonsuz'da sıradaki karo tamamen çıkana dek vurulabilir; parçalar aralıkta ve oktav sıçramasız; sentez notanın frekansını %3 içinde tutar | `TuseWorldTest` |
 | Metin kontrastı WCAG AA eşiğini tutar | `ThemeContrastTest` |
 
 Yeni bir ölçüm bulgusu düzeltildiğinde, mümkünse **paylı bir değişmez** olarak
@@ -1187,6 +1188,29 @@ kolayı ≥ %70 yener, zora ≤ %35 yenilir, seviyeler sıralı, her maç biter
 (`aiLevelsAreOrderedAndTheEasyOneIsBeatable`). Ayrıca tavan hızda 210
 konumda vuruşun kaçmadığı (`noTunnelingAtTopSpeed`) ve falsonun raket hızından
 geldiği doğrulanır. A–C cihazda koşulmadı.
+
+### Tuşe · 2026-09-10
+
+**D — Sonsuz eğrisi** (`./gradlew :games:tuse:probe`, 20 tohum/bot, v0.30.0).
+Sonsuz'da akış hızı vurulan karo başına artar (3,2 + 0,045 × karo, tavan 11
+satır/s); koşu, oyuncunun temposu akış hızının altında kalınca biter. Botlar
+karoyu gördükten bir tepki süresi sonra, sınırlı bir tempoyla dokunur:
+
+| bot | tepki | tempo | karo | süre |
+| --- | --- | --- | --- | --- |
+| acemi | 0,28 s | 4,5/s | 16 | 4,8 s |
+| orta | 0,18 s | 7/s | 73 | 15,3 s |
+| hızlı | 0,12 s | 9,5/s | 116 | 20,8 s |
+| uzman | 0,08 s | 12/s | 213 | 30,1 s |
+
+Okuma: skor yaklaşık (tempo − 3,2) / 0,045'e dayanıyor, yani tavana kadar
+tempo belirleyici; 11 satır/s tavanı (saniyede 11 dokunuş) insan sınırının
+üstünde, sonsuz koşu yok. Klasik ve Günlük'te akış olmadığı için ölçüt
+yalnızca dokunuş hızı; 50 karo iyi bir oyuncuda 8–10 s. Değişmez teste
+çevrilen: sıradaki karo tamamen çıkana dek vurulabilir (`arcadeTileCanBeTappedUntilItFullyLeaves`),
+hız karo başına artar ve kaçan karo koşuyu bitirir. A–C cihazda koşulmadı;
+cihazda ayrıca bakılacak: dokunuş–nota gecikmesi (SoundPool) ve iki parmakla
+art arda dokunuşta ikisinin de sayılması.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Reyon**, **Raket**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Reyon**, **Raket**, **Tuşe**.
 
 Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç çipleri, seçim kalıcı) ve en üstte son oynanan dört oyun için hızlı erişim şeridi bulunur.
 
@@ -293,6 +293,21 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   (seviye botları; testlerde oyuncu botu olarak da kullanılır); 11 test: determinizm, servis, vuruş açısı ve
   kaçırma, falso, hız rampası ve raket daralması, tünelleme yok, servis sırası ve 11-2 kuralı, duvar rallisi,
   duvar katlamalı tahmin, kort sınırları, seviye sıralaması (orta bot kolayı yener, zora yenilir)
+
+### Tuşe
+- **Piyano karoları** (Piano Tiles türü, kendi tasarımımız): dört şerit, her satırda bir karo; sıradaki karonun
+  şeridine dokun, ezginin sıradaki notası çalar. Yargı yalnızca şeride bakar (şeritler piyano tuşu gibidir); yanlış
+  şerit koşuyu bitirir. Klasik: 50 karo, süre ilk dokunuşla başlar, son vuruşla biter. Sonsuz: ilk dokunuştan sonra
+  tahta akar, vurulan karo başına hızlanır (3,2'den 11 satır/s'ye), sıradaki karo dokunulmadan çıkarsa biter.
+  Günlük: günün parçası ve şeritleri herkese aynı, 3 deneme, en kısa süre. Ana menü rekoru Sonsuz'daki karo sayısı
+- **Yedi telifsiz parça**, elle yazılmış nota dizileri: Neşeye Övgü, Für Elise, Türk Marşı, Daha Dün Annemizin,
+  Mutlu Yıllar, Sol Majör Menuet, Greensleeves. Ses dosyası yok: `NoteSynth` beş harmonikli kısa piyano tonunu
+  üretir, uygulama WAV'ı önbelleğe yazıp SoundPool ile çalar (izin gerekmez); ana menüdeki ses düğmesi notaları da
+  kapatır
+- Motor `games/tuse`: `TuseWorld` (şerit dizisi, vuruş/hata, kayma, Sonsuz akışı, süre), `Songs`, `NoteSynth`;
+  9 test: şerit determinizmi ve tekrar payı, Klasik akış ve süre, yanlış tuş, kayma, Sonsuz hızlanma ve kaçan karo,
+  son ana kadar vuruş, yarıda bırakma, parça geçerliliği (aralık, oktav sıçraması), sentez frekansı ve WAV başlığı;
+  Sonsuz eğrisi ölçümü `:games:tuse:probe`
 
 ### Vergici ve Toplam Kapma (`games/sayi`)
 - **Vergici** (Taxman): 1–N tahtası; böleni kalmış bir sayıyı alırsın, vergici o sayının tahtadaki tüm bölenlerini
