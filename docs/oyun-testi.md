@@ -403,6 +403,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Raket | ✅ | **58 · 15 · %48 · 26 ms** (GPU 21 ms) | ✅ kazanç 1,24 · ölü bölge yok · iki parmak ayrı | ✅ seviyeler sıralı | 2026-09-10 |
 | Tuşe | ✅ | olay güdümlü (vuruşta 21 ms, GPU 15,5) | ✅ iki parmak 15 ms arayla da sayılıyor | ✅ Sonsuz eğrisi | 2026-09-10 |
 | Uçurtma | ✅ | **59 · 5 · %60 · 34 ms** (GPU 20 ms) | ✅ tutuşa yanıt ~100 ms · tel 2,3 dp / 8,2:1 | ✅ pilot eğrisi | 2026-09-10 |
+| Dalgıç | ✅ | **58 · 14 · %12 · 24 ms** | ✅ 2B kazanç 1,3 · ölü bölge yok · zincir 1,5 dp / 1,54:1 | ✅ tehdit dağılımı | 2026-09-10 |
 
 **E · erişilebilirlik:** tüm oyunlarda etiketsiz dokunulabilir öğe kalmadı
 (tek bulgu Kıskaç'ın kolay mod anahtarıydı, düzeltildi). Kontrast CI'da
@@ -1457,10 +1458,94 @@ ve oksijen arasında dağılıyor, tek bir tehdit baskın değil. "Uzman" pilotu
 daha kötü olması pilotun sık hedef değiştirip titremesinden, oyundan değil;
 insan için ilk hedef 1000 puan ve 5. dalga. Değişmez teste çevrilen: doğum
 şeritlerde kalır (6 tohum × 60 s), boş yüzeye çıkış kuralı, pilot 20
-dalışın en az 14'ünde teslim eder. A–C cihazda koşulmadı; cihazda bakılacak:
-2B sürükleme kazancı 1,3 (Filo 1,35 ile aynı his mi), akıntı bantlarının
-okunurluğu, mayın zincirlerinin küçük ekranda görünürlüğü, oksijen uyarısının
-duyulabilirliği.
+dalışın en az 14'ünde teslim eder. Cihaz koşumu (A–C) aşağıda.
+
+### Dalgıç · cihazda · 2026-09-10
+
+Sürüm sayfasındaki v0.32.0 APK'sıyla (yerinde güncelleme). Günlük modun günde
+üç denemesi olduğu için ölçümler Serbest'te.
+
+**A — koşum.** Dalışlar oynandı (en iyisi 290 puan, 4. dalga); "Denizaltı
+battı" kartı, can göstergesi ve rekor yazımı çalışıyor. Ana ekrana alıp
+dönünce oyun kendiliğinden duraklıyor ("Devam et") ve skor/can korunuyor, geri
+tuşu hub'a çıkıyor, `logcat` `AndroidRuntime:E` boş.
+
+**B — kare hızı.** Dalış süren 9,3 s'lik pencerede 540 kare (**58,1 kare/s**),
+kaçan vsync 14, jank %11,7, p50 24 ms, p90 34 ms. Raket ve Uçurtma'yla aynı
+aile: kare hızı hedefte, kare gecikmesi ve kaçan vsync yeni oyunlarda eskilerin
+üstünde.
+
+**C — iki eksenli sürükleme kazancı.** Sarı denizaltının merkezi izlenerek her
+eksende ayrı ölçüldü:
+
+| parmak | 10 px | 20 px | 40 px | 160 px |
+| --- | --- | --- | --- | --- |
+| dikey | 12,9 px (1,29) | 23,9 px (1,20) | 51,1 px (1,28) | 198,4 px (1,24) |
+| yatay | 13,1 px (1,31) | — | 49,1 px (1,23) | — |
+
+Koddaki 1,3 iki eksende de çıkıyor ve **ölü bölge yok**: 10 px'lik parmak yolu
+bile 13 px hareket veriyor (olaylar `awaitFirstDown`'dan itibaren okunuyor).
+
+> Ölçüm tuzağı: denizaltı sürüklenen yöne dönüyor, dönünce sarı kütlenin
+> merkezi ~4 px kayıyor. Yön değiştirerek ölçülen ilk seri bu yüzden sahte bir
+> "4 px ölü bölge" gösterdi; aynı yönde iki kaydırmayla (ilki döndürür, ikincisi
+> ölçülür) rakam 1,3'e oturdu.
+
+**Filo'nun 1,35'iyle aynı his mi?** Sayılar bunu ayırmaya yetmiyor: Filo 1,35
+ayarında 1,29–1,34, Dalgıç 1,3 ayarında 1,20–1,31 ölçüyor — iki aralık iç içe.
+Farkı yapan katsayı değil, **yol bütçesi**: denizin yatayı 1016 px, dikeyi
+1629 px; 1,3 kazançla uçtan uca parmak yolu yatayda 781 px = **47 mm**,
+dikeyde 1253 px = **76 mm**. Yani yatay tek başparmak hamlesiyle geçiliyor
+(sınır 55 mm), dikey geçilmiyor — 2B'de pahalı olan eksen dikey. Kazanç
+kurcalanacaksa Filo'ya yaklaştırmak yerine dikey ekseni ayrı düşünmek gerekir.
+
+**C — akıntı bantlarının okunurluğu.** Ölçülen (411 dp, su içi):
+
+| ne | ölçüm |
+| --- | --- |
+| bant dolgusu ↔ çevresindeki su | **1,10:1** |
+| kesik çizgi ↔ bant dolgusu | 1,70:1 |
+| kesik çizgi ↔ bant dışı su | 1,87:1 |
+| kesik çizgi boyu / kalınlığı | 20 dp / 1,9 dp, satır başına 8–9 parça |
+
+Okuma: bandın kendisi (alfa 0x22) tek başına görünmüyor; akıntıyı okutan şey
+kesik çizgiler ve onların akması. Duran bir ekran görüntüsünde bant sınırını
+bulmak zor, harekette kolay. Bant sınırının kendisi işaret edilecekse dolgu
+alfası değil, kenara ince bir çizgi daha etkili olur.
+
+**C — mayın zincirlerinin görünürlüğü.** 4. dalgada mayınlı bir kare yakalandı:
+
+| derinlik | zincir kalınlığı | zincir ↔ su kontrastı |
+| --- | --- | --- |
+| orta su (y≈1750) | 5 px = 1,9 dp | **1,84:1** |
+| daha derin (y≈1950) | 4–5 px = 1,5–1,9 dp | 1,66:1 |
+| dip (y≈2050) | 4–5 px = 1,5–1,9 dp | **1,54:1** |
+
+Mayının gövdesi (dikenli, neredeyse siyah daire) her derinlikte rahat
+seçiliyor; sorun zincir. Zincirin alfası sabit (0x88) ama su derinleştikçe
+koyulaşıyor, dolayısıyla **zincir tam da en uzun olduğu yerde en zor görünür
+hâle geliyor**. Derinlikle açılan bir zincir rengi (ya da alfayı derinlikle
+artırmak) bunu ucuza çözer.
+
+**Oksijen uyarısının duyulabilirliği.** Uyarı, 30 saniyelik oksijenin 8 saniyesi
+kalınca **bir kez** çalıyor (`lowWarned`): `Sfx.HORN`, ses 0,6 · hız 1,3, yanında
+titreşim ve denizaltının üstünde yazı. Çalınan sesin ölçümü:
+
+| ses | süre | tepe | RMS | temel |
+| --- | --- | --- | --- | --- |
+| oksijen uyarısı (0,6 · 1,3) | 0,25 s | −16,7 dBFS | −23,6 dBFS | ~508 Hz |
+| mayın patlaması | 0,13 s | −13,0 | −27,1 | — |
+| dalgıç teslimi | 0,43 s | −14,0 | −22,7 | — |
+| yüzeye çıkış | 0,12 s | −14,2 | −29,1 | — |
+
+Yani uyarı, oyunun en gür seslerinden 3–4 dB aşağıda ama sürekli bir ton olduğu
+için RMS'i onlardan yüksek; duyulmama riski seviyeden çok **tek seferlik
+olmasından** geliyor: kaçıran oyuncu bir daha duymuyor. Cihazda ses yolunun
+çalıştığı (HAL `fast_out`) ve titreşimin tetiklendiği doğrulandı, ama sürücü
+denizaltıyı 22 saniye boyunca su altında tutamadığı için (düşmanlar can
+götürüyor, denizaltı yüzeye dönüyor) **olayın kendisi yerinde yakalanamadı**.
+Duyulabilirlik kararı için sesin çalındığı hâli WAV olarak üretildi ve
+dinlenmek üzere gönderildi.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
