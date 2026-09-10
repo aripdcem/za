@@ -6,7 +6,7 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.click
+import androidx.compose.ui.test.down
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -15,6 +15,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.up
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.za.games.R
@@ -63,26 +64,31 @@ class TuseScreenTest {
 
     @Test
     fun classicRunHitsTheNextLaneAndAWrongLaneEndsIt() {
-        rule.setZaContent { game("tuse").screen(0L, {}, {}) }
+        val vm = TuseViewModel(ApplicationProvider.getApplicationContext())
+        rule.setZaContent { TuseScreen(highScore = 0L, onScore = {}, onExit = {}, viewModel = vm) }
         // Koşu başlayınca kare döngüsü sonsuzdur; saat elle ilerletilir.
         rule.mainClock.autoAdvance = false
         rule.onNodeWithText(str(R.string.tuse_start)).performClick()
         rule.mainClock.advanceTimeByFrame()
+        assertEquals(TusePhase.PLAYING, vm.phase.value)
         val prefix = str(R.string.tuse_board_desc_fmt, 0, 1).substringBefore(':')
         val board = rule.onNode(hasContentDescription(prefix, substring = true))
-
-        fun nextLane(): Int = board.description().substringAfterLast(' ').toInt() - 1
+        assertEquals("açıklama sıradaki şeridi verir", vm.world.lane(0) + 1, board.description().substringAfterLast(' ').toInt())
 
         fun tapLane(lane: Int) {
-            board.performTouchInput { click(Offset(width * (lane + 0.5f) / TuseWorld.LANES, height * 0.9f)) }
+            board.performTouchInput {
+                down(Offset(width * (lane + 0.5f) / TuseWorld.LANES, height * 0.9f))
+                up()
+            }
             rule.mainClock.advanceTimeByFrame()
         }
 
-        tapLane(nextLane())
+        tapLane(vm.world.lane(0))
+        assertEquals("dokunuş motora ulaşmalı (${board.description()})", 1, vm.world.tapped)
         rule.onNodeWithText("1/${TuseWorld.CLASSIC_TILES}").assertExists()
-        assertEquals(1, board.description().substringAfter(": ").substringBefore(' ').toInt())
-        tapLane((nextLane() + 1) % TuseWorld.LANES)
+        tapLane((vm.world.lane(1) + 1) % TuseWorld.LANES)
         rule.mainClock.advanceTimeByFrame()
+        assertEquals(TusePhase.OVER, vm.phase.value)
         rule.onNodeWithText(str(R.string.tuse_wrong_key)).assertIsDisplayed()
         rule.onNodeWithText(str(R.string.tuse_to_menu)).performClick()
         rule.mainClock.advanceTimeByFrame()
