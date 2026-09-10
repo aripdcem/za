@@ -168,7 +168,7 @@ internal fun ReyonOrderContent(
             if (st != null) {
                 Column(modifier = Modifier.fillMaxSize()) {
                     OrderShelfCanvas(state = st, version = version)
-                    DayHeader(state = st, hinted = hinted, noHint = noHint)
+                    DayHeader(state = st, version = version, hinted = hinted, noHint = noHint)
                     OrderList(
                         state = st,
                         version = version,
@@ -294,8 +294,14 @@ private fun OrderShelfCanvas(state: ReyonOrderState, version: Int) {
     }
 }
 
+/**
+ * Güçlü atlama (strong skipping) altında değişken motor durumu aynı nesne kaldığı için
+ * satırlar atlanır; [version] her değişimde artar ve yeniden çizimi zorlar.
+ */
 @Composable
-private fun DayHeader(state: ReyonOrderState, hinted: Int, noHint: Boolean) {
+private fun DayHeader(state: ReyonOrderState, version: Int, hinted: Int, noHint: Boolean) {
+    @Suppress("UNUSED_VARIABLE")
+    val tick = version
     val res = LocalContext.current.resources
     val order = state.order
     val day = minOf(state.day, order.days - 1)
@@ -351,13 +357,15 @@ private fun OrderList(
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         for ((i, item) in state.order.items.withIndex()) {
-            OrderRow(state = state, index = i, item = item, hinted = i == hinted, onAdjust = onAdjust)
+            OrderRow(state = state, version = version, index = i, item = item, hinted = i == hinted, onAdjust = onAdjust)
         }
     }
 }
 
 @Composable
-private fun OrderRow(state: ReyonOrderState, index: Int, item: OrderItem, hinted: Boolean, onAdjust: (Int, Int) -> Unit) {
+private fun OrderRow(state: ReyonOrderState, version: Int, index: Int, item: OrderItem, hinted: Boolean, onAdjust: (Int, Int) -> Unit) {
+    @Suppress("UNUSED_VARIABLE")
+    val tick = version
     val res = LocalContext.current.resources
     val order = state.order
     val name = ReyonText.kind(res, item.product.kind)

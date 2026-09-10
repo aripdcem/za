@@ -3,14 +3,12 @@ package com.za.games.ui.reyon
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performSemanticsAction
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.za.games.R
 import com.za.games.game
@@ -105,11 +103,11 @@ class ReyonScreenTest {
         rule.waitUntil(timeoutMillis = 30_000) {
             rule.onAllNodes(hasContentDescription(boardPrefix, substring = true)).fetchSemanticsNodes().isNotEmpty()
         }
-        // İlk ürünün "Artır" düğmesi: sipariş 1 koli olur (düğmenin tıklama eylemi doğrudan çağrılır).
+        // İlk ürünün "Artır" düğmesi: sipariş 1 koli olur.
         val morePrefix = str(R.string.reyon_order_more) + ":"
         fun moreButtons() = rule.onAllNodes(hasContentDescription(morePrefix, substring = true))
         assertTrue("artır düğmesi olmalı", moreButtons().fetchSemanticsNodes().isNotEmpty())
-        moreButtons()[0].performSemanticsAction(SemanticsActions.OnClick)
+        moreButtons()[0].performClick()
         rule.waitForIdle()
         val oneCase = str(R.string.reyon_order_case_fmt, 1, 0).substringBefore(" = ")
         val caseNodes = rule.onAllNodes(hasText(oneCase, substring = true)).fetchSemanticsNodes()
