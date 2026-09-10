@@ -2,6 +2,9 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.33.0 (2026-09-10)
+- Yeni oyun: **Bostan** — şerit savunması: 5 şerit × 7 hücre tarla; kuyu su üretir, fıskiye jet atar, korkuluk yolu keser, kovan üç şeride arı salar, tuzak kurulunca basanı patlatır. Karga, tavşan, keçi, domuz ve ayı dalgalar hâlinde iner; gökten düşen damlalar dokununca su verir; kulübeye ulaşan can götürür (3 can). Kolay/Orta/Zor (6/8/10 dalga); her seviye uzman politikasıyla oynatılıp kazanılabilir olduğu doğrulanarak üretilir, sonuç kartı uzmanın aynı bostandaki sonucunu gösterir. Günlük bostan (3 deneme) ve serbest mod
+
 ## 0.32.0 (2026-09-10)
 - Yeni oyun: **Dalgıç** — denizaltıyla dalgıç kurtarma. Denizaltı parmakla sürüklenir, torpidolar baktığı yöne kendiliğinden gider; dalgıçlar altışar toplanıp yüzeyde teslim edilir (tam yük +300), oksijen dalarken azalır yüzeyde dolar, daldıktan sonra dalgıçsız yüzeye çıkmak can götürür. Köpekbalıkları, torpido atan düşman denizaltılar, zincirli mayınlar ve Boğaz akıntı bantları; her teslimde dalga artar. Günlük deniz (3 deneme) ve serbest mod
 

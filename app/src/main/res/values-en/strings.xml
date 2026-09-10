@@ -934,4 +934,44 @@
     <string name="dalgic_life_oxygen">Out of oxygen</string>
     <string name="dalgic_life_empty">Surfaced empty!</string>
     <string name="dalgic_board_desc_fmt">Sea: score %1$d, %2$d divers, oxygen %3$d%%</string>
+
+    <!-- Bostan -->
+    <string name="game_bostan">Bostan</string>
+    <string name="game_bostan_tagline">Lane defense: guard the garden from crows, rabbits, goats, boars and bears with wells, sprinklers, scarecrows, hives and traps</string>
+    <string name="bostan_intro">Raiders come down five lanes from the forest; each one that reaches the hut costs a life (3 lives). Tap a card, then a cell: the well makes water, the sprinkler jets its lane, the scarecrow blocks the path, the hive sends bees across three lanes, the trap blasts whoever steps on it once armed. Tap falling drops for +25 water. The shovel removes a defender.</string>
+    <string name="bostan_rules">Clearing a wave brings the next one early · every 3rd wave is big · every level is generated winnable by an expert policy</string>
+    <string name="bostan_daily_desc">Everyone defends the same garden today; 3 attempts a day (any difficulty)</string>
+    <string name="bostan_daily_status_fmt">Today: %1$d/%2$d attempts · best %3$d</string>
+    <string name="bostan_daily_exhausted">Today\'s attempts are used up; a new garden tomorrow!</string>
+    <string name="bostan_best_fmt">Best (%1$s): %2$d points</string>
+    <string name="bostan_start">Defend</string>
+    <string name="bostan_retry_fmt">Defend again (%1$d left)</string>
+    <string name="bostan_to_menu">Back to start</string>
+    <string name="bostan_loading">Preparing the garden…</string>
+    <string name="bostan_wave">Wave</string>
+    <string name="bostan_lives">Lives</string>
+    <string name="bostan_best">Best</string>
+    <string name="bostan_next_wave_fmt">Next wave in %1$d s</string>
+    <string name="bostan_alive_fmt">%1$d raiders</string>
+    <string name="bostan_wave_fmt">Wave %1$d</string>
+    <string name="bostan_big_wave">Big wave!</string>
+    <string name="bostan_life_lost">Reached the hut!</string>
+    <string name="bostan_no_water">Not enough water</string>
+    <string name="bostan_cooldown">Card recharging</string>
+    <string name="bostan_occupied">Cell taken</string>
+    <string name="bostan_tap_hint">Tap a card, then tap a cell</string>
+    <string name="bostan_def_kuyu">Well</string>
+    <string name="bostan_def_fiskiye">Sprinkler</string>
+    <string name="bostan_def_korkuluk">Scarecrow</string>
+    <string name="bostan_def_kovan">Hive</string>
+    <string name="bostan_def_tuzak">Trap</string>
+    <string name="bostan_shovel">Shovel</string>
+    <string name="bostan_card_desc_fmt">%1$s · %2$d water</string>
+    <string name="bostan_won_title">Garden saved!</string>
+    <string name="bostan_lost_title">Garden trampled</string>
+    <string name="bostan_result_fmt">wave %1$d/%2$d · %3$d raiders · %4$d lives</string>
+    <string name="bostan_expert_fmt">Expert on the same garden: %1$d lives · %2$d points</string>
+    <string name="bostan_share_won_fmt">Saved the garden · %1$d points</string>
+    <string name="bostan_share_lost_fmt">Garden trampled on wave %1$d · %2$d points</string>
+    <string name="bostan_board_desc_fmt">Field: water %1$d, wave %2$d/%3$d, %4$d raiders</string>
 </resources>

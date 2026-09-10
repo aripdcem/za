@@ -1114,3 +1114,52 @@ fun DalgicArt(modifier: Modifier = Modifier) {
         drawCircle(Color(0xFF111827), radius = w * 0.03f, center = Offset(w * 0.6f, w * 0.86f))
     }
 }
+
+/** Bostan: orman şeridi, toprak şeritler, korkuluk, karga ve damla. */
+@Composable
+fun BostanArt(modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        drawRoundRect(Color(0xFF4D7C0F), size = Size(w, w), cornerRadius = CornerRadius(w * 0.12f, w * 0.12f))
+        for (i in 0 until 5) {
+            drawRect(if (i % 2 == 0) Color(0xFF7C4A1E) else Color(0xFF8A5A2B), Offset(w * (0.08f + i * 0.168f), w * 0.2f), Size(w * 0.168f, w * 0.7f))
+        }
+        drawRect(Color(0xFF14532D), Offset(0f, w * 0.06f), Size(w, w * 0.14f))
+        for (i in 0 until 6) {
+            val tx = w * (0.08f + i * 0.17f)
+            val tree = androidx.compose.ui.graphics.Path().apply {
+                moveTo(tx, w * 0.04f)
+                lineTo(tx - w * 0.06f, w * 0.2f)
+                lineTo(tx + w * 0.06f, w * 0.2f)
+                close()
+            }
+            drawPath(tree, if (i % 2 == 0) Color(0xFF22C55E) else Color(0xFF166534))
+        }
+        // Korkuluk.
+        drawLine(Color(0xFF92400E), Offset(w * 0.5f, w * 0.85f), Offset(w * 0.5f, w * 0.45f), strokeWidth = w * 0.05f)
+        drawLine(Color(0xFF92400E), Offset(w * 0.3f, w * 0.58f), Offset(w * 0.7f, w * 0.58f), strokeWidth = w * 0.045f)
+        drawRoundRect(Color(0xFFFACC15), Offset(w * 0.4f, w * 0.55f), Size(w * 0.2f, w * 0.16f), CornerRadius(w * 0.03f, w * 0.03f))
+        drawCircle(Color(0xFFF5D0A9), radius = w * 0.09f, center = Offset(w * 0.5f, w * 0.44f))
+        drawRect(Color(0xFFFACC15), Offset(w * 0.36f, w * 0.34f), Size(w * 0.28f, w * 0.04f))
+        drawRect(Color(0xFFFACC15), Offset(w * 0.42f, w * 0.27f), Size(w * 0.16f, w * 0.08f))
+        // Karga.
+        drawOval(Color(0xFF111827), Offset(w * 0.72f, w * 0.3f), Size(w * 0.16f, w * 0.22f))
+        drawCircle(Color(0xFF111827), radius = w * 0.06f, center = Offset(w * 0.8f, w * 0.52f))
+        val beak = androidx.compose.ui.graphics.Path().apply {
+            moveTo(w * 0.77f, w * 0.55f)
+            lineTo(w * 0.83f, w * 0.55f)
+            lineTo(w * 0.8f, w * 0.62f)
+            close()
+        }
+        drawPath(beak, Color(0xFFF97316))
+        // Damla.
+        drawCircle(Color(0xFF38BDF8), radius = w * 0.07f, center = Offset(w * 0.2f, w * 0.7f))
+        val tip = androidx.compose.ui.graphics.Path().apply {
+            moveTo(w * 0.14f, w * 0.68f)
+            lineTo(w * 0.2f, w * 0.56f)
+            lineTo(w * 0.26f, w * 0.68f)
+            close()
+        }
+        drawPath(tip, Color(0xFF38BDF8))
+    }
+}
