@@ -54,6 +54,7 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Denetimde plan ve raf 360×640'ta da aynı genişlikte ve ekran içinde; plan büyütme açılıp kapanır | `ReyonAuditLayoutTest` |
 | Raket: orta bir oyuncu botu kolay bilgisayarı yener, zora yenilir, seviyeler sıralı ve her maç biter; tavan hızda vuruş kaçmaz (tünelleme yok) | `RaketWorldTest` |
 | Tuşe: şerit dizisi tohumdan deterministik, her şerit kullanılır, tekrar payı sınırlı; Sonsuz'da sıradaki karo tamamen çıkana dek vurulabilir; parçalar aralıkta ve oktav sıçramasız; sentez notanın frekansını %3 içinde tutar | `TuseWorldTest` |
+| Uçurtma: üretilen dünya her sütunda ≥ 0,3 birim boşluk bırakır (tavan zorlukta da); rakibin üstünden geçen keser, altından geçen kesilir; dikkatli pilot 12 uçuşun en az 8'inde 300 m'yi geçer | `UcurtmaWorldTest` |
 | Metin kontrastı WCAG AA eşiğini tutar | `ThemeContrastTest` |
 
 Yeni bir ölçüm bulgusu düzeltildiğinde, mümkünse **paylı bir değişmez** olarak
@@ -1211,6 +1212,40 @@ yalnızca dokunuş hızı; 50 karo iyi bir oyuncuda 8–10 s. Değişmez teste
 hız karo başına artar ve kaçan karo koşuyu bitirir. A–C cihazda koşulmadı;
 cihazda ayrıca bakılacak: dokunuş–nota gecikmesi (SoundPool) ve iki parmakla
 art arda dokunuşta ikisinin de sayılması.
+
+### Uçurtma · 2026-09-10
+
+**D — pilot ölçümü** (`./gradlew :games:ucurtma:probe`, 20 uçuş/pilot,
+v0.31.0). Pilot tepki süresinde bir tüm ekrana bakar, ilerideki ilk engel
+kümesinin uçurtmaya en yakın yeterli boşluğunu hedefler, rakibin üstüne
+çıkar; sönümlü kontrolle (0,25 s ileri bakış) salınmaz.
+
+**Bulgu 1 (düzeltildi).** İlk ölçümde uzman pilot bile ortalama 80 m'de
+düşüyordu; ölümlerin çoğu tel ve ip. İki neden: pilotun sönümsüz aç-kapa
+kontrolü 0,4 birimlik salınım yapıyordu (v²/2a) ve yalnızca 0,35 birim
+ileri bakıyordu; tavan hızda tel ekranda belirdiğinde 0,5 s kalıyor, bu
+sürede en çok 0,3 birim dikey yol alınabiliyor. Pilot düzeltildi. Ayrıca
+tavanda uçmak her şeyden kaçıyordu: **yüksek tel** eklendi (y 0,14–0,30,
+üstünden geçilemez). Rakip yatay süzülmesi 0,06–0,18'e indirildi ve telden
+sonra rakip gelmiyor: rakip sola süzülerek önceki öbeğe girer, yüksek telle
+çakışsa kaçış kalmazdı.
+
+| pilot | tepki | ort. m | en az | en çok | ort. skor | çatı | tel | ip |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| acemi | 0,30 s | 735 | 205 | 1328 | 1155 | 1 | 18 | 1 |
+| orta | 0,18 s | 1046 | 556 | 2010 | 1692 | 2 | 17 | 1 |
+| uzman | 0,08 s | 1153 | 560 | 2536 | 1868 | 2 | 18 | 0 |
+
+Ekipman (orta pilot): kuyruk 991 m / 1583 puan, makara 1049 / 1684, cam
+tozu 1079 / 2213 (kesme bonusu 50). Okuma: ölümlerin neredeyse tamamı tel;
+çatı ve ip nadiren. Tel, tavan hızda (10,4 m/s, 1500 m sonrası) ekranda
+0,5 s göründüğünden reaksiyonu belirleyen engel; pilotlar 700–1150 m
+arasında, insan için 300–600 m makul bir ilk hedef. Değişmez teste
+çevrilen: geçilebilirlik (her sütunda ≥ 0,3 birim boşluk, 3 mesafede 12
+tohum), kesme kuralı ve pilotun açılışı geçmesi. A–C cihazda koşulmadı;
+cihazda bakılacak: basılı tutma gecikmesi, ip ve tel çizgilerinin
+kalınlığı (tel öldürücü, görünür olmalı), 360 dp'de menü kartının görev
+listesiyle kayması.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

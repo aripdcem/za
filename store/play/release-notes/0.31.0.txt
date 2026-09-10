@@ -1,0 +1,6 @@
+<tr-TR>
+• Yeni oyun: Uçurtma. Basılı tut yüksel, bırak alçal; çatılar, teller ve rakip uçurtmalar arasında sonsuz uçuş. Rakibin üstünden geç, ipini kes. Görevler ve ekipman; günlük gökyüzü.
+</tr-TR>
+<en-US>
+• New game: Uçurtma. Hold to climb, release to dive; an endless flight between rooftops, wires and rival kites. Pass above a rival to cut its string. Missions and gear; daily sky.
+</en-US>

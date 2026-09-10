@@ -2,6 +2,10 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.31.0 (2026-09-10)
+- Yeni oyun: **Uçurtma** — basılı tut yüksel, bırak alçal; çatılar, bacalar, elektrik telleri (alçak, yüksek, çift) ve rakip uçurtmalar arasında sonsuz uçuş. Uçurtma kavgası kuralı: rakibin üstünden geçince ipini kesersin (bonus), altından geçince senin ipin kesilir. Kurdeleler puan; her 100 m kilometre taşı
+- Görevler ve ekipman: üç görev aynı anda açık (mesafe, kurdele, tel altı, çatı sıyırma, kesme), tamamlanan yerine sıradaki gelir; 2, 5 ve 9 görevde Kuyruk (yavaş alçalma), Makara (güçlü yükseliş) ve Cam tozu (rakip ipine bağışık, kesme bonusu iki kat) açılır. Günlük gökyüzü (3 deneme) ve serbest mod
+
 ## 0.30.0 (2026-09-10)
 - Yeni oyun: **Tuşe** — piyano karoları. Dört şerit, her satırda bir karo; sıradaki karonun şeridine dokun, ezginin bir notası çalar, yanlış şerit koşuyu bitirir. Klasik (50 karo, en kısa süre), Sonsuz (vurulan karo başına hızlanan akış, kaçan karo bitirir) ve Günlük (günün parçası ve şeritleri herkese aynı, 3 deneme). Yedi telifsiz parça: Neşeye Övgü, Für Elise, Türk Marşı, Daha Dün Annemizin, Mutlu Yıllar, Sol Majör Menuet, Greensleeves
 - Notalar uygulamaya ses dosyası olarak konmadı: kısa piyano tonları cihazda sentezlenip önbelleğe yazılıyor (`NoteSynth`, izin gerekmez); ana menüdeki ses düğmesi notaları da kapatıyor. Ana menü rekoru Sonsuz'daki karo sayısı

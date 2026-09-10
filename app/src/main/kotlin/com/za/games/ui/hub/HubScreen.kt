@@ -1052,3 +1052,29 @@ fun TuseArt(modifier: Modifier = Modifier) {
         drawRoundRect(Color(0xFFE879F9), Offset(cellW * 1 + w * 0.02f, cellH * 3 + w * 0.02f), Size(cellW - w * 0.04f, cellH - w * 0.04f), CornerRadius(w * 0.03f, w * 0.03f), style = Stroke(width = w * 0.02f))
     }
 }
+
+@Composable
+fun UcurtmaArt(modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        drawRoundRect(Color(0xFF7DD3FC), size = Size(w, w), cornerRadius = CornerRadius(w * 0.12f, w * 0.12f))
+        drawCircle(Color(0xFFFDE68A), radius = w * 0.09f, center = Offset(w * 0.8f, w * 0.2f))
+        listOf(0.0f to 0.3f, 0.22f to 0.45f, 0.48f to 0.28f, 0.7f to 0.4f, 0.88f to 0.22f).forEach { (x, h) ->
+            drawRect(Color(0xFF9A3412), Offset(w * x, w * (1f - h)), Size(w * 0.2f, w * h))
+        }
+        drawRect(Color(0xFF7F1D1D), Offset(w * 0.3f, w * 0.47f), Size(w * 0.05f, w * 0.08f))
+        drawLine(Color(0xFF0F172A), Offset(w * 0.45f, w * 0.62f), Offset(w * 1f, w * 0.62f), strokeWidth = w * 0.012f)
+        drawLine(Color(0x99334155), Offset(w * 0.48f, w * 0.3f), Offset(w * 0.08f, w * 1f), strokeWidth = w * 0.01f)
+        val p = androidx.compose.ui.graphics.Path().apply {
+            moveTo(w * 0.48f, w * 0.14f)
+            lineTo(w * 0.62f, w * 0.3f)
+            lineTo(w * 0.48f, w * 0.5f)
+            lineTo(w * 0.34f, w * 0.3f)
+            close()
+        }
+        drawPath(p, Color(0xFFEF4444))
+        drawLine(Color(0xFFFDE68A), Offset(w * 0.48f, w * 0.14f), Offset(w * 0.48f, w * 0.5f), strokeWidth = w * 0.012f)
+        drawLine(Color(0xFFFDE68A), Offset(w * 0.34f, w * 0.3f), Offset(w * 0.62f, w * 0.3f), strokeWidth = w * 0.012f)
+        listOf(0.42f to 0.58f, 0.36f to 0.66f, 0.3f to 0.72f).forEach { (x, y) -> drawCircle(Color(0xFFFDE68A), radius = w * 0.025f, center = Offset(w * x, w * y)) }
+    }
+}
