@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -55,6 +56,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -583,20 +585,41 @@ internal fun Chip(label: String, selected: Boolean, modifier: Modifier = Modifie
             fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
             textAlign = TextAlign.Center,
             maxLines = 1,
+            softWrap = false,
+            overflow = TextOverflow.Ellipsis,
             color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = if (compact) 4.dp else 10.dp, vertical = 8.dp),
         )
     }
 }
 
-/** Tür seçimi: Diziliş / Denetim / Satış / Sipariş; dört çip dar ekrana sığsın diye sıkı. */
+/**
+ * Dört tür çipi tek satıra bu genişliğin altında sığmıyor ("Denetim" 360 dp'de
+ * kırpılıyordu). Kart içi genişlik 411 dp'de 299 dp, 360 dp'de 248 dp.
+ */
+internal val KIND_CHIPS_ONE_ROW_MIN = 280.dp
+
+private fun kindLabel(kind: ReyonKind): Int = when (kind) {
+    ReyonKind.PUZZLE -> R.string.reyon_kind_puzzle
+    ReyonKind.AUDIT -> R.string.reyon_kind_audit
+    ReyonKind.SALES -> R.string.reyon_kind_sales
+    ReyonKind.ORDER -> R.string.reyon_kind_order
+}
+
+/** Tür seçimi: Diziliş / Denetim / Satış / Sipariş. Geniş kartta tek sıkı satır, dar kartta iki satır. */
 @Composable
 internal fun KindChips(kind: ReyonKind, onKind: (ReyonKind) -> Unit) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        Chip(stringResource(R.string.reyon_kind_puzzle), kind == ReyonKind.PUZZLE, Modifier.weight(1f), compact = true) { onKind(ReyonKind.PUZZLE) }
-        Chip(stringResource(R.string.reyon_kind_audit), kind == ReyonKind.AUDIT, Modifier.weight(1f), compact = true) { onKind(ReyonKind.AUDIT) }
-        Chip(stringResource(R.string.reyon_kind_sales), kind == ReyonKind.SALES, Modifier.weight(1f), compact = true) { onKind(ReyonKind.SALES) }
-        Chip(stringResource(R.string.reyon_kind_order), kind == ReyonKind.ORDER, Modifier.weight(1f), compact = true) { onKind(ReyonKind.ORDER) }
+    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+        val perRow = if (maxWidth < KIND_CHIPS_ONE_ROW_MIN) 2 else 4
+        Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            for (rowKinds in ReyonKind.entries.chunked(perRow)) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    for (k in rowKinds) {
+                        Chip(stringResource(kindLabel(k)), kind == k, Modifier.weight(1f), compact = perRow == 4) { onKind(k) }
+                    }
+                }
+            }
+        }
     }
 }
 

@@ -6,6 +6,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -14,7 +15,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -41,6 +44,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -240,22 +244,33 @@ fun HoldButton(
     }
 }
 
+/**
+ * Menü, duraklatma ve bitiş kartı. Kabın yüksekliğine sığmazsa içi kayar: 360×640
+ * dp'de Reyon menüsü ekrandan taşıyor, "Başla" düğmesine dokunulamıyordu
+ * (docs/oyun-testi.md, Reyon Sipariş bulgu 1). Yükseklik sınırsızsa (kaydırılabilir
+ * bir ebeveyn içinde) kaydırma eklenmez; aynı yönde iç içe kaydırma izinli değil.
+ * İçeriği kendi kaydıran kartlar (tema listesi, dükkân) [scrollable] = false verir.
+ */
 @Composable
-fun OverlayCard(content: @Composable () -> Unit) {
-    Surface(
-        shape = RoundedCornerShape(24.dp),
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.96f),
-        // Saydam yüzey rengi şemadaki hiçbir renkle eşleşmediğinden içerik rengi
-        // kendiliğinden türetilemez; başlıklar için açıkça verilir.
-        contentColor = MaterialTheme.colorScheme.onSurface,
-        modifier = Modifier.padding(16.dp),
-    ) {
-        Column(
-            modifier = Modifier.padding(horizontal = 28.dp, vertical = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+fun OverlayCard(scrollable: Boolean = true, content: @Composable () -> Unit) {
+    BoxWithConstraints(modifier = Modifier.padding(16.dp)) {
+        val bounded = scrollable && maxHeight != Dp.Infinity
+        Surface(
+            shape = RoundedCornerShape(24.dp),
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.96f),
+            // Saydam yüzey rengi şemadaki hiçbir renkle eşleşmediğinden içerik rengi
+            // kendiliğinden türetilemez; başlıklar için açıkça verilir.
+            contentColor = MaterialTheme.colorScheme.onSurface,
         ) {
-            content()
+            Column(
+                modifier = Modifier
+                    .then(if (bounded) Modifier.verticalScroll(rememberScrollState()) else Modifier)
+                    .padding(horizontal = 28.dp, vertical = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                content()
+            }
         }
     }
 }

@@ -562,7 +562,7 @@
     <!-- Reyon -->
     <string name="game_reyon">Reyon</string>
     <string name="game_reyon_tagline">Planogram puzzle: deduce the one correct shelf layout from the brief</string>
-    <string name="reyon_intro">A shelf unit, some products and a planogram brief. Tap a product, then tap a slot on the shelf; the block lands there. Long-press a product to send it back to the tray. Each rule in the brief turns ✓ when it holds; together the rules lead to exactly one layout, no guessing needed.</string>
+    <string name="reyon_intro">Tap a product, then tap a slot on the shelf; long-press to send it back to the tray. Each brief rule turns ✓ when it holds; the rules lead to a single layout, no guessing.</string>
     <string name="reyon_level_desc_fmt">%1$d shelves × %2$d slots · %3$d–%4$d products</string>
     <string name="reyon_daily_desc">Everyone arranges the same shelf today; your time is recorded.</string>
     <string name="reyon_daily_done_fmt">Solved today: %1$s · %2$d hints</string>
@@ -653,7 +653,7 @@
     <!-- Reyon: Audit -->
     <string name="reyon_kind_puzzle">Arrange</string>
     <string name="reyon_kind_audit">Audit</string>
-    <string name="reyon_audit_intro">Plan on top, the real shelf below. The shelf deviates from the plan in a few places: a swap, an empty slot, a foreign product, a wrong brand or size, a spill into the next slot. Tap the deviations; a wrong tap counts as a mistake.</string>
+    <string name="reyon_audit_intro">Plan on top, the real shelf below. Tap the slots where the shelf deviates from the plan: a swap, an empty slot, a foreign product, a wrong brand or size, a spill. A wrong tap counts as a mistake.</string>
     <string name="reyon_audit_level_desc_fmt">%1$d shelves × %2$d slots · %3$d deviations</string>
     <string name="reyon_audit_daily_desc">Everyone audits the same shelf today; your time and mistakes are recorded.</string>
     <string name="reyon_audit_daily_done_fmt">Audited today: %1$s · %2$d mistakes</string>
@@ -681,7 +681,7 @@
     <string name="reyon_dev_spill_fmt">Spill: %1$s spills into %2$s</string>
     <!-- Reyon: Sales -->
     <string name="reyon_kind_sales">Sales</string>
-    <string name="reyon_sales_intro">Arrange the products as you like; points come from the sales rules: eye level sells, heavy items go low, high-margin items go to eye level, complementary products side by side, cleaning away from food, category and brand blocks. The target is the best layout the optimizer found; reaching it earns three stars, beating it earns applause.</string>
+    <string name="reyon_sales_intro">Arrange the products as you like; points come from the sales rules (eye level, heavy items low, complements side by side, cleaning away from food, category and brand blocks). The target is the best layout the optimizer found; reaching it earns three stars.</string>
     <string name="reyon_sales_daily_desc">Everyone arranges the same products today; your best score of the day is recorded.</string>
     <string name="reyon_sales_daily_done_fmt">Today: %1$d / %2$d points · %3$s</string>
     <string name="reyon_sales_free_desc">Random product set; the percentage of the target counts as a record.</string>
@@ -718,7 +718,7 @@
     <string name="reyon_sales_back_to_result">Result</string>
     <string name="reyon_sales_board_desc_fmt">Sales shelf %1$d shelves × %2$d slots, %3$d products unplaced, %4$d points</string>
     <string name="reyon_kind_order">Ordering</string>
-    <string name="reyon_order_intro">The shelf plan is set; your job is stock. Each day decide how many cases to order per product: orders arrive the next morning (heavy items take two days on Hard) and anything that does not fit the shelf is returned. Sales earn margin, every unit left on the shelf at night pays a holding fee, and expired units are waste. You see demand as a range; the target is the profit of an expert working from the same forecasts.</string>
+    <string name="reyon_order_intro">The shelf plan is set; your job is stock. Each day decide how many cases to order per product: orders arrive the next morning, what does not fit is returned, stock left at night pays holding, expired units are waste. The target is the profit of an expert seeing the same forecasts.</string>
     <string name="reyon_order_level_desc_fmt">%1$d shelves × %2$d slots · %3$d days · %4$d promotions</string>
     <string name="reyon_order_daily_desc">Everyone runs the same week today; your best profit of the day is recorded.</string>
     <string name="reyon_order_daily_done_fmt">Today: %1$d / %2$d profit · %3$s</string>

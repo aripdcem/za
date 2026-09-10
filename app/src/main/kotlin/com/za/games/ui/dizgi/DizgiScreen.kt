@@ -852,7 +852,7 @@ private fun RackRow(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun JokerPicker(onPick: (Char) -> Unit, onDismiss: () -> Unit) {
-    OverlayCard {
+    OverlayCard(scrollable = false) {
         Text(
             text = stringResource(R.string.dizgi_joker_pick),
             style = MaterialTheme.typography.titleMedium,

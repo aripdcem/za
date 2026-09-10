@@ -224,6 +224,12 @@ doğrular. Palet değiştiğinde okunabilirlik sessizce bozulamaz.
 
 ### E2 · Etiketler (cihaz)
 
+> Sıfır sınırlı düğümler: `erisim` çıktısındaki "sınırı sıfır dokunulabilir
+> düğüm" satırı 0 değilse ekran okuyucu o düğmelere dokunarak inemez; gizli
+> sistem çubuğunun bölgesine çizilen öğeler bazı cihazlarda böyle gelir.
+> Uygulama TalkBack açıkken çubukları gizlemez; ölçümü TalkBack açıkken de
+> yineleyin.
+
 ```bash
 python3 tools/cihaz_testi.py erisim
 ```
@@ -385,7 +391,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | ✅ mevcut testlerle | 2026-09-09 |
 | Viraj | ✅ | **60 · 3 · %100 · 34 ms** | — (tuşla) | ✅ kusur yok | 2026-09-09 |
 | Filo | ✅ | **60 · 1 · %81 · 31 ms** | ✅ düzeltildi | ✅ düzeltildi | 2026-09-09 |
-| Reyon | ✅ | olay güdümlü (1 · 0) | — (dokun-yerleştir) | ✅ ölçüldü (diziliş + denetim + satış + sipariş) | 2026-09-10 |
+| Reyon | ✅ | olay güdümlü (boşta 0) · kaydırmada **60 · 0 · %6,8 · 20 ms** | ✅ adımlayıcı 48×44 dp | ✅ ölçüldü (diziliş + denetim + satış + sipariş) | 2026-09-10 |
 
 **E · erişilebilirlik:** tüm oyunlarda etiketsiz dokunulabilir öğe kalmadı
 (tek bulgu Kıskaç'ın kolay mod anahtarıydı, düzeltildi). Kontrast CI'da
@@ -881,7 +887,8 @@ zorluk eğrisi yorumu için yeterli değil. Kuyu'nun ilerleme ölçümü açık 
 ### Reyon · 2026-09-09
 
 **D — adillik ve zorluk** (`./gradlew :games:reyon:probe`, 40 tohum/zorluk).
-A–C cihazda henüz koşulmadı (v0.25.0 ile birlikte).
+Diziliş için A–C cihazda henüz koşulmadı (v0.25.0 ile birlikte);
+Sipariş'in cihaz koşumu aşağıda.
 
 Üretici tek çözümü (`ReyonSolver.count == 1`) ve tahminsizliği (oyuncunun
 gördüğü bilgiyle çalışan `ReyonDeducer` sonuna kadar gidiyor) üretim anında
@@ -970,7 +977,8 @@ katsayıda bile sığmazsa iki tuval birlikte daraltılıp ortalanıyor;
 `auditLayout`) ve plana dokununca büyütülmüş plan açılıyor. 360 dp'de Zor
 planında en dar durum yazı alanı 45 dp, ad bölgesi 19 dp, 8 sp; 35 adın hepsi
 (TR ve EN) bu alanda kırpılmadan sığıyor (`ReyonBlockLabelTest`, gerçek yazı
-ölçümüyle). Cihazda doğrulama (A) yerel oturuma kaldı.
+ölçümüyle). Cihazda doğrulama Sipariş koşumunda yapıldı: blok adları 360 dp'de
+kırpılmıyor, ama menü kartının kendisi ekrandan taşıyor (aşağıda, bulgu 1).
 
 **D — Sipariş modu** (`orderReport`, 40 tohum/zorluk, v0.28.0). Siparişte
 adillik sorusu "hedef dürüst mü ve ulaşılabilir mi" diye sorulur. Hedef,
@@ -997,7 +1005,108 @@ fire sıfıra yakın (bozulan ürünler yalnızca fazla siparişi cezalandırır
 bu yüzden raf ömürleri 2–4 güne çekildi). Kayıp satış %4–8: tahmin
 aralığı ±%25–35 iken bir kısım talep kaçınılmaz olarak karşılanamıyor,
 hizmet düzeyi %92–95. Üretim süresi ölçülemeyecek kadar kısa (uzman
-simülasyonu dahil 1 ms altı). Cihazda doğrulama (A–C) yerel oturuma kaldı.
+simülasyonu dahil 1 ms altı). Cihaz koşumu (A–C) aşağıda.
+
+### Reyon · Sipariş cihazda · 2026-09-10
+
+A–C aşamaları SM-A515F'te, sürüm derlemesiyle ve **Serbest** modda koşuldu.
+Sürücü, `uiautomator` dökümünden okuyup dokunan yerel bir betik: siparişleri
+oyuncunun gördüğü bilgiyle (stok, tahmin aralığı, koli boyu) veren naif
+politika — "yarının tahmin ortasını karşıla, rafa sığdır".
+
+**A — koşum.** Orta zorlukta iki hafta baştan sona oynandı. İlk koşumda politika
+yalnızca ekranda duran satırları gördüğü için listenin üstündeki ürünler hiç
+sipariş edilmedi: 357/675 kâr (**%52**), hizmet düzeyi %45. İkincisinde liste
+her günün başında başa sarıldı ve on ürünün hepsi karşılandı: **731/797 kâr
+(%91)**, ★★☆, stok devri 16,5 (uzman 13,1), hizmet %83 (uzman 93). Yani hedef
+cihazda da ulaşılabilir bir çıta; ölçüm koşumunun "naif politika uzmanla başa
+baş" sonucu parmakla da doğrulanıyor ve kaybın tamamı **taranmayan raftan**
+geliyor, karardan değil.
+
+Gün kapanışı kartı, hafta sonucu kartı, rekor yazımı ("Yeni rekor!"), geri
+tuşuyla hub'a çıkış, arka plana alıp geri dönme ve **süreç ölümü**
+(`am force-stop`) sınandı: hafta, gün ve bekleyen koliler üçünde de aynen geri
+yüklendi. `logcat` `AndroidRuntime:E` boş, çökme yok (kalan tek uyarı
+`OnBackInvokedCallback` etkin değil bilgisi; öngörülü geri kullanılmıyor).
+Sipariş'in günlük modunda deneme hakkı yoktur — günün en iyi kârı kaydedilir —
+yani ölçüm hak tüketmez.
+
+**A — bulgu 1: 360 dp'de menü kartı ekrandan taşıyor (engelleyici).**
+`wm size 1080x1920` + `wm density 480` (sw360dp, uygulamaya 562 dp yükseklik)
+ile Reyon menü kartının altı ekranın dışında kalıyor: zorluk açıklaması, mod
+bilgisi, **"Haftaya başla"** ve "Menüye dön" ne dökümde görünüyor ne
+dokunulabiliyor. Kart kaydırılamadığı için mod **hiç başlatılamıyor**. Dört
+türün hepsinde aynı (`OverlayCard`'ın yükseklik bütçesi yok, içerik
+kaydırılmıyor); Sipariş en kötüsü, brifi 360 dp'de dokuz satır. Oyun ekranının
+kendisi 360 dp'de sağlam: raf tuvali, gün başlığı (iki satıra sarıyor), sipariş
+listesi ve alt eylem satırı sığıyor — bir buçuk satır görünüp liste kayıyor.
+
+**A — bulgu 2: "Denetim" çipi 360 dp'de kırpılıyor.** Dört tür çipi satırı eşit
+paylaştığı için 360 dp'de ikinci çip **"Deneti"** diye kesiliyor, üç nokta da
+konmuyor (`KindChips`, `compact = true`). 411 dp'de dördü de tam sığıyor.
+
+**A — bulgu 3: alt eylem satırı erişilebilirlik ağacında sınırsız.** "İpucu" ve
+"Günü kapat" düğümleri ağaçta var ama sınırları `[0,0][0,0]`. Sebep: uygulama
+sistem çubuklarını gizliyor (`hide(systemBars())`) ve 2400 px'in tamamına
+çiziyor, oysa pencerenin bildirilen uygulama sınırı **2186 px**'te bitiyor (üç
+düğmeli gezinme şeridi). 2186'nın altına düşen her şeyin sınırı sıfırlanıyor:
+kural metni tam orada kırpılıyor, eylem satırı bütünüyle altta kalıyor. Sonuç,
+TalkBack'in dokunarak keşfi bu iki düğmeye inemez ve
+`tools/cihaz_testi.py erisim` onları **sessizce atlar** — sıfır sınırlı
+düğümleri elediği için bu ekran "10 dokunulabilir öğe, etiketsiz 0" diye temiz
+görünüyor. Gözle ve parmakla düğmeler çalışıyor (y = 2306'ya dokunmak günü
+kapatıyor); sorun ölçümün ve ekran okuyucunun onları görmemesi.
+
+**B — kare hızı** (sürüm derlemesi).
+
+| Pencere | Kare | Okuma |
+| --- | --- | --- |
+| boşta 15 s, dokunmadan | **0** | olay güdümlü; beklenen sonuç |
+| liste kaydırma, 10 × 700 ms sürükleme | 468 / 8,0 s | pencere ortalaması 58,5 kare/s |
+| adımlayıcıya 16 durum değiştiren dokunuş | 76 / 1,5 s | dokunuş başına ~4,8 kare |
+
+Kaydırma penceresinde `framestats`: kesintisiz çizim aralığı ortanca **16,6 ms
+= 60,1 kare/s**, kaçan vsync **0**, jank %6,8, p50 20 ms. Pencere ortalamasının
+58,5'te kalması kare düşmesi değil, sürüklemeler arasındaki çizim boşlukları
+(119 aralıktan 4'ü 25 ms üstü ve hepsi sürükleme sınırında). Adımlayıcıda p50
+22 ms, kaçan vsync 0; dokunuş başına birkaç kare düğme dalgacığı.
+
+**C — giriş kalibrasyonu.** Sipariş'te sürükleme yok; kalibre edilecek şey koli
+adımlayıcısının **dokunma hedefi**. Çizilen düğüm 44,2×32,0 dp (semantik sınır
+= çizilen sınır, E3'teki uyarı). Gerçek dokunma bandı, düğüm merkezinden dp
+kaydırarak dokunup koli sayacına bakarak ölçüldü (her denemede satır sıfırlanıp
+tek dokunuş):
+
+| Eksen | ±20 dp | ±22 dp | ±24 dp | ±26 dp |
+| --- | --- | --- | --- | --- |
+| yatay | ✓ | ✓ | ✓ | — |
+| dikey, yukarı | ✓ | ✓ | ✓ | — |
+| dikey, aşağı | ✓ | — | — | — |
+
+Etkin dokunma alanı **48 dp geniş × 44 dp yüksek** (24 dp yukarı, 20 dp aşağı).
+Yatayda Material'ın 48 dp tabanı tutuyor; dikeyde 4 dp eksik, çünkü büyütme
+satır kartının alt kenarında kesiliyor — düğüm kartın alt kenarının yalnızca
+6 dp üstünde duruyor. Bu yoğunlukta 48 dp = 7,6 mm, 44 dp = 7,0 mm.
+
+Işkalayan dokunuş komşu ürünü oynatmıyor: bandın dışına dokunmak hiçbir sayacı
+değiştirmedi, yani hatanın bedeli yalnızca bir kez daha dokunmak.
+
+Hızlı dokunuş sadakati: arka arkaya (beklemesiz) üç dokunuş üç kez denendi, her
+seferinde 0→3 koli ve 3→0 koli — düşen dokunuş yok.
+
+**Düzeltmeler (v0.28.1).** Bulgu 1: `OverlayCard` kabın yüksekliğine sığmazsa
+içi kayıyor (yükseklik sınırsızsa kaydırma eklenmez); dört Reyon brifi
+kısaltıldı. Robolectric 360×640'ta Sipariş menüsünde "Haftaya başla" ve "Menüye
+dön" kaydırılıp görünür alana geliyor (`ReyonAuditLayoutTest`). Bulgu 2:
+`KindChips` kart içi genişlik 280 dp'nin altındaysa (411 dp'de 299, 360 dp'de 248) 2×2 diziliyor, çip metni
+sığmazsa üç nokta; 411 dp'de tek satır korunuyor. Bulgu 3: dokunarak keşif
+açıkken uygulama sistem çubuklarını gizlemiyor (`MainActivity`, dinleyiciyle
+canlı), içerik çubukların üstünde kalıyor; `cihaz_testi.py erisim` sıfır
+sınırlı dokunulabilir düğümleri sayıp listeliyor ("sınırı sıfır … 0"
+beklenir). C: sipariş satırının alt payı 10 dp, adımlayıcının 48 dp dokunma
+alanı kartın kırpma sınırında kesilmiyor. Cihazda doğrulanacaklar: TalkBack
+açıkken `erisim` çıktısında sıfır sınırlı düğüm 0; adımlayıcı dikey bandı
+±24 dp; 360 dp'de menü kaydırılarak başlıyor.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

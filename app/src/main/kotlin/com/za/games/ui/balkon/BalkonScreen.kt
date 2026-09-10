@@ -428,7 +428,7 @@ private fun ThemeCard(
     onStart: () -> Unit,
     onExit: () -> Unit,
 ) {
-    OverlayCard {
+    OverlayCard(scrollable = false) {
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,

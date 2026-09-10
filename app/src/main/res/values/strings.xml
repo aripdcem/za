@@ -562,7 +562,7 @@
     <!-- Reyon -->
     <string name="game_reyon">Reyon</string>
     <string name="game_reyon_tagline">Planogram bulmacası: brifteki kurallardan rafın tek doğru dizilişini çıkar</string>
-    <string name="reyon_intro">Bir raf ünitesi, ürünler ve bir planogram brifi var. Ürüne dokun, sonra rafta bir göze dokun; blok oraya oturur. Uzun basınca ürün tepsiye döner. Brifteki her kural tutunca ✓ olur; kuralların tümü tek bir dizilişe götürür, tahmin gerekmez.</string>
+    <string name="reyon_intro">Ürüne dokun, sonra rafta bir göze dokun; uzun basınca ürün tepsiye döner. Brifteki her kural tutunca ✓ olur; kurallar tek bir dizilişe götürür, tahmin gerekmez.</string>
     <string name="reyon_level_desc_fmt">%1$d raf × %2$d göz · %3$d–%4$d ürün</string>
     <string name="reyon_daily_desc">Herkes bugün aynı rafı dizer; süren kaydedilir.</string>
     <string name="reyon_daily_done_fmt">Bugün çözüldü: %1$s · %2$d ipucu</string>
@@ -653,7 +653,7 @@
     <!-- Reyon: Denetim -->
     <string name="reyon_kind_puzzle">Diziliş</string>
     <string name="reyon_kind_audit">Denetim</string>
-    <string name="reyon_audit_intro">Üstte plan, altta gerçek raf. Raf plandan birkaç yerde sapıyor: yer değişimi, boş göz, yabancı ürün, yanlış marka ya da boy, komşu göze taşma. Sapmalara dokun; yanlış dokunuş hata sayılır.</string>
+    <string name="reyon_audit_intro">Üstte plan, altta gerçek raf. Rafın plandan saptığı gözlere dokun: yer değişimi, boş göz, yabancı ürün, yanlış marka ya da boy, taşma. Yanlış dokunuş hata sayılır.</string>
     <string name="reyon_audit_level_desc_fmt">%1$d raf × %2$d göz · %3$d sapma</string>
     <string name="reyon_audit_daily_desc">Herkes bugün aynı rafı denetler; süren ve hataların kaydedilir.</string>
     <string name="reyon_audit_daily_done_fmt">Bugün denetlendi: %1$s · %2$d hata</string>
@@ -681,7 +681,7 @@
     <string name="reyon_dev_spill_fmt">Taşma: %1$s, %2$s gözüne taşmış</string>
     <!-- Reyon: Satış -->
     <string name="reyon_kind_sales">Satış</string>
-    <string name="reyon_sales_intro">Ürünleri istediğin gibi diz; puan satış kurallarından gelir: göz hizası satar, ağırlar alta, yüksek marjlılar göz hizasına, tamamlayıcı ürünler yan yana, temizlik gıdadan uzak, kategori ve marka blokları. Hedef, iyileştiricinin bulduğu en iyi diziliş; hedefe ulaşan üç yıldız alır, geçen tebrik.</string>
+    <string name="reyon_sales_intro">Ürünleri istediğin gibi diz; puan satış kurallarından gelir (göz hizası, ağırlar alta, tamamlayıcılar yan yana, temizlik gıdadan uzak, kategori ve marka blokları). Hedef iyileştiricinin en iyi dizilişi; hedefe ulaşan üç yıldız alır.</string>
     <string name="reyon_sales_daily_desc">Herkes bugün aynı ürünleri dizer; günün en iyi puanın kaydedilir.</string>
     <string name="reyon_sales_daily_done_fmt">Bugün: %1$d / %2$d puan · %3$s</string>
     <string name="reyon_sales_free_desc">Rastgele ürün seti; hedefin yüzdesi rekor sayılır.</string>
@@ -718,7 +718,7 @@
     <string name="reyon_sales_back_to_result">Sonuç</string>
     <string name="reyon_sales_board_desc_fmt">Satış rafı %1$d raf × %2$d göz, %3$d ürün yerleşmedi, %4$d puan</string>
     <string name="reyon_kind_order">Sipariş</string>
-    <string name="reyon_order_intro">Raf planı hazır; işin stok. Her gün ürün başına kaç koli isteyeceğine karar ver: siparişler ertesi sabah gelir (ağırlar Zor\'da iki gün sonra), rafa sığmayan iade olur. Satış marj kazandırır, akşam rafta kalan her birim bekleme bedeli öder, raf ömrü dolan fire olur. Talebi aralık olarak görürsün; hedef, aynı tahminlerle çalışan uzmanın kârı.</string>
+    <string name="reyon_order_intro">Raf planı hazır; işin stok. Her gün ürün başına kaç koli isteyeceğine karar ver: sipariş ertesi sabah gelir, rafa sığmayan iade olur, akşam kalan stok bekleme öder, raf ömrü dolan fire olur. Hedef, aynı tahminleri gören uzmanın kârı.</string>
     <string name="reyon_order_level_desc_fmt">%1$d raf × %2$d göz · %3$d gün · %4$d promosyon</string>
     <string name="reyon_order_daily_desc">Herkes bugün aynı haftayı yönetir; günün en iyi kârın kaydedilir.</string>
     <string name="reyon_order_daily_done_fmt">Bugün: %1$d / %2$d kâr · %3$s</string>
