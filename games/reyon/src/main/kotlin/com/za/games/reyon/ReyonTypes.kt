@@ -108,6 +108,8 @@ class Product(
     val premium: Boolean,
     /** Ağır: alt raf kuralına tabi. */
     val heavy: Boolean,
+    /** Talep (1–3): satış modunda konum puanının çarpanı. */
+    val demand: Int = 2,
 ) {
     val category: Category get() = kind.category
     override fun toString(): String = "${kind.name}#$id(${brand.name},b$size,f$facings${if (premium) ",★" else ""}${if (heavy) ",ağır" else ""})"

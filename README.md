@@ -247,12 +247,22 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   komşu göze taşma; ince sapmalar (marka/boy) yalnızca üst zorluklarda. Sapmalara dokunulur, yanlış dokunuş hata
   sayılır; bulunanlar açıklamasıyla listelenir. Üretici sapmaları ayrık tutar ve plan ile rafın **yalnızca** sapma
   gözlerinde ayrıştığını doğrular (gizli fark yok, sahte fark yok). Süre, hata ve ipucu; günlük raf, en iyi süre
-- Motor `games/reyon`: `ReyonAuditGenerator`/`ReyonAuditState` (sapma üretimi ve doğrulama, dokunma, ipucu, kayıt);
+- **Satış modu** (açık uçlu diziliş): aynı ürün seti, brif yok; puan beş satış kuralından gelir ve oyuncuya aynen
+  anlatılır: konum (talep × yüz × raf çarpanı; göz hizası ×3, alt ×1, ▼ ağır yalnız altta ×3, ★ yalnız göz hizasında
+  ×4), tamamlayıcı komşuluk (cips–sos gibi 20 çift; yan yana +6, üst üste +3), çakışma (temizlik gıdanın yanında
+  −8), kategori bloğu (+4), marka bloğu (yan yana +3, üst üste +3). Hedef, tavlamalı yerel aramanın (eşit genişlik
+  takası, raf içi komşu takası, raf takası, ürün↔eşit genişlikli koşu takası; 4 yeniden başlatma) bulduğu en iyi
+  puandır; ≥ hedef 3 yıldız, ≥ %90 2, ≥ %75 1. Canlı puan ve kural dökümü, seçili ürünün katkısı, bloklarda puan
+  rozeti; tamamlayınca hedef dizilişi görme ve düzenlemeye dönme; günlük ürün seti (günün en iyi puanı), serbest modda
+  hedef yüzdesi rekoru
+- Motor `games/reyon`: `SalesRules`/`SalesScorer`/`SalesOptimizer`/`ReyonSalesState` (puan tabloları, kısmi
+  puanlama, iyileştirici, satış durumu); `ReyonAuditGenerator`/`ReyonAuditState` (sapma üretimi ve doğrulama, dokunma, ipucu, kayıt);
   `ReyonGenerator` (düzen örnekleme, aday ipuçları, seçim/küçültme, iş
   sayaçları), `Propagator`/`ReyonSolver`/`ReyonDeducer` (kısıt yayılımı, geri izleme, çıkarım izi), `ReyonState`
-  (yerleştirme, geri alma, durum, ipucu, kayıt); 34 test: kural değerlendirme, kaba kuvvetle çapraz doğrulama,
+  (yerleştirme, geri alma, durum, ipucu, kayıt); 39 test: kural değerlendirme, kaba kuvvetle çapraz doğrulama,
   çözümü düşürmeyen yayılım, determinizm, tek çözüm, tahminsizlik, brif uzunluğu, üretim bütçesi, denetim
-  değişmezleri (ayrık ve görünür sapmalar, tür kapsamı, dokunma mekaniği); `ReyonBalanceProbe`
+  değişmezleri (ayrık ve görünür sapmalar, tür kapsamı, dokunma mekaniği), satış puanlaması (elle hesaplı
+  örnek), hedef ≥ taban ve geçerli tam doluluk, iyileştirici bütçesi; `ReyonBalanceProbe`
 
 ### Vergici ve Toplam Kapma (`games/sayi`)
 - **Vergici** (Taxman): 1–N tahtası; böleni kalmış bir sayıyı alırsın, vergici o sayının tahtadaki tüm bölenlerini

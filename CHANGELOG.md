@@ -2,6 +2,9 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.27.0 (2026-09-10)
+- Reyon: Satış modu. Ürünleri serbestçe diz; puan konum (göz hizası, ağırlar alta, yüksek marj), tamamlayıcı komşuluk, çakışma, kategori ve marka bloğu kurallarından gelir; hedef tavlamalı iyileştiricinin bulduğu en iyi diziliş, yıldızlar hedefe göre; canlı puan dökümü, hedef dizilişi görme, günlük ürün seti, en iyi puan kaydı
+
 ## 0.26.0 (2026-09-10)
 - Reyon: Denetim modu. Üstte plan, altta gerçek raf; yer değişimi, boş göz, yabancı ürün, yanlış marka/boy ve taşma sapmalarına dokunarak bul; süre, hata ve ipucu; günlük ve serbest, üç zorluk
 

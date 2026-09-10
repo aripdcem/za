@@ -8,6 +8,7 @@ import com.za.games.platform.ShareDraw
 import com.za.games.platform.drawCentered
 import com.za.games.reyon.Brand
 import com.za.games.reyon.ReyonAuditState
+import com.za.games.reyon.ReyonSalesState
 import com.za.games.reyon.ReyonState
 import com.za.games.reyon.ShelfItem
 
@@ -31,6 +32,13 @@ internal fun auditPainter(state: ReyonAuditState, res: Resources): (Canvas, Rect
     val audit = state.audit
     val rings = audit.deviations.indices.filter { state.isFound(it) }.map { audit.deviations[it].slotMask }
     return shelfPainter(audit.items, audit.rows, audit.cols, res, rings)
+}
+
+/** Satış paylaşımı: oyuncunun dizilişi. */
+internal fun salesPainter(state: ReyonSalesState, res: Resources): (Canvas, RectF) -> Unit {
+    val sales = state.sales
+    val items = sales.products.mapNotNull { p -> state.placement(p.id)?.let { ShelfItem(p, it.row, it.col, p.facings) } }
+    return shelfPainter(items, sales.rows, sales.cols, res, emptyList())
 }
 
 private fun shelfPainter(items: List<ShelfItem>, rows: Int, cols: Int, res: Resources, rings: List<Int>): (Canvas, RectF) -> Unit = { canvas, rect ->

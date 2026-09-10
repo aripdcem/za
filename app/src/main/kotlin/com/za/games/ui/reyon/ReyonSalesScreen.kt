@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,7 +19,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,7 +33,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -44,6 +41,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -53,6 +52,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
@@ -65,78 +65,34 @@ import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
 import com.za.games.platform.ShareContent
-import com.za.games.reyon.ClueStatus
-import com.za.games.reyon.ReyonHint
 import com.za.games.reyon.ReyonLevel
-import com.za.games.reyon.ReyonState
-import com.za.games.reyon.Rules
+import com.za.games.reyon.ReyonSalesState
+import com.za.games.reyon.SalesRule
+import com.za.games.reyon.SalesScore
 import com.za.games.ui.common.GameTopBar
 import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.ShareButton
-import com.za.games.ui.common.formatTime
+import com.za.games.ui.common.formatScore
 import com.za.games.ui.common.modeShareLabel
 
-/**
- * Reyon: iki tür, tek ekran. Diziliş (planogram bulmacası) ve Denetim
- * (uyum sapmalarını bulma). Rekor = çözülen bulmaca + tamamlanan denetim.
- */
-@Composable
-fun ReyonScreen(
-    highScore: Long,
-    onScore: (Long) -> Unit,
-    onExit: () -> Unit,
-    viewModel: ReyonViewModel = viewModel(),
-) {
-    val kind by viewModel.kind.collectAsStateWithLifecycle()
-    val baseline = remember { highScore }
-    var solvedSession by remember { mutableIntStateOf(0) }
-    val latestOnScore by rememberUpdatedState(onScore)
-    val onCompleted = {
-        solvedSession++
-        latestOnScore(baseline + solvedSession)
-    }
-    if (kind == ReyonKind.SALES) {
-        ReyonSalesContent(
-            solved = baseline + solvedSession,
-            onCompleted = onCompleted,
-            onKind = viewModel::setKind,
-            onExit = onExit,
-        )
-    } else if (kind == ReyonKind.AUDIT) {
-        ReyonAuditContent(
-            solved = baseline + solvedSession,
-            onCompleted = onCompleted,
-            onKind = viewModel::setKind,
-            onExit = onExit,
-        )
-    } else {
-        ReyonPuzzleContent(
-            viewModel = viewModel,
-            solved = baseline + solvedSession,
-            onCompleted = onCompleted,
-            onKind = viewModel::setKind,
-            onExit = onExit,
-        )
-    }
-}
+internal fun starsText(stars: Int): String = "★".repeat(stars) + "☆".repeat(3 - stars)
 
+/** Satış modu: serbest diziliş, canlı puan, hedefe göre yıldız. */
 @Composable
-private fun ReyonPuzzleContent(
-    viewModel: ReyonViewModel,
+internal fun ReyonSalesContent(
     solved: Long,
     onCompleted: () -> Unit,
     onKind: (ReyonKind) -> Unit,
     onExit: () -> Unit,
+    viewModel: ReyonSalesViewModel = viewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val version by viewModel.version.collectAsStateWithLifecycle()
     val generating by viewModel.generating.collectAsStateWithLifecycle()
-    val elapsed by viewModel.elapsed.collectAsStateWithLifecycle()
     val selected by viewModel.selected.collectAsStateWithLifecycle()
-    val highlightClue by viewModel.highlightClue.collectAsStateWithLifecycle()
-    val lastHint by viewModel.lastHint.collectAsStateWithLifecycle()
     val result by viewModel.result.collectAsStateWithLifecycle()
+    val review by viewModel.review.collectAsStateWithLifecycle()
     val level by viewModel.level.collectAsStateWithLifecycle()
     val mode by viewModel.mode.collectAsStateWithLifecycle()
     val records by viewModel.records.collectAsStateWithLifecycle()
@@ -144,11 +100,10 @@ private fun ReyonPuzzleContent(
     val sound = LocalZaSound.current
     val res = LocalContext.current.resources
 
-    // Aynı çözüm ekran yeniden kurulunca (döndürme) ikinci kez sayılmasın.
     var countedSeed by rememberSaveable { mutableLongStateOf(Long.MIN_VALUE) }
     val latestCompleted by rememberUpdatedState(onCompleted)
     LaunchedEffect(result) {
-        val seed = state?.puzzle?.seed ?: return@LaunchedEffect
+        val seed = state?.sales?.seed ?: return@LaunchedEffect
         if (result != null && seed != countedSeed) {
             countedSeed = seed
             latestCompleted()
@@ -157,14 +112,14 @@ private fun ReyonPuzzleContent(
         }
     }
     LifecycleResumeEffect(Unit) {
-        viewModel.setPaused(false)
-        onPauseOrDispose { viewModel.setPaused(true) }
+        onPauseOrDispose { viewModel.persistNow() }
     }
     BackHandler { onExit() }
 
     val st = state
     @Suppress("UNUSED_VARIABLE")
     val tick = version
+    val score = remember(st, version) { st?.score() }
 
     Column(
         modifier = Modifier
@@ -187,14 +142,14 @@ private fun ReyonPuzzleContent(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             ScoreCard(
-                label = stringResource(R.string.time_label),
-                value = formatTime(elapsed),
+                label = stringResource(R.string.reyon_sales_score_label),
+                value = score?.total?.let { formatScore(it.toLong()) } ?: "—",
                 modifier = Modifier.weight(1f),
                 highlight = true,
             )
             ScoreCard(
-                label = stringResource(R.string.difficulty_label),
-                value = st?.let { ReyonText.level(res, it.puzzle.level) } ?: "—",
+                label = stringResource(R.string.reyon_sales_target_label),
+                value = st?.sales?.target?.let { formatScore(it.toLong()) } ?: "—",
                 modifier = Modifier.weight(1f),
             )
             ScoreCard(
@@ -211,24 +166,15 @@ private fun ReyonPuzzleContent(
                 .padding(horizontal = 12.dp, vertical = 6.dp),
             contentAlignment = Alignment.Center,
         ) {
-            if (st != null) {
-                val highlighted = remember(st, highlightClue, version) {
-                    if (highlightClue in st.puzzle.brief.indices) Rules.involved(st.puzzle.brief[highlightClue], st.puzzle.products).toSet() else emptySet()
-                }
-                val violated = remember(st, version) {
-                    st.puzzle.brief.filter { st.status(it) == ClueStatus.VIOLATED }
-                        .flatMap { Rules.involved(it, st.puzzle.products).toList() }.toSet()
-                }
-                val hinted = (lastHint as? ReyonHint.Place)?.product ?: -1
-                val wrongHint = (lastHint as? ReyonHint.Wrong)?.product ?: -1
+            if (st != null && score != null) {
+                val showTarget = result != null && review == SalesReview.TARGET
                 Column(modifier = Modifier.fillMaxSize()) {
-                    ShelfCanvas(
+                    SalesCanvas(
                         state = st,
+                        score = score,
                         version = version,
                         selected = selected,
-                        highlighted = highlighted,
-                        violated = violated,
-                        hinted = hinted,
+                        showTarget = showTarget,
                         onTap = { row, col ->
                             if (viewModel.tapSlot(row, col)) {
                                 haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
@@ -239,7 +185,7 @@ private fun ReyonPuzzleContent(
                         },
                         onLongPress = { row, col ->
                             val occupant = st.occupant(row, col)
-                            if (occupant >= 0 && !st.isLocked(occupant)) {
+                            if (occupant >= 0 && !st.finished) {
                                 viewModel.select(occupant)
                                 if (viewModel.removeSelected()) {
                                     haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
@@ -248,46 +194,41 @@ private fun ReyonPuzzleContent(
                             }
                         },
                     )
-                    HintLine(state = st, hint = lastHint)
-                    Brief(
-                        state = st,
-                        version = version,
-                        highlightClue = highlightClue,
-                        onToggle = viewModel::toggleHighlight,
-                        modifier = Modifier.weight(1f, fill = false),
-                    )
-                    Tray(
-                        state = st,
-                        version = version,
-                        selected = selected,
-                        highlighted = highlighted,
-                        wrongHint = wrongHint,
-                        onSelect = { id ->
+                    if (result != null && review != SalesReview.RESULT) {
+                        ReviewBar(review = review, target = st.sales.target, onReview = viewModel::setReview)
+                    } else {
+                        BreakdownLine(state = st, score = score, selected = selected)
+                    }
+                    RulesPanel(score = score, target = st.sales.target, modifier = Modifier.weight(1f, fill = false))
+                    if (!st.finished) {
+                        SalesTray(state = st, version = version, selected = selected) { id ->
                             viewModel.select(id)
                             haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        },
-                    )
+                        }
+                    }
                 }
             }
             when {
                 st == null && generating -> OverlayCard {
                     CircularProgressIndicator()
-                    Text(stringResource(R.string.reyon_generating))
+                    Text(stringResource(R.string.reyon_sales_generating))
                 }
-                st == null -> MenuCard(
+                st == null -> SalesMenuCard(
                     level = level,
                     mode = mode,
                     records = records,
-                    bestTime = viewModel.bestTime(level),
+                    bestPercent = viewModel.bestPercent(level),
                     onKind = onKind,
                     onLevel = viewModel::setLevel,
                     onMode = viewModel::setMode,
                     onStart = viewModel::newGame,
                     onExit = onExit,
                 )
-                result != null -> SolvedCard(
+                result != null && review == SalesReview.RESULT -> SalesResultCard(
                     state = st,
                     result = result!!,
+                    onReopen = viewModel::reopen,
+                    onReview = viewModel::setReview,
                     onRetry = viewModel::retry,
                     onMenu = viewModel::toMenu,
                     onExit = onExit,
@@ -296,46 +237,56 @@ private fun ReyonPuzzleContent(
         }
 
         if (st != null && result == null) {
-            Controls(
-                canUndo = st.canUndo,
-                canRemove = selected >= 0 && st.isPlaced(selected),
-                onUndo = {
-                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                    viewModel.undo()
-                },
-                onRemove = {
-                    if (viewModel.removeSelected()) haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                },
-                onHint = {
-                    val h = viewModel.hint()
-                    if (h != null) {
-                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                        sound?.play(Sfx.CLEAR, volume = 0.6f)
-                    }
-                },
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                OutlinedButton(
+                    onClick = {
+                        haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        viewModel.undo()
+                    },
+                    enabled = st.canUndo,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(stringResource(R.string.undo))
+                }
+                OutlinedButton(
+                    onClick = { if (viewModel.removeSelected()) haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove) },
+                    enabled = selected >= 0 && st.isPlaced(selected),
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(stringResource(R.string.reyon_remove))
+                }
+                Button(
+                    onClick = {
+                        if (viewModel.finish() != null) haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    },
+                    enabled = st.isComplete,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(stringResource(R.string.reyon_sales_finish))
+                }
+            }
         }
     }
 }
 
-// ---------------------------------------------------------------------------
-// Raf
-// ---------------------------------------------------------------------------
-
 @Composable
-private fun ShelfCanvas(
-    state: ReyonState,
+private fun SalesCanvas(
+    state: ReyonSalesState,
+    score: SalesScore,
     version: Int,
     selected: Int,
-    highlighted: Set<Int>,
-    violated: Set<Int>,
-    hinted: Int,
+    showTarget: Boolean,
     onTap: (Int, Int) -> Unit,
     onLongPress: (Int, Int) -> Unit,
 ) {
-    val puzzle = state.puzzle
-    val rows = puzzle.rows
-    val cols = puzzle.cols
+    val sales = state.sales
+    val rows = sales.rows
+    val cols = sales.cols
     val res = LocalContext.current.resources
     val currentTap by rememberUpdatedState(onTap)
     val currentLong by rememberUpdatedState(onLongPress)
@@ -343,8 +294,9 @@ private fun ShelfCanvas(
     val cache = remember { HashMap<String, TextLayoutResult>() }
     val labeler = remember(textMeasurer) { BlockLabeler(textMeasurer, cache) }
     val path = remember { Path() }
-    val unplaced = puzzle.products.size - state.placedCount
-    val desc = stringResource(R.string.reyon_board_desc_fmt, rows, cols, unplaced)
+    val unplaced = sales.products.size - state.placedCount
+    val desc = stringResource(R.string.reyon_sales_board_desc_fmt, rows, cols, unplaced, score.total)
+    val targetScore = remember(sales) { com.za.games.reyon.SalesScorer.score(sales.board, sales.products, targetOf(sales)) }
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
@@ -371,115 +323,160 @@ private fun ShelfCanvas(
         val tick = version
         val g = ShelfGeom(size.width, size.height, rows, cols)
         drawShelfFrame(g)
-        for (p in puzzle.products) {
-            val pl = state.placement(p.id) ?: continue
-            val ring = when {
-                p.id == selected -> ReyonPalette.SelectedRing
-                p.id == hinted -> ReyonPalette.HintRing
-                p.id in violated -> ReyonPalette.ViolatedRing
-                p.id in highlighted -> ReyonPalette.HighlightRing
-                else -> null
+        val at = if (showTarget) targetOf(sales) else null
+        val contributions = if (showTarget) targetScore.byProduct else score.byProduct
+        for (p in sales.products) {
+            val row: Int
+            val col: Int
+            if (at != null) {
+                row = sales.board.rowOf(at[p.id])
+                col = sales.board.colOf(at[p.id])
+            } else {
+                val pl = state.placement(p.id) ?: continue
+                row = pl.row
+                col = pl.col
             }
-            drawBlock(g, path, labeler, ReyonText.kind(res, p.kind), p, p.facings, pl.row, pl.col, ring = ring, locked = state.isLocked(p.id))
+            val ring = if (!showTarget && p.id == selected) ReyonPalette.SelectedRing else null
+            drawBlock(g, path, labeler, ReyonText.kind(res, p.kind), p, p.facings, row, col, ring = ring, dim = showTarget)
+            val badge = labeler.label("%+d".format(contributions[p.id]), g.cw, 9f, ReyonPalette.BlockText)
+            val x = g.x(col) + g.w(p.facings) - badge.size.width - g.pad * 1.5f
+            val y = g.y(row) + g.pad * 0.5f
+            drawRoundRect(Color(0x66FFFFFF), topLeft = Offset(x - 2.dp.toPx(), y), size = Size(badge.size.width + 4.dp.toPx(), badge.size.height.toFloat()), cornerRadius = androidx.compose.ui.geometry.CornerRadius(3.dp.toPx(), 3.dp.toPx()))
+            drawText(badge, topLeft = Offset(x, y))
         }
     }
 }
 
-// ---------------------------------------------------------------------------
-// Brif, tepsi, ipucu satırı, kontroller
-// ---------------------------------------------------------------------------
+/** Hedef dizilişin ürün→göz dizisi (iyileştiricinin bulduğu). */
+private fun targetOf(sales: com.za.games.reyon.ReyonSales): IntArray {
+    val st = ReyonSalesState(sales)
+    st.applyTarget()
+    return st.snapshot()
+}
 
 @Composable
-private fun Brief(
-    state: ReyonState,
-    version: Int,
-    highlightClue: Int,
-    onToggle: (Int) -> Unit,
-    modifier: Modifier = Modifier,
-) {
+private fun BreakdownLine(state: ReyonSalesState, score: SalesScore, selected: Int) {
     val res = LocalContext.current.resources
+    val text = if (selected >= 0 && state.isPlaced(selected)) {
+        val p = state.sales.products[selected]
+        val single = com.za.games.reyon.SalesScorer.score(state.sales.board, state.sales.products, state.snapshot())
+        val parts = ArrayList<String>()
+        parts += stringResource(R.string.reyon_sales_part_fmt, stringResource(R.string.reyon_sales_rule_position), com.za.games.reyon.SalesRules.position(p, state.placement(selected)!!.row, state.sales.rows))
+        val total = single.byProduct[selected]
+        val rest = total - com.za.games.reyon.SalesRules.position(p, state.placement(selected)!!.row, state.sales.rows)
+        if (rest != 0) parts += stringResource(R.string.reyon_sales_part_fmt, stringResource(R.string.reyon_sales_neighbors), rest)
+        stringResource(R.string.reyon_sales_breakdown_fmt, ReyonText.kind(res, p.kind), parts.joinToString(" · "), total)
+    } else if (selected >= 0) {
+        val p = state.sales.products[selected]
+        stringResource(R.string.reyon_sales_selected_fmt, ReyonText.kind(res, p.kind), p.demand)
+    } else {
+        stringResource(R.string.reyon_sales_pick_hint)
+    }
     @Suppress("UNUSED_VARIABLE")
-    val tick = version
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 6.dp)
-            .verticalScroll(rememberScrollState()),
-    ) {
-        Text(
-            text = stringResource(R.string.reyon_brief_label),
-            style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-            modifier = Modifier.padding(start = 4.dp, bottom = 2.dp),
-        )
-        state.puzzle.brief.forEachIndexed { index, clue ->
-            val status = state.status(clue)
-            val (glyph, color) = when (status) {
-                ClueStatus.PENDING -> "○" to MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                ClueStatus.SATISFIED -> "✓" to ReyonPalette.Satisfied
-                ClueStatus.VIOLATED -> "✗" to ReyonPalette.Violated
-            }
-            val text = ReyonText.clue(res, state.puzzle, clue)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(if (index == highlightClue) MaterialTheme.colorScheme.primary.copy(alpha = 0.18f) else Color.Transparent)
-                    .clickable { onToggle(index) }
-                    .padding(horizontal = 6.dp, vertical = 3.dp)
-                    .semantics { contentDescription = "$glyph $text" },
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(text = glyph, color = color, fontWeight = FontWeight.Bold, modifier = Modifier.width(18.dp))
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = if (status == ClueStatus.VIOLATED) ReyonPalette.Violated else MaterialTheme.colorScheme.onSurface.copy(alpha = if (status == ClueStatus.SATISFIED) 0.6f else 0.9f),
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun HintLine(state: ReyonState, hint: ReyonHint?) {
-    if (hint == null) return
-    val res = LocalContext.current.resources
-    val text = when (hint) {
-        is ReyonHint.Wrong -> stringResource(R.string.reyon_hint_wrong_fmt, ReyonText.kind(res, state.puzzle.products[hint.product].kind))
-        is ReyonHint.Place -> stringResource(
-            R.string.reyon_hint_place_fmt,
-            ReyonText.kind(res, state.puzzle.products[hint.product].kind),
-            ReyonText.shelfAt(res, hint.row, state.puzzle.rows),
-        )
-    }
+    val unused = score.total
     Text(
         text = text,
         style = MaterialTheme.typography.labelSmall,
-        color = ReyonPalette.HintRing,
         textAlign = TextAlign.Center,
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 4.dp),
     )
 }
 
+@Composable
+private fun ReviewBar(review: SalesReview, target: Int, onReview: (SalesReview) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Chip(stringResource(R.string.reyon_sales_review_mine), review == SalesReview.MINE, Modifier.weight(1f)) { onReview(SalesReview.MINE) }
+        Chip(stringResource(R.string.reyon_sales_review_target_fmt, target), review == SalesReview.TARGET, Modifier.weight(1.2f)) { onReview(SalesReview.TARGET) }
+        Chip(stringResource(R.string.reyon_sales_back_to_result), false, Modifier.weight(1f)) { onReview(SalesReview.RESULT) }
+    }
+}
+
+@Composable
+private fun RulesPanel(score: SalesScore, target: Int, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 6.dp)
+            .verticalScroll(rememberScrollState()),
+    ) {
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = stringResource(R.string.reyon_sales_rules_label),
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 4.dp),
+            )
+            val fill = MaterialTheme.colorScheme.primary
+            val track = MaterialTheme.colorScheme.surfaceVariant
+            val fraction = if (target > 0) (score.total.toFloat() / target).coerceIn(0f, 1f) else 0f
+            Canvas(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(8.dp)
+                    .clip(CircleShape),
+            ) {
+                drawRect(track)
+                drawRect(fill, size = Size(size.width * fraction, size.height))
+            }
+        }
+        for (rule in SalesRule.entries) {
+            val (name, desc) = when (rule) {
+                SalesRule.POSITION -> R.string.reyon_sales_rule_position to R.string.reyon_sales_rule_position_desc
+                SalesRule.COMPLEMENT -> R.string.reyon_sales_rule_complement to R.string.reyon_sales_rule_complement_desc
+                SalesRule.CONFLICT -> R.string.reyon_sales_rule_conflict to R.string.reyon_sales_rule_conflict_desc
+                SalesRule.CATEGORY -> R.string.reyon_sales_rule_category to R.string.reyon_sales_rule_category_desc
+                SalesRule.BRAND -> R.string.reyon_sales_rule_brand to R.string.reyon_sales_rule_brand_desc
+            }
+            val value = score.of(rule)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 6.dp, vertical = 2.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(text = stringResource(name), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = stringResource(desc),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                    )
+                }
+                Text(
+                    text = "%+d".format(value),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = when {
+                        value > 0 -> ReyonPalette.Satisfied
+                        value < 0 -> ReyonPalette.Violated
+                        else -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                    },
+                )
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun Tray(
-    state: ReyonState,
-    version: Int,
-    selected: Int,
-    highlighted: Set<Int>,
-    wrongHint: Int,
-    onSelect: (Int) -> Unit,
-) {
+private fun SalesTray(state: ReyonSalesState, version: Int, selected: Int, onSelect: (Int) -> Unit) {
     val res = LocalContext.current.resources
     @Suppress("UNUSED_VARIABLE")
     val tick = version
     val trayLabel = stringResource(R.string.reyon_tray_label)
-    val pending = state.puzzle.products.filter { !state.isPlaced(it.id) }
+    val pending = state.sales.products.filter { !state.isPlaced(it.id) }
     Column(modifier = Modifier.fillMaxWidth().padding(top = 6.dp)) {
         Text(
             text = if (pending.isEmpty()) stringResource(R.string.reyon_tray_empty) else trayLabel,
@@ -497,17 +494,11 @@ private fun Tray(
                 val name = ReyonText.kind(res, p.kind)
                 val desc = "$trayLabel: " + stringResource(R.string.reyon_tray_item_fmt, name, p.facings)
                 val isSelected = p.id == selected
-                val ring = when {
-                    isSelected -> ReyonPalette.SelectedRing
-                    p.id == wrongHint -> ReyonPalette.HintRing
-                    p.id in highlighted -> ReyonPalette.HighlightRing
-                    else -> Color.Transparent
-                }
                 Surface(
                     onClick = { onSelect(p.id) },
                     shape = RoundedCornerShape(10.dp),
                     color = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.28f) else MaterialTheme.colorScheme.surfaceVariant,
-                    border = BorderStroke(2.dp, ring),
+                    border = BorderStroke(2.dp, if (isSelected) ReyonPalette.SelectedRing else Color.Transparent),
                     modifier = Modifier.semantics { contentDescription = desc },
                 ) {
                     Row(
@@ -525,7 +516,7 @@ private fun Tray(
                         Text(
                             text = buildString {
                                 append("×${p.facings} ")
-                                repeat(p.size) { append('•') }
+                                append(stringResource(R.string.reyon_sales_demand_fmt, p.demand))
                                 if (p.premium) append(" ★")
                                 if (p.heavy) append(" ▼")
                             },
@@ -540,78 +531,11 @@ private fun Tray(
 }
 
 @Composable
-private fun Controls(canUndo: Boolean, canRemove: Boolean, onUndo: () -> Unit, onRemove: () -> Unit, onHint: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        OutlinedButton(onClick = onUndo, enabled = canUndo, modifier = Modifier.weight(1f)) {
-            Text(stringResource(R.string.undo))
-        }
-        OutlinedButton(onClick = onRemove, enabled = canRemove, modifier = Modifier.weight(1f)) {
-            Text(stringResource(R.string.reyon_remove))
-        }
-        Button(onClick = onHint, modifier = Modifier.weight(1f)) {
-            Text(stringResource(R.string.reyon_hint))
-        }
-    }
-}
-
-// ---------------------------------------------------------------------------
-// Kartlar (ortak parçalar Denetim'de de kullanılır)
-// ---------------------------------------------------------------------------
-
-@Composable
-internal fun Chip(label: String, selected: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
-    Surface(
-        onClick = onClick,
-        shape = CircleShape,
-        color = if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.28f) else MaterialTheme.colorScheme.surfaceVariant,
-        modifier = modifier,
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelLarge,
-            fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-            textAlign = TextAlign.Center,
-            color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
-        )
-    }
-}
-
-/** Tür seçimi: Diziliş / Denetim. */
-@Composable
-internal fun KindChips(kind: ReyonKind, onKind: (ReyonKind) -> Unit) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Chip(stringResource(R.string.reyon_kind_puzzle), kind == ReyonKind.PUZZLE, Modifier.weight(1f)) { onKind(ReyonKind.PUZZLE) }
-        Chip(stringResource(R.string.reyon_kind_audit), kind == ReyonKind.AUDIT, Modifier.weight(1f)) { onKind(ReyonKind.AUDIT) }
-        Chip(stringResource(R.string.reyon_kind_sales), kind == ReyonKind.SALES, Modifier.weight(1f)) { onKind(ReyonKind.SALES) }
-    }
-}
-
-@Composable
-internal fun ModeAndLevelChips(mode: ReyonMode, level: ReyonLevel, onMode: (ReyonMode) -> Unit, onLevel: (ReyonLevel) -> Unit) {
-    val res = LocalContext.current.resources
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Chip(stringResource(R.string.mode_daily), mode == ReyonMode.DAILY, Modifier.weight(1f)) { onMode(ReyonMode.DAILY) }
-        Chip(stringResource(R.string.mode_free), mode == ReyonMode.FREE, Modifier.weight(1f)) { onMode(ReyonMode.FREE) }
-    }
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        for (l in ReyonLevel.entries) {
-            Chip(ReyonText.level(res, l), level == l, Modifier.weight(1f)) { onLevel(l) }
-        }
-    }
-}
-
-@Composable
-private fun MenuCard(
+private fun SalesMenuCard(
     level: ReyonLevel,
     mode: ReyonMode,
-    records: Map<ReyonLevel, ReyonStore.Record>,
-    bestTime: Int,
+    records: Map<ReyonLevel, ReyonStore.SalesRecord>,
+    bestPercent: Int,
     onKind: (ReyonKind) -> Unit,
     onLevel: (ReyonLevel) -> Unit,
     onMode: (ReyonMode) -> Unit,
@@ -624,9 +548,9 @@ private fun MenuCard(
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
         )
-        KindChips(kind = ReyonKind.PUZZLE, onKind = onKind)
+        KindChips(kind = ReyonKind.SALES, onKind = onKind)
         Text(
-            text = stringResource(R.string.reyon_intro),
+            text = stringResource(R.string.reyon_sales_intro),
             style = MaterialTheme.typography.bodySmall,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
@@ -640,11 +564,18 @@ private fun MenuCard(
         )
         val record = records[level]
         val info = when {
-            mode == ReyonMode.DAILY && record != null ->
-                stringResource(R.string.reyon_daily_done_fmt, formatTime(record.time), record.hints)
-            mode == ReyonMode.DAILY -> stringResource(R.string.reyon_daily_desc)
-            bestTime > 0 -> stringResource(R.string.reyon_best_fmt, formatTime(bestTime))
-            else -> stringResource(R.string.reyon_free_desc)
+            mode == ReyonMode.DAILY && record != null -> {
+                val stars = if (record.target > 0) when {
+                    record.score >= record.target -> 3
+                    record.score >= record.target * 0.9 -> 2
+                    record.score >= record.target * 0.75 -> 1
+                    else -> 0
+                } else 0
+                stringResource(R.string.reyon_sales_daily_done_fmt, record.score, record.target, starsText(stars))
+            }
+            mode == ReyonMode.DAILY -> stringResource(R.string.reyon_sales_daily_desc)
+            bestPercent > 0 -> stringResource(R.string.reyon_sales_best_fmt, bestPercent)
+            else -> stringResource(R.string.reyon_sales_free_desc)
         }
         Text(
             text = info,
@@ -654,7 +585,7 @@ private fun MenuCard(
         )
         Spacer(Modifier.height(4.dp))
         Button(onClick = onStart, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(if (mode == ReyonMode.DAILY && record != null) R.string.reyon_play_again else R.string.reyon_start))
+            Text(stringResource(if (mode == ReyonMode.DAILY && record != null) R.string.reyon_play_again else R.string.reyon_sales_start))
         }
         TextButton(onClick = onExit, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.exit_to_hub))
@@ -663,29 +594,37 @@ private fun MenuCard(
 }
 
 @Composable
-private fun SolvedCard(
-    state: ReyonState,
-    result: ReyonResult,
+private fun SalesResultCard(
+    state: ReyonSalesState,
+    result: SalesResult,
+    onReopen: () -> Unit,
+    onReview: (SalesReview) -> Unit,
     onRetry: () -> Unit,
     onMenu: () -> Unit,
     onExit: () -> Unit,
 ) {
     val res = LocalContext.current.resources
-    val time = formatTime(result.time)
-    val details = stringResource(R.string.reyon_result_fmt, ReyonText.level(res, state.puzzle.level), result.hints)
+    val details = stringResource(R.string.reyon_sales_result_fmt, result.score, result.target, result.percent)
+    val levelName = ReyonText.level(res, state.sales.level)
     OverlayCard {
         Text(
-            text = stringResource(R.string.congrats),
+            text = stringResource(R.string.reyon_sales_done_title),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
         )
         Text(
-            text = time,
+            text = starsText(result.stars),
             style = MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.Black,
             color = MaterialTheme.colorScheme.primary,
         )
-        if (result.record) {
+        if (result.score > result.target) {
+            Text(
+                text = stringResource(R.string.reyon_sales_beat_target),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.secondary,
+            )
+        } else if (result.record) {
             Text(
                 text = stringResource(R.string.new_record),
                 style = MaterialTheme.typography.titleMedium,
@@ -693,7 +632,7 @@ private fun SolvedCard(
             )
         }
         Text(
-            text = details,
+            text = "$levelName · $details",
             style = MaterialTheme.typography.bodySmall,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
@@ -701,16 +640,24 @@ private fun SolvedCard(
         ShareButton(
             ShareContent(
                 gameId = "reyon",
-                headline = stringResource(R.string.share_solved),
-                details = listOf(details, stringResource(R.string.time_fmt, time), modeShareLabel(result.daily, result.day)),
-                board = reyonPainter(state, res),
+                headline = stringResource(R.string.share_score_fmt, formatScore(result.score.toLong())),
+                details = listOf(levelName, details, starsText(result.stars), modeShareLabel(result.daily, result.day)),
+                board = salesPainter(state, res),
             ),
         )
         Spacer(Modifier.height(4.dp))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(onClick = onReopen, modifier = Modifier.weight(1f)) {
+                Text(stringResource(R.string.reyon_sales_reopen))
+            }
+            OutlinedButton(onClick = { onReview(SalesReview.TARGET) }, modifier = Modifier.weight(1f)) {
+                Text(stringResource(R.string.reyon_sales_show_target))
+            }
+        }
         Button(onClick = onRetry, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.same_difficulty))
         }
-        OutlinedButton(onClick = onMenu, modifier = Modifier.fillMaxWidth()) {
+        TextButton(onClick = onMenu, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.reyon_to_menu))
         }
         TextButton(onClick = onExit, modifier = Modifier.fillMaxWidth()) {

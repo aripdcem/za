@@ -676,4 +676,42 @@
     <string name="reyon_dev_brand_fmt">Yanlış marka: %1$s (%2$s yerine %3$s)</string>
     <string name="reyon_dev_size_fmt">Yanlış boy: %1$s</string>
     <string name="reyon_dev_spill_fmt">Taşma: %1$s, %2$s gözüne taşmış</string>
+    <!-- Reyon: Satış -->
+    <string name="reyon_kind_sales">Satış</string>
+    <string name="reyon_sales_intro">Ürünleri istediğin gibi diz; puan satış kurallarından gelir: göz hizası satar, ağırlar alta, yüksek marjlılar göz hizasına, tamamlayıcı ürünler yan yana, temizlik gıdadan uzak, kategori ve marka blokları. Hedef, iyileştiricinin bulduğu en iyi diziliş; hedefe ulaşan üç yıldız alır, geçen tebrik.</string>
+    <string name="reyon_sales_daily_desc">Herkes bugün aynı ürünleri dizer; günün en iyi puanın kaydedilir.</string>
+    <string name="reyon_sales_daily_done_fmt">Bugün: %1$d / %2$d puan · %3$s</string>
+    <string name="reyon_sales_free_desc">Rastgele ürün seti; hedefin yüzdesi rekor sayılır.</string>
+    <string name="reyon_sales_best_fmt">En iyi: hedefin yüzde %1$d kadarı</string>
+    <string name="reyon_sales_start">Dizmeye başla</string>
+    <string name="reyon_sales_generating">Hedef hesaplanıyor…</string>
+    <string name="reyon_sales_score_label">Puan</string>
+    <string name="reyon_sales_target_label">Hedef</string>
+    <string name="reyon_sales_rules_label">Satış kuralları</string>
+    <string name="reyon_sales_rule_position">Konum</string>
+    <string name="reyon_sales_rule_position_desc">talep × yüz × raf çarpanı: göz hizası ×3, üst ve orta ×2, alt ×1 · ▼ ağır yalnız altta ×3 · ★ yalnız göz hizasında ×4</string>
+    <string name="reyon_sales_rule_complement">Tamamlayıcı</string>
+    <string name="reyon_sales_rule_complement_desc">cips–sos gibi çiftler yan yana +6, üst üste +3</string>
+    <string name="reyon_sales_rule_conflict">Çakışma</string>
+    <string name="reyon_sales_rule_conflict_desc">temizlik ürünü gıdanın yanında −8</string>
+    <string name="reyon_sales_rule_category">Kategori bloğu</string>
+    <string name="reyon_sales_rule_category_desc">aynı kategori yan yana +4</string>
+    <string name="reyon_sales_rule_brand">Marka bloğu</string>
+    <string name="reyon_sales_rule_brand_desc">aynı marka yan yana +3, üst üste +3</string>
+    <string name="reyon_sales_neighbors">komşuluk</string>
+    <string name="reyon_sales_part_fmt">%1$s %2$+d</string>
+    <string name="reyon_sales_breakdown_fmt">%1$s: %2$s = %3$+d</string>
+    <string name="reyon_sales_selected_fmt">%1$s seçili (talep %2$d): rafta bir göze dokun</string>
+    <string name="reyon_sales_pick_hint">Bir ürüne dokun: puan dökümü burada görünür</string>
+    <string name="reyon_sales_demand_fmt">talep %1$d</string>
+    <string name="reyon_sales_finish">Tamamla</string>
+    <string name="reyon_sales_done_title">Diziliş tamam</string>
+    <string name="reyon_sales_result_fmt">%1$d / %2$d puan (hedefin yüzde %3$d kadarı)</string>
+    <string name="reyon_sales_beat_target">Hedefi geçtin! 🏆</string>
+    <string name="reyon_sales_reopen">Düzenlemeye dön</string>
+    <string name="reyon_sales_show_target">Hedefi göster</string>
+    <string name="reyon_sales_review_mine">Benim dizilişim</string>
+    <string name="reyon_sales_review_target_fmt">Hedef (%1$d)</string>
+    <string name="reyon_sales_back_to_result">Sonuç</string>
+    <string name="reyon_sales_board_desc_fmt">Satış rafı %1$d raf × %2$d göz, %3$d ürün yerleşmedi, %4$d puan</string>
 </resources>
