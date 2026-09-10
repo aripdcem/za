@@ -676,4 +676,42 @@
     <string name="reyon_dev_brand_fmt">Wrong brand: %1$s (%3$s instead of %2$s)</string>
     <string name="reyon_dev_size_fmt">Wrong size: %1$s</string>
     <string name="reyon_dev_spill_fmt">Spill: %1$s spills into %2$s</string>
+    <!-- Reyon: Sales -->
+    <string name="reyon_kind_sales">Sales</string>
+    <string name="reyon_sales_intro">Arrange the products as you like; points come from the sales rules: eye level sells, heavy items go low, high-margin items go to eye level, complementary products side by side, cleaning away from food, category and brand blocks. The target is the best layout the optimizer found; reaching it earns three stars, beating it earns applause.</string>
+    <string name="reyon_sales_daily_desc">Everyone arranges the same products today; your best score of the day is recorded.</string>
+    <string name="reyon_sales_daily_done_fmt">Today: %1$d / %2$d points · %3$s</string>
+    <string name="reyon_sales_free_desc">Random product set; the percentage of the target counts as a record.</string>
+    <string name="reyon_sales_best_fmt">Best: %1$d%% of the target</string>
+    <string name="reyon_sales_start">Start arranging</string>
+    <string name="reyon_sales_generating">Computing the target…</string>
+    <string name="reyon_sales_score_label">Points</string>
+    <string name="reyon_sales_target_label">Target</string>
+    <string name="reyon_sales_rules_label">Sales rules</string>
+    <string name="reyon_sales_rule_position">Position</string>
+    <string name="reyon_sales_rule_position_desc">demand × facings × shelf factor: eye level ×3, top and middle ×2, bottom ×1 · ▼ heavy only at the bottom ×3 · ★ only at eye level ×4</string>
+    <string name="reyon_sales_rule_complement">Complementary</string>
+    <string name="reyon_sales_rule_complement_desc">pairs like chips and dip side by side +6, stacked +3</string>
+    <string name="reyon_sales_rule_conflict">Conflict</string>
+    <string name="reyon_sales_rule_conflict_desc">a cleaning product next to food −8</string>
+    <string name="reyon_sales_rule_category">Category block</string>
+    <string name="reyon_sales_rule_category_desc">same category side by side +4</string>
+    <string name="reyon_sales_rule_brand">Brand block</string>
+    <string name="reyon_sales_rule_brand_desc">same brand side by side +3, stacked +3</string>
+    <string name="reyon_sales_neighbors">neighbours</string>
+    <string name="reyon_sales_part_fmt">%1$s %2$+d</string>
+    <string name="reyon_sales_breakdown_fmt">%1$s: %2$s = %3$+d</string>
+    <string name="reyon_sales_selected_fmt">%1$s selected (demand %2$d): tap a slot on the shelf</string>
+    <string name="reyon_sales_pick_hint">Tap a product to see its score breakdown</string>
+    <string name="reyon_sales_demand_fmt">demand %1$d</string>
+    <string name="reyon_sales_finish">Finish</string>
+    <string name="reyon_sales_done_title">Layout complete</string>
+    <string name="reyon_sales_result_fmt">%1$d / %2$d points (%3$d%% of the target)</string>
+    <string name="reyon_sales_beat_target">You beat the target! 🏆</string>
+    <string name="reyon_sales_reopen">Keep arranging</string>
+    <string name="reyon_sales_show_target">Show target</string>
+    <string name="reyon_sales_review_mine">My layout</string>
+    <string name="reyon_sales_review_target_fmt">Target (%1$d)</string>
+    <string name="reyon_sales_back_to_result">Result</string>
+    <string name="reyon_sales_board_desc_fmt">Sales shelf %1$d shelves × %2$d slots, %3$d products unplaced, %4$d points</string>
 </resources>

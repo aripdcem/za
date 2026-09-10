@@ -1,11 +1,13 @@
 package com.za.games.ui.reyon
 
+import android.content.Context
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.za.games.R
 import com.za.games.game
@@ -13,6 +15,8 @@ import com.za.games.setZaContent
 import com.za.games.str
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,9 +27,47 @@ class ReyonScreenTest {
     @get:Rule
     val rule = createComposeRule()
 
+    /**
+     * Robolectric aynı sınıfın testleri arasında SharedPreferences'ı paylaşabiliyor;
+     * yarım kalan bir tur (ör. satış testinin bıraktığı) sonraki testi menü yerine
+     * o turla açar. Her test temiz kayıtla başlar.
+     */
+    @Before
+    fun clearSavedState() = clearPrefs()
+
+    @After
+    fun clearSavedStateAfter() = clearPrefs()
+
+    private fun clearPrefs() {
+        ApplicationProvider.getApplicationContext<Context>()
+            .getSharedPreferences("za_reyon", Context.MODE_PRIVATE)
+            .edit()
+            .clear()
+            .commit()
+    }
+
+    /**
+     * Ekran hangi durumda açılırsa açılsın menüye getirir: yarım bir tur
+     * geri yüklendiyse üst çubuktaki "Başa dön" ile menüye döner, yoksa
+     * tür çiplerinin görünmesini bekler.
+     */
+    private fun openMenu() {
+        val back = str(R.string.reyon_to_menu)
+        val chip = str(R.string.reyon_kind_sales)
+        rule.waitUntil(timeoutMillis = 30_000) {
+            rule.onAllNodesWithText(back).fetchSemanticsNodes().isNotEmpty() ||
+                rule.onAllNodesWithText(chip).fetchSemanticsNodes().isNotEmpty()
+        }
+        if (rule.onAllNodesWithText(back).fetchSemanticsNodes().isNotEmpty()) {
+            rule.onNodeWithText(back).performClick()
+            rule.waitUntil(timeoutMillis = 10_000) { rule.onAllNodesWithText(chip).fetchSemanticsNodes().isNotEmpty() }
+        }
+    }
+
     @Test
     fun hintsPlaceProductsUndoReturnsThemAndThePuzzleGetsSolved() {
         rule.setZaContent { game("reyon").screen(0L, {}, {}) }
+        openMenu()
         rule.onNodeWithText(str(R.string.reyon_kind_puzzle)).performClick()
         rule.onNodeWithText(str(R.string.mode_free)).performClick()
         rule.onNodeWithText(str(R.string.difficulty_easy)).performClick()
@@ -53,6 +95,7 @@ class ReyonScreenTest {
     @Test
     fun auditHintsRevealEveryDeviation() {
         rule.setZaContent { game("reyon").screen(0L, {}, {}) }
+        openMenu()
         rule.onNodeWithText(str(R.string.reyon_kind_audit)).performClick()
         rule.onNodeWithText(str(R.string.mode_free)).performClick()
         rule.onNodeWithText(str(R.string.difficulty_easy)).performClick()
@@ -69,5 +112,29 @@ class ReyonScreenTest {
             rule.onNodeWithText(str(R.string.reyon_hint)).performClick()
         }
         rule.onNodeWithText(str(R.string.reyon_audit_done_title)).assertIsDisplayed()
+    }
+
+    @Test
+    fun salesPlacesAProductByTappingTheShelfAndUndoReturnsIt() {
+        rule.setZaContent { game("reyon").screen(0L, {}, {}) }
+        openMenu()
+        rule.onNodeWithText(str(R.string.reyon_kind_sales)).performClick()
+        rule.onNodeWithText(str(R.string.mode_free)).performClick()
+        rule.onNodeWithText(str(R.string.difficulty_easy)).performClick()
+        rule.onNodeWithText(str(R.string.reyon_sales_start)).performClick()
+
+        val trayPrefix = str(R.string.reyon_tray_label) + ":"
+        fun trayItems() = rule.onAllNodes(hasContentDescription(trayPrefix, substring = true))
+        rule.waitUntil(timeoutMillis = 30_000) { trayItems().fetchSemanticsNodes().isNotEmpty() }
+        val before = trayItems().fetchSemanticsNodes().size
+        assertTrue("tepside ürün olmalı", before > 0)
+
+        // İlk ürünü seç, rafın ortasına dokun: boş raf, yerleşmeli.
+        trayItems()[0].performClick()
+        val shelfDesc = str(R.string.reyon_sales_board_desc_fmt, 0, 0, 0, 0).substringBefore(' ')
+        rule.onNode(hasContentDescription(shelfDesc, substring = true)).performClick()
+        assertEquals(before - 1, trayItems().fetchSemanticsNodes().size)
+        rule.onNodeWithText(str(R.string.undo)).performClick()
+        assertEquals(before, trayItems().fetchSemanticsNodes().size)
     }
 }

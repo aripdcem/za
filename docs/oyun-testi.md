@@ -48,6 +48,7 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Üretim iş bütçesini aşmaz | `KakuroTest` |
 | Her bulmaca tahminsiz çözülür, brif kısa kalır, üretim bütçede | `ReyonGeneratorTest` |
 | Denetim sapmaları ayrık ve görünür; plan ile raf yalnızca sapma gözlerinde ayrışır | `ReyonAuditTest` |
+| Satış hedefi tabanı geçer, geçerli tam doluluktur; iyileştirici bütçede | `ReyonSalesTest` |
 | Metin kontrastı WCAG AA eşiğini tutar | `ThemeContrastTest` |
 
 Yeni bir ölçüm bulgusu düzeltildiğinde, mümkünse **paylı bir değişmez** olarak
@@ -381,7 +382,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | ✅ mevcut testlerle | 2026-09-09 |
 | Viraj | ✅ | **60 · 3 · %100 · 34 ms** | — (tuşla) | ✅ kusur yok | 2026-09-09 |
 | Filo | ✅ | **60 · 1 · %81 · 31 ms** | ✅ düzeltildi | ✅ düzeltildi | 2026-09-09 |
-| Reyon | ✅ | olay güdümlü (1 · 0) | — (dokun-yerleştir) | ✅ ölçüldü (diziliş + denetim) | 2026-09-10 |
+| Reyon | ✅ | olay güdümlü (1 · 0) | — (dokun-yerleştir) | ✅ ölçüldü (diziliş + denetim + satış) | 2026-09-10 |
 
 **E · erişilebilirlik:** tüm oyunlarda etiketsiz dokunulabilir öğe kalmadı
 (tek bulgu Kıskaç'ın kolay mod anahtarıydı, düzeltildi). Kontrast CI'da
@@ -927,6 +928,28 @@ oynanıyor; Orta marka ve taşmayı, Zor boyu ekliyor ve sapmaların üçte biri
 merdiveni sapma sayısından çok sapmanın inceliğinden geliyor. Sapma başına
 ayrışan göz sayısı 2 civarında: her sapma en az bir, çoğunlukla iki gözde
 görünür.
+
+**D — Satış modu** (`salesReport`, 40 tohum/zorluk, v0.27.0). Satışta adillik
+sorusu "hedef dürüst mü" diye sorulur: hedef, tavlamalı yerel aramanın
+(eşit genişlik takası, raf içi komşu takası, raf takası, ürün↔eşit genişlikli
+koşu takası; 4 yeniden başlatma) bulduğu en iyi puan. Ölçülen: hedefin
+başlangıç planını ne kadar geçtiği, puanın kurallara dağılımı ve iyileştiricinin
+farklı tohumla aynı hedefi bulup bulmadığı.
+
+| Zorluk | Taban ort | Hedef ort | Kazanç | Konum | Tamamlayıcı | Çakışma | Kategori | Marka | Yeniden koşum sapması | Süre |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Kolay | 89 | 96 | %8 (0–32) | %65 | %6 | %−1 | %14 | %16 | %0,0 | 18 ms |
+| Orta | 132 | 151 | %15 (3–29) | %63 | %7 | %−2 | %12 | %20 | %0,0 | 36 ms |
+| Zor | 172 | 189 | %11 (1–23) | %61 | %6 | %−1 | %13 | %20 | %0,0 | 70 ms |
+
+Okuma: iyileştirici farklı tohumla 10 turun 10'unda **aynı** hedefi buluyor;
+bu boyutta arama uzayı küçük, hedef büyük olasılıkla gerçek en iyi. Yani
+"hedefi geç" nadir ama mümkün bir olay değil, hedef bir tavan. Puanın
+%61–65'i konumdan (talep × yüz × raf çarpanı), üçte biri komşuluk
+kurallarından geliyor: önce doğru rafa koymak, sonra komşuluğu düzeltmek
+diye okunur. Çakışma payı hedefte bile sıfır değil: raf genişlikleri bazen
+temizlik ile gıdayı aynı rafa zorluyor. Üretim süresi masaüstünde en çok
+70 ms; telefonda arka planda hesaplanır, dönen gösterge var.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

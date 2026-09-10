@@ -1,0 +1,6 @@
+<tr-TR>
+• Reyon: Satış modu. Ürünleri satış kurallarına göre diz: göz hizası, ağırlar alta, tamamlayıcı ürünler yan yana, temizlik gıdadan uzak, kategori ve marka blokları. Hedefe göre yıldız, canlı puan dökümü, günlük ürün seti.
+</tr-TR>
+<en-US>
+• Reyon: Sales mode. Arrange products by the sales rules: eye level, heavy items low, complementary products side by side, cleaning away from food, category and brand blocks. Stars against a target, live score breakdown, daily product set.
+</en-US>

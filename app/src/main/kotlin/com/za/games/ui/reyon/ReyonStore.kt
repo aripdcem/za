@@ -6,7 +6,7 @@ import com.za.games.reyon.ReyonLevel
 enum class ReyonMode { DAILY, FREE }
 
 /** Oyun türü: diziliş bulmacası ya da uyum denetimi. */
-enum class ReyonKind { PUZZLE, AUDIT }
+enum class ReyonKind { PUZZLE, AUDIT, SALES }
 
 /**
  * Reyon kalıcı durumu: son seçilen zorluk ve mod, devam eden bulmaca
@@ -101,6 +101,75 @@ class ReyonStore(context: Context) {
     }
 
     fun auditBest(level: ReyonLevel): Int = prefs.getInt(KEY_A_BEST + level.name, 0)
+
+    data class SalesRecord(val score: Int, val target: Int)
+
+    class SavedSales(
+        val seed: Long,
+        val level: ReyonLevel,
+        val mode: ReyonMode,
+        val day: Long,
+        val snapshot: IntArray,
+        val finished: Boolean,
+    )
+
+    fun saveSales(seed: Long, level: ReyonLevel, mode: ReyonMode, day: Long, snapshot: IntArray, finished: Boolean) {
+        prefs.edit()
+            .putLong(KEY_S_SEED, seed)
+            .putString(KEY_S_LEVEL, level.name)
+            .putString(KEY_S_MODE, mode.name)
+            .putLong(KEY_S_DAY, day)
+            .putString(KEY_S_SNAPSHOT, snapshot.joinToString(","))
+            .putBoolean(KEY_S_FINISHED, finished)
+            .apply()
+    }
+
+    fun clearSales() {
+        prefs.edit()
+            .remove(KEY_S_SEED)
+            .remove(KEY_S_LEVEL)
+            .remove(KEY_S_MODE)
+            .remove(KEY_S_DAY)
+            .remove(KEY_S_SNAPSHOT)
+            .remove(KEY_S_FINISHED)
+            .apply()
+    }
+
+    fun restoreSales(): SavedSales? {
+        if (!prefs.contains(KEY_S_SEED)) return null
+        val level = ReyonLevel.entries.firstOrNull { it.name == prefs.getString(KEY_S_LEVEL, null) } ?: return null
+        val mode = ReyonMode.entries.firstOrNull { it.name == prefs.getString(KEY_S_MODE, null) } ?: return null
+        val raw = prefs.getString(KEY_S_SNAPSHOT, null) ?: return null
+        val snapshot = raw.split(',').map { it.toIntOrNull() ?: return null }.toIntArray()
+        if (snapshot.isEmpty()) return null
+        return SavedSales(prefs.getLong(KEY_S_SEED, 0L), level, mode, prefs.getLong(KEY_S_DAY, 0L), snapshot, prefs.getBoolean(KEY_S_FINISHED, false))
+    }
+
+    fun salesDailyRecord(day: Long, level: ReyonLevel): SalesRecord? {
+        if (prefs.getLong(KEY_S_DAILY_DAY + level.name, Long.MIN_VALUE) != day) return null
+        return SalesRecord(prefs.getInt(KEY_S_DAILY_SCORE + level.name, 0), prefs.getInt(KEY_S_DAILY_TARGET + level.name, 0))
+    }
+
+    /** Günün en iyi puanı tutulur; daha iyiyse kaydeder ve true döner. */
+    fun saveSalesDaily(day: Long, level: ReyonLevel, score: Int, target: Int): Boolean {
+        val current = salesDailyRecord(day, level)
+        if (current != null && current.score >= score) return false
+        prefs.edit()
+            .putLong(KEY_S_DAILY_DAY + level.name, day)
+            .putInt(KEY_S_DAILY_SCORE + level.name, score)
+            .putInt(KEY_S_DAILY_TARGET + level.name, target)
+            .apply()
+        return true
+    }
+
+    /** Seviyenin en iyi hedef yüzdesi (serbest mod); yoksa 0. */
+    fun salesBest(level: ReyonLevel): Int = prefs.getInt(KEY_S_BEST + level.name, 0)
+
+    fun saveSalesBest(level: ReyonLevel, percent: Int): Boolean {
+        if (percent <= salesBest(level)) return false
+        prefs.edit().putInt(KEY_S_BEST + level.name, percent).apply()
+        return true
+    }
 
     fun saveAuditBest(level: ReyonLevel, time: Int): Boolean {
         val current = auditBest(level)
@@ -214,5 +283,15 @@ class ReyonStore(context: Context) {
         const val KEY_A_DAILY_MISTAKES = "audit_daily_mistakes_"
         const val KEY_A_DAILY_HINTS = "audit_daily_hints_"
         const val KEY_A_BEST = "audit_best_"
+        const val KEY_S_SEED = "sales_seed"
+        const val KEY_S_LEVEL = "sales_level"
+        const val KEY_S_MODE = "sales_mode"
+        const val KEY_S_DAY = "sales_day"
+        const val KEY_S_SNAPSHOT = "sales_snapshot"
+        const val KEY_S_FINISHED = "sales_finished"
+        const val KEY_S_DAILY_DAY = "sales_daily_day_"
+        const val KEY_S_DAILY_SCORE = "sales_daily_score_"
+        const val KEY_S_DAILY_TARGET = "sales_daily_target_"
+        const val KEY_S_BEST = "sales_best_"
     }
 }

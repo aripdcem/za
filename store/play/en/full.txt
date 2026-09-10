@@ -8,7 +8,7 @@ OUR PROMISE
 
 GAMES
 Arcade: Blok (falling blocks), Snake, Kuyu (descend the well, daily well), Geçit (road crossing, daily mode), Balkon (aim from the balcony: pumpkin seeds, water balloons or spit), Viraj (pseudo-3D racing, daily track), Filo (vertical space shooter, daily fleet)
-Puzzle: 2048, Sudoku (three levels, notes, unique solution), Minesweeper, Kakuro (three sizes, unique solution), Reyon (planogram puzzle and compliance audit, daily shelf)
+Puzzle: 2048, Sudoku (three levels, notes, unique solution), Minesweeper, Kakuro (three sizes, unique solution), Reyon (planogram puzzle, compliance audit and sales layout; daily shelf)
 Word (Turkish): Beş Harf (daily five-letter word), Kıskaç (alphabetical squeeze), Türetme (words from letters), Dizgi (pass-and-play word board, 2-4 players)
 Board and numbers: Tavla (backgammon: Classic, Tapa, Hapis; vs computer or a friend), Vergici (Taxman), Toplam Kapma (Number Scrabble)
 

@@ -33,6 +33,39 @@ class ReyonBalanceProbe {
         is Clue.SizeFlow -> "boy akışı"
     }
 
+    /** Satış: başlangıç planı ile hedef arası fark, kural payları, iyileştirici tutarlılığı. */
+    @Test
+    fun salesReport() {
+        println("=== Reyon satış ölçümü (${seeds.count()} tohum/zorluk) ===")
+        for (level in ReyonLevel.entries) {
+            var timeMs = 0L
+            val rounds = seeds.map { seed ->
+                val t0 = System.nanoTime()
+                val r = ReyonSalesGenerator.generate(seed, level)
+                timeMs += (System.nanoTime() - t0) / 1_000_000
+                r
+            }
+            val n = rounds.size.toFloat()
+            val gain = rounds.map { if (it.baseline > 0) 100f * (it.target - it.baseline) / it.baseline else 0f }
+            val shares = FloatArray(SalesRule.entries.size)
+            for (r in rounds) {
+                val sc = SalesScorer.score(r.board, r.products, r.targetAt)
+                for (rule in SalesRule.entries) shares[rule.ordinal] += sc.of(rule).toFloat() / sc.total.coerceAtLeast(1)
+            }
+            // Tutarlılık: aynı ürün seti, farklı iyileştirici tohumu → hedef ne kadar oynuyor?
+            var spread = 0f
+            for (r in rounds.take(10)) {
+                val alt = SalesOptimizer.optimize(r.board, r.products, r.targetAt, r.seed xor 0x5A5AL, ReyonSalesGenerator.iterations(level), ReyonSalesGenerator.RESTARTS)
+                spread += 100f * kotlin.math.abs(alt.score - r.target) / r.target.coerceAtLeast(1)
+            }
+            println("--- $level (${level.rows}×${level.cols}) ---")
+            println("taban ort %.0f · hedef ort %.0f · kazanç ort %%%.0f (en az %%%.0f, en çok %%%.0f)".format(
+                rounds.map { it.baseline }.average(), rounds.map { it.target }.average(), gain.average(), gain.min(), gain.max()))
+            println("hedefte kural payları: " + SalesRule.entries.joinToString { "${it.name.lowercase()} %%%.0f".format(100f * shares[it.ordinal] / n) })
+            println("yeniden koşum sapması ort %%%.1f (10 tur) · değerlendirme %d · süre ort %d ms".format(spread / 10f, rounds[0].evaluations, timeMs / rounds.size))
+        }
+    }
+
     /** Denetim: sapma türü karışımı ve görünürlük (sapma başına ayrışan göz). */
     @Test
     fun auditReport() {
