@@ -974,4 +974,34 @@
     <string name="bostan_share_won_fmt">Saved the garden · %1$d points</string>
     <string name="bostan_share_lost_fmt">Garden trampled on wave %1$d · %2$d points</string>
     <string name="bostan_board_desc_fmt">Field: water %1$d, wave %2$d/%3$d, %4$d raiders</string>
+
+    <!-- Sincap -->
+    <string name="game_sincap">Sincap</string>
+    <string name="game_sincap_tagline">Vertical climb up a plane tree: tap left or right to jump to the next branch; dry branches, snakes, crows and a cat on your tail</string>
+    <string name="sincap_intro">The squirrel climbs the plane tree branch by branch. Tap left or right: it jumps to the nearest branch above on that side (up to two steps); if there is none, it falls. A dry branch snaps a second after you land, never land on a snake, and crows knock you off as they cross your branch. The cat is climbing the trunk and gets faster the higher you go: keep moving. Nut +20, golden nut +100, every step +10.</string>
+    <string name="sincap_rules">A safe branch is always within reach · a tap during a jump is queued and applied on landing</string>
+    <string name="sincap_daily_desc">Everyone climbs the same tree today; 3 attempts a day</string>
+    <string name="sincap_daily_status_fmt">Today: %1$d/%2$d attempts · best %3$d</string>
+    <string name="sincap_daily_exhausted">Today\'s attempts are used up; a new tree tomorrow!</string>
+    <string name="sincap_best_fmt">Best: %1$d points · %2$d m</string>
+    <string name="sincap_start">Climb</string>
+    <string name="sincap_retry_fmt">Climb again (%1$d left)</string>
+    <string name="sincap_to_menu">Back to start</string>
+    <string name="sincap_height">Height</string>
+    <string name="sincap_height_fmt">%1$d m</string>
+    <string name="sincap_nuts">Nuts</string>
+    <string name="sincap_best">Best</string>
+    <string name="sincap_tap_hint">Tap left or right: jump to the next branch on that side</string>
+    <string name="sincap_cracking">Dry branch!</string>
+    <string name="sincap_cat_close">The cat is closing in!</string>
+    <string name="sincap_milestone_fmt">%1$d m!</string>
+    <string name="sincap_cat_gap_fmt">Cat %1$d m</string>
+    <string name="sincap_over_fall">Jumped into thin air</string>
+    <string name="sincap_over_broke">Branch snapped</string>
+    <string name="sincap_over_crow">Knocked off by a crow</string>
+    <string name="sincap_over_snake">Snake!</string>
+    <string name="sincap_over_cat">Caught by the cat</string>
+    <string name="sincap_result_fmt">%1$d m · %2$d nuts</string>
+    <string name="sincap_share_fmt">Climbed %1$d m · %2$d points</string>
+    <string name="sincap_board_desc_fmt">Tree: height %1$d m, score %2$d</string>
 </resources>

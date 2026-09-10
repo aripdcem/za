@@ -18,6 +18,7 @@ import com.za.games.ui.hub.VergiciArt
 import com.za.games.ui.hub.ToplamArt
 import com.za.games.ui.hub.FiloArt
 import com.za.games.ui.hub.ReyonArt
+import com.za.games.ui.hub.SincapArt
 import com.za.games.ui.hub.RaketArt
 import com.za.games.ui.hub.TuseArt
 import com.za.games.ui.hub.UcurtmaArt
@@ -39,6 +40,7 @@ import com.za.games.ui.kakuro.KakuroScreen
 import com.za.games.ui.vergici.VergiciScreen
 import com.za.games.ui.toplam.ToplamScreen
 import com.za.games.ui.filo.FiloScreen
+import com.za.games.ui.sincap.SincapScreen
 import com.za.games.ui.reyon.ReyonScreen
 import com.za.games.ui.raket.RaketScreen
 import com.za.games.ui.tuse.TuseScreen
@@ -344,6 +346,18 @@ object GameRegistry {
             art = { modifier -> BostanArt(modifier) },
             screen = { highScore, onScore, onExit ->
                 BostanScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "sincap",
+            since = "0.34.0",
+            titleRes = R.string.game_sincap,
+            taglineRes = R.string.game_sincap_tagline,
+            category = GameCategory.ARCADE,
+            accent = Color(0xFFD97706),
+            art = { modifier -> SincapArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                SincapScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
     )

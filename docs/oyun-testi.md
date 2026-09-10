@@ -57,6 +57,7 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Uçurtma: üretilen dünya her sütunda ≥ 0,3 birim boşluk bırakır (tavan zorlukta da); rakibin üstünden geçen keser, altından geçen kesilir; dikkatli pilot 12 uçuşun en az 8'inde 300 m'yi geçer | `UcurtmaWorldTest` |
 | Dalgıç: doğan her şey şeritlerde ve suda kalır, mayınlar alt şeritlerde ve en çok üç; boş yüzeye çıkış can götürür ama başta değil; pilot 20 dalışın en az 14'ünde teslim eder | `DalgicWorldTest` |
 | Bostan: üretilen her seviye uzman politikasıyla kazanılır (6 tohum × 3 zorluk), türler dalga dizinine göre açılır, bütçe aşılmaz, zorluklar saldırgan sayısında sıralı; tuzak kurulmadan kemirilir, kurulunca kemirene patlar | `BostanStateTest` |
+| Sincap: her basamakta en az bir dal ve güvenli kaçış (30 tohum × 400 basamak, güvenli yol araması), kargalı basamağın altında kuru dal yok; pilot boşluğa atlamaz, 10 tohumda ortalama ≥ 20 basamak | `SincapWorldTest` |
 | Metin kontrastı WCAG AA eşiğini tutar | `ThemeContrastTest` |
 
 Yeni bir ölçüm bulgusu düzeltildiğinde, mümkünse **paylı bir değişmez** olarak
@@ -1646,6 +1647,41 @@ dönüşüyor.
   sönük**; düzen, simge ve fiyat etiketi aynı yerde duruyor. Ayırt ediliyor ama
   zayıf; kalan süreyi gösteren bir halka ya da daha belirgin soluklaştırma
   "neden basamıyorum" sorusunu ortadan kaldırır.
+
+### Sincap · 2026-09-10
+
+**D — pilot ölçümü** (`./gradlew :games:sincap:probe`, 20 tırmanış/pilot,
+v0.34.0). Pilot konduktan tepki süresi kadar sonra karar verir: yılanlı dalı
+seçmez, hedef basamaktan geçen karga varış anında dalın üstünde olacaksa
+bekler, kuru dal kırılmak üzereyse ya da kedi yaklaştıysa beklemez; fındık ve
+iki basamaklık sıçramayı tercih eder.
+
+**Bulgu 1 (kedi).** İlk ölçümde üç pilot da 300 s boyunca sağ kaldı
+(680–1046 basamak) ve hiçbir neden ölüm üretmedi: kedi en çok 1,3 basamak/s
+idi, pilotların temposu 2,3–3,5. Kedi 2,4'e çıkarılınca yine sağ kaldılar:
+pilot kedi yaklaşınca tepki süresini atlayıp anında zıplıyordu (4,5
+basamak/s) — insanın yapamayacağı şey. Pilot düzeltildi (tepki süresi hep
+uygulanır), kedi 250 basamakta 3,2'ye çıkıp sonra yavaşça artmayı
+sürdürüyor. Sonuç: koşuyu bitiren kedi, belirleyici olan tempo.
+
+| pilot | tepki | ort. yük. | en iyi | ort. skor | ort. fındık | ort. süre | basamak/s | nedenler |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| acemi | 0,35 s | 211 | 236 | 4012 | 54,8 | 103 s | 2,05 | kedi 20 |
+| orta | 0,20 s | 294 | 308 | 5532 | 75,7 | 107 s | 2,74 | kedi 20 |
+| uzman | 0,10 s | 500 | 559 | 9230 | 124,8 | 143 s | 3,50 | kedi 19 · karga 1 |
+
+Okuma: tempo ile yükseklik doğrusal (2,05 → 211, 2,74 → 294, 3,5 → 500).
+Kedi eğrisinden hesapla insan hedefleri: 1 basamak/s'lik acemi ~90 m, 1,5
+ile ~145 m, 2 ile ~200 m; koşu 1,5–2,5 dakika. Kuru dal, yılan ve karga
+pilotu neredeyse hiç öldürmüyor (60 koşuda 1 karga): bunlar okuma hatasının
+cezası, insan için asıl ölüm nedenleri olacak. Basamak dağılımı (tohum 1,
+ilk 200): tek dallı basamak %50, kuru dal %12, yılan %4, fındık %16, kargalı
+basamak %16. Değişmez teste çevrilen: her basamakta dal ve kaçış (30 tohum ×
+400), kargalı basamağın altında kuru dal yok, pilot boşluğa atlamaz ve 10
+tohumda ortalama ≥ 20 basamak. A–C cihazda koşulmadı; cihazda bakılacak: ilk
+temasta zıplama hissi, erişim ipucunun okunurluğu, kedi göstergesinin fark
+edilirliği, kuru dal titremesi ve 1,1 s'nin yeterliliği, 7,5 basamaklık görüş
+alanında kargayı görme süresi.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

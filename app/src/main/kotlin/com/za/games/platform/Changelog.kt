@@ -39,6 +39,15 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.34.0", "2026-09-10",
+            tr = listOf(
+                "Yeni oyun: Sincap — çınarda dikey tırmanış: sola ya da sağa dokun, üst dala atla. Kuru dallar, yılanlar, kargalar ve peşinde hızlanan kedi; fındık topla, her basamaktan güvenli bir dal erişilir; günlük çınar",
+            ),
+            en = listOf(
+                "New game: Sincap — climb a plane tree: tap left or right to jump to the next branch. Dry branches, snakes, crows and a cat gaining on you; collect nuts, a safe branch is always within reach; daily tree",
+            ),
+        ),
+        ReleaseNote(
             "0.33.0", "2026-09-10",
             tr = listOf(
                 "Yeni oyun: Bostan — şerit savunması: kuyu, fıskiye, korkuluk, kovan ve tuzakla bostanı karga, tavşan, keçi, domuz ve ayıdan koru. Damlalara dokun, su biriktir; her seviye kazanılabilir üretilir; üç zorluk, günlük bostan",
