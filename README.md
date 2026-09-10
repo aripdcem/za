@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Reyon**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Reyon**, **Raket**.
 
 Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç çipleri, seçim kalıcı) ve en üstte son oynanan dört oyun için hızlı erişim şeridi bulunur.
 
@@ -277,6 +277,22 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   değişmezleri (ayrık ve görünür sapmalar, tür kapsamı, dokunma mekaniği), satış puanlaması (elle hesaplı
   örnek), hedef ≥ taban ve geçerli tam doluluk, iyileştirici bütçesi, sipariş gün kuralları (elle izlenen hafta),
   tahmin aralığı, uzman siparişlerinin tekrar oynanışının hedefi birebir vermesi, kayıt tur dönüşü; `ReyonBalanceProbe`
+
+### Raket
+- **Raket oyunu** (Pong türü, kendi tasarımımız): dikey kort, altta ve üstte yatay raketler; raket parmakla
+  sürüklenir (kazanç 1,25). Vuruş noktası çıkış açısını verir (merkez düz, kenar 62°), raketin vuruş anındaki hızı
+  falso ekler (±20°); her vuruşta top %6 hızlanır (tavan 2,7 kat, servisle tabana döner). 11 sayıya iki farkla
+  ulaşan kazanır; servisler sırayla iki tarafa gider
+- **Üç mod**: Bilgisayar (üç seviye: kolay topu izler, orta düşüşü duvar sekmeleriyle tahmin eder, zor kenarla
+  rakibin uzağına vurur; hepsi tepki gecikmesi, hız sınırı ve topla birlikte büyüyen nişan hatasıyla insanı taklit
+  eder), İki kişi (aynı telefonda; herkes kendi yarısında sürükler, üst oyuncunun sayısı ona dönük yazılır), Duvar
+  (üst raket yok; top arka duvardan hafif sapmayla döner, skor ralli uzunluğu, her 8 vuruşta raket daralır; günlük
+  top ya da serbest). Ana menü rekoru en uzun ralli
+- Çarpışma süpürmeli: tavan hızda top bir adımda raket kalınlığından fazla yol alsa da vuruş kaçmaz
+- Motor `games/raket`: `RaketWorld` (sabit adım, süpürmeli çarpışma, açı/falso, servis, sayı ve maç), `RaketAi`
+  (seviye botları; testlerde oyuncu botu olarak da kullanılır); 11 test: determinizm, servis, vuruş açısı ve
+  kaçırma, falso, hız rampası ve raket daralması, tünelleme yok, servis sırası ve 11-2 kuralı, duvar rallisi,
+  duvar katlamalı tahmin, kort sınırları, seviye sıralaması (orta bot kolayı yener, zora yenilir)
 
 ### Vergici ve Toplam Kapma (`games/sayi`)
 - **Vergici** (Taxman): 1–N tahtası; böleni kalmış bir sayıyı alırsın, vergici o sayının tahtadaki tüm bölenlerini

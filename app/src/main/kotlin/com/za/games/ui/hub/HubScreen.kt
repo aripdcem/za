@@ -1013,3 +1013,22 @@ fun ReyonArt(modifier: Modifier = Modifier) {
         drawPath(star, Color(0xFF0F172A))
     }
 }
+
+@Composable
+fun RaketArt(modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        drawRoundRect(Color(0xFF0E3446), size = Size(w, w), cornerRadius = CornerRadius(w * 0.12f, w * 0.12f))
+        for (i in 0 until 6) {
+            drawRect(Color(0x66E2E8F0), Offset(w * (0.08f + i * 0.15f), w * 0.49f), Size(w * 0.08f, w * 0.02f))
+        }
+        drawRoundRect(Color(0xFFFB7185), Offset(w * 0.28f, w * 0.1f), Size(w * 0.3f, w * 0.055f), CornerRadius(w * 0.03f, w * 0.03f))
+        drawRoundRect(Color(0xFF5EEAD4), Offset(w * 0.45f, w * 0.845f), Size(w * 0.3f, w * 0.055f), CornerRadius(w * 0.03f, w * 0.03f))
+        val ball = Color(0xFFFDE68A)
+        listOf(0.36f to 0.22f, 0.42f to 0.34f, 0.48f to 0.46f, 0.54f to 0.58f).forEachIndexed { i, (x, y) ->
+            drawCircle(ball.copy(alpha = 0.15f + 0.15f * i), radius = w * (0.02f + 0.006f * i), center = Offset(w * x, w * y))
+        }
+        drawCircle(ball, radius = w * 0.05f, center = Offset(w * 0.6f, w * 0.7f))
+        drawCircle(Color(0xFFFFFBEB), radius = w * 0.02f, center = Offset(w * 0.585f, w * 0.685f))
+    }
+}

@@ -18,6 +18,7 @@ import com.za.games.ui.hub.VergiciArt
 import com.za.games.ui.hub.ToplamArt
 import com.za.games.ui.hub.FiloArt
 import com.za.games.ui.hub.ReyonArt
+import com.za.games.ui.hub.RaketArt
 import com.za.games.ui.hub.VirajArt
 import com.za.games.ui.hub.MinesArt
 import com.za.games.ui.hub.SnakeArt
@@ -35,6 +36,7 @@ import com.za.games.ui.vergici.VergiciScreen
 import com.za.games.ui.toplam.ToplamScreen
 import com.za.games.ui.filo.FiloScreen
 import com.za.games.ui.reyon.ReyonScreen
+import com.za.games.ui.raket.RaketScreen
 import com.za.games.ui.viraj.VirajScreen
 import com.za.games.ui.snake.SnakeScreen
 import com.za.games.ui.sudoku.SudokuScreen
@@ -274,6 +276,18 @@ object GameRegistry {
             art = { modifier -> ReyonArt(modifier) },
             screen = { highScore, onScore, onExit ->
                 ReyonScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "raket",
+            since = "0.29.0",
+            titleRes = R.string.game_raket,
+            taglineRes = R.string.game_raket_tagline,
+            category = GameCategory.ARCADE,
+            accent = Color(0xFF5EEAD4),
+            art = { modifier -> RaketArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                RaketScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
     )

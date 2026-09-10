@@ -1,4 +1,4 @@
-ZA is an ad-free game platform: 19 games in one app. None of them shows ads, asks for permissions or collects data. There is not even an INTERNET permission; everything works offline.
+ZA is an ad-free game platform: 20 games in one app. None of them shows ads, asks for permissions or collects data. There is not even an INTERNET permission; everything works offline.
 
 OUR PROMISE
 • 0 ads: no ad SDK
@@ -7,7 +7,7 @@ OUR PROMISE
 • Pure play: scores and settings stay on your device
 
 GAMES
-Arcade: Blok (falling blocks), Snake, Kuyu (descend the well, daily well), Geçit (road crossing, daily mode), Balkon (aim from the balcony: pumpkin seeds, water balloons or spit), Viraj (pseudo-3D racing, daily track), Filo (vertical space shooter, daily fleet)
+Arcade: Blok (falling blocks), Snake, Kuyu (descend the well, daily well), Geçit (road crossing, daily mode), Balkon (aim from the balcony: pumpkin seeds, water balloons or spit), Viraj (pseudo-3D racing, daily track), Filo (vertical space shooter, daily fleet), Raket (paddle game: vs the computer, a friend or the wall; daily wall)
 Puzzle: 2048, Sudoku (three levels, notes, unique solution), Minesweeper, Kakuro (three sizes, unique solution), Reyon (planogram puzzle, compliance audit and sales layout; daily shelf)
 Word (Turkish): Beş Harf (daily five-letter word), Kıskaç (alphabetical squeeze), Türetme (words from letters), Dizgi (pass-and-play word board, 2-4 players)
 Board and numbers: Tavla (backgammon: Classic, Tapa, Hapis; vs computer or a friend), Vergici (Taxman), Toplam Kapma (Number Scrabble)

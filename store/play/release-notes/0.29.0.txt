@@ -1,0 +1,6 @@
+<tr-TR>
+• Yeni oyun: Raket. Raketi sürükle; vuruş noktası açıyı, hareketin falsoyu verir, her vuruşta top hızlanır. Üç seviyeli bilgisayar, aynı telefonda iki kişi ya da duvara karşı ralli; günlük duvar.
+</tr-TR>
+<en-US>
+• New game: Raket. Drag the paddle; where the ball hits sets the angle, your motion adds spin, and every hit speeds the ball up. Three computer levels, two players on one phone, or a rally against the wall; daily wall.
+</en-US>
