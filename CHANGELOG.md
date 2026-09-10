@@ -2,6 +2,10 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.29.0 (2026-09-10)
+- Yeni oyun: **Raket** — dikey kortta raket oyunu; vuruş noktası açıyı, raketin hareketi falsoyu verir, her vuruşta top %6 hızlanır, 11 sayıya iki farkla ulaşan kazanır. Üç seviyeli bilgisayar (kolay topu izler, orta düşüşü tahmin eder, zor kenarla rakibin uzağına vurur), aynı telefonda iki kişi (herkes kendi yarısında sürükler, üst oyuncunun sayısı ona dönük) ve duvara karşı ralli (günlük top ya da serbest; her 8 vuruşta raket daralır). Ana menü rekoru en uzun ralli
+- Motor `games/raket`: süpürmeli çarpışma (tavan hızda tünelleme yok); seviye botları tepki gecikmesi, hız sınırı ve topla birlikte büyüyen nişan hatasıyla insanı taklit eder — hata büyümeyince iki tahmin eden raket sonsuz ralli yapıyordu (denge ölçümü `:games:raket:probe`)
+
 ## 0.28.2 (2026-09-10)
 - Reyon Sipariş: hafta sonucu kartında hafta grafiği — her günün kârı çubuk, biriken stok devri çizgi, uzmanın devri kesikli çizgi; grafiğin ekran okuyucu açıklaması gün gün kârı okuyor
 - Gün kapanışında rafta kalan stok gün özetine yazılıyor (kayıtla birlikte); 0.28.1 öncesi kaydedilmiş haftalar da yükleniyor, o günlerde devir çizgisi çizilmiyor

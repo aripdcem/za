@@ -52,6 +52,7 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Sipariş: gerçekleşen talep tahmin aralığında; uzman siparişlerinin tekrar oynanışı hedefi birebir verir; gün kuralları elle izlenen haftayla eşleşir; kayıt tur dönüşü | `ReyonOrderTest` |
 | Reyon blok adları en dar gerçek gözde kırpılmaz (35 ad, TR ve EN; 360 dp telefonda Zor planı, tek yüz) | `ReyonBlockLabelTest` |
 | Denetimde plan ve raf 360×640'ta da aynı genişlikte ve ekran içinde; plan büyütme açılıp kapanır | `ReyonAuditLayoutTest` |
+| Raket: orta bir oyuncu botu kolay bilgisayarı yener, zora yenilir, seviyeler sıralı ve her maç biter; tavan hızda vuruş kaçmaz (tünelleme yok) | `RaketWorldTest` |
 | Metin kontrastı WCAG AA eşiğini tutar | `ThemeContrastTest` |
 
 Yeni bir ölçüm bulgusu düzeltildiğinde, mümkünse **paylı bir değişmez** olarak
@@ -1146,6 +1147,46 @@ kesikli çizgide (3,9). 360 dp'de kart kayıyor; grafik de altındaki düğmeler
 okunuyor. Ekran okuyucu açıklaması günleri kârıyla veriyor: "Hafta grafiği:
 1. gün +32, 2. gün +26, … · stok devri 12,5 (uzman 3,9)". Çökme yok, `logcat`
 temiz.
+
+### Raket · 2026-09-10
+
+**D — bilgisayar seviyeleri** (`./gradlew :games:raket:probe`, 30 maç/hücre,
+v0.29.0). Bilgisayar raketi bir bottur: tepki gecikmesi, hız sınırı ve nişan
+hatası. Aynı sınıf testte alt raketi süren üç "oyuncu botu" olarak da
+kullanılır (zayıf: topu izler, 0,95 birim/s, 0,26 s; orta: tahmin eder,
+1,4 birim/s, 0,14 s, hata 0,28; güçlü: 2,4 birim/s, 0,05 s, hata 0,08), ve
+seviyeler bu botlara karşı ölçülür.
+
+**Bulgu 1 (düzeltildi).** İlk ölçümde tahmin eden iki raket sonsuz ralli
+yapıyordu: orta bot orta ve zor seviyeye karşı 30 maçın hiçbirini bitiremedi
+(600 s tavan, 900+ vuruşluk ralliler). Nişan hatası raketin yarı genişliğinin
+0,3 katı, yani her zaman raketin içinde kalıyordu; hız tavanı da kimseyi
+kaçırtmıyor (tavan hızda düz top 0,63 s'de karşıya varıyor, orta raket o sürede
+kortu geçiyor). **Düzeltme:** hata normal dağılımlı ve top hızıyla büyüyor
+(tavanda taban hatanın 4,5 katı; `RaketAi.ERROR_SPEED`), hız rampası %4,5'ten
+%6'ya çıktı (tavana 17 vuruşta). Böylece yavaş topu herkes karşılıyor, tavan
+hızda orta bir raket üç dönüşten birini kaçırıyor.
+
+| oyuncu botu | seviye | bot galibiyeti | ort. skor | ort. süre | ort. ralli/sayı |
+| --- | --- | --- | --- | --- | --- |
+| zayıf | kolay | %76 | 10,3–6,6 | 106 s | 2,2 |
+| zayıf | orta | %0 | 0,8–11,0 | 126 s | 5,5 |
+| zayıf | zor | %0 | 0,0–11,0 | 123 s | 6,1 |
+| orta | kolay | %100 | 11,0–0,3 | 103 s | 4,5 |
+| orta | orta | %53 | 9,5–8,9 | 332 s | 12,6 |
+| orta | zor | %0 | 1,2–11,0 | 249 s | 15,7 |
+| güçlü | kolay | %100 | 11,0–0,0 | 110 s | 5,5 |
+| güçlü | orta | %100 | 11,0–0,0 | 217 s | 15,8 |
+| güçlü | zor | %96 (1 bitmedi) | 11,0–0,0 | 429 s | 43,4 |
+
+Okuma: kolay, topu izleyen acemi bota bile çoğunlukla yeniliyor; orta, orta
+botla başa baş; zor orta botu hiç kaçırmıyor ama çok hızlı ve isabetli bir
+oyuncuya yeniliyor (kenar vuruşu tavan hızda risklidir). Orta ve zor maçlar
+4–6 dakika sürüyor; kolay 2 dakikadan kısa. Değişmez teste çevrilen: orta bot
+kolayı ≥ %70 yener, zora ≤ %35 yenilir, seviyeler sıralı, her maç biter
+(`aiLevelsAreOrderedAndTheEasyOneIsBeatable`). Ayrıca tavan hızda 210
+konumda vuruşun kaçmadığı (`noTunnelingAtTopSpeed`) ve falsonun raket hızından
+geldiği doğrulanır. A–C cihazda koşulmadı.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

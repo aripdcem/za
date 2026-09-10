@@ -39,6 +39,15 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.29.0", "2026-09-10",
+            tr = listOf(
+                "Yeni oyun: Raket — raketi sürükle; vuruş noktası açıyı, hareketin falsoyu verir, her vuruşta top hızlanır. Üç seviyeli bilgisayar, aynı telefonda iki kişi ya da duvara karşı ralli (günlük top)",
+            ),
+            en = listOf(
+                "New game: Raket — drag the paddle; where the ball hits sets the angle, your motion adds spin, every hit speeds the ball up. Three computer levels, two players on one phone, or a rally against the wall (daily ball)",
+            ),
+        ),
+        ReleaseNote(
             "0.28.2", "2026-09-10",
             tr = listOf(
                 "Reyon Sipariş: hafta sonunda kâr ve stok devri grafiği — hangi gün ne kazandırdı, devir uzmanın nerede kaldı",
