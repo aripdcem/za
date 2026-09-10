@@ -3,10 +3,13 @@ package com.za.games.ui.reyon
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.za.games.R
 import com.za.games.game
@@ -14,6 +17,7 @@ import com.za.games.setZaContent
 import com.za.games.str
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -100,11 +104,23 @@ class ReyonScreenTest {
         rule.waitUntil(timeoutMillis = 30_000) {
             rule.onAllNodes(hasContentDescription(boardPrefix, substring = true)).fetchSemanticsNodes().isNotEmpty()
         }
-        // İlk ürünün "Artır" düğmesi: sipariş 1 koli olur.
+        // İlk ürünün "Artır" düğmesi: sipariş 1 koli olur (düğmenin tıklama eylemi doğrudan çağrılır).
         val morePrefix = str(R.string.reyon_order_more) + ":"
-        rule.onAllNodes(hasContentDescription(morePrefix, substring = true))[0].performClick()
+        fun moreButtons() = rule.onAllNodes(hasContentDescription(morePrefix, substring = true))
+        assertTrue("artır düğmesi olmalı", moreButtons().fetchSemanticsNodes().isNotEmpty())
+        moreButtons()[0].performSemanticsAction(SemanticsActions.OnClick)
+        rule.waitForIdle()
         val oneCase = str(R.string.reyon_order_case_fmt, 1, 0).substringBefore(" = ")
-        assertTrue("1 koli görünmeli", rule.onAllNodes(hasText(oneCase, substring = true)).fetchSemanticsNodes().isNotEmpty())
+        val caseNodes = rule.onAllNodes(hasText(oneCase, substring = true)).fetchSemanticsNodes()
+        if (caseNodes.isEmpty()) {
+            val first = moreButtons().fetchSemanticsNodes().first()
+            val koli = rule.onAllNodes(hasText("koli", substring = true)).fetchSemanticsNodes()
+                .map { it.config.getOrNull(SemanticsProperties.Text)?.joinToString { t -> t.text } }
+            val rows = rule.onAllNodes(hasContentDescription(": ", substring = true)).fetchSemanticsNodes()
+                .map { it.config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString() }
+            fail("1 koli görünmeli · düğme ${first.boundsInRoot} devre dışı=${first.config.contains(SemanticsProperties.Disabled)} " +
+                "desc=${first.config.getOrNull(SemanticsProperties.ContentDescription)} · koli metinleri=$koli · satırlar=$rows")
+        }
 
         // Günü kapat → döküm kartı → Devam.
         rule.onNodeWithText(str(R.string.reyon_order_close_day)).performClick()
