@@ -958,6 +958,7 @@
     <string name="bostan_life_lost">Kulübeye ulaştı!</string>
     <string name="bostan_no_water">Su yetmez</string>
     <string name="bostan_cooldown">Kart dolmadı</string>
+    <string name="bostan_cooldown_fmt">%1$d s</string>
     <string name="bostan_occupied">Hücre dolu</string>
     <string name="bostan_tap_hint">Karta dokun, sonra hücreye dokun</string>
     <string name="bostan_def_kuyu">Kuyu</string>

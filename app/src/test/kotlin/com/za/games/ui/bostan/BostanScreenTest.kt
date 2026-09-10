@@ -1,6 +1,7 @@
 package com.za.games.ui.bostan
 
 import android.content.Context
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.down
 import androidx.compose.ui.test.hasContentDescription
@@ -14,6 +15,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.za.games.R
 import com.za.games.bostan.BostanDifficulty
 import com.za.games.bostan.BostanLevel
+import com.za.games.bostan.BostanState
 import com.za.games.bostan.DefenderKind
 import com.za.games.bostan.EnemyKind
 import com.za.games.bostan.Spawn
@@ -22,6 +24,7 @@ import com.za.games.setZaContent
 import com.za.games.str
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -59,16 +62,11 @@ class BostanScreenTest {
         rule.onNodeWithText(str(R.string.bostan_start)).assertIsDisplayed()
     }
 
-    @Test
-    fun selectingACardAndTappingACellPlacesAWellThenPauseReturnsToTheMenu() {
-        val vm = BostanViewModel(ApplicationProvider.getApplicationContext(), quickLevel)
-        rule.setZaContent { BostanScreen(highScore = 0L, onScore = {}, onExit = {}, viewModel = vm) }
+    /** Serbest koşuyu başlatır ve arka plandaki üretimi bekler; saat elle ilerletilir. */
+    private fun startFreeRun(vm: BostanViewModel) {
         rule.onNodeWithText(str(R.string.mode_free)).performClick()
-        // Kare döngüsü sonsuzdur; saat elle ilerletilir (Dalgıç testiyle aynı düzen).
         rule.mainClock.autoAdvance = false
         rule.onNodeWithText(str(R.string.bostan_start)).performClick()
-        // Seviye arka planda üretilir, sonuç ana iş parçacığına gönderilir: kuyruk
-        // boşaltılmadan (waitForIdle) evre değişmez; yalnızca durumu yoklamak yetmez.
         val deadline = System.currentTimeMillis() + 10_000
         while (vm.phase.value != BostanPhase.PLAYING && System.currentTimeMillis() < deadline) {
             rule.waitForIdle()
@@ -76,6 +74,43 @@ class BostanScreenTest {
         }
         assertEquals(BostanPhase.PLAYING, vm.phase.value)
         rule.mainClock.advanceTimeByFrame()
+    }
+
+    @Test
+    fun aNearbyDropIsCollectedBeforePlantingEvenWithACardSelected() {
+        val vm = BostanViewModel(ApplicationProvider.getApplicationContext(), quickLevel)
+        rule.setZaContent { BostanScreen(highScore = 0L, onScore = {}, onExit = {}, viewModel = vm) }
+        startFreeRun(vm)
+        vm.state.dropForTest(2, 5)
+        val water0 = vm.state.water
+        rule.onNode(hasContentDescription(str(R.string.bostan_card_desc_fmt, str(R.string.bostan_def_kuyu), DefenderKind.KUYU.cost))).performClick()
+        rule.mainClock.advanceTimeByFrame()
+        assertEquals(DefenderKind.KUYU, vm.selected.value)
+        val prefix = str(R.string.bostan_board_desc_fmt, 0, 0, 0, 0).substringBefore(':')
+        val field = rule.onNode(hasContentDescription(prefix, substring = true))
+        // Damlanın altındaki hücreye (2,6), üst kenara yakın dokunuş: hücre farklı ama damlaya 0,6 hücre yakın.
+        field.performTouchInput {
+            val c = bostanCellCenter(width.toFloat(), height.toFloat(), 2, 6)
+            val above = bostanCellCenter(width.toFloat(), height.toFloat(), 2, 5)
+            val p = Offset(c.x, c.y + (above.y - c.y) * 0.4f)
+            down(p)
+            up()
+        }
+        rule.mainClock.advanceTimeByFrame()
+        assertEquals("damla toplandı, ekim olmadı", water0 + BostanState.DROP_WATER, vm.state.water)
+        assertNull(vm.state.defenderAt(2, 6))
+        assertNull(vm.state.defenderAt(2, 5))
+        assertTrue(vm.state.drops.isEmpty())
+        assertEquals("kart seçimi kalır", DefenderKind.KUYU, vm.selected.value)
+    }
+
+    @Test
+    fun selectingACardAndTappingACellPlacesAWellThenPauseReturnsToTheMenu() {
+        val vm = BostanViewModel(ApplicationProvider.getApplicationContext(), quickLevel)
+        rule.setZaContent { BostanScreen(highScore = 0L, onScore = {}, onExit = {}, viewModel = vm) }
+        // Kare döngüsü sonsuzdur; saat elle ilerletilir. Seviye arka planda üretilir,
+        // sonuç ana iş parçacığına gönderilir: kuyruk boşaltılmadan (waitForIdle) evre değişmez.
+        startFreeRun(vm)
         val water0 = vm.state.water
         assertNull(vm.state.defenderAt(2, 6))
         val cardDesc = str(R.string.bostan_card_desc_fmt, str(R.string.bostan_def_kuyu), DefenderKind.KUYU.cost)

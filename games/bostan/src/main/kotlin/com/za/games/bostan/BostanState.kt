@@ -3,6 +3,7 @@ package com.za.games.bostan
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.sqrt
 import kotlin.random.Random
 
 /**
@@ -128,6 +129,23 @@ class BostanState(val level: BostanLevel) {
     fun dropAt(lane: Int, row: Int): Drop? {
         for (d in _drops) if (d.ttl > 0f && d.lane == lane && d.row == row) return d
         return null
+    }
+
+    /** Sürekli tarla koordinatına ([x] şerit, [y] satır; hücre merkezi lane + 0,5 / row) en çok [radius] hücre uzaktaki en yakın damla. */
+    fun nearestDrop(x: Float, y: Float, radius: Float): Drop? {
+        var best: Drop? = null
+        var bestDist = radius
+        for (d in _drops) {
+            if (d.ttl <= 0f) continue
+            val dx = d.lane + 0.5f - x
+            val dy = d.row - y
+            val dist = sqrt(dx * dx + dy * dy)
+            if (dist <= bestDist) {
+                bestDist = dist
+                best = d
+            }
+        }
+        return best
     }
 
     /** Kartın kalan bekleme süresi (s). */

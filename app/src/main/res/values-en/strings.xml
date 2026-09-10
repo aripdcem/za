@@ -958,6 +958,7 @@
     <string name="bostan_life_lost">Reached the hut!</string>
     <string name="bostan_no_water">Not enough water</string>
     <string name="bostan_cooldown">Card recharging</string>
+    <string name="bostan_cooldown_fmt">%1$d s</string>
     <string name="bostan_occupied">Cell taken</string>
     <string name="bostan_tap_hint">Tap a card, then tap a cell</string>
     <string name="bostan_def_kuyu">Well</string>
