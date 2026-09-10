@@ -249,11 +249,12 @@ fun HoldButton(
  * dp'de Reyon menüsü ekrandan taşıyor, "Başla" düğmesine dokunulamıyordu
  * (docs/oyun-testi.md, Reyon Sipariş bulgu 1). Yükseklik sınırsızsa (kaydırılabilir
  * bir ebeveyn içinde) kaydırma eklenmez; aynı yönde iç içe kaydırma izinli değil.
+ * İçeriği kendi kaydıran kartlar (tema listesi, dükkân) [scrollable] = false verir.
  */
 @Composable
-fun OverlayCard(content: @Composable () -> Unit) {
+fun OverlayCard(scrollable: Boolean = true, content: @Composable () -> Unit) {
     BoxWithConstraints(modifier = Modifier.padding(16.dp)) {
-        val bounded = maxHeight != Dp.Infinity
+        val bounded = scrollable && maxHeight != Dp.Infinity
         Surface(
             shape = RoundedCornerShape(24.dp),
             color = MaterialTheme.colorScheme.surface.copy(alpha = 0.96f),

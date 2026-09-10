@@ -1098,7 +1098,7 @@ seferinde 0→3 koli ve 3→0 koli — düşen dokunuş yok.
 içi kayıyor (yükseklik sınırsızsa kaydırma eklenmez); dört Reyon brifi
 kısaltıldı. Robolectric 360×640'ta Sipariş menüsünde "Haftaya başla" ve "Menüye
 dön" kaydırılıp görünür alana geliyor (`ReyonAuditLayoutTest`). Bulgu 2:
-`KindChips` kart genişliği 300 dp'nin altındaysa 2×2 diziliyor, çip metni
+`KindChips` kart içi genişlik 280 dp'nin altındaysa (411 dp'de 299, 360 dp'de 248) 2×2 diziliyor, çip metni
 sığmazsa üç nokta; 411 dp'de tek satır korunuyor. Bulgu 3: dokunarak keşif
 açıkken uygulama sistem çubuklarını gizlemiyor (`MainActivity`, dinleyiciyle
 canlı), içerik çubukların üstünde kalıyor; `cihaz_testi.py erisim` sıfır

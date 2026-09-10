@@ -438,7 +438,7 @@ private fun ChoiceCard(
     onContinue: () -> Unit,
 ) {
     if (offer == null || revision < 0) return
-    OverlayCard {
+    OverlayCard(scrollable = false) {
         Column(
             modifier = Modifier
                 .heightIn(max = 520.dp)

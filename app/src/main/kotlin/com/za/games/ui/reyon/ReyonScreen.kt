@@ -593,8 +593,11 @@ internal fun Chip(label: String, selected: Boolean, modifier: Modifier = Modifie
     }
 }
 
-/** Dört tür çipi tek satıra bu genişliğin altında sığmıyor ("Denetim" 360 dp'de kırpılıyordu). */
-internal val KIND_CHIPS_ONE_ROW_MIN = 300.dp
+/**
+ * Dört tür çipi tek satıra bu genişliğin altında sığmıyor ("Denetim" 360 dp'de
+ * kırpılıyordu). Kart içi genişlik 411 dp'de 299 dp, 360 dp'de 248 dp.
+ */
+internal val KIND_CHIPS_ONE_ROW_MIN = 280.dp
 
 private fun kindLabel(kind: ReyonKind): Int = when (kind) {
     ReyonKind.PUZZLE -> R.string.reyon_kind_puzzle
