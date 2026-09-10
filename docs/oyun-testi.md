@@ -380,9 +380,13 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | ✅ mevcut testlerle | 2026-09-09 |
 | Viraj | ✅ | **60 · 3 · %100 · 34 ms** | — (tuşla) | ✅ kusur yok | 2026-09-09 |
 | Filo | ✅ | **60 · 1 · %81 · 31 ms** | ✅ düzeltildi | ✅ düzeltildi | 2026-09-09 |
-| Reyon | bekliyor | — (olay güdümlü) | — (dokun-yerleştir) | ✅ ölçüldü | 2026-09-09 |
+| Reyon | ✅ | olay güdümlü (1 · 0) | — (dokun-yerleştir) | ✅ ölçüldü | 2026-09-10 |
 
-18 oyunun tamamı açıldı, oynandı ve **hiçbirinde çökme yok** (`logcat` temiz).
+**E · erişilebilirlik:** tüm oyunlarda etiketsiz dokunulabilir öğe kalmadı
+(tek bulgu Kıskaç'ın kolay mod anahtarıydı, düzeltildi). Kontrast CI'da
+korunuyor.
+
+19 oyunun tamamı açıldı, oynandı ve **hiçbirinde çökme yok** (`logcat` temiz).
 Sürekli çizen altı oyunun tamamı 60 kare/s tutuyor; kaçan vsync 0–3 (≈%0,4).
 Yani **kare hızı sorunu yok**.
 
