@@ -669,6 +669,9 @@
     <string name="reyon_audit_result_fmt">%1$s · %2$d mistakes · %3$d hints</string>
     <string name="reyon_audit_board_desc_fmt">Audit shelf %1$d shelves × %2$d slots, %3$d/%4$d deviations found</string>
     <string name="reyon_audit_plan_desc_fmt">Plan %1$d shelves × %2$d slots</string>
+    <string name="reyon_audit_plan_zoom_hint">tap to enlarge</string>
+    <string name="reyon_audit_plan_zoom_desc">Enlarged plan; tap to close</string>
+    <string name="reyon_audit_plan_zoom_close">Tap to close</string>
     <string name="reyon_dev_swap_fmt">Swapped: %1$s ↔ %2$s</string>
     <string name="reyon_dev_gap_fmt">Empty slot: %1$s is one facing short</string>
     <string name="reyon_dev_missing_fmt">Empty slot: %1$s is missing</string>

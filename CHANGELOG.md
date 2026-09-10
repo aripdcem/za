@@ -2,6 +2,11 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.27.1 (2026-09-10)
+- Reyon: blok adları göze sığdırılıyor: önce tek satır, sığmazsa boşluktan iki satır, sonra hafif yatay daraltma; üç nokta en son çare (tek yüzlü gözde "Bulaşık deterjanı" artık okunuyor)
+- Reyon Denetim: plan ve raf tuvalleri yükseklik bütçesinden boyutlanıyor; kısa ekranda raf daralıp sola yaslanmıyor, bulunanlar listesi kaybolmuyor; uzun ekranda bloklar büyüyor; plana dokununca büyütülmüş plan açılıyor; son bulunan sapma listenin başında
+- Reyon Satış: katkı rozeti bloğun sağ altına taşındı, adla çakışmıyor
+
 ## 0.27.0 (2026-09-10)
 - Reyon: Satış modu. Ürünleri serbestçe diz; puan konum (göz hizası, ağırlar alta, yüksek marj), tamamlayıcı komşuluk, çakışma, kategori ve marka bloğu kurallarından gelir; hedef tavlamalı iyileştiricinin bulduğu en iyi diziliş, yıldızlar hedefe göre; canlı puan dökümü, hedef dizilişi görme, günlük ürün seti, en iyi puan kaydı
 

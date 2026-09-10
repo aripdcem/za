@@ -49,6 +49,8 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Her bulmaca tahminsiz çözülür, brif kısa kalır, üretim bütçede | `ReyonGeneratorTest` |
 | Denetim sapmaları ayrık ve görünür; plan ile raf yalnızca sapma gözlerinde ayrışır | `ReyonAuditTest` |
 | Satış hedefi tabanı geçer, geçerli tam doluluktur; iyileştirici bütçede | `ReyonSalesTest` |
+| Reyon blok adları en dar gerçek gözde kırpılmaz (35 ad, TR ve EN; 360 dp telefonda Zor planı, tek yüz) | `ReyonBlockLabelTest` |
+| Denetimde plan ve raf 360×640'ta da aynı genişlikte ve ekran içinde; plan büyütme açılıp kapanır | `ReyonAuditLayoutTest` |
 | Metin kontrastı WCAG AA eşiğini tutar | `ThemeContrastTest` |
 
 Yeni bir ölçüm bulgusu düzeltildiğinde, mümkünse **paylı bir değişmez** olarak
@@ -950,6 +952,24 @@ kurallarından geliyor: önce doğru rafa koymak, sonra komşuluğu düzeltmek
 diye okunur. Çakışma payı hedefte bile sıfır değil: raf genişlikleri bazen
 temizlik ile gıdayı aynı rafa zorluyor. Üretim süresi masaüstünde en çok
 70 ms; telefonda arka planda hesaplanır, dönen gösterge var.
+
+**E — küçük ekran** (v0.27.1, masabaşı geometri + Robolectric). Cihaz
+koşumundan önce yerleşim hesabı iki sorun gösterdi. (1) Blok adı puntosu blok
+yüksekliğinden türetilip 8 sp tabanına dayanıyordu; 360 dp genişlikte Zor
+rafında blok 33 dp, Denetim planında 26 dp yüksekliğinde kalıyor, "Bulaşık
+deterjanı" gibi adlar tek yüzlü gözde (yazı alanı ~41 dp) üç noktayla
+kırpılıyordu. (2) Denetimde iki tuval sabit en-boy oranıyla diziliyordu;
+640 dp yükseklikte Orta rafı sığmayınca raf tuvali daralıp sola yaslanıyor,
+bulunanlar listesi sıfır yükseklik alıyordu. Düzeltme: ad, bloğa
+sığdırılıyor (en büyük puntodan başlayarak tek satır, sonra boşluktan iki
+satır, en küçük puntoda %72'ye kadar yatay daraltma, üç nokta en son;
+`BlockLabeler.fit`); Denetim yerleşimi yükseklik bütçesinden hesaplanıyor
+(raf satırı göz genişliğinin 0,62–0,90 katı, plan satırı rafın 0,85'i; taban
+katsayıda bile sığmazsa iki tuval birlikte daraltılıp ortalanıyor;
+`auditLayout`) ve plana dokununca büyütülmüş plan açılıyor. 360 dp'de Zor
+planında en dar durum yazı alanı 45 dp, ad bölgesi 19 dp, 8 sp; 35 adın hepsi
+(TR ve EN) bu alanda kırpılmadan sığıyor (`ReyonBlockLabelTest`, gerçek yazı
+ölçümüyle). Cihazda doğrulama (A) yerel oturuma kaldı.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

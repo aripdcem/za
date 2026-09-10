@@ -39,6 +39,17 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.27.1", "2026-09-10",
+            tr = listOf(
+                "Reyon: blok adları göze sığdırılıyor (gerekirse iki satır ya da hafif daraltma; kırpma en son çare)",
+                "Reyon Denetim: plan ve raf kısa ekranda da aynı genişlikte ve ekranın içinde; plana dokununca büyür; son bulunan sapma listenin başında",
+            ),
+            en = listOf(
+                "Reyon: product names now fit their slot (two lines or a slight squeeze when needed; truncation is the last resort)",
+                "Reyon Audit: plan and shelf keep the same width and stay on screen on short phones; tap the plan to enlarge it; the latest find tops the list",
+            ),
+        ),
+        ReleaseNote(
             "0.27.0", "2026-09-10",
             tr = listOf("Reyon: Satış modu (ürünleri satış kurallarına göre diz, iyileştiricinin hedefine göre yıldız al; canlı puan dökümü, hedef diziliş, günlük ürün seti)"),
             en = listOf("Reyon: Sales mode (arrange products by the sales rules and earn stars against the optimizer's target; live score breakdown, target layout, daily product set)"),

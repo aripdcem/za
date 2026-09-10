@@ -52,7 +52,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
@@ -340,8 +339,7 @@ private fun ShelfCanvas(
     val currentTap by rememberUpdatedState(onTap)
     val currentLong by rememberUpdatedState(onLongPress)
     val textMeasurer = rememberTextMeasurer()
-    val cache = remember { HashMap<String, TextLayoutResult>() }
-    val labeler = remember(textMeasurer) { BlockLabeler(textMeasurer, cache) }
+    val labeler = remember(textMeasurer) { BlockLabeler(textMeasurer) }
     val path = remember { Path() }
     val unplaced = puzzle.products.size - state.placedCount
     val desc = stringResource(R.string.reyon_board_desc_fmt, rows, cols, unplaced)
