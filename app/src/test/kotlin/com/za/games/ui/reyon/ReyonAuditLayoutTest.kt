@@ -1,11 +1,9 @@
 package com.za.games.ui.reyon
 
-import android.content.Context
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.getBoundsInRoot
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
@@ -13,7 +11,6 @@ import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.height
 import androidx.compose.ui.unit.width
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.za.games.R
 import com.za.games.game
@@ -41,17 +38,12 @@ class ReyonAuditLayoutTest {
     val rule = createComposeRule()
 
     @Before
-    fun clearSavedState() = clearPrefs()
+    fun clearSavedState() = ReyonTestSupport.clearPrefs()
 
     @After
-    fun clearSavedStateAfter() = clearPrefs()
-
-    private fun clearPrefs() {
-        ApplicationProvider.getApplicationContext<Context>()
-            .getSharedPreferences("za_reyon", Context.MODE_PRIVATE)
-            .edit()
-            .clear()
-            .commit()
+    fun leaveRoundAndClear() {
+        rule.reyonLeaveRound()
+        ReyonTestSupport.clearPrefs()
     }
 
     private val level = ReyonLevel.KOLAY
@@ -61,10 +53,8 @@ class ReyonAuditLayoutTest {
 
     private fun startEasyAudit() {
         rule.setZaContent { game("reyon").screen(0L, {}, {}) }
-        rule.waitUntil(timeoutMillis = 30_000) {
-            rule.onAllNodesWithText(str(R.string.reyon_kind_sales)).fetchSemanticsNodes().isNotEmpty()
-        }
-        rule.onNodeWithText(str(R.string.reyon_kind_audit)).performClick()
+        rule.reyonOpenMenu()
+        rule.reyonPickKind(str(R.string.reyon_kind_audit))
         rule.onNodeWithText(str(R.string.mode_free)).performClick()
         rule.onNodeWithText(str(R.string.difficulty_easy)).performClick()
         rule.onNodeWithText(str(R.string.reyon_audit_start)).performClick()

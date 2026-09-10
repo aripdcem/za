@@ -1,13 +1,11 @@
 package com.za.games.ui.reyon
 
-import android.content.Context
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.za.games.R
 import com.za.games.game
@@ -27,48 +25,22 @@ class ReyonScreenTest {
     @get:Rule
     val rule = createComposeRule()
 
-    /**
-     * Robolectric aynı sınıfın testleri arasında SharedPreferences'ı paylaşabiliyor;
-     * yarım kalan bir tur (ör. satış testinin bıraktığı) sonraki testi menü yerine
-     * o turla açar. Her test temiz kayıtla başlar.
-     */
     @Before
-    fun clearSavedState() = clearPrefs()
+    fun clearSavedState() = ReyonTestSupport.clearPrefs()
 
     @After
-    fun clearSavedStateAfter() = clearPrefs()
-
-    private fun clearPrefs() {
-        ApplicationProvider.getApplicationContext<Context>()
-            .getSharedPreferences("za_reyon", Context.MODE_PRIVATE)
-            .edit()
-            .clear()
-            .commit()
+    fun leaveRoundAndClear() {
+        rule.reyonLeaveRound()
+        ReyonTestSupport.clearPrefs()
     }
 
-    /**
-     * Ekran hangi durumda açılırsa açılsın menüye getirir: yarım bir tur
-     * geri yüklendiyse üst çubuktaki "Başa dön" ile menüye döner, yoksa
-     * tür çiplerinin görünmesini bekler.
-     */
-    private fun openMenu() {
-        val back = str(R.string.reyon_to_menu)
-        val chip = str(R.string.reyon_kind_sales)
-        rule.waitUntil(timeoutMillis = 30_000) {
-            rule.onAllNodesWithText(back).fetchSemanticsNodes().isNotEmpty() ||
-                rule.onAllNodesWithText(chip).fetchSemanticsNodes().isNotEmpty()
-        }
-        if (rule.onAllNodesWithText(back).fetchSemanticsNodes().isNotEmpty()) {
-            rule.onNodeWithText(back).performClick()
-            rule.waitUntil(timeoutMillis = 10_000) { rule.onAllNodesWithText(chip).fetchSemanticsNodes().isNotEmpty() }
-        }
-    }
+    private fun openMenu() = rule.reyonOpenMenu()
 
     @Test
     fun hintsPlaceProductsUndoReturnsThemAndThePuzzleGetsSolved() {
         rule.setZaContent { game("reyon").screen(0L, {}, {}) }
         openMenu()
-        rule.onNodeWithText(str(R.string.reyon_kind_puzzle)).performClick()
+        rule.reyonPickKind(str(R.string.reyon_kind_puzzle))
         rule.onNodeWithText(str(R.string.mode_free)).performClick()
         rule.onNodeWithText(str(R.string.difficulty_easy)).performClick()
         rule.onNodeWithText(str(R.string.reyon_start)).performClick()
@@ -96,7 +68,7 @@ class ReyonScreenTest {
     fun auditHintsRevealEveryDeviation() {
         rule.setZaContent { game("reyon").screen(0L, {}, {}) }
         openMenu()
-        rule.onNodeWithText(str(R.string.reyon_kind_audit)).performClick()
+        rule.reyonPickKind(str(R.string.reyon_kind_audit))
         rule.onNodeWithText(str(R.string.mode_free)).performClick()
         rule.onNodeWithText(str(R.string.difficulty_easy)).performClick()
         rule.onNodeWithText(str(R.string.reyon_audit_start)).performClick()
@@ -118,7 +90,7 @@ class ReyonScreenTest {
     fun salesPlacesAProductByTappingTheShelfAndUndoReturnsIt() {
         rule.setZaContent { game("reyon").screen(0L, {}, {}) }
         openMenu()
-        rule.onNodeWithText(str(R.string.reyon_kind_sales)).performClick()
+        rule.reyonPickKind(str(R.string.reyon_kind_sales))
         rule.onNodeWithText(str(R.string.mode_free)).performClick()
         rule.onNodeWithText(str(R.string.difficulty_easy)).performClick()
         rule.onNodeWithText(str(R.string.reyon_sales_start)).performClick()
