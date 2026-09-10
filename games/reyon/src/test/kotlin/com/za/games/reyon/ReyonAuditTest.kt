@@ -103,6 +103,7 @@ class ReyonAuditTest {
         }
         assertTrue(s.isComplete)
         assertEquals(a.deviations.size, s.foundCount)
+        assertEquals(a.deviations.indices.toList(), s.foundOrder)
         assertEquals(AuditTap.Already, s.tap(missRow, missCol))
         assertEquals(1, s.mistakes)
         assertNull(s.hint())
@@ -121,6 +122,7 @@ class ReyonAuditTest {
         assertEquals(s.foundCount, t.foundCount)
         assertEquals(s.mistakes, t.mistakes)
         assertEquals(s.hintsUsed, t.hintsUsed)
+        assertEquals(s.foundOrder.sorted(), t.foundOrder)
         var guard = 0
         while (!t.isComplete && guard++ < 10) t.hint()
         assertTrue(t.isComplete)

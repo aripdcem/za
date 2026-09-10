@@ -41,7 +41,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -51,8 +50,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.TextLayoutResult
-import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
@@ -291,8 +288,7 @@ private fun SalesCanvas(
     val currentTap by rememberUpdatedState(onTap)
     val currentLong by rememberUpdatedState(onLongPress)
     val textMeasurer = rememberTextMeasurer()
-    val cache = remember { HashMap<String, TextLayoutResult>() }
-    val labeler = remember(textMeasurer) { BlockLabeler(textMeasurer, cache) }
+    val labeler = remember(textMeasurer) { BlockLabeler(textMeasurer) }
     val path = remember { Path() }
     val unplaced = sales.products.size - state.placedCount
     val desc = stringResource(R.string.reyon_sales_board_desc_fmt, rows, cols, unplaced, score.total)
@@ -337,12 +333,9 @@ private fun SalesCanvas(
                 col = pl.col
             }
             val ring = if (!showTarget && p.id == selected) ReyonPalette.SelectedRing else null
-            drawBlock(g, path, labeler, ReyonText.kind(res, p.kind), p, p.facings, row, col, ring = ring, dim = showTarget)
-            val badge = labeler.label("%+d".format(contributions[p.id]), g.cw, 9f, ReyonPalette.BlockText)
-            val x = g.x(col) + g.w(p.facings) - badge.size.width - g.pad * 1.5f
-            val y = g.y(row) + g.pad * 0.5f
-            drawRoundRect(Color(0x66FFFFFF), topLeft = Offset(x - 2.dp.toPx(), y), size = Size(badge.size.width + 4.dp.toPx(), badge.size.height.toFloat()), cornerRadius = androidx.compose.ui.geometry.CornerRadius(3.dp.toPx(), 3.dp.toPx()))
-            drawText(badge, topLeft = Offset(x, y))
+            // Katkı rozeti bloğun sağ altına, işaret şeridine çizilir; punto blok boyuyla ölçeklenir.
+            val badge = labeler.label("%+d".format(contributions[p.id]), g.cw, (g.h * 0.2f / density).coerceIn(8f, 10f), ReyonPalette.BlockText)
+            drawBlock(g, path, labeler, ReyonText.kind(res, p.kind), p, p.facings, row, col, ring = ring, dim = showTarget, badge = badge)
         }
     }
 }

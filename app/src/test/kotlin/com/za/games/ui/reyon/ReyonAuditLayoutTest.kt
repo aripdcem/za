@@ -1,0 +1,127 @@
+package com.za.games.ui.reyon
+
+import android.content.Context
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.getBoundsInRoot
+import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.unit.DpRect
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.height
+import androidx.compose.ui.unit.width
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.za.games.R
+import com.za.games.game
+import com.za.games.reyon.ReyonLevel
+import com.za.games.setZaContent
+import com.za.games.str
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
+
+/**
+ * Denetim yerleşimi kısa ekranda da tutarlı kalmalı: plan ve raf aynı genişlikte,
+ * ikisi de ekranın içinde, altındaki ipucu düğmesi görünür; plana dokununca
+ * büyütülmüş plan açılır ve dokununca kapanır.
+ */
+@RunWith(AndroidJUnit4::class)
+class ReyonAuditLayoutTest {
+
+    @get:Rule
+    val rule = createComposeRule()
+
+    @Before
+    fun clearSavedState() = clearPrefs()
+
+    @After
+    fun clearSavedStateAfter() = clearPrefs()
+
+    private fun clearPrefs() {
+        ApplicationProvider.getApplicationContext<Context>()
+            .getSharedPreferences("za_reyon", Context.MODE_PRIVATE)
+            .edit()
+            .clear()
+            .commit()
+    }
+
+    private val level = ReyonLevel.KOLAY
+    private val planDesc: String get() = str(R.string.reyon_audit_plan_desc_fmt, level.rows, level.cols)
+    private val shelfPrefix: String get() = str(R.string.reyon_audit_board_desc_fmt, 0, 0, 0, 0).substringBefore(' ')
+    private val zoomDesc: String get() = str(R.string.reyon_audit_plan_zoom_desc)
+
+    private fun startEasyAudit() {
+        rule.setZaContent { game("reyon").screen(0L, {}, {}) }
+        rule.waitUntil(timeoutMillis = 30_000) {
+            rule.onAllNodesWithText(str(R.string.reyon_kind_sales)).fetchSemanticsNodes().isNotEmpty()
+        }
+        rule.onNodeWithText(str(R.string.reyon_kind_audit)).performClick()
+        rule.onNodeWithText(str(R.string.mode_free)).performClick()
+        rule.onNodeWithText(str(R.string.difficulty_easy)).performClick()
+        rule.onNodeWithText(str(R.string.reyon_audit_start)).performClick()
+        rule.waitUntil(timeoutMillis = 30_000) {
+            rule.onAllNodes(hasContentDescription(shelfPrefix, substring = true)).fetchSemanticsNodes().isNotEmpty()
+        }
+    }
+
+    private fun plan(): DpRect = rule.onNode(hasContentDescription(planDesc)).getBoundsInRoot()
+    private fun shelf(): DpRect = rule.onNode(hasContentDescription(shelfPrefix, substring = true)).getBoundsInRoot()
+
+    private fun assertCanvasesFit() {
+        val root = rule.onRoot().getBoundsInRoot()
+        val plan = plan()
+        val shelf = shelf()
+        assertEquals("plan ve raf aynı genişlikte olmalı", plan.width.value, shelf.width.value, 1f)
+        assertTrue("plan neredeyse tam genişlikte olmalı: ${plan.width} / ${root.width}", plan.width >= root.width * 0.85f)
+        assertTrue("plan ekranın içinde olmalı", plan.left >= root.left && plan.right <= root.right + 1.dp)
+        assertTrue("raf ekranın içinde olmalı", shelf.left >= root.left && shelf.right <= root.right + 1.dp)
+        assertTrue("raf planın altında olmalı", shelf.top >= plan.bottom)
+        assertTrue("raf ekranın altına taşmamalı: ${shelf.bottom} / ${root.bottom}", shelf.bottom <= root.bottom)
+        assertTrue("raf plandan daha yüksek olmalı", shelf.height > plan.height)
+        rule.onNodeWithText(str(R.string.reyon_hint)).assertIsDisplayed()
+        rule.onNodeWithText(str(R.string.reyon_audit_plan_label)).assertIsDisplayed()
+    }
+
+    @Test
+    fun canvasesShareTheWidthAndFitOnTheDefaultPhone() {
+        startEasyAudit()
+        assertCanvasesFit()
+    }
+
+    @Test
+    @Config(qualifiers = "+w360dp-h640dp-xhdpi")
+    fun canvasesShareTheWidthAndFitOnAShortPhone() {
+        startEasyAudit()
+        assertCanvasesFit()
+    }
+
+    @Test
+    @Config(qualifiers = "+w360dp-h640dp-xhdpi")
+    fun tappingThePlanOpensTheEnlargedPlanAndTappingAgainClosesIt() {
+        startEasyAudit()
+        rule.onNode(hasContentDescription(zoomDesc)).assertDoesNotExist()
+        rule.onNode(hasContentDescription(planDesc)).performClick()
+        rule.onNode(hasContentDescription(zoomDesc)).assertIsDisplayed()
+        // Küçük ve büyük plan birlikte; ikisi de ekranın içinde.
+        val rootPx = rule.onRoot().fetchSemanticsNode().boundsInRoot
+        val plans = rule.onAllNodes(hasContentDescription(planDesc)).fetchSemanticsNodes()
+        assertEquals("küçük ve büyük plan birlikte", 2, plans.size)
+        for (node in plans) {
+            val b = node.boundsInRoot
+            assertTrue("plan ekranın içinde olmalı: $b / $rootPx", b.left >= rootPx.left - 1f && b.right <= rootPx.right + 1f && b.bottom <= rootPx.bottom + 1f)
+        }
+        assertTrue("büyük plan küçüğünden geniş olmalı", plans.maxOf { it.boundsInRoot.width } > plans.minOf { it.boundsInRoot.width } * 1.05f)
+        rule.onNode(hasContentDescription(zoomDesc)).performClick()
+        rule.onNode(hasContentDescription(zoomDesc)).assertDoesNotExist()
+        assertEquals(1, rule.onAllNodes(hasContentDescription(planDesc)).fetchSemanticsNodes().size)
+    }
+}

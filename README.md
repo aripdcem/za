@@ -234,7 +234,8 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   ürünler (1–3 yüz, boy, marka, kategori, ★ yüksek marj, ▼ ağır) ve bir planogram brifi. Brifteki kurallar gerçek
   yerleşim ilkeleridir: göz hizası (yüksek marjlılar 2. rafta), ağırlar en alta, kategori bloğu, kategoriler ayrı,
   marka dikey bloğu, boy akışı (soldan sağa büyür); ayrıca raf/göz/kenar, yan yana, solunda, aynı/farklı raf, üstünde
-- Ürüne dokun, göze dokun: blok oturur; uzun basınca tepsiye döner. Brif satırları tutunca ✓, çelişince ✗ olur ve
+- Ürüne dokun, göze dokun: blok oturur; uzun basınca tepsiye döner. Blok adı göze sığdırılır (tek satır, gerekirse
+  boşluktan iki satır ya da hafif daraltma; kırpma en son çare). Brif satırları tutunca ✓, çelişince ✗ olur ve
   ilgili ürünler kırmızı çerçevelenir; satıra dokununca ilgili ürünler vurgulanır. Geri alma; ipucu önce yanlış
   duranı gösterir, sonra mevcut yerleşimlerden mantıkla çıkan sıradaki adımı yerleştirir (ipucusuz çözümler rekor)
 - **Tek çözüm ve tahminsizlik garantisi**: üretici planogram yapısında bir düzen örnekler (kategori bantları, marka
@@ -245,7 +246,8 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 - **Denetim modu** (planogram uyum kontrolü): üstte referans plan, altta gerçek raf. Raf plandan K yerde sapar
   (Kolay 2, Orta 3, Zor 5): yer değişimi, boş göz (bir yüz ya da ürün eksik), yabancı ürün, yanlış marka, yanlış boy,
   komşu göze taşma; ince sapmalar (marka/boy) yalnızca üst zorluklarda. Sapmalara dokunulur, yanlış dokunuş hata
-  sayılır; bulunanlar açıklamasıyla listelenir. Üretici sapmaları ayrık tutar ve plan ile rafın **yalnızca** sapma
+  sayılır; bulunanlar açıklamasıyla (en yeni üstte) listelenir. Plan ve raf her ekranda aynı genişlikte kalır
+  (yükseklik bütçesine göre boyutlanır), plana dokununca büyütülmüş plan açılır. Üretici sapmaları ayrık tutar ve plan ile rafın **yalnızca** sapma
   gözlerinde ayrıştığını doğrular (gizli fark yok, sahte fark yok). Süre, hata ve ipucu; günlük raf, en iyi süre
 - **Satış modu** (açık uçlu diziliş): aynı ürün seti, brif yok; puan beş satış kuralından gelir ve oyuncuya aynen
   anlatılır: konum (talep × yüz × raf çarpanı; göz hizası ×3, alt ×1, ▼ ağır yalnız altta ×3, ★ yalnız göz hizasında

@@ -6,15 +6,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -36,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
@@ -43,10 +46,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -111,9 +114,14 @@ internal fun ReyonAuditContent(
         viewModel.setPaused(false)
         onPauseOrDispose { viewModel.setPaused(true) }
     }
-    BackHandler { onExit() }
 
     val st = state
+    // Plan büyütme: küçük ekranda planı okumak için; geri tuşu önce bunu kapatır.
+    var planZoom by remember { mutableStateOf(false) }
+    LaunchedEffect(st, result) { planZoom = false }
+    BackHandler {
+        if (planZoom) planZoom = false else onExit()
+    }
     @Suppress("UNUSED_VARIABLE")
     val tick = version
 
@@ -163,29 +171,46 @@ internal fun ReyonAuditContent(
             contentAlignment = Alignment.Center,
         ) {
             if (st != null) {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    SectionLabel(stringResource(R.string.reyon_audit_plan_label))
-                    PlanCanvas(state = st)
-                    SectionLabel(stringResource(R.string.reyon_audit_shelf_label))
-                    AuditCanvas(
-                        state = st,
-                        version = version,
-                        missSlot = missSlot,
-                        onTap = { row, col ->
-                            when (viewModel.tap(row, col)) {
-                                is AuditTap.Found -> {
-                                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    sound?.play(Sfx.POP, volume = 0.7f, rate = 1.2f)
+                BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                    val layout = auditLayout(maxWidth, maxHeight, st.audit.rows, st.audit.cols)
+                    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Row(modifier = Modifier.width(layout.width), verticalAlignment = Alignment.CenterVertically) {
+                            SectionLabel(stringResource(R.string.reyon_audit_plan_label))
+                            Spacer(Modifier.weight(1f))
+                            Text(
+                                text = stringResource(R.string.reyon_audit_plan_zoom_hint),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f),
+                                modifier = Modifier.padding(end = 4.dp),
+                            )
+                        }
+                        PlanCanvas(state = st, width = layout.width, height = layout.planHeight, onTap = { planZoom = true })
+                        SectionLabel(stringResource(R.string.reyon_audit_shelf_label), modifier = Modifier.width(layout.width))
+                        AuditCanvas(
+                            state = st,
+                            version = version,
+                            missSlot = missSlot,
+                            width = layout.width,
+                            height = layout.shelfHeight,
+                            onTap = { row, col ->
+                                when (viewModel.tap(row, col)) {
+                                    is AuditTap.Found -> {
+                                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        sound?.play(Sfx.POP, volume = 0.7f, rate = 1.2f)
+                                    }
+                                    AuditTap.Miss -> {
+                                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        sound?.play(Sfx.DROP, volume = 0.5f, rate = 0.8f)
+                                    }
+                                    AuditTap.Already -> Unit
                                 }
-                                AuditTap.Miss -> {
-                                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    sound?.play(Sfx.DROP, volume = 0.5f, rate = 0.8f)
-                                }
-                                AuditTap.Already -> Unit
-                            }
-                        },
-                    )
-                    FoundList(state = st, version = version, modifier = Modifier.weight(1f, fill = false))
+                            },
+                        )
+                        FoundList(state = st, version = version, modifier = Modifier.weight(1f, fill = false))
+                    }
+                    if (planZoom && result == null) {
+                        PlanZoom(state = st, maxWidth = maxWidth, maxHeight = maxHeight, onClose = { planZoom = false })
+                    }
                 }
             }
             when {
@@ -247,32 +272,90 @@ internal fun ReyonAuditContent(
 }
 
 @Composable
-private fun SectionLabel(text: String) {
+private fun SectionLabel(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
         style = MaterialTheme.typography.labelSmall,
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-        modifier = Modifier.padding(start = 4.dp, top = 4.dp, bottom = 2.dp),
+        modifier = modifier.padding(start = 4.dp, top = 4.dp, bottom = 2.dp),
     )
 }
 
+/** Plan ve raf tuvallerinin boyutları (dp). */
+internal class AuditLayout(val width: Dp, val planHeight: Dp, val shelfHeight: Dp)
+
+/**
+ * Denetim yerleşimi: iki tuval aynı genişlikte (gözler alt alta hizalı kalsın),
+ * raf satırı göz genişliğinin [SHELF_ROW_MIN]–[SHELF_ROW_MAX] katı, plan satırı
+ * rafınkinin [PLAN_RATIO] katı. Yükseklik bütçesi (başlıklar ve bulunanlar için
+ * bir satır düşüldükten sonra) önce satır katsayısını belirler; taban katsayıda
+ * bile sığmıyorsa tuvaller daraltılır ve ortalanır. Böylece kısa ekranlarda raf
+ * daralıp sola yaslanmaz, bulunanlar listesi kaybolmaz; uzun ekranlarda bloklar
+ * büyür.
+ */
+internal fun auditLayout(maxWidth: Dp, maxHeight: Dp, rows: Int, cols: Int): AuditLayout {
+    val budget = (maxHeight - 2 * SECTION_LABEL_HEIGHT - FOUND_LIST_MIN).coerceAtLeast(96.dp)
+    val unit = maxWidth * rows / cols // katsayı 1'de bir tuvalin boyu
+    val f = (budget / (unit * (1f + PLAN_RATIO))).coerceIn(SHELF_ROW_MIN, SHELF_ROW_MAX)
+    val need = unit * (1f + PLAN_RATIO) * f
+    val width = if (need > budget) maxWidth * (budget / need) else maxWidth
+    val row = width / cols
+    return AuditLayout(width, row * rows * f * PLAN_RATIO, row * rows * f)
+}
+
+internal const val SHELF_ROW_MIN = 0.62f
+internal const val SHELF_ROW_MAX = 0.9f
+internal const val PLAN_RATIO = 0.85f
+internal val SECTION_LABEL_HEIGHT = 22.dp
+internal val FOUND_LIST_MIN = 26.dp
+
+/** Büyütülmüş plan: içerik alanını kaplayan karartma, ortada geniş plan; dokununca kapanır. */
 @Composable
-private fun PlanCanvas(state: ReyonAuditState) {
+private fun PlanZoom(state: ReyonAuditState, maxWidth: Dp, maxHeight: Dp, onClose: () -> Unit) {
+    val audit = state.audit
+    val desc = stringResource(R.string.reyon_audit_plan_zoom_desc)
+    val room = (maxHeight - 64.dp).coerceAtLeast(96.dp)
+    val unit = maxWidth * audit.rows / audit.cols
+    val f = (room / unit).coerceIn(SHELF_ROW_MIN, 0.95f)
+    val width = if (unit * f > room) maxWidth * (room / (unit * f)) else maxWidth
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xCC000000))
+            .pointerInput(Unit) { detectTapGestures { onClose() } }
+            .semantics { contentDescription = desc },
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            SectionLabel(stringResource(R.string.reyon_audit_plan_label), modifier = Modifier.width(width))
+            PlanCanvas(state = state, width = width, height = width * audit.rows / audit.cols * f, onTap = null)
+            Text(
+                text = stringResource(R.string.reyon_audit_plan_zoom_close),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                modifier = Modifier.padding(top = 8.dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun PlanCanvas(state: ReyonAuditState, width: Dp, height: Dp, onTap: (() -> Unit)?) {
     val audit = state.audit
     val res = LocalContext.current.resources
     val textMeasurer = rememberTextMeasurer()
-    val cache = remember { HashMap<String, TextLayoutResult>() }
-    val labeler = remember(textMeasurer) { BlockLabeler(textMeasurer, cache) }
+    val labeler = remember(textMeasurer) { BlockLabeler(textMeasurer) }
     val path = remember { Path() }
+    val currentTap by rememberUpdatedState(onTap)
     val desc = stringResource(R.string.reyon_audit_plan_desc_fmt, audit.rows, audit.cols)
     Canvas(
         modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(audit.cols / (audit.rows * 0.62f))
+            .size(width, height)
             .clip(RoundedCornerShape(12.dp))
             .background(ReyonPalette.BoardBg)
-            .semantics { contentDescription = desc },
+            .semantics { contentDescription = desc }
+            .then(if (onTap != null) Modifier.pointerInput(Unit) { detectTapGestures { currentTap?.invoke() } } else Modifier),
     ) {
         val g = ShelfGeom(size.width, size.height, audit.rows, audit.cols)
         drawShelfFrame(g)
@@ -281,21 +364,19 @@ private fun PlanCanvas(state: ReyonAuditState) {
 }
 
 @Composable
-private fun AuditCanvas(state: ReyonAuditState, version: Int, missSlot: Int, onTap: (Int, Int) -> Unit) {
+private fun AuditCanvas(state: ReyonAuditState, version: Int, missSlot: Int, width: Dp, height: Dp, onTap: (Int, Int) -> Unit) {
     val audit = state.audit
     val rows = audit.rows
     val cols = audit.cols
     val res = LocalContext.current.resources
     val currentTap by rememberUpdatedState(onTap)
     val textMeasurer = rememberTextMeasurer()
-    val cache = remember { HashMap<String, TextLayoutResult>() }
-    val labeler = remember(textMeasurer) { BlockLabeler(textMeasurer, cache) }
+    val labeler = remember(textMeasurer) { BlockLabeler(textMeasurer) }
     val path = remember { Path() }
     val desc = stringResource(R.string.reyon_audit_board_desc_fmt, rows, cols, state.foundCount, audit.deviations.size)
     Canvas(
         modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(cols / (rows * 0.78f))
+            .size(width, height)
             .clip(RoundedCornerShape(12.dp))
             .background(ReyonPalette.BoardBg)
             .semantics { contentDescription = desc }
@@ -331,8 +412,9 @@ private fun FoundList(state: ReyonAuditState, version: Int, modifier: Modifier =
             .padding(top = 4.dp)
             .verticalScroll(rememberScrollState()),
     ) {
-        for ((i, d) in audit.deviations.withIndex()) {
-            if (!state.isFound(i)) continue
+        // En son bulunan en üstte: liste tek satıra sığsa bile son bulgu görünür.
+        for (i in state.foundOrder.asReversed()) {
+            val d = audit.deviations[i]
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

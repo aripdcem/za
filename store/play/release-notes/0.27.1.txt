@@ -1,0 +1,6 @@
+<tr-TR>
+• Reyon: ürün adları göze sığıyor (gerekirse iki satır), Denetim'de plan ve raf küçük ekranda da düzgün yerleşiyor, plana dokununca büyüyor.
+</tr-TR>
+<en-US>
+• Reyon: product names fit their slot (two lines when needed), the Audit plan and shelf lay out properly on small screens, and tapping the plan enlarges it.
+</en-US>

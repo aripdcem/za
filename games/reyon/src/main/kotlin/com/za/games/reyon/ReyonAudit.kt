@@ -270,6 +270,7 @@ sealed interface AuditTap {
 /** Denetim oynanışı: bulunan sapmalar, hatalar, ipuçları. */
 class ReyonAuditState(val audit: ReyonAudit) {
     private val found = BooleanArray(audit.deviations.size)
+    private val order = ArrayList<Int>()
 
     var mistakes = 0
         private set
@@ -278,6 +279,9 @@ class ReyonAuditState(val audit: ReyonAudit) {
 
     val foundCount: Int get() = found.count { it }
     val isComplete: Boolean get() = foundCount == found.size
+
+    /** Bulunan sapmaların dizinleri, bulunuş sırasıyla (geri yüklemede dizin sırası). */
+    val foundOrder: List<Int> get() = order
 
     fun isFound(index: Int): Boolean = found[index]
 
@@ -289,7 +293,7 @@ class ReyonAuditState(val audit: ReyonAudit) {
             return AuditTap.Miss
         }
         if (found[i]) return AuditTap.Already
-        found[i] = true
+        mark(i)
         return AuditTap.Found(i)
     }
 
@@ -297,9 +301,14 @@ class ReyonAuditState(val audit: ReyonAudit) {
     fun hint(): Int? {
         val i = found.indexOfFirst { !it }
         if (i < 0) return null
-        found[i] = true
+        mark(i)
         hintsUsed++
         return i
+    }
+
+    private fun mark(i: Int) {
+        found[i] = true
+        order += i
     }
 
     fun snapshot(): IntArray {
@@ -310,7 +319,11 @@ class ReyonAuditState(val audit: ReyonAudit) {
 
     fun restore(snapshot: IntArray) {
         if (snapshot.size < 3) return
-        for (i in found.indices) found[i] = snapshot[0] and (1 shl i) != 0
+        order.clear()
+        for (i in found.indices) {
+            found[i] = snapshot[0] and (1 shl i) != 0
+            if (found[i]) order += i
+        }
         mistakes = snapshot[1].coerceAtLeast(0)
         hintsUsed = snapshot[2].coerceAtLeast(0)
     }
