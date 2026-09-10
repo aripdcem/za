@@ -18,12 +18,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import kotlin.math.floor
 import kotlin.random.Random
 
 enum class BostanPhase { MENU, LOADING, PLAYING, PAUSED, OVER }
 
 /** Hücreye dokunmanın sonucu; ekran geri bildirimini buradan verir. */
 enum class TapOutcome { DROP, PLACED, REMOVED, NO_SELECTION, NO_WATER, COOLDOWN, OCCUPIED, EMPTY, IGNORED }
+
+/** [tapField] sonucu: ne oldu ve hangi hücrede (damla toplandıysa damlanın hücresi). */
+class TapResult(val outcome: TapOutcome, val lane: Int, val row: Int)
 
 /**
  * Simülasyonu süren katman: seviye arka planda üretilir ([BostanPhase.LOADING]),
@@ -113,6 +117,24 @@ class BostanViewModel @JvmOverloads constructor(
         if (_phase.value != BostanPhase.PLAYING) return
         _selected.value = null
         _shovel.value = !_shovel.value
+    }
+
+    /**
+     * Sürekli tarla koordinatında dokunuş: [DROP_REACH] hücre yakınındaki damla
+     * her şeyden önce toplanır (kart seçili olsa da, komşu hücreden de), sonra
+     * dokunulan hücreye [tapCell] kuralı.
+     */
+    fun tapField(x: Float, y: Float): TapResult {
+        if (_phase.value != BostanPhase.PLAYING) return TapResult(TapOutcome.IGNORED, -1, -1)
+        val drop = state.nearestDrop(x, y, DROP_REACH)
+        if (drop != null && state.collectDrop(drop.lane, drop.row)) {
+            publish()
+            return TapResult(TapOutcome.DROP, drop.lane, drop.row)
+        }
+        val lane = floor(x).toInt()
+        val row = floor(y + 0.5f).toInt()
+        if (lane !in 0 until BostanState.COLS || row !in 0 until BostanState.ROWS) return TapResult(TapOutcome.IGNORED, lane, row)
+        return TapResult(tapCell(lane, row), lane, row)
     }
 
     /** Hücre dokunuşu: önce damla, sonra kürek, sonra seçili kart. */
@@ -264,6 +286,9 @@ class BostanViewModel @JvmOverloads constructor(
 
     companion object {
         const val DAILY_ATTEMPTS = 3
+
+        /** Damla toplama toleransı (hücre): dokunuşa bu kadar yakın damla önce toplanır. */
+        const val DROP_REACH = 0.75f
         private const val STEP_NANOS = 16_666_667L
         private const val MAX_FRAME_NANOS = 100_000_000L
         private const val MAX_STEPS = 4

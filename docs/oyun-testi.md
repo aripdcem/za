@@ -1648,6 +1648,28 @@ dönüşüyor.
   zayıf; kalan süreyi gösteren bir halka ya da daha belirgin soluklaştırma
   "neden basamıyorum" sorusunu ortadan kaldırır.
 
+**Düzeltme (v0.34.1).** Beş bulgunun beşi ele alındı:
+
+- *Hücre boyu.* Hücreler dikdörtgen: genişlik hep tuvalin tamamı, yükseklik
+  sığdığı kadar (en çok genişlik kadar); orman ve kulübe şeritleri inceltildi
+  (0,8 + 0,7 → 0,5 + 0,55 hücre) ve durum çubuğu (su, dalga çubuğu, geri
+  sayım) tuvalin orman şeridine taşınarak ~36 dp dikey yer kazanıldı.
+  360 × 640 dp için tahmin: hücre **67 × 46 dp** (önce 38 × 38); 411 dp'de
+  78 × 78. Cihazda ölçülecek.
+- *Komşuya ekme.* Yerleştirme basılı tut – kaydırarak ayarla – bırakınca
+  uygula: parmak altındaki hücre beyaz (uygun) ya da kırmızı (uygun değil)
+  çerçeveyle görünür, bırakılan yer uygulanır. Iskalanan dokunuş görülüp
+  düzeltilebilir.
+- *Damla.* Dokunuşa 0,75 hücre yakın damla her şeyden önce toplanır — kart
+  seçiliyken de, komşu hücreden de (`nearestDrop`, motor testi; ekran testi:
+  kart seçiliyken komşu hücreden dokunuş +25 verir, ekim olmaz, seçim kalır).
+- *Duyuru kontrastı.* Büyük uçan yazılar (dalga, büyük dalga, can kaybı,
+  bitiş) koyu bir şerit üstünde (%55 siyah); büyük dalga rengi 252,165,165 →
+  255,228,230, ömür 1,8 → 2,2 s.
+- *Kart bekleme.* Örtü %45 → %62, alt kenarında beyaz çizgi; etiket beklerken
+  fiyat yerine kalan saniyeyi yazar ("7 s"). Kartlar biraz kısaldı (en-boy
+  0,82 → 0,9).
+
 ### Sincap · 2026-09-10
 
 **D — pilot ölçümü** (`./gradlew :games:sincap:probe`, 20 tırmanış/pilot,

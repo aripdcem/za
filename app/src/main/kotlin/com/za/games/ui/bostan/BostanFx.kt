@@ -88,7 +88,7 @@ class BostanFx {
             }
             is BostanEvent.WaveStart -> {
                 sound?.play(if (event.big) Sfx.HORN else Sfx.WHOOSH, volume = 0.7f, rate = if (event.big) 1.1f else 1f)
-                texts += Floating(if (event.big) bigWaveLabel else waveLabel(event.index + 1), BostanState.COLS / 2f, 1.2f, if (event.big) Color(0xFFFCA5A5) else Color(0xFFFDE68A), big = true, maxLife = 1.8f)
+                texts += Floating(if (event.big) bigWaveLabel else waveLabel(event.index + 1), BostanState.COLS / 2f, 1.2f, if (event.big) Color(0xFFFFE4E6) else Color(0xFFFDE68A), big = true, maxLife = 2.2f)
             }
             is BostanEvent.WaveClear -> {
                 sound?.play(Sfx.CLEAR, volume = 0.6f, rate = 1.2f)

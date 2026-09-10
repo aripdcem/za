@@ -334,6 +334,21 @@ class BostanStateTest {
     }
 
     @Test
+    fun nearestDropToleratesNeighbourCellWithinRadius() {
+        val s = sandbox()
+        s.dropForTest(2, 3)
+        assertNotNull(s.nearestDrop(2.5f, 3f, 0.75f))
+        assertNotNull("komşu hücreden 0,72 uzak", s.nearestDrop(3.1f, 3.4f, 0.75f))
+        assertNull("bir hücre uzak", s.nearestDrop(3.5f, 3f, 0.75f))
+        assertNull(s.nearestDrop(2.5f, 4.2f, 0.75f))
+        val d = s.nearestDrop(3.1f, 3.4f, 0.75f)!!
+        assertEquals(2, d.lane)
+        assertEquals(3, d.row)
+        assertTrue(s.collectDrop(d.lane, d.row))
+        assertNull(s.nearestDrop(2.5f, 3f, 0.75f))
+    }
+
+    @Test
     fun dailySeedVariesByDay() {
         assertNotEquals(BostanState.dailySeed(20_000), BostanState.dailySeed(20_001))
         assertEquals(BostanState.dailySeed(20_000), BostanState.dailySeed(20_000))

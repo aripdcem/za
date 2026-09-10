@@ -6,7 +6,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -133,21 +132,38 @@ private val HpBack = Color(0x99000000)
 private val HpGood = Color(0xFF4ADE80)
 private val HpBad = Color(0xFFF87171)
 private val Highlight = Color(0x55FFFFFF)
+private val HoverOk = Color(0xEEFFFFFF)
+private val HoverBad = Color(0xEEEF4444)
+private val Pill = Color(0x8C000000)
 private val Shadow = Color(0x33000000)
 
-/** Tarla birimi: üstte orman şeridi (−1,3..−0,5), hücreler (−0,5..6,5), altta kulübe şeridi. */
-private const val TOP_Y = -1.3f
-private const val BOTTOM_Y = BostanState.ROWS + 0.2f
+/** Tarla birimi: üstte orman şeridi (−1,0..−0,5), hücreler (−0,5..6,5), altta kulübe şeridi (6,5..7,05). */
+private const val TOP_Y = -1f
+private const val BOTTOM_Y = BostanState.ROWS + 0.05f
 private const val TOTAL_H = BOTTOM_Y - TOP_Y
 
-internal class FieldGeometry(val cs: Float, val ox: Float, val oy: Float) {
-    fun px(x: Float): Float = ox + x * cs
-    fun py(y: Float): Float = oy + (y - TOP_Y) * cs
+/** Damla toplama toleransı: dokunuşa bu kadar hücre yakın damla, hücre kuralından önce toplanır. */
+private const val DROP_REACH = BostanViewModel.DROP_REACH
+
+/**
+ * Hücreler dikdörtgen: genişlik hep tuvalin tamamı ([cw]), yükseklik sığdığı
+ * kadar ([ch] ≤ [cw]). Dar ve kısa ekranda (360 × 640 dp) dokunma hedefi
+ * daralmak yerine yalnızca kısalır (cihaz bulgusu: kare hücre 38 dp'ye
+ * iniyordu). Sprite boyu [cs] = min(cw, ch).
+ */
+internal class FieldGeometry(val cw: Float, val ch: Float, val ox: Float, val oy: Float) {
+    val cs: Float get() = min(cw, ch)
+    fun px(x: Float): Float = ox + x * cw
+    fun py(y: Float): Float = oy + (y - TOP_Y) * ch
+
+    /** Tuval pikselinden sürekli tarla koordinatı (şerit, satır). */
+    fun field(x: Float, y: Float): Offset = Offset((x - ox) / cw, (y - oy) / ch + TOP_Y)
 }
 
 internal fun fieldGeometry(width: Float, height: Float): FieldGeometry {
-    val cs = min(width / BostanState.COLS, height / TOTAL_H)
-    return FieldGeometry(cs, (width - cs * BostanState.COLS) / 2f, (height - cs * TOTAL_H) / 2f)
+    val cw = width / BostanState.COLS
+    val ch = min(cw, height / TOTAL_H)
+    return FieldGeometry(cw, ch, 0f, (height - ch * TOTAL_H) / 2f)
 }
 
 /** Hücre merkezinin tuval pikseli (testler de kullanır). */
@@ -159,8 +175,9 @@ internal fun bostanCellCenter(width: Float, height: Float, lane: Int, row: Int):
 internal fun bostanCellAt(width: Float, height: Float, x: Float, y: Float): Pair<Int, Int>? {
     val g = fieldGeometry(width, height)
     if (g.cs <= 0f) return null
-    val lane = floor((x - g.ox) / g.cs).toInt()
-    val row = floor((y - g.oy) / g.cs + TOP_Y + 0.5f).toInt()
+    val f = g.field(x, y)
+    val lane = floor(f.x).toInt()
+    val row = floor(f.y + 0.5f).toInt()
     if (lane !in 0 until BostanState.COLS || row !in 0 until BostanState.ROWS) return null
     return lane to row
 }
@@ -289,13 +306,11 @@ fun BostanScreen(
             ScoreCard(label = stringResource(R.string.bostan_best), value = formatScore(maxOf(best, if (inRun) hud.score else 0).toLong()), modifier = Modifier.weight(1f))
         }
 
-        StatusBar(hud = hud, visible = inRun)
-
         Box(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 4.dp),
+                .padding(horizontal = 12.dp, vertical = 3.dp),
             contentAlignment = Alignment.Center,
         ) {
             BostanCanvas(viewModel = viewModel, fx = fx, fxTick = fxTick, hud = hud, selected = selected, shovel = shovel, modifier = Modifier.fillMaxSize())
@@ -350,52 +365,6 @@ fun BostanScreen(
     }
 }
 
-/** Su sayacı, dalga doğum çubuğu ve sıradaki dalga geri sayımı. */
-@Composable
-private fun StatusBar(hud: BostanHud, visible: Boolean) {
-    val alpha = if (visible) 1f else 0f
-    val trailing = when {
-        !visible -> ""
-        hud.nextWaveIn > 0f && (hud.wave == 0 || hud.waveProgress >= 1f) -> stringResource(R.string.bostan_next_wave_fmt, ceil(hud.nextWaveIn).toInt())
-        hud.enemiesAlive > 0 -> stringResource(R.string.bostan_alive_fmt, hud.enemiesAlive)
-        else -> ""
-    }
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp)
-            .height(24.dp)
-            .alpha(alpha),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Canvas(modifier = Modifier.size(14.dp)) { drawDrop(center.x, center.y, size.minDimension * 0.42f, 1f) }
-        Text(
-            text = hud.water.toString(),
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Black,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-        val track = MaterialTheme.colorScheme.surfaceVariant
-        Canvas(
-            modifier = Modifier
-                .weight(1f)
-                .height(8.dp)
-                .clip(CircleShape),
-        ) {
-            drawRect(track)
-            drawRect(HpBad.copy(alpha = 0.9f), size = Size(size.width * hud.waveProgress.coerceIn(0f, 1f), size.height))
-        }
-        Text(
-            text = trailing,
-            style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Bold,
-            maxLines = 1,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-        )
-    }
-}
-
 // ---------------------------------------------------------------------------
 // Kart çubuğu
 // ---------------------------------------------------------------------------
@@ -412,18 +381,20 @@ private fun CardBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+            .padding(horizontal = 12.dp, vertical = 4.dp)
             .alpha(if (enabled) 1f else 0.45f),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         for (kind in DefenderKind.entries) {
             val name = defenderName(kind)
+            val cooldown = hud.cooldowns.getOrElse(kind.ordinal) { 0f }
             ToolCard(
                 desc = stringResource(R.string.bostan_card_desc_fmt, name, kind.cost),
-                label = kind.cost.toString(),
+                // Beklerken fiyat yerine kalan süre: "neden basamıyorum" sorusu kalmasın.
+                label = if (cooldown > 0f) stringResource(R.string.bostan_cooldown_fmt, ceil(cooldown * kind.cooldown).toInt()) else kind.cost.toString(),
                 selected = selected == kind,
                 dim = hud.water < kind.cost,
-                cooldown = hud.cooldowns.getOrElse(kind.ordinal) { 0f },
+                cooldown = cooldown,
                 enabled = enabled,
                 onClick = { onSelect(kind) },
                 modifier = Modifier.weight(1f),
@@ -463,10 +434,10 @@ private fun ToolCard(
         color = if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.28f) else MaterialTheme.colorScheme.surfaceVariant,
         border = border,
         modifier = modifier
-            .aspectRatio(0.82f)
+            .aspectRatio(0.9f)
             .semantics { contentDescription = desc },
     ) {
-        val overlay = MaterialTheme.colorScheme.scrim.copy(alpha = 0.45f)
+        val overlay = MaterialTheme.colorScheme.scrim.copy(alpha = 0.62f)
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
@@ -487,7 +458,9 @@ private fun ToolCard(
             }
             if (cooldown > 0f) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
-                    drawRect(overlay, size = Size(size.width, size.height * cooldown.coerceIn(0f, 1f)))
+                    val edge = size.height * cooldown.coerceIn(0f, 1f)
+                    drawRect(overlay, size = Size(size.width, edge))
+                    drawRect(Color.White.copy(alpha = 0.6f), topLeft = Offset(0f, edge - 2.dp.toPx()), size = Size(size.width, 2.dp.toPx()))
                 }
             }
         }
@@ -511,9 +484,17 @@ private fun BostanCanvas(
     val frame by viewModel.frame.collectAsStateWithLifecycle()
     val desc = stringResource(R.string.bostan_board_desc_fmt, hud.water, hud.wave, hud.totalWaves, hud.enemiesAlive)
     val hint = stringResource(R.string.bostan_tap_hint)
+    val trailing = when {
+        hud.status != BostanStatus.RUNNING || hud.totalWaves == 0 -> ""
+        hud.nextWaveIn > 0f && (hud.wave == 0 || hud.waveProgress >= 1f) -> stringResource(R.string.bostan_next_wave_fmt, ceil(hud.nextWaveIn).toInt())
+        hud.enemiesAlive > 0 -> stringResource(R.string.bostan_alive_fmt, hud.enemiesAlive)
+        else -> ""
+    }
     val textMeasurer = rememberTextMeasurer()
     val textCache = remember { HashMap<String, TextLayoutResult>() }
     val path = remember { Path() }
+    // Parmak altındaki hücre (şerit, satır); yok ise −1. Bırakınca uygulanır.
+    val hover = remember { intArrayOf(-1, -1) }
     val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current
     Canvas(
@@ -521,20 +502,44 @@ private fun BostanCanvas(
             .clip(RoundedCornerShape(16.dp))
             .semantics { contentDescription = desc }
             .pointerInput(viewModel) {
+                // Basılı tut, kaydırarak ayarla, bırakınca uygula: hedef hücre
+                // bırakmadan önce görünür (cihaz bulgusu: bitişik hücrelerde
+                // ıskalanan dokunuş komşuya ekiyordu).
                 awaitEachGesture {
-                    awaitFirstDown(requireUnconsumed = false)
-                    val up = waitForUpOrCancellation() ?: return@awaitEachGesture
-                    up.consume()
-                    val cell = bostanCellAt(size.width.toFloat(), size.height.toFloat(), up.position.x, up.position.y) ?: return@awaitEachGesture
-                    val outcome = viewModel.tapCell(cell.first, cell.second)
-                    fx.onTap(outcome, cell.first, cell.second, sound, haptics)
+                    val down = awaitFirstDown(requireUnconsumed = false)
+                    down.consume()
+                    var last = down.position
+                    fun track(p: Offset) {
+                        val c = bostanCellAt(size.width.toFloat(), size.height.toFloat(), p.x, p.y)
+                        val l = c?.first ?: -1
+                        val r = c?.second ?: -1
+                        if (hover[0] != l || hover[1] != r) {
+                            hover[0] = l
+                            hover[1] = r
+                            fxTick.longValue += 1
+                        }
+                    }
+                    track(last)
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        val change = event.changes.firstOrNull { it.id == down.id } ?: break
+                        last = change.position
+                        change.consume()
+                        if (!change.pressed) break
+                        track(last)
+                    }
+                    hover[0] = -1
+                    hover[1] = -1
                     fxTick.longValue += 1
+                    val f = fieldGeometry(size.width.toFloat(), size.height.toFloat()).field(last.x, last.y)
+                    val result = viewModel.tapField(f.x, f.y)
+                    if (result.outcome != TapOutcome.IGNORED) fx.onTap(result.outcome, result.lane, result.row, sound, haptics)
                 }
             },
     ) {
         val tick = frame + fxTick.longValue
         if (tick < 0L) return@Canvas
-        drawField(viewModel.state, fx, selected, shovel, frame, path, textMeasurer, textCache, hint)
+        drawField(viewModel.state, fx, selected, shovel, hover, frame, path, textMeasurer, textCache, hint, trailing)
     }
 }
 
@@ -543,27 +548,31 @@ private fun DrawScope.drawField(
     fx: BostanFx,
     selected: DefenderKind?,
     shovel: Boolean,
+    hover: IntArray,
     frame: Long,
     path: Path,
     textMeasurer: TextMeasurer,
     cache: HashMap<String, TextLayoutResult>,
     hint: String,
+    trailing: String,
 ) {
     val g = fieldGeometry(size.width, size.height)
+    val cw = g.cw
+    val ch = g.ch
     val cs = g.cs
     val cols = BostanState.COLS
     val rows = BostanState.ROWS
     drawRect(Grass)
     translate(fx.shakeX * cs, fx.shakeY * cs) {
         // Orman şeridi ve çit.
-        drawRect(Forest, topLeft = Offset(g.px(0f), g.py(TOP_Y)), size = Size(cs * cols, 0.8f * cs))
+        drawRect(Forest, topLeft = Offset(g.px(0f), g.py(TOP_Y)), size = Size(cw * cols, 0.5f * ch))
         for (i in 0 until cols * 2) {
             val tx = g.px(0.25f + i * 0.5f)
-            val ty = g.py(TOP_Y + 0.15f + (i % 2) * 0.1f)
+            val ty = g.py(TOP_Y + 0.06f + (i % 2) * 0.08f)
             path.reset()
             path.moveTo(tx, ty)
-            path.lineTo(tx - 0.22f * cs, ty + 0.55f * cs)
-            path.lineTo(tx + 0.22f * cs, ty + 0.55f * cs)
+            path.lineTo(tx - 0.2f * cs, ty + 0.4f * ch)
+            path.lineTo(tx + 0.2f * cs, ty + 0.4f * ch)
             path.close()
             drawPath(path, if (i % 3 == 0) TreeLight else Tree)
         }
@@ -572,11 +581,11 @@ private fun DrawScope.drawField(
             for (lane in 0 until cols) {
                 val left = g.px(lane.toFloat())
                 val top = g.py(row - 0.5f)
-                drawRect(if ((row + lane) % 2 == 0) Soil else SoilAlt, topLeft = Offset(left, top), size = Size(cs, cs))
+                drawRect(if ((row + lane) % 2 == 0) Soil else SoilAlt, topLeft = Offset(left, top), size = Size(cw, ch))
                 val sr = cs * 0.045f
-                drawCircle(Sprout, sr, Offset(left + cs * 0.25f, top + cs * 0.3f))
-                drawCircle(Sprout, sr, Offset(left + cs * 0.7f, top + cs * 0.55f))
-                drawCircle(Sprout, sr * 0.8f, Offset(left + cs * 0.4f, top + cs * 0.8f))
+                drawCircle(Sprout, sr, Offset(left + cw * 0.25f, top + ch * 0.3f))
+                drawCircle(Sprout, sr, Offset(left + cw * 0.7f, top + ch * 0.55f))
+                drawCircle(Sprout, sr * 0.8f, Offset(left + cw * 0.4f, top + ch * 0.8f))
             }
         }
         for (lane in 1 until cols) {
@@ -590,21 +599,21 @@ private fun DrawScope.drawField(
         drawLine(Fence, Offset(g.px(0f), g.py(-0.5f) - cs * 0.05f), Offset(g.px(cols.toFloat()), g.py(-0.5f) - cs * 0.05f), strokeWidth = cs * 0.03f)
         // Kulübe şeridi.
         val hutTop = g.py(rows - 0.5f)
-        drawRect(GrassDark, topLeft = Offset(g.px(0f), hutTop), size = Size(cs * cols, cs * 0.06f))
+        drawRect(GrassDark, topLeft = Offset(g.px(0f), hutTop), size = Size(cw * cols, cs * 0.06f))
         val hx = g.px(cols / 2f)
-        val hy = hutTop + cs * 0.38f
-        drawRect(HutWall, topLeft = Offset(hx - cs * 0.42f, hy - cs * 0.12f), size = Size(cs * 0.84f, cs * 0.36f))
-        drawRect(HutDoor, topLeft = Offset(hx - cs * 0.1f, hy), size = Size(cs * 0.2f, cs * 0.24f))
+        val hy = hutTop + ch * 0.3f
+        drawRect(HutWall, topLeft = Offset(hx - cs * 0.42f, hy - cs * 0.08f), size = Size(cs * 0.84f, cs * 0.28f))
+        drawRect(HutDoor, topLeft = Offset(hx - cs * 0.09f, hy + cs * 0.02f), size = Size(cs * 0.18f, cs * 0.18f))
         path.reset()
-        path.moveTo(hx - cs * 0.5f, hy - cs * 0.1f)
-        path.lineTo(hx, hy - cs * 0.36f)
-        path.lineTo(hx + cs * 0.5f, hy - cs * 0.1f)
+        path.moveTo(hx - cs * 0.5f, hy - cs * 0.06f)
+        path.lineTo(hx, hy - cs * 0.28f)
+        path.lineTo(hx + cs * 0.5f, hy - cs * 0.06f)
         path.close()
         drawPath(path, HutRoof)
         for (i in 0 until 2) {
             val bx = g.px(if (i == 0) 0.7f else cols - 0.7f)
-            drawCircle(Tree, cs * 0.22f, Offset(bx, hutTop + cs * 0.4f))
-            drawCircle(TreeLight, cs * 0.12f, Offset(bx - cs * 0.08f, hutTop + cs * 0.32f))
+            drawCircle(Tree, cs * 0.18f, Offset(bx, hutTop + ch * 0.3f))
+            drawCircle(TreeLight, cs * 0.1f, Offset(bx - cs * 0.07f, hutTop + ch * 0.24f))
         }
 
         // Yerleştirme ipucu: seçili kart için uygun hücreler, kürek için dolu hücreler.
@@ -613,8 +622,24 @@ private fun DrawScope.drawField(
                 for (lane in 0 until cols) {
                     val d = state.defenderAt(lane, row)
                     val ok = if (shovel) d != null else d == null && state.canPlace(selected!!, lane, row)
-                    if (ok) drawRect(Highlight, topLeft = Offset(g.px(lane.toFloat()) + cs * 0.06f, g.py(row - 0.5f) + cs * 0.06f), size = Size(cs * 0.88f, cs * 0.88f))
+                    if (ok) drawRect(Highlight, topLeft = Offset(g.px(lane.toFloat()) + cw * 0.06f, g.py(row - 0.5f) + ch * 0.06f), size = Size(cw * 0.88f, ch * 0.88f))
                 }
+            }
+        }
+        // Parmak altındaki hücre: bırakınca ne olacağı önceden görünsün.
+        val hl = hover[0]
+        val hr = hover[1]
+        if (hl >= 0 && hr >= 0 && state.status == BostanStatus.RUNNING) {
+            val d = state.defenderAt(hl, hr)
+            val dropNear = state.nearestDrop(hl + 0.5f, hr.toFloat(), DROP_REACH) != null
+            val ok = dropNear || (if (shovel) d != null else selected != null && d == null && state.canPlace(selected, hl, hr))
+            if (dropNear || selected != null || shovel) {
+                drawRect(
+                    if (ok) HoverOk else HoverBad,
+                    topLeft = Offset(g.px(hl.toFloat()) + cs * 0.04f, g.py(hr - 0.5f) + cs * 0.04f),
+                    size = Size(cw - cs * 0.08f, ch - cs * 0.08f),
+                    style = Stroke(width = cs * 0.07f),
+                )
             }
         }
 
@@ -646,10 +671,10 @@ private fun DrawScope.drawField(
             val dy = g.py(dr.row.toFloat())
             val pulse = 1f + 0.08f * sin(frame * 0.2f + dr.id)
             val fade = if (dr.ttl < 1.5f) 0.35f + 0.65f * abs(sin(frame * 0.3f)) else 1f
-            drawOval(Shadow, topLeft = Offset(dx - cs * 0.2f, dy + cs * 0.18f), size = Size(cs * 0.4f, cs * 0.12f))
-            drawDrop(dx, dy, cs * 0.2f * pulse, fade)
+            drawOval(Shadow, topLeft = Offset(dx - cs * 0.22f, dy + cs * 0.2f), size = Size(cs * 0.44f, cs * 0.13f))
+            drawDrop(dx, dy, cs * 0.24f * pulse, fade)
         }
-        // Parçacıklar ve uçan yazılar.
+        // Parçacıklar ve uçan yazılar; büyük yazılar koyu bir şerit üstünde (kontrast).
         for (p in fx.particles) {
             drawCircle(p.color.copy(alpha = (p.life / p.maxLife).coerceIn(0f, 1f)), p.size * cs, Offset(g.px(p.x), g.py(p.y)))
         }
@@ -660,7 +685,14 @@ private fun DrawScope.drawField(
                     style = TextStyle(fontSize = if (t.big) 22.sp else 13.sp, fontWeight = FontWeight.Black, color = t.color, textAlign = TextAlign.Center),
                 )
             }
-            drawText(layout, topLeft = Offset(g.px(t.x) - layout.size.width / 2f, g.py(t.y) - layout.size.height / 2f), alpha = (t.life / t.maxLife).coerceIn(0f, 1f))
+            val a = (t.life / t.maxLife).coerceIn(0f, 1f)
+            val tx = g.px(t.x) - layout.size.width / 2f
+            val ty = g.py(t.y) - layout.size.height / 2f
+            if (t.big) {
+                val pad = cs * 0.2f
+                drawRoundRect(Pill.copy(alpha = Pill.alpha * a), topLeft = Offset(tx - pad, ty - pad * 0.4f), size = Size(layout.size.width + pad * 2f, layout.size.height + pad * 0.8f), cornerRadius = CornerRadius(pad, pad))
+            }
+            drawText(layout, topLeft = Offset(tx, ty), alpha = a)
         }
         if (state.status == BostanStatus.RUNNING && state.time < 8f && state.defenders.isEmpty() && state.level.waves.isNotEmpty()) {
             val layout = cache.getOrPut("hint|$hint") {
@@ -671,6 +703,28 @@ private fun DrawScope.drawField(
             }
             val alpha = if (state.time < 7f) 1f else (8f - state.time)
             drawText(layout, topLeft = Offset(g.px(cols / 2f) - layout.size.width / 2f, g.py(3f) - layout.size.height / 2f), alpha = alpha.coerceIn(0f, 1f) * 0.9f)
+        }
+    }
+    // Orman şeridinde su sayacı, dalga doğum çubuğu ve geri sayım (durum çubuğu tuvale taşındı: dikey yer kazancı).
+    if (state.level.waves.isNotEmpty()) {
+        val top = g.py(TOP_Y)
+        val stripH = 0.5f * ch
+        val hudY = top + stripH * 0.5f
+        drawDrop(g.px(0.16f), hudY, stripH * 0.22f, 1f)
+        val water = cache.getOrPut("water|${state.water}") {
+            textMeasurer.measure(AnnotatedString(state.water.toString()), style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Black, color = Color.White))
+        }
+        drawText(water, topLeft = Offset(g.px(0.3f), hudY - water.size.height / 2f))
+        val barLeft = g.px(1.25f)
+        val barRight = g.px(cols - 1.5f)
+        val barH = stripH * 0.28f
+        drawRoundRect(Color.White.copy(alpha = 0.25f), topLeft = Offset(barLeft, hudY - barH / 2f), size = Size(barRight - barLeft, barH), cornerRadius = CornerRadius(barH / 2f, barH / 2f))
+        drawRoundRect(HpBad, topLeft = Offset(barLeft, hudY - barH / 2f), size = Size((barRight - barLeft) * state.waveProgress.coerceIn(0f, 1f), barH), cornerRadius = CornerRadius(barH / 2f, barH / 2f))
+        if (trailing.isNotEmpty()) {
+            val t = cache.getOrPut("trailing|$trailing") {
+                textMeasurer.measure(AnnotatedString(trailing), style = TextStyle(fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.White))
+            }
+            drawText(t, topLeft = Offset(g.px(cols.toFloat()) - cs * 0.12f - t.size.width, hudY - t.size.height / 2f))
         }
     }
     if (fx.flash > 0f) drawRect(fx.flashColor.copy(alpha = 0.3f * fx.flash))

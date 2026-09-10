@@ -2,6 +2,9 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.34.1 (2026-09-11)
+- Bostan cihaz bulguları: hücreler dikdörtgen (dar ekranda 38 dp kare yerine tam genişlik × sığan yükseklik), su ve dalga çubuğu tuvalin orman şeridinde; basılı tut – kaydır – bırak yerleştirme (hedef hücre bırakmadan görünür); yakındaki damla kart seçiliyken de önce toplanır; dalga duyuruları koyu şerit üstünde; kart beklerken kalan saniye ve daha koyu örtü
+
 ## 0.34.0 (2026-09-10)
 - Yeni oyun: **Sincap** — çınarda dikey tırmanış: sola ya da sağa dokun, sincap o yöndeki en yakın üst dala atlar (en çok iki basamak); o yönde dal yoksa düşer. Kuru dal konduktan bir saniye sonra kırılır, yılanlı dala konan ölür, kargalar dalın üstünden geçerken düşürür; kedi gövdeden tırmanır ve yükseldikçe hızlanır. Fındık ve altın fındık puan, her basamak +10. Üretim her basamaktan güvenli bir kaçış garanti eder. Günlük çınar (3 deneme) ve serbest mod
 

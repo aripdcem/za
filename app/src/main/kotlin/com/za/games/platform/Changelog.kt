@@ -39,6 +39,15 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.34.1", "2026-09-11",
+            tr = listOf(
+                "Bostan: dar ekranda daha büyük hücreler, basılı tutup kaydırarak yerleştirme (hedef hücre bırakmadan görünür), yakındaki damla kart seçiliyken de önce toplanır, dalga duyuruları daha okunur, kart beklerken kalan süre",
+            ),
+            en = listOf(
+                "Bostan: bigger cells on narrow screens, press-and-drag placement (the target cell shows before you release), a nearby drop is collected first even with a card selected, more legible wave announcements, remaining seconds on recharging cards",
+            ),
+        ),
+        ReleaseNote(
             "0.34.0", "2026-09-10",
             tr = listOf(
                 "Yeni oyun: Sincap — çınarda dikey tırmanış: sola ya da sağa dokun, üst dala atla. Kuru dallar, yılanlar, kargalar ve peşinde hızlanan kedi; fındık topla, her basamaktan güvenli bir dal erişilir; günlük çınar",
