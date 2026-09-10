@@ -407,6 +407,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Uçurtma | ✅ | **59 · 5 · %60 · 34 ms** (GPU 20 ms) | ✅ tutuşa yanıt ~100 ms · tel 2,3 dp / 8,2:1 | ✅ pilot eğrisi | 2026-09-10 |
 | Dalgıç | ✅ | **58 · 14 · %12 · 24 ms** | ✅ 2B kazanç 1,3 · ölü bölge yok · zincir 1,5 dp / 1,54:1 | ✅ tehdit dağılımı | 2026-09-10 |
 | Bostan | ✅ | **60 · 5 · %47 · 28 ms** | ⚠ hücre 411 dp'de 72 dp, 360 dp'de **38 dp** | ✅ ölçek ve uzman | 2026-09-11 |
+| Sincap | ✅ | **58 · 11 · %66 · 31 ms** (toplam 39,6 ms) | ⚠ erişim ipucu 1,32:1 · zıplama 150 ms | ✅ pilot ve dağılım | 2026-09-11 |
 
 **E · erişilebilirlik:** tüm oyunlarda etiketsiz dokunulabilir öğe kalmadı
 (tek bulgu Kıskaç'ın kolay mod anahtarıydı, düzeltildi). Kontrast CI'da
@@ -1700,10 +1701,77 @@ cezası, insan için asıl ölüm nedenleri olacak. Basamak dağılımı (tohum 
 ilk 200): tek dallı basamak %50, kuru dal %12, yılan %4, fındık %16, kargalı
 basamak %16. Değişmez teste çevrilen: her basamakta dal ve kaçış (30 tohum ×
 400), kargalı basamağın altında kuru dal yok, pilot boşluğa atlamaz ve 10
-tohumda ortalama ≥ 20 basamak. A–C cihazda koşulmadı; cihazda bakılacak: ilk
-temasta zıplama hissi, erişim ipucunun okunurluğu, kedi göstergesinin fark
-edilirliği, kuru dal titremesi ve 1,1 s'nin yeterliliği, 7,5 basamaklık görüş
-alanında kargayı görme süresi.
+tohumda ortalama ≥ 20 basamak. Cihaz koşumu (A–C) aşağıda.
+
+### Sincap · cihazda · 2026-09-11
+
+v0.34.0 APK'sıyla, Serbest (Günlük'ün günde üç denemesi var). Zıplama ve karga
+ölçümleri 60 kare/s ekran kaydından, dokunuşlar `uinput` ile bilinen aralıkla
+(1,17 s) basılarak çıkarıldı.
+
+**A — koşum.** Sola/sağa dokunuşla tırmanış çalışıyor (12–15 m, 180–190 puan),
+fındık toplanıyor, koşu bitince sonuç kartı geliyor; `logcat`
+`AndroidRuntime:E` boş.
+
+**B — kare hızı.** Tırmanış sürerken 8 s'de 465 kare (**58,1 kare/s**), kaçan
+vsync 11, jank %66, p50 31 ms, p90 34 ms. Fazlar: **toplam 39,6 ms** (90p 40,4),
+GPU 24,9 ms, komut→swap 13,9 ms, çizim kaydı 1,5 ms. Bu, kütükteki **en yüksek
+kare gecikmesi** (önceki tavan Viraj ve Uçurtma'da 34 ms) ve GPU tarafı yeni
+oyunların en pahalısı.
+
+**C — ilk temasta zıplama hissi.** Kayıttan 14 atlayış:
+
+| ölçüt | değer |
+| --- | --- |
+| havada kalma | 133–168 ms (medyan **150 ms**) |
+| yay tepesi | ~180 px = 69 dp |
+| atlayışlar arası | 1,13–1,20 s (enjekte edilen dokunuş aralığı 1,17 s) |
+| girdi→kare tamamlandı | 39,6 ms (medyan) |
+
+Okuma: **her dokunuş bir atlayış üretti, hiçbiri düşmedi ya da kuyruğa
+takılmadı** — aralıklar enjekte edilenle birebir. Zıplamanın kendisi kısa ve
+kavisli; gecikmenin sistem payı 39,6 ms, yani yaklaşık 2,4 kare. His yargısı
+ölçümle verilmez ama girdi tarafında kayıp yok; hissedilecek gecikme varsa
+kaynağı kare gecikmesi (B'deki 39,6 ms), zıplama mantığı değil.
+
+**C — erişim ipucunun okunurluğu (zayıf halka).** İpucu, sincabın iki yanındaki
+"^" işaretleri: **28 × 16 dp**, rengi (238,249,255), gökyüzü (171,225,253) →
+kontrast **1,32:1**. Yani hangi dala erişebileceğini söyleyen tek işaret,
+gökyüzüyle neredeyse aynı parlaklıkta. Duran ekranda seçiliyor ama zayıf;
+ince bir koyu kontur ya da gölge ucuz bir düzeltme olur (karşılaştırma: kedi
+göstergesi 3,78:1, dalga duyurusu 4,27:1).
+
+**C — kedi göstergesi.** Alt kenarda hap: **118 × 39 dp**, hap ↔ zemin
+**3,78:1**, yazı ↔ hap **4,41:1**, kedi yüzü simgesi ve mesafe ("Kedi 8 m").
+Okunurluk sorunu yok; göz hattının dışında durduğu için tırmanışın ortasında
+fark edilmesi ayrı bir soru, ama işaret net.
+
+**C — kuru dal ve 1,1 s.** Kuru dal **konmadan önce** ayırt ediliyor: yapraksız,
+gri odun (164,162,158) ve üzerinde çatlak işareti; normal dal kahverengi ve
+yapraklı. Gökyüzüne karşı kontrastı yalnızca 1,63:1, yani ayrımı renk değil
+**biçim** yapıyor (çıplak dal ↔ yapraklı dal); kalınlık 7,6 dp, normal dal
+~10 dp. Kondouktan sonraki uyarı: titreme `sin(kare·1,3)·u·0,05` → ölçülen
+basamak aralığında (246 px) **±12 px = ±4,7 dp, ~12 Hz**, üstüne odun rengi
+süre bitene kadar kırmızıya kayıyor.
+
+Bütçe: atlayış 150–220 ms sürüyor, yani 1,1 s'lik tutuş **karar için ~0,9 s**
+bırakıyor — insan tepkisi (250 ms) için rahat. Asıl güvenlik payı zaten
+zıplamadan önce dalın okunabilmesinde; titreme ikinci bir şans.
+
+**C — 7,5 basamaklık görüş alanında kargayı görme süresi.** Ölçülen basamak
+aralığı **246 px = 94 dp**, tuval yüksekliği 1736 px → görüş alanı **~7
+basamak** (belgede 7,5). Karga 5 basamak önden doğuyor, yani doğduğu anda
+görüş alanının içinde. Kayıttan karga yatayda **~430 px/s ≈ 1,7 basamak/s**
+gidiyor; ekranı bir uçtan bir uca **~2,1 s**'de tarıyor.
+
+| tırmanış temposu | kargayı görme süresi (5 basamak) |
+| --- | --- |
+| ölçümdeki tempo, 1,15 s/basamak | **~5,8 s** |
+| hızlı oyuncu, 0,4 s/basamak | ~2,0 s |
+
+Okuma: normal temposunda uyarı cömert; hızlandıkça daralıyor ve asıl kısıt
+kargayı görmek değil, **o basamağa vardığında karganın şeridin neresinde
+olacağı** — ekranı 2,1 s'de geçtiği için zamanlama sorusu bu.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
