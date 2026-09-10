@@ -7,7 +7,9 @@ import android.graphics.RectF
 import com.za.games.platform.ShareDraw
 import com.za.games.platform.drawCentered
 import com.za.games.reyon.Brand
+import com.za.games.reyon.ReyonAuditState
 import com.za.games.reyon.ReyonState
+import com.za.games.reyon.ShelfItem
 
 /** Marka renkleri (ARGB); ekran ve paylaşım kartı aynı paleti kullanır. */
 internal fun brandArgb(brand: Brand): Int = when (brand) {
@@ -17,11 +19,21 @@ internal fun brandArgb(brand: Brand): Int = when (brand) {
     Brand.D -> 0xFFF472B6.toInt()
 }
 
-/** Paylaşım kartı ressamı: dizilmiş raf, ürün adları ve ★ işaretleri. */
-internal fun reyonPainter(state: ReyonState, res: Resources): (Canvas, RectF) -> Unit = { canvas, rect ->
+/** Diziliş paylaşımı: dizilmiş raf. */
+internal fun reyonPainter(state: ReyonState, res: Resources): (Canvas, RectF) -> Unit {
     val puzzle = state.puzzle
-    val rows = puzzle.rows
-    val cols = puzzle.cols
+    val items = puzzle.products.mapNotNull { p -> state.placement(p.id)?.let { ShelfItem(p, it.row, it.col, p.facings) } }
+    return shelfPainter(items, puzzle.rows, puzzle.cols, res, emptyList())
+}
+
+/** Denetim paylaşımı: gerçek raf, bulunan sapmalar yeşil çerçeveli. */
+internal fun auditPainter(state: ReyonAuditState, res: Resources): (Canvas, RectF) -> Unit {
+    val audit = state.audit
+    val rings = audit.deviations.indices.filter { state.isFound(it) }.map { audit.deviations[it].slotMask }
+    return shelfPainter(audit.items, audit.rows, audit.cols, res, rings)
+}
+
+private fun shelfPainter(items: List<ShelfItem>, rows: Int, cols: Int, res: Resources, rings: List<Int>): (Canvas, RectF) -> Unit = { canvas, rect ->
     val cw = rect.width() / cols
     val sh = rect.height() / rows
     val plank = sh * 0.12f
@@ -33,12 +45,12 @@ internal fun reyonPainter(state: ReyonState, res: Resources): (Canvas, RectF) ->
         canvas.drawRoundRect(RectF(rect.left, y, rect.right, y + plank), plank * 0.3f, plank * 0.3f, plankPaint)
     }
     val nameText = ShareDraw.text(sh * 0.2f, 0xFF0F172A.toInt())
-    val starText = ShareDraw.text(sh * 0.2f, 0xFF0F172A.toInt(), bold = false)
-    for (p in puzzle.products) {
-        val pl = state.placement(p.id) ?: continue
-        val x = rect.left + pl.col * cw + pad
-        val y = rect.top + pl.row * sh + pad
-        val w = p.facings * cw - 2 * pad
+    val markText = ShareDraw.text(sh * 0.2f, 0xFF0F172A.toInt(), bold = false)
+    for (it in items) {
+        val p = it.product
+        val x = rect.left + it.col * cw + pad
+        val y = rect.top + it.row * sh + pad
+        val w = it.facings * cw - 2 * pad
         val h = sh - plank - 2 * pad
         canvas.drawRoundRect(RectF(x, y, x + w, y + h), cw * 0.12f, cw * 0.12f, ShareDraw.fill(brandArgb(p.brand)))
         val name = ReyonText.kind(res, p.kind)
@@ -52,6 +64,24 @@ internal fun reyonPainter(state: ReyonState, res: Resources): (Canvas, RectF) ->
             if (p.premium) append(" ★")
             if (p.heavy) append(" ▼")
         }
-        canvas.drawCentered(marks, x + w / 2f, y + h * 0.76f, starText)
+        canvas.drawCentered(marks, x + w / 2f, y + h * 0.76f, markText)
+    }
+    val ring = ShareDraw.stroke(0xFF4ADE80.toInt(), cw * 0.05f)
+    for (mask in rings) {
+        for (r in 0 until rows) {
+            var c = 0
+            while (c < cols) {
+                if (mask and (1 shl (r * cols + c)) == 0) {
+                    c++
+                    continue
+                }
+                var end = c
+                while (end + 1 < cols && mask and (1 shl (r * cols + end + 1)) != 0) end++
+                val x = rect.left + c * cw + pad * 0.5f
+                val y = rect.top + r * sh + pad * 0.5f
+                canvas.drawRoundRect(RectF(x, y, x + (end - c + 1) * cw - pad, y + sh - plank - pad), cw * 0.12f, cw * 0.12f, ring)
+                c = end + 1
+            }
+        }
     }
 }

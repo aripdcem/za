@@ -27,6 +27,7 @@ Aşamalar farklı otomatikleşiyor; ayrımı bilerek koruyoruz:
 | **B** kare hızı | Sürüm öncesi, gerçek cihazda — emülatörün kare süreleri gerçeği temsil etmez |
 | **C** giriş kalibrasyonu | Sürüm öncesi, gerçek cihazda — gerçek dokunma ve ekran ölçeği gerekir |
 | **D** denge | **CI**: değişmez testleri `test` görevinde, ölçüm koşumları `probe` adımında |
+| **E** erişilebilirlik | Kontrast **CI**'da (`ThemeContrastTest`); etiketler sürüm öncesi cihazda |
 
 CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 çürümesini engellemek**. Asıl koruma, ölçülen doğruların değişmez testine
@@ -46,6 +47,8 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Kolay tahtalar en basit teknikle çözülür | `SudokuStateTest` |
 | Üretim iş bütçesini aşmaz | `KakuroTest` |
 | Her bulmaca tahminsiz çözülür, brif kısa kalır, üretim bütçede | `ReyonGeneratorTest` |
+| Denetim sapmaları ayrık ve görünür; plan ile raf yalnızca sapma gözlerinde ayrışır | `ReyonAuditTest` |
+| Metin kontrastı WCAG AA eşiğini tutar | `ThemeContrastTest` |
 
 Yeni bir ölçüm bulgusu düzeltildiğinde, mümkünse **paylı bir değişmez** olarak
 buraya eklenir: ölçülen değerin kendisi değil, altına düşülmemesi gereken
@@ -202,6 +205,46 @@ Milimetre karşılığı: `mm = px / yoğunluk * 25.4` (yoğunluk: `adb shell wm
 Tuzak: vuruş anındaki **ekran sarsıntısı** nesneyi olduğu yerden kaydırıp
 ölçümü bozar. Bu yüzden her mesafe en az 3 kez denenip **medyan** alınır.
 
+## E · Erişilebilirlik
+
+Amaç: oyun, ekran okuyucuyla ve düşük görme keskinliğiyle kullanılabiliyor mu?
+
+### E1 · Kontrast (CI)
+
+Tema tek yerde tanımlı olduğu için bu, cihaz gerektirmeyen bir birim testidir:
+`ThemeContrastTest` metin/zemin çiftlerinin WCAG AA eşiğini (4,5:1) tuttuğunu
+doğrular. Palet değiştiğinde okunabilirlik sessizce bozulamaz.
+
+Ölçülen (2026-09-10): en düşük 6,18:1 (`onError/error`), en yüksek 15,84:1
+(`onBackground/background`). Hepsi eşiğin üstünde.
+
+### E2 · Etiketler (cihaz)
+
+```bash
+python3 tools/cihaz_testi.py erisim
+```
+
+Her dokunulabilir öğenin sınırları içinde bir etiket bulunmalı; yoksa TalkBack
+"düğme" der ama ne yaptığını söylemez. **Etiket çoğu zaman çocuk düğümdedir**,
+bu yüzden düğümün kendisine değil sınırlarını kapsayan etikete bakılır — ilk
+ölçümde bunu atlayınca hub'daki 14 öğenin hepsi "etiketsiz" görünmüştü.
+
+18 oyunun taramasında tek gerçek bulgu Kıskaç'taki kolay mod anahtarıydı
+(kendi metni olmayan `Switch`); satırın etiketi anahtara verilerek düzeltildi.
+
+### E3 · Dokunma hedefi — neden ölçmüyoruz
+
+Ölçmeyi denedik ve **güvenilmez olduğu için bıraktık.** Compose'da
+`Surface(onClick)` gibi bileşenlerde semantik düğüm, dokunma alanını değil
+içindeki metnin sınırlarını bildirebiliyor: Geçit'in 84 dp yüksekliğindeki yön
+tuşları taramada **11 dp** görünüyordu. Şeridin dışına dokunmak çalıştığı
+(ekran değişti) için ölçüm yanlış alarmdı.
+
+Yoğun ızgaralarda ve klavyelerde 48 dp zaten geometrik olarak imkânsız:
+Sudoku'nun 9×9 tahtası 411 dp genişlikte en çok 45 dp hücre verebilir, 29
+harflik klavye satırına 10 tuş sığdırınca tuş 40 dp olur. Buton boyutu kodda
+tanımlı olduğu için bu eksen kod incelemesine bırakıldı.
+
 ## D · Denge ölçümü
 
 Amaç: zorluk eğrisi, ödül dengesi ve "yetişilebilirlik" sayısal olarak doğru mu?
@@ -338,9 +381,13 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | ✅ mevcut testlerle | 2026-09-09 |
 | Viraj | ✅ | **60 · 3 · %100 · 34 ms** | — (tuşla) | ✅ kusur yok | 2026-09-09 |
 | Filo | ✅ | **60 · 1 · %81 · 31 ms** | ✅ düzeltildi | ✅ düzeltildi | 2026-09-09 |
-| Reyon | bekliyor | — (olay güdümlü) | — (dokun-yerleştir) | ✅ ölçüldü | 2026-09-09 |
+| Reyon | ✅ | olay güdümlü (1 · 0) | — (dokun-yerleştir) | ✅ ölçüldü (diziliş + denetim) | 2026-09-10 |
 
-18 oyunun tamamı açıldı, oynandı ve **hiçbirinde çökme yok** (`logcat` temiz).
+**E · erişilebilirlik:** tüm oyunlarda etiketsiz dokunulabilir öğe kalmadı
+(tek bulgu Kıskaç'ın kolay mod anahtarıydı, düzeltildi). Kontrast CI'da
+korunuyor.
+
+19 oyunun tamamı açıldı, oynandı ve **hiçbirinde çökme yok** (`logcat` temiz).
 Sürekli çizen altı oyunun tamamı 60 kare/s tutuyor; kaçan vsync 0–3 (≈%0,4).
 Yani **kare hızı sorunu yok**.
 
@@ -861,6 +908,25 @@ alt) brifin dörtte birinden fazlasına çıktı. Zor'da en sık ipucu artık
 (en kötü 56 bin), süre ort 2–16 ms (en kötü 67 ms, yalnız rapor).
 `ReyonGeneratorTest.generationStaysWithinWorkBudget` sınırları 80 deneme ve
 400 bin düğüm (gözlenenin 3–7 katı).
+
+**D — Denetim modu** (`auditReport`, 40 tohum/zorluk, v0.26.0). Denetimde
+adillik sorusu "sapma gerçekten görünür mü ve görünenden başka fark var mı"
+diye sorulur; üretici her denetimde bunu doğrular (`ReyonAuditGenerator.verify`:
+sapma maskeleri ayrık, plan ile raf yalnızca bu gözlerde ayrışır, her sapmanın
+en az bir ayrışan gözü var). Ölçülen, tür karışımı ve incelik:
+
+| Zorluk | Sapma | Tür karışımı | İnce sapma (marka/boy) | Sapma başına ayrışan göz |
+| --- | --- | --- | --- | --- |
+| Kolay | 2 | boş göz %44, yer değişimi %29, yabancı %28 | %0 | 1,98 |
+| Orta | 3 | yer değişimi %23, yabancı %21, boş göz %19, marka %19, taşma %18 | %19 | 2,07 |
+| Zor | 5 | boş göz %20, yer değişimi %18, yabancı %17, marka %16, boy %16, taşma %14 | %32 | 2,12 |
+
+Okuma: Kolay yalnızca bariz sapmalarla (boş göz, yer değişimi, yabancı ürün)
+oynanıyor; Orta marka ve taşmayı, Zor boyu ekliyor ve sapmaların üçte biri
+"ince" oluyor (yalnızca renk şeridi ya da boy noktası değişir). Zorluk
+merdiveni sapma sayısından çok sapmanın inceliğinden geliyor. Sapma başına
+ayrışan göz sayısı 2 civarında: her sapma en az bir, çoğunlukla iki gözde
+görünür.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

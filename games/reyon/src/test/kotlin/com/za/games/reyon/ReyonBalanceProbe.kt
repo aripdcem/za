@@ -33,6 +33,30 @@ class ReyonBalanceProbe {
         is Clue.SizeFlow -> "boy akışı"
     }
 
+    /** Denetim: sapma türü karışımı ve görünürlük (sapma başına ayrışan göz). */
+    @Test
+    fun auditReport() {
+        println("=== Reyon denetim ölçümü (${seeds.count()} tohum/zorluk) ===")
+        for (level in ReyonLevel.entries) {
+            val audits = seeds.map { ReyonAuditGenerator.generate(it, level) }
+            val mix = HashMap<DeviationKind, Int>()
+            var diffSlots = 0
+            var deviations = 0
+            for (a in audits) {
+                val diff = ReyonAuditGenerator.diffMask(a)
+                for (d in a.deviations) {
+                    mix[d.kind] = (mix[d.kind] ?: 0) + 1
+                    diffSlots += (d.slotMask and diff).countOneBits()
+                    deviations++
+                }
+            }
+            val subtle = (mix[DeviationKind.BRAND] ?: 0) + (mix[DeviationKind.SIZE] ?: 0)
+            println("--- $level (${level.rows}×${level.cols}) · sapma ${ReyonAuditGenerator.count(level)} ---")
+            println("tür karışımı: " + mix.entries.sortedByDescending { it.value }.joinToString { "${it.key} %.0f%%".format(100f * it.value / deviations) })
+            println("ince sapma (marka/boy) payı %.0f%% · sapma başına ayrışan göz ort %.2f".format(100f * subtle / deviations, diffSlots.toFloat() / deviations))
+        }
+    }
+
     @Test
     fun report() {
         println("=== Reyon denge ölçümü (${seeds.count()} tohum/zorluk) ===")

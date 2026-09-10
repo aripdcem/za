@@ -5,6 +5,9 @@ import com.za.games.R
 import com.za.games.reyon.Brand
 import com.za.games.reyon.Category
 import com.za.games.reyon.Clue
+import com.za.games.reyon.Deviation
+import com.za.games.reyon.DeviationKind
+import com.za.games.reyon.ReyonAudit
 import com.za.games.reyon.Kind
 import com.za.games.reyon.ReyonLevel
 import com.za.games.reyon.ReyonPuzzle
@@ -93,6 +96,32 @@ object ReyonText {
         row == 1 -> res.getString(R.string.reyon_shelf_eye)
         row == rows - 1 -> res.getString(R.string.reyon_shelf_bottom)
         else -> res.getString(R.string.reyon_shelf_nth, row + 1)
+    }
+
+    /** Bulunan sapmanın açıklaması. */
+    fun deviation(res: Resources, audit: ReyonAudit, d: Deviation): String {
+        fun name(id: Int) = kind(res, audit.plan[id].kind)
+        val a = d.products[0]
+        return when (d.kind) {
+            DeviationKind.SWAP -> res.getString(R.string.reyon_dev_swap_fmt, name(a), name(d.partner))
+            DeviationKind.GAP -> {
+                val missing = audit.items.none { it.product.id == a }
+                res.getString(if (missing) R.string.reyon_dev_missing_fmt else R.string.reyon_dev_gap_fmt, name(a))
+            }
+            DeviationKind.FOREIGN -> res.getString(R.string.reyon_dev_foreign_fmt, name(a), d.foreign?.let { kind(res, it) } ?: "?")
+            DeviationKind.BRAND -> {
+                val actual = audit.items.firstOrNull { it.product.id == a }?.product?.brand ?: audit.plan[a].brand
+                res.getString(R.string.reyon_dev_brand_fmt, name(a), brand(res, audit.plan[a].brand), brand(res, actual))
+            }
+            DeviationKind.SIZE -> res.getString(R.string.reyon_dev_size_fmt, name(a))
+            DeviationKind.SPILL -> {
+                val b = d.partner
+                val grownIsA = (audit.items.firstOrNull { it.product.id == a }?.facings ?: 0) > audit.plan[a].facings
+                val grown = if (grownIsA) a else b
+                val shrunk = if (grownIsA) b else a
+                res.getString(R.string.reyon_dev_spill_fmt, name(grown), name(shrunk))
+            }
+        }
     }
 
     fun clue(res: Resources, puzzle: ReyonPuzzle, clue: Clue): String {

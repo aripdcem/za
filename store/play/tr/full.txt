@@ -8,7 +8,7 @@ SÖZÜMÜZ
 
 OYUNLAR
 Arcade: Blok (düşen bloklar), Yılan, Kuyu (kuyuya düşüş, günlük kuyu), Geçit (karşıya geçiş, günlük mod), Balkon (balkondan nişan: kabak çekirdeği, su balonu ya da tükürük), Viraj (sözde-3D yarış, günlük pist), Filo (dikey uzay savaşı, günlük filo)
-Bulmaca: 2048, Sudoku (üç zorluk, notlar, tek çözüm garantisi), Mayın Tarlası, Kakuro (üç boy, tek çözüm garantisi), Reyon (planogram bulmacası, günlük raf)
+Bulmaca: 2048, Sudoku (üç zorluk, notlar, tek çözüm garantisi), Mayın Tarlası, Kakuro (üç boy, tek çözüm garantisi), Reyon (planogram bulmacası ve uyum denetimi, günlük raf)
 Kelime: Beş Harf (Türkçe kelime tahmini, günlük kelime), Kıskaç (alfabetik daraltma), Türetme (harflerden kelime türetme), Dizgi (elden ele kelime tahtası, 2-4 oyuncu)
 Masa ve sayı: Tavla (Klasik, Tapa, Hapis; bilgisayara ya da arkadaşına karşı), Vergici, Toplam Kapma
 

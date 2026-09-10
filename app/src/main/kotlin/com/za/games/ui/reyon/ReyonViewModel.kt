@@ -59,6 +59,9 @@ class ReyonViewModel(application: Application) : AndroidViewModel(application) {
     private val _result = MutableStateFlow<ReyonResult?>(null)
     val result: StateFlow<ReyonResult?> = _result.asStateFlow()
 
+    private val _kind = MutableStateFlow(store.lastKind())
+    val kind: StateFlow<ReyonKind> = _kind.asStateFlow()
+
     private val _level = MutableStateFlow(store.lastLevel())
     val level: StateFlow<ReyonLevel> = _level.asStateFlow()
 
@@ -115,6 +118,11 @@ class ReyonViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
         }
+    }
+
+    fun setKind(kind: ReyonKind) {
+        _kind.value = kind
+        store.saveKind(kind)
     }
 
     fun setLevel(level: ReyonLevel) {

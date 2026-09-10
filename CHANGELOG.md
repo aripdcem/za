@@ -2,6 +2,9 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.26.0 (2026-09-10)
+- Reyon: Denetim modu. Üstte plan, altta gerçek raf; yer değişimi, boş göz, yabancı ürün, yanlış marka/boy ve taşma sapmalarına dokunarak bul; süre, hata ve ipucu; günlük ve serbest, üç zorluk
+
 ## 0.25.0 (2026-09-09)
 - Yeni oyun: Reyon (planogram mantık bulmacası; göz hizası, ağır ürünler alta, kategori ve marka blokları, boy akışı kurallarından tek dizilişi çıkar; üç zorluk, tahminsizlik garantisi, günlük raf)
 

@@ -242,10 +242,17 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   oyuncunun gördüğü bilgiyle çalışan çıkarım çözücüsü (tekil, ikili, örtü, kapasite, çoklu teknikleri) sonuna kadar
   gidebildiği sürece ipuçlarını atar: en küçük, çıkarılabilir brif. Günlük mod herkese aynı rafı verir; yarım kalan
   bulmaca cihazda saklanır
-- Motor `games/reyon`: `ReyonGenerator` (düzen örnekleme, aday ipuçları, seçim/küçültme, iş
+- **Denetim modu** (planogram uyum kontrolü): üstte referans plan, altta gerçek raf. Raf plandan K yerde sapar
+  (Kolay 2, Orta 3, Zor 5): yer değişimi, boş göz (bir yüz ya da ürün eksik), yabancı ürün, yanlış marka, yanlış boy,
+  komşu göze taşma; ince sapmalar (marka/boy) yalnızca üst zorluklarda. Sapmalara dokunulur, yanlış dokunuş hata
+  sayılır; bulunanlar açıklamasıyla listelenir. Üretici sapmaları ayrık tutar ve plan ile rafın **yalnızca** sapma
+  gözlerinde ayrıştığını doğrular (gizli fark yok, sahte fark yok). Süre, hata ve ipucu; günlük raf, en iyi süre
+- Motor `games/reyon`: `ReyonAuditGenerator`/`ReyonAuditState` (sapma üretimi ve doğrulama, dokunma, ipucu, kayıt);
+  `ReyonGenerator` (düzen örnekleme, aday ipuçları, seçim/küçültme, iş
   sayaçları), `Propagator`/`ReyonSolver`/`ReyonDeducer` (kısıt yayılımı, geri izleme, çıkarım izi), `ReyonState`
-  (yerleştirme, geri alma, durum, ipucu, kayıt); 28 test: kural değerlendirme, kaba kuvvetle çapraz doğrulama,
-  çözümü düşürmeyen yayılım, determinizm, tek çözüm, tahminsizlik, brif uzunluğu, üretim bütçesi; `ReyonBalanceProbe`
+  (yerleştirme, geri alma, durum, ipucu, kayıt); 34 test: kural değerlendirme, kaba kuvvetle çapraz doğrulama,
+  çözümü düşürmeyen yayılım, determinizm, tek çözüm, tahminsizlik, brif uzunluğu, üretim bütçesi, denetim
+  değişmezleri (ayrık ve görünür sapmalar, tür kapsamı, dokunma mekaniği); `ReyonBalanceProbe`
 
 ### Vergici ve Toplam Kapma (`games/sayi`)
 - **Vergici** (Taxman): 1–N tahtası; böleni kalmış bir sayıyı alırsın, vergici o sayının tahtadaki tüm bölenlerini
