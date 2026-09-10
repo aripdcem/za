@@ -295,7 +295,7 @@ internal class AuditLayout(val width: Dp, val planHeight: Dp, val shelfHeight: D
  * büyür.
  */
 internal fun auditLayout(maxWidth: Dp, maxHeight: Dp, rows: Int, cols: Int): AuditLayout {
-    val budget = (maxHeight - 2 * SECTION_LABEL_HEIGHT - FOUND_LIST_MIN).coerceAtLeast(96.dp)
+    val budget = (maxHeight - SECTION_LABEL_HEIGHT * 2 - FOUND_LIST_MIN).coerceAtLeast(96.dp)
     val unit = maxWidth * rows / cols // katsayı 1'de bir tuvalin boyu
     val f = (budget / (unit * (1f + PLAN_RATIO))).coerceIn(SHELF_ROW_MIN, SHELF_ROW_MAX)
     val need = unit * (1f + PLAN_RATIO) * f
