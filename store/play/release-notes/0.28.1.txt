@@ -1,0 +1,6 @@
+<tr-TR>
+• Kısa ekranlarda menü ve bitiş kartları kayıyor; Reyon tür çipleri dar ekranda iki satır. TalkBack açıkken sistem çubukları görünür kalıyor, alt düğmelere ekran okuyucuyla ulaşılıyor.
+</tr-TR>
+<en-US>
+• Menu and end cards scroll on short screens; Reyon kind chips wrap on narrow screens. System bars stay visible with TalkBack on, so bottom buttons are reachable with the screen reader.
+</en-US>

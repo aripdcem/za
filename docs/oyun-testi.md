@@ -224,6 +224,12 @@ doğrular. Palet değiştiğinde okunabilirlik sessizce bozulamaz.
 
 ### E2 · Etiketler (cihaz)
 
+> Sıfır sınırlı düğümler: `erisim` çıktısındaki "sınırı sıfır dokunulabilir
+> düğüm" satırı 0 değilse ekran okuyucu o düğmelere dokunarak inemez; gizli
+> sistem çubuğunun bölgesine çizilen öğeler bazı cihazlarda böyle gelir.
+> Uygulama TalkBack açıkken çubukları gizlemez; ölçümü TalkBack açıkken de
+> yineleyin.
+
 ```bash
 python3 tools/cihaz_testi.py erisim
 ```
@@ -1087,6 +1093,20 @@ değiştirmedi, yani hatanın bedeli yalnızca bir kez daha dokunmak.
 
 Hızlı dokunuş sadakati: arka arkaya (beklemesiz) üç dokunuş üç kez denendi, her
 seferinde 0→3 koli ve 3→0 koli — düşen dokunuş yok.
+
+**Düzeltmeler (v0.28.1).** Bulgu 1: `OverlayCard` kabın yüksekliğine sığmazsa
+içi kayıyor (yükseklik sınırsızsa kaydırma eklenmez); dört Reyon brifi
+kısaltıldı. Robolectric 360×640'ta Sipariş menüsünde "Haftaya başla" ve "Menüye
+dön" kaydırılıp görünür alana geliyor (`ReyonAuditLayoutTest`). Bulgu 2:
+`KindChips` kart genişliği 300 dp'nin altındaysa 2×2 diziliyor, çip metni
+sığmazsa üç nokta; 411 dp'de tek satır korunuyor. Bulgu 3: dokunarak keşif
+açıkken uygulama sistem çubuklarını gizlemiyor (`MainActivity`, dinleyiciyle
+canlı), içerik çubukların üstünde kalıyor; `cihaz_testi.py erisim` sıfır
+sınırlı dokunulabilir düğümleri sayıp listeliyor ("sınırı sıfır … 0"
+beklenir). C: sipariş satırının alt payı 10 dp, adımlayıcının 48 dp dokunma
+alanı kartın kırpma sınırında kesilmiyor. Cihazda doğrulanacaklar: TalkBack
+açıkken `erisim` çıktısında sıfır sınırlı düğüm 0; adımlayıcı dikey bandı
+±24 dp; 360 dp'de menü kaydırılarak başlıyor.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

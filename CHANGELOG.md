@@ -2,6 +2,12 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.28.1 (2026-09-10)
+- Menü, duraklatma ve bitiş kartları (`OverlayCard`) kabın yüksekliğine sığmazsa içi kayıyor; 360×640'ta Reyon menü kartı ekrandan taşıyor, "Haftaya başla" dokunulamıyordu (cihaz bulgusu)
+- Reyon: dört tür çipi dar kartta iki satıra bölünüyor ("Denetim" 360 dp'de "Deneti" diye kırpılıyordu), çip metni sığmazsa üç nokta; dört brif kısaltıldı
+- Reyon Sipariş: satır kartının alt payı 10 dp, koli adımlayıcısının 48 dp dokunma alanı artık kırpılmıyor (cihazda 44 dp ölçülmüştü)
+- Dokunarak keşif (TalkBack) açıkken sistem çubukları gizlenmiyor: gizli çubuğun bölgesine çizilen düğmelerin erişilebilirlik sınırı sıfırlanıyor, ekran okuyucu oraya inemiyordu; `tools/cihaz_testi.py erisim` sıfır sınırlı düğümleri artık raporluyor
+
 ## 0.28.0 (2026-09-10)
 - Reyon: Sipariş modu (stok devri). Raf planı sabit; beş–yedi gün boyunca her gün ürün başına kaç koli sipariş edileceğine karar verilir. Talep aralık olarak görünür, gerçekleşen talep tohumdan gelir; siparişler ertesi sabah (Zor'da ağırlar iki gün sonra) gelir, rafa sığmayan iade olur; satış marj kazandırır, akşam stoğu bekleme bedeli öder, raf ömrü dolan fire olur; hafta sonu ve promosyon talebi yükseltir. Hedef, aynı tahminleri gören uzman politikanın kârı; yıldızlar hedefe göre; stok devri ve hizmet düzeyi uzmanla karşılaştırılır; gün kapanış dökümü, ipucu (uzman önerisi), günlük hafta, en iyi kâr kaydı
 

@@ -162,12 +162,18 @@ def arayuz(hepsi: bool = False) -> list[dict]:
         if not m:
             continue
         x1, y1, x2, y2 = map(int, m.groups())
-        # Görünmeyen öğeler [0,0][0,0] sınırıyla gelir; dokunulursa ekranın
-        # köşesine basılır ve gezinme sessizce yanlış yere gider.
-        if x2 - x1 < 2 or y2 - y1 < 2:
-            continue
         etiket = (d.get("text") or "").strip() or (d.get("content-desc") or "").strip()
         tiklanir = d.get("clickable") == "true"
+        # Görünmeyen öğeler [0,0][0,0] sınırıyla gelir; dokunulursa ekranın
+        # köşesine basılır ve gezinme sessizce yanlış yere gider. Erişilebilirlik
+        # taraması için yine de sayılırlar: gizli sistem çubuğunun bölgesine
+        # çizilen düğmeler bazı cihazlarda böyle gelir ve ekran okuyucu onlara
+        # inemez (docs/oyun-testi.md, Reyon Sipariş bulgu 3).
+        if x2 - x1 < 2 or y2 - y1 < 2:
+            if hepsi and tiklanir:
+                ogeler.append({"t": etiket, "cx": 0, "cy": 0, "x1": 0, "y1": 0, "x2": 0, "y2": 0,
+                               "tik": True, "sinirsiz": True})
+            continue
         if etiket or (hepsi and tiklanir):
             ogeler.append({"t": etiket, "cx": (x1 + x2) // 2, "cy": (y1 + y2) // 2,
                            "x1": x1, "y1": y1, "x2": x2, "y2": y2, "tik": tiklanir})
@@ -387,6 +393,8 @@ def komut_erisim(args) -> None:
     ogeler = arayuz(hepsi=True)
     if not ogeler:
         sys.exit("Arayüz okunamadı; uygulama ön planda mı?")
+    sinirsiz = [o for o in ogeler if o.get("sinirsiz")]
+    ogeler = [o for o in ogeler if not o.get("sinirsiz")]
     tiklanabilir = [o for o in ogeler if o.get("tik")]
     etiketli = [o for o in ogeler if o["t"]]
 
@@ -403,6 +411,12 @@ def komut_erisim(args) -> None:
               f"({(o['x2'] - o['x1']) / 2.625:.0f}×{(o['y2'] - o['y1']) / 2.625:.0f} dp)")
     if not etiketsiz:
         print("Her dokunulabilir öğenin bir etiketi var.")
+    print(f"sınırı sıfır dokunulabilir düğüm: {len(sinirsiz)}")
+    if sinirsiz:
+        print("  Ekran okuyucu bunlara dokunarak inemez; gizli sistem çubuğunun bölgesine çizilen")
+        print("  öğeler böyle gelir. TalkBack açıkken uygulama çubukları gizlemez; o durumda 0 beklenir.")
+        for o in sinirsiz:
+            print(f"  {o['t'] or '(etiketsiz)'}")
 
 
 def komut_tarama(args) -> None:

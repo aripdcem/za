@@ -7,6 +7,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.height
@@ -55,9 +56,10 @@ class ReyonAuditLayoutTest {
         rule.setZaContent { game("reyon").screen(0L, {}, {}) }
         rule.reyonOpenMenu()
         rule.reyonPickKind(str(R.string.reyon_kind_audit))
-        rule.onNodeWithText(str(R.string.mode_free)).performClick()
-        rule.onNodeWithText(str(R.string.difficulty_easy)).performClick()
-        rule.onNodeWithText(str(R.string.reyon_audit_start)).performClick()
+        // Kısa ekranda menü kartı kayar; düğmeler görünür alana getirilerek basılır.
+        rule.onNodeWithText(str(R.string.mode_free)).performScrollTo().performClick()
+        rule.onNodeWithText(str(R.string.difficulty_easy)).performScrollTo().performClick()
+        rule.onNodeWithText(str(R.string.reyon_audit_start)).performScrollTo().performClick()
         rule.waitUntil(timeoutMillis = 30_000) {
             rule.onAllNodes(hasContentDescription(shelfPrefix, substring = true)).fetchSemanticsNodes().isNotEmpty()
         }
@@ -79,6 +81,37 @@ class ReyonAuditLayoutTest {
         assertTrue("raf plandan daha yüksek olmalı", shelf.height > plan.height)
         rule.onNodeWithText(str(R.string.reyon_hint)).assertIsDisplayed()
         rule.onNodeWithText(str(R.string.reyon_audit_plan_label)).assertIsDisplayed()
+    }
+
+    /** Kısa ekranda menü kartı kayar: en uzun brifli tür (Sipariş) seçiliyken "Haftaya başla" ulaşılabilir. */
+    @Test
+    @Config(qualifiers = "+w360dp-h640dp-xhdpi")
+    fun menuStartButtonIsReachableOnAShortPhone() {
+        rule.setZaContent { game("reyon").screen(0L, {}, {}) }
+        rule.reyonOpenMenu()
+        rule.reyonPickKind(str(R.string.reyon_kind_order))
+        val root = rule.onRoot().getBoundsInRoot()
+        val start = rule.onNodeWithText(str(R.string.reyon_order_start)).performScrollTo()
+        start.assertIsDisplayed()
+        val b = start.getBoundsInRoot()
+        assertTrue("başlat düğmesi ekranın içinde olmalı: $b / $root", b.top >= root.top && b.bottom <= root.bottom)
+        rule.onNodeWithText(str(R.string.exit_to_hub)).performScrollTo().assertIsDisplayed()
+        // Dar kartta tür çipleri iki satır: "Sipariş" çipi "Diziliş" çipinin altında.
+        val first = rule.onNodeWithText(str(R.string.reyon_kind_puzzle)).getBoundsInRoot()
+        val last = rule.onNodeWithText(str(R.string.reyon_kind_order)).getBoundsInRoot()
+        assertTrue("çipler iki satıra bölünmeli", last.top > first.bottom - 1.dp)
+        assertTrue("çip genişliği etikete yetmeli: ${last.width}", last.width >= 90.dp)
+    }
+
+    @Test
+    fun kindChipsShareOneRowOnTheDefaultPhone() {
+        rule.setZaContent { game("reyon").screen(0L, {}, {}) }
+        rule.reyonOpenMenu()
+        val first = rule.onNodeWithText(str(R.string.reyon_kind_puzzle)).getBoundsInRoot()
+        val audit = rule.onNodeWithText(str(R.string.reyon_kind_audit)).getBoundsInRoot()
+        val last = rule.onNodeWithText(str(R.string.reyon_kind_order)).getBoundsInRoot()
+        assertEquals("çipler tek satırda olmalı", first.top.value, last.top.value, 1f)
+        assertTrue("çipler yan yana olmalı", audit.left > first.right - 1.dp && last.left > audit.right - 1.dp)
     }
 
     @Test

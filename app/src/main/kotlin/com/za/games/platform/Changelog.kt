@@ -39,6 +39,19 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.28.1", "2026-09-10",
+            tr = listOf(
+                "Menü ve bitiş kartları kısa ekranda kayıyor; 360 dp'de Reyon menüsünün düğmeleri ekran dışında kalıyordu",
+                "Reyon: tür çipleri dar ekranda iki satır, brifler kısaldı; Sipariş adımlayıcısının dokunma alanı 48 dp",
+                "Ekran okuyucu (TalkBack) açıkken sistem çubukları gizlenmez; alt düğmeler dokunarak keşifte erişilebilir",
+            ),
+            en = listOf(
+                "Menu and end cards scroll on short screens; at 360 dp the Reyon menu buttons were off screen",
+                "Reyon: kind chips wrap to two rows on narrow screens, shorter briefs; the Ordering stepper gets a 48 dp touch target",
+                "System bars stay visible while a screen reader (TalkBack) is on, so bottom buttons are reachable by touch exploration",
+            ),
+        ),
+        ReleaseNote(
             "0.28.0", "2026-09-10",
             tr = listOf("Reyon: Sipariş modu (bir haftalık stok yönetimi: talep tahmini, koli siparişi, teslim süresi, raf kapasitesi, raf ömrü ve promosyonlar; uzmanın kârına göre yıldız, stok devri)"),
             en = listOf("Reyon: Ordering mode (a week of stock management: demand forecasts, case orders, lead times, shelf capacity, shelf life and promotions; stars against the expert's profit, stock turnover)"),
