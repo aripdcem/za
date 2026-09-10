@@ -44,6 +44,8 @@ temsil etmez.
       ve kaçan vsync ~0. Pencerenin tamamı oynanmalı, yoksa ölçüm kirlidir.
 - [ ] **C · giriş:** sürüklemeli oyunlarda `python3 tools/cihaz_testi.py alan`
       ve `surukle`; ölü bölge ve oran beklenen mi
+- [ ] **E · erişilebilirlik:** her ekranda `python3 tools/cihaz_testi.py erisim`
+      — etiketsiz dokunulabilir öğe olmamalı (kontrast CI'da korunuyor)
 - [ ] Sonuçları `docs/oyun-testi.md` içindeki sonuç kütüğüne işle
 - [ ] Yeni oyun eklendiyse D aşaması için `*Probe` yazılmış olmalı
       (`./gradlew :games:<oyun>:probe`)

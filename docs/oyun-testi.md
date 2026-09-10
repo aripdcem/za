@@ -27,6 +27,7 @@ Aşamalar farklı otomatikleşiyor; ayrımı bilerek koruyoruz:
 | **B** kare hızı | Sürüm öncesi, gerçek cihazda — emülatörün kare süreleri gerçeği temsil etmez |
 | **C** giriş kalibrasyonu | Sürüm öncesi, gerçek cihazda — gerçek dokunma ve ekran ölçeği gerekir |
 | **D** denge | **CI**: değişmez testleri `test` görevinde, ölçüm koşumları `probe` adımında |
+| **E** erişilebilirlik | Kontrast **CI**'da (`ThemeContrastTest`); etiketler sürüm öncesi cihazda |
 
 CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 çürümesini engellemek**. Asıl koruma, ölçülen doğruların değişmez testine
@@ -46,6 +47,7 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Kolay tahtalar en basit teknikle çözülür | `SudokuStateTest` |
 | Üretim iş bütçesini aşmaz | `KakuroTest` |
 | Her bulmaca tahminsiz çözülür, brif kısa kalır, üretim bütçede | `ReyonGeneratorTest` |
+| Metin kontrastı WCAG AA eşiğini tutar | `ThemeContrastTest` |
 
 Yeni bir ölçüm bulgusu düzeltildiğinde, mümkünse **paylı bir değişmez** olarak
 buraya eklenir: ölçülen değerin kendisi değil, altına düşülmemesi gereken
@@ -201,6 +203,46 @@ Milimetre karşılığı: `mm = px / yoğunluk * 25.4` (yoğunluk: `adb shell wm
 
 Tuzak: vuruş anındaki **ekran sarsıntısı** nesneyi olduğu yerden kaydırıp
 ölçümü bozar. Bu yüzden her mesafe en az 3 kez denenip **medyan** alınır.
+
+## E · Erişilebilirlik
+
+Amaç: oyun, ekran okuyucuyla ve düşük görme keskinliğiyle kullanılabiliyor mu?
+
+### E1 · Kontrast (CI)
+
+Tema tek yerde tanımlı olduğu için bu, cihaz gerektirmeyen bir birim testidir:
+`ThemeContrastTest` metin/zemin çiftlerinin WCAG AA eşiğini (4,5:1) tuttuğunu
+doğrular. Palet değiştiğinde okunabilirlik sessizce bozulamaz.
+
+Ölçülen (2026-09-10): en düşük 6,18:1 (`onError/error`), en yüksek 15,84:1
+(`onBackground/background`). Hepsi eşiğin üstünde.
+
+### E2 · Etiketler (cihaz)
+
+```bash
+python3 tools/cihaz_testi.py erisim
+```
+
+Her dokunulabilir öğenin sınırları içinde bir etiket bulunmalı; yoksa TalkBack
+"düğme" der ama ne yaptığını söylemez. **Etiket çoğu zaman çocuk düğümdedir**,
+bu yüzden düğümün kendisine değil sınırlarını kapsayan etikete bakılır — ilk
+ölçümde bunu atlayınca hub'daki 14 öğenin hepsi "etiketsiz" görünmüştü.
+
+18 oyunun taramasında tek gerçek bulgu Kıskaç'taki kolay mod anahtarıydı
+(kendi metni olmayan `Switch`); satırın etiketi anahtara verilerek düzeltildi.
+
+### E3 · Dokunma hedefi — neden ölçmüyoruz
+
+Ölçmeyi denedik ve **güvenilmez olduğu için bıraktık.** Compose'da
+`Surface(onClick)` gibi bileşenlerde semantik düğüm, dokunma alanını değil
+içindeki metnin sınırlarını bildirebiliyor: Geçit'in 84 dp yüksekliğindeki yön
+tuşları taramada **11 dp** görünüyordu. Şeridin dışına dokunmak çalıştığı
+(ekran değişti) için ölçüm yanlış alarmdı.
+
+Yoğun ızgaralarda ve klavyelerde 48 dp zaten geometrik olarak imkânsız:
+Sudoku'nun 9×9 tahtası 411 dp genişlikte en çok 45 dp hücre verebilir, 29
+harflik klavye satırına 10 tuş sığdırınca tuş 40 dp olur. Buton boyutu kodda
+tanımlı olduğu için bu eksen kod incelemesine bırakıldı.
 
 ## D · Denge ölçümü
 

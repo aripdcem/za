@@ -8,7 +8,12 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 
 // ZA bilinçli olarak tek görünüme sahip: koyu, yüksek kontrastlı bir oyun teması.
-private val ZaColors = darkColorScheme(
+/**
+ * Uygulama renk şeması. `internal`: erişilebilirlik kontrast testi
+ * (`ThemeContrastTest`) bu değerleri okur — metin/zemin oranlarının WCAG AA
+ * eşiğinin altına düşmemesi CI'da korunur. Bkz. docs/oyun-testi.md (E aşaması).
+ */
+internal val ZaColors = darkColorScheme(
     primary = Color(0xFF4DE1FF),
     onPrimary = Color(0xFF00293A),
     secondary = Color(0xFFA78BFA),

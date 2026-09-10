@@ -21,5 +21,9 @@ captures/
 # Kotlin
 .kotlin/
 
+# Python (tools/)
+__pycache__/
+*.pyc
+
 # OS
 .DS_Store
