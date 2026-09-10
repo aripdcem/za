@@ -64,9 +64,17 @@ class BostanScreenTest {
         val vm = BostanViewModel(ApplicationProvider.getApplicationContext(), quickLevel)
         rule.setZaContent { BostanScreen(highScore = 0L, onScore = {}, onExit = {}, viewModel = vm) }
         rule.onNodeWithText(str(R.string.mode_free)).performClick()
-        rule.onNodeWithText(str(R.string.bostan_start)).performClick()
-        rule.waitUntil(timeoutMillis = 10_000) { vm.phase.value == BostanPhase.PLAYING }
+        // Kare döngüsü sonsuzdur; saat elle ilerletilir (Dalgıç testiyle aynı düzen).
         rule.mainClock.autoAdvance = false
+        rule.onNodeWithText(str(R.string.bostan_start)).performClick()
+        // Seviye arka planda üretilir, sonuç ana iş parçacığına gönderilir: kuyruk
+        // boşaltılmadan (waitForIdle) evre değişmez; yalnızca durumu yoklamak yetmez.
+        val deadline = System.currentTimeMillis() + 10_000
+        while (vm.phase.value != BostanPhase.PLAYING && System.currentTimeMillis() < deadline) {
+            rule.waitForIdle()
+            Thread.sleep(20)
+        }
+        assertEquals(BostanPhase.PLAYING, vm.phase.value)
         rule.mainClock.advanceTimeByFrame()
         val water0 = vm.state.water
         assertNull(vm.state.defenderAt(2, 6))
