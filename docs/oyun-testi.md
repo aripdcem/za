@@ -1134,6 +1134,11 @@ açıkken `erisim` çıktısında sıfır sınırlı düğüm 0; adımlayıcı d
   dokunulabilir öğe koymamak**: dokunarak keşif açıkken alta durum çubuğu
   kadar ek pay vermek ya da eylem satırını kural metninin üstüne almak.
 
+  **Düzeltme (v0.28.2):** dokunarak keşif açıkken uygulama kökü alta durum
+  çubuğu yüksekliği kadar pay veriyor (`MainActivity.ExplorationInset`); içerik
+  2186 px'te bitiyor, eylem satırı bandın üstünde kalıyor. Cihazda
+  doğrulanacak: TalkBack açıkken `erisim` → "sınırı sıfır … 0".
+
 **Hafta grafiği (v0.28.2, cihazda).** Kolay bir hafta sonuna kadar oynanıp sonuç
 kartı 411 dp ve 360 dp'de bakıldı: çubuklar (1. gün +32, 2. gün +26, kalan üç
 gün 0), biriken devir çizgisi kartın yazdığı sayıya varıyor (12,5), uzman devri
