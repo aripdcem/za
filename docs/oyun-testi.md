@@ -57,6 +57,7 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Uçurtma: üretilen dünya her sütunda ≥ 0,3 birim boşluk bırakır (tavan zorlukta da); rakibin üstünden geçen keser, altından geçen kesilir; dikkatli pilot 12 uçuşun en az 8'inde 300 m'yi geçer | `UcurtmaWorldTest` |
 | Dalgıç: doğan her şey şeritlerde ve suda kalır, mayınlar alt şeritlerde ve en çok üç; boş yüzeye çıkış can götürür ama başta değil; pilot 20 dalışın en az 14'ünde teslim eder | `DalgicWorldTest` |
 | Bostan: üretilen her seviye uzman politikasıyla kazanılır (6 tohum × 3 zorluk), türler dalga dizinine göre açılır, bütçe aşılmaz, zorluklar saldırgan sayısında sıralı; tuzak kurulmadan kemirilir, kurulunca kemirene patlar | `BostanStateTest` |
+| Sincap: her basamakta en az bir dal ve güvenli kaçış (30 tohum × 400 basamak, güvenli yol araması), kargalı basamağın altında kuru dal yok; pilot boşluğa atlamaz, 10 tohumda ortalama ≥ 20 basamak | `SincapWorldTest` |
 | Metin kontrastı WCAG AA eşiğini tutar | `ThemeContrastTest` |
 
 Yeni bir ölçüm bulgusu düzeltildiğinde, mümkünse **paylı bir değişmez** olarak
@@ -405,6 +406,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Tuşe | ✅ | olay güdümlü (vuruşta 21 ms, GPU 15,5) | ✅ iki parmak 15 ms arayla da sayılıyor | ✅ Sonsuz eğrisi | 2026-09-10 |
 | Uçurtma | ✅ | **59 · 5 · %60 · 34 ms** (GPU 20 ms) | ✅ tutuşa yanıt ~100 ms · tel 2,3 dp / 8,2:1 | ✅ pilot eğrisi | 2026-09-10 |
 | Dalgıç | ✅ | **58 · 14 · %12 · 24 ms** | ✅ 2B kazanç 1,3 · ölü bölge yok · zincir 1,5 dp / 1,54:1 | ✅ tehdit dağılımı | 2026-09-10 |
+| Bostan | ✅ | **60 · 5 · %47 · 28 ms** | ⚠ hücre 411 dp'de 72 dp, 360 dp'de **38 dp** | ✅ ölçek ve uzman | 2026-09-11 |
 
 **E · erişilebilirlik:** tüm oyunlarda etiketsiz dokunulabilir öğe kalmadı
 (tek bulgu Kıskaç'ın kolay mod anahtarıydı, düzeltildi). Kontrast CI'da
@@ -1585,11 +1587,101 @@ insanın erişemeyeceği bir standarda göre kesilmesin.
 
 Okuma: kolay 2, zor 4 dakika. Uzmanın kolayda ortalama 2,8, ortada 1,8 can
 bırakması insan için hedef: kolayı üç yıldızla, ortayı bir–iki yıldızla
-bitirmek. A–C cihazda koşulmadı; cihazda bakılacak: kart ve hücre dokunma
-hedefi (hücre ~54 dp), damlanın 6 s içinde fark edilip dokunulabilirliği,
-seviye üretiminin ("Bostan hazırlanıyor…") telefondaki süresi (JVM'de
-seviye başına ~20 ms), büyük dalga duyurusunun ve kart bekleme örtüsünün
-okunurluğu.
+bitirmek. Cihaz koşumu (A–C) aşağıda.
+
+### Bostan · cihazda · 2026-09-11
+
+v0.33.0 APK'sıyla, Serbest · Kolay (Günlük'ün günde üç denemesi var).
+
+**A — koşum.** Kart seçip hücreye yerleştirme çalışıyor (su 150 → 100), dalgalar
+ilerliyor, bostan çiğnenince sonuç kartı geliyor ve uzmanın aynı bostandaki
+sonucunu da yazıyor ("Uzman aynı bostanda: 2 can · 605 puan"). `logcat`
+`AndroidRuntime:E` boş.
+
+**B — kare hızı.** Oyun sürerken 12,5 s'de 748 kare (**59,8 kare/s**), kaçan
+vsync 5, jank %47, p50 28 ms, p90 36 ms.
+
+**C — kart ve hücre dokunma hedefi.** Izgara ve kart şeridi iki ekran
+genişliğinde ölçüldü:
+
+| | hücre | kart |
+| --- | --- | --- |
+| 411 × 891 dp (ölçüm cihazı) | **72 × 72 dp** | 59 × 79 dp (6 dp aralık) |
+| 360 × 640 dp | **38 × 38 dp** | 51 dp genişlik |
+
+360 dp'de tarla **yükseklikle sınırlanıyor**: 5×7 ızgara sığmak için küçülüyor
+ve ortalanıyor (iki yanda geniş yeşil boşluk kalıyor), hücre 38 dp'ye iniyor —
+Material'ın 48 dp tabanının ve kütükteki "~54 dp" tahmininin altında. Kartlar
+iki ekranda da tabanın üstünde. Hücreler bitişik olduğu için ıskalanan dokunuş
+boşa gitmiyor, **komşu hücreye ekiyor**; dar ekranda yanlış satıra ekme riski
+gerçek. Yükseklik sıkışınca ızgarayı küçültmek yerine satır sayısını koruyup
+hücreyi dikdörtgen yapmak (genişlik bol) 48 dp'yi kurtarır.
+
+**C — damla.** Ömür 6 s (kod). Sprite 24 × 37 dp, toprağa karşı kontrast
+**4,6:1** — duran ekranda bile göze çarpıyor. Toplama hedefi sprite değil
+**hücrenin tamamı** (`collectDrop(lane, row)`); cihazda doğrulandı: sprite
+merkezinden 30 dp uzağa dokunmak suyu +25 yaptı.
+
+> Bulgu: **kart seçiliyken damlaya dokunmak onu toplamıyor, oraya ekiyor.**
+> Ölçüm sırasında aynı dokunuşlar su +25 yerine −50/−25 verdi. Damlayı almak
+> için önce kart seçimini bırakmak gerekiyor; altı saniyelik pencerede bu,
+> oyuncunun kaçırmasının en olası yolu. Damla dokunuşuna ekimden öncelik
+> vermek (damla varsa önce onu topla) tek satırlık bir kural değişikliği olur.
+
+360 dp'de damla da küçülüyor (~13 dp) ama pencere aynı 6 s.
+
+**C — "Bostan hazırlanıyor…" süresi.** 60 kare/s ekran kaydıyla üç kez ölçüldü:
+örtü **70–150 ms** görünüyor, bir sonraki karede tarla hazır. Telefonda bekleme
+hissi yok; JVM'deki ~20 ms'lik üretim cihazda da tek karelik bir parlamaya
+dönüşüyor.
+
+**C — dalga duyurusu ve kart bekleme örtüsü.**
+
+- Duyuru tarlanın üst şeridinde beliriyor, harf yüksekliği ~21 dp, tam
+  görünürlük ~0,8 s (kodda ömür 1,8 s, sonu solarak biter). Ölçülen kontrast:
+  normal dalga (sarı 239,216,131) toprağa karşı **4,27:1**; büyük dalga
+  (pembe 252,165,165) **3,18:1**. İkisi de büyük yazı için 3:1 eşiğinin
+  üstünde, ama **en kritik duyuru en zayıf kontrasta sahip** — büyük dalga
+  rengi normal dalganınkinden bir tık daha soluk kalıyor.
+- Kart bekleme örtüsü: bekleyen kart hazır karta göre yalnızca **%15–25 daha
+  sönük**; düzen, simge ve fiyat etiketi aynı yerde duruyor. Ayırt ediliyor ama
+  zayıf; kalan süreyi gösteren bir halka ya da daha belirgin soluklaştırma
+  "neden basamıyorum" sorusunu ortadan kaldırır.
+
+### Sincap · 2026-09-10
+
+**D — pilot ölçümü** (`./gradlew :games:sincap:probe`, 20 tırmanış/pilot,
+v0.34.0). Pilot konduktan tepki süresi kadar sonra karar verir: yılanlı dalı
+seçmez, hedef basamaktan geçen karga varış anında dalın üstünde olacaksa
+bekler, kuru dal kırılmak üzereyse ya da kedi yaklaştıysa beklemez; fındık ve
+iki basamaklık sıçramayı tercih eder.
+
+**Bulgu 1 (kedi).** İlk ölçümde üç pilot da 300 s boyunca sağ kaldı
+(680–1046 basamak) ve hiçbir neden ölüm üretmedi: kedi en çok 1,3 basamak/s
+idi, pilotların temposu 2,3–3,5. Kedi 2,4'e çıkarılınca yine sağ kaldılar:
+pilot kedi yaklaşınca tepki süresini atlayıp anında zıplıyordu (4,5
+basamak/s) — insanın yapamayacağı şey. Pilot düzeltildi (tepki süresi hep
+uygulanır), kedi 250 basamakta 3,2'ye çıkıp sonra yavaşça artmayı
+sürdürüyor. Sonuç: koşuyu bitiren kedi, belirleyici olan tempo.
+
+| pilot | tepki | ort. yük. | en iyi | ort. skor | ort. fındık | ort. süre | basamak/s | nedenler |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| acemi | 0,35 s | 211 | 236 | 4012 | 54,8 | 103 s | 2,05 | kedi 20 |
+| orta | 0,20 s | 294 | 308 | 5532 | 75,7 | 107 s | 2,74 | kedi 20 |
+| uzman | 0,10 s | 500 | 559 | 9230 | 124,8 | 143 s | 3,50 | kedi 19 · karga 1 |
+
+Okuma: tempo ile yükseklik doğrusal (2,05 → 211, 2,74 → 294, 3,5 → 500).
+Kedi eğrisinden hesapla insan hedefleri: 1 basamak/s'lik acemi ~90 m, 1,5
+ile ~145 m, 2 ile ~200 m; koşu 1,5–2,5 dakika. Kuru dal, yılan ve karga
+pilotu neredeyse hiç öldürmüyor (60 koşuda 1 karga): bunlar okuma hatasının
+cezası, insan için asıl ölüm nedenleri olacak. Basamak dağılımı (tohum 1,
+ilk 200): tek dallı basamak %50, kuru dal %12, yılan %4, fındık %16, kargalı
+basamak %16. Değişmez teste çevrilen: her basamakta dal ve kaçış (30 tohum ×
+400), kargalı basamağın altında kuru dal yok, pilot boşluğa atlamaz ve 10
+tohumda ortalama ≥ 20 basamak. A–C cihazda koşulmadı; cihazda bakılacak: ilk
+temasta zıplama hissi, erişim ipucunun okunurluğu, kedi göstergesinin fark
+edilirliği, kuru dal titremesi ve 1,1 s'nin yeterliliği, 7,5 basamaklık görüş
+alanında kargayı görme süresi.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

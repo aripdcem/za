@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Reyon**, **Raket**, **Tuşe**, **Uçurtma**, **Dalgıç**, **Bostan**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Reyon**, **Raket**, **Tuşe**, **Uçurtma**, **Dalgıç**, **Bostan**, **Sincap**.
 
 Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç çipleri, seçim kalıcı) ve en üstte son oynanan dört oyun için hızlı erişim şeridi bulunur.
 
@@ -365,6 +365,26 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   tuzak kurulma/patlama/kemirilme, dalga akışı ve kazanma puanı, bekleme payıyla geçiş, üretici determinizmi ve
   tür açılışı, zorluk sıralaması, her üretilen seviyenin uzmanla kazanılması, günlük tohum; ölçüm
   `:games:bostan:probe`
+
+### Sincap
+- **Dikey tırmanış** (Go Bananas türü, kendi tasarımımız): çınar gövdesi ortada, her basamakta solda ve/veya
+  sağda bir dal. Sola ya da sağa dokununca sincap o yöndeki en yakın üst dala atlar (en çok 2 basamak; iki
+  basamak daha uzun sürer), o yönde erişilen dal yoksa boşluğa düşer. Zıplarken gelen dokunuş bekletilir ve
+  konar konmaz uygulanır. Tuvalin sol yarısı sol, sağ yarısı sağ; ilk temasta tepki
+- **Tehlikeler**: kuru dal konduktan 1,1 s sonra kırılır; yılanlı dala konan ölür; kargalar kendi basamağından
+  ekranı boydan boya geçer (0,9–1,5 birim/s), dalın üstündeyken çarpan düşürür; **kedi** gövdeden tırmanır,
+  yükseklikle hızlanır (0,5 → 3,2 basamak/s 250 basamakta, sonra yavaşça artmaya sürer) ve yetişirse yakalar —
+  koşuyu bitiren tempo baskısı. Fındık +20, altın fındık +100, her basamak +10; 25 basamakta bir kilometre taşı
+- **Üretim** her basamakta en az bir dal bırakır; ilk 3 basamak iki yanda sağlam dal; kuru/yılan/karga oranı
+  150 basamağa dek artar. **Kaçış garantisi**: her basamaktan iki yönün de erişilen ilk dalı yılanlı olamaz
+  (`repair`); kargalı basamağın altındaki basamakta kuru dal olmaz (bekleyecek yer kalsın)
+- **Günlük mod** herkese aynı çınar, günde 3 deneme; serbest mod rastgele tohum, rekor skor ve yükseklik. Ana
+  menü rekoru skor
+- Motor `games/sincap`: `SincapWorld` (üretim + kaçış onarımı, zıplama/konma, kuru dal, karga, kedi, puan),
+  `SincapBots` (ölçüm pilotu); 12 test: determinizm, her basamakta dal ve kaçış (30 tohum × 400 basamak, güvenli
+  yol araması), yön ve erişim kuralı, boşluğa düşme, kuru dal kırılma/kaçış, yılan, karga (kendi dalı, başka
+  basamak, zıplarken geçen), kedi yakalama ve hızlanma, fındık/altın puanı, bekletilen dokunuş, kilometre taşları
+  ve pilot; ölçüm `:games:sincap:probe`
 
 ### Vergici ve Toplam Kapma (`games/sayi`)
 - **Vergici** (Taxman): 1–N tahtası; böleni kalmış bir sayıyı alırsın, vergici o sayının tahtadaki tüm bölenlerini

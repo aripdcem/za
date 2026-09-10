@@ -2,6 +2,9 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.34.0 (2026-09-10)
+- Yeni oyun: **Sincap** — çınarda dikey tırmanış: sola ya da sağa dokun, sincap o yöndeki en yakın üst dala atlar (en çok iki basamak); o yönde dal yoksa düşer. Kuru dal konduktan bir saniye sonra kırılır, yılanlı dala konan ölür, kargalar dalın üstünden geçerken düşürür; kedi gövdeden tırmanır ve yükseldikçe hızlanır. Fındık ve altın fındık puan, her basamak +10. Üretim her basamaktan güvenli bir kaçış garanti eder. Günlük çınar (3 deneme) ve serbest mod
+
 ## 0.33.0 (2026-09-10)
 - Yeni oyun: **Bostan** — şerit savunması: 5 şerit × 7 hücre tarla; kuyu su üretir, fıskiye jet atar, korkuluk yolu keser, kovan üç şeride arı salar, tuzak kurulunca basanı patlatır. Karga, tavşan, keçi, domuz ve ayı dalgalar hâlinde iner; gökten düşen damlalar dokununca su verir; kulübeye ulaşan can götürür (3 can). Kolay/Orta/Zor (6/8/10 dalga); her seviye uzman politikasıyla oynatılıp kazanılabilir olduğu doğrulanarak üretilir, sonuç kartı uzmanın aynı bostandaki sonucunu gösterir. Günlük bostan (3 deneme) ve serbest mod
 

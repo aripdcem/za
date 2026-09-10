@@ -1,0 +1,6 @@
+<tr-TR>
+• Yeni oyun: Sincap. Çınarda dikey tırmanış: sola ya da sağa dokun, üst dala atla. Kuru dallar, yılanlar, kargalar ve peşinde hızlanan kedi; fındık topla, her basamaktan güvenli bir dal erişilir; günlük çınar.
+</tr-TR>
+<en-US>
+• New game: Sincap. Climb a plane tree: tap left or right to jump to the next branch. Dry branches, snakes, crows and a cat gaining on you; collect nuts, a safe branch is always within reach; daily tree.
+</en-US>

@@ -1163,3 +1163,50 @@ fun BostanArt(modifier: Modifier = Modifier) {
         drawPath(tip, Color(0xFF38BDF8))
     }
 }
+
+/** Sincap: gökyüzü, çınar gövdesi, yapraklı dallar, sincap, karga ve kedi. */
+@Composable
+fun SincapArt(modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        drawRoundRect(Color(0xFF7DD3FC), size = Size(w, w), cornerRadius = CornerRadius(w * 0.12f, w * 0.12f))
+        drawOval(Color(0x99FFFFFF), Offset(w * 0.55f, w * 0.1f), Size(w * 0.3f, w * 0.1f))
+        drawRect(Color(0xFF7C4A1E), Offset(w * 0.42f, 0f), Size(w * 0.16f, w))
+        drawRect(Color(0xFF5B3414), Offset(w * 0.42f, 0f), Size(w * 0.03f, w))
+        // Dallar ve yapraklar.
+        for ((i, y) in listOf(0.3f, 0.55f, 0.8f).withIndex()) {
+            val left = i != 1
+            val x0 = if (left) w * 0.42f else w * 0.58f
+            val x1 = if (left) w * 0.08f else w * 0.92f
+            drawLine(Color(0xFF92400E), Offset(x0, w * y), Offset(x1, w * (y - 0.03f)), strokeWidth = w * 0.05f)
+            val lx = if (left) w * 0.18f else w * 0.8f
+            drawCircle(Color(0xFF4D7C0F), radius = w * 0.09f, center = Offset(lx, w * (y - 0.08f)))
+            drawCircle(Color(0xFF84CC16), radius = w * 0.07f, center = Offset(lx + (if (left) w * 0.12f else -w * 0.12f), w * (y - 0.1f)))
+        }
+        // Fındık.
+        drawCircle(Color(0xFFB45309), radius = w * 0.045f, center = Offset(w * 0.2f, w * 0.72f))
+        // Sincap (sağ dalda).
+        drawOval(Color(0xFFB45309), Offset(w * 0.66f, w * 0.34f), Size(w * 0.16f, w * 0.18f))
+        drawCircle(Color(0xFFB45309), radius = w * 0.06f, center = Offset(w * 0.82f, w * 0.34f))
+        drawCircle(Color(0xFF111827), radius = w * 0.012f, center = Offset(w * 0.845f, w * 0.325f))
+        val tail = androidx.compose.ui.graphics.Path().apply {
+            moveTo(w * 0.66f, w * 0.48f)
+            quadraticBezierTo(w * 0.52f, w * 0.5f, w * 0.56f, w * 0.26f)
+        }
+        drawPath(tail, Color(0xFFD97706), style = androidx.compose.ui.graphics.drawscope.Stroke(width = w * 0.07f, cap = androidx.compose.ui.graphics.StrokeCap.Round))
+        // Karga.
+        drawOval(Color(0xFF111827), Offset(w * 0.1f, w * 0.12f), Size(w * 0.16f, w * 0.08f))
+        val wing = androidx.compose.ui.graphics.Path().apply {
+            moveTo(w * 0.16f, w * 0.15f)
+            lineTo(w * 0.06f, w * 0.05f)
+            lineTo(w * 0.2f, w * 0.12f)
+            close()
+        }
+        drawPath(wing, Color(0xFF111827))
+        // Kedi (gövdede, altta).
+        drawRoundRect(Color(0xFFF97316), Offset(w * 0.43f, w * 0.78f), Size(w * 0.14f, w * 0.2f), CornerRadius(w * 0.06f, w * 0.06f))
+        drawCircle(Color(0xFFF97316), radius = w * 0.07f, center = Offset(w * 0.5f, w * 0.76f))
+        drawCircle(Color(0xFF4ADE80), radius = w * 0.014f, center = Offset(w * 0.475f, w * 0.75f))
+        drawCircle(Color(0xFF4ADE80), radius = w * 0.014f, center = Offset(w * 0.525f, w * 0.75f))
+    }
+}
