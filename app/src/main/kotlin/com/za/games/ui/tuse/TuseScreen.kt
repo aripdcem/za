@@ -148,8 +148,9 @@ fun TuseScreen(
     }
     val fxTick = remember { mutableLongStateOf(0L) }
 
-    // Menüdeki parça ve süren koşunun parçası: notaları önceden hazırla.
-    val menuSong = viewModel.songForMenu()
+    // Menüdeki parça (mod ve seçim durumundan okunur ki seçici değişince yeniden
+    // çizilsin) ve süren koşunun parçası: notaları önceden hazırla.
+    val menuSong = remember(menu, songId) { viewModel.songForMenu() }
     val runSong = viewModel.runSong
     LaunchedEffect(notes, menuSong.id, runId) {
         notes?.prepare(if (phase == TusePhase.MENU) menuSong.notes else runSong.notes)

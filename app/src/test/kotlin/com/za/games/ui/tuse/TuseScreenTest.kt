@@ -8,9 +8,11 @@ import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.click
 import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.test.core.app.ApplicationProvider
@@ -21,6 +23,7 @@ import com.za.games.setZaContent
 import com.za.games.str
 import com.za.games.tuse.TuseWorld
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -47,9 +50,10 @@ class TuseScreenTest {
         rule.setZaContent { game("tuse").screen(0L, {}, {}) }
         rule.onNodeWithText(str(R.string.tuse_song_ode)).assertIsDisplayed()
         rule.onNodeWithContentDescription(str(R.string.tuse_next_song)).performClick()
-        rule.onNodeWithText(str(R.string.tuse_song_elise)).assertIsDisplayed()
+        assertShown(str(R.string.tuse_song_elise))
+        rule.onNodeWithText(str(R.string.tuse_song_ode)).assertDoesNotExist()
         rule.onNodeWithContentDescription(str(R.string.tuse_prev_song)).performClick()
-        rule.onNodeWithText(str(R.string.tuse_song_ode)).assertIsDisplayed()
+        assertShown(str(R.string.tuse_song_ode))
         rule.onNodeWithText(str(R.string.mode_daily)).performClick()
         rule.onNodeWithText(str(R.string.tuse_daily_desc)).assertIsDisplayed()
         rule.onNodeWithContentDescription(str(R.string.tuse_next_song)).assertDoesNotExist()
@@ -83,6 +87,17 @@ class TuseScreenTest {
         rule.onNodeWithText(str(R.string.tuse_to_menu)).performClick()
         rule.mainClock.advanceTimeByFrame()
         rule.onNodeWithText(str(R.string.tuse_start)).assertIsDisplayed()
+    }
+
+    /** Metin ağaçta ve görünür; değilse yerleşim bilgisiyle birlikte bildirir. */
+    private fun assertShown(text: String) {
+        val node = rule.onNodeWithText(text)
+        node.assertExists()
+        val sem = node.fetchSemanticsNode()
+        assertTrue(
+            "'$text' görünmüyor: placed=${sem.layoutInfo.isPlaced} root=${sem.boundsInRoot} window=${sem.boundsInWindow} kök=${rule.onRoot().fetchSemanticsNode().boundsInRoot}",
+            node.isDisplayed(),
+        )
     }
 
     private fun SemanticsNodeInteraction.description(): String =
