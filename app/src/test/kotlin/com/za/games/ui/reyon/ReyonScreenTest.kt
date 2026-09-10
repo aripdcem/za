@@ -2,6 +2,9 @@ package com.za.games.ui.reyon
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
@@ -13,6 +16,7 @@ import com.za.games.setZaContent
 import com.za.games.str
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -84,6 +88,59 @@ class ReyonScreenTest {
             rule.onNodeWithText(str(R.string.reyon_hint)).performClick()
         }
         rule.onNodeWithText(str(R.string.reyon_audit_done_title)).assertIsDisplayed()
+    }
+
+    @Test
+    fun orderStepperClosesDaysAndTheWeekEnds() {
+        rule.setZaContent { game("reyon").screen(0L, {}, {}) }
+        openMenu()
+        rule.reyonPickKind(str(R.string.reyon_kind_order))
+        rule.onNodeWithText(str(R.string.mode_free)).performClick()
+        rule.onNodeWithText(str(R.string.difficulty_easy)).performClick()
+        rule.onNodeWithText(str(R.string.reyon_order_start)).performClick()
+
+        val boardPrefix = str(R.string.reyon_order_board_desc_fmt, 0, 0, 0, 0).substringBefore(' ')
+        rule.waitUntil(timeoutMillis = 30_000) {
+            rule.onAllNodes(hasContentDescription(boardPrefix, substring = true)).fetchSemanticsNodes().isNotEmpty()
+        }
+        // İlk ürünün "Artır" düğmesi: sipariş 1 koli olur.
+        val morePrefix = str(R.string.reyon_order_more) + ":"
+        fun moreButtons() = rule.onAllNodes(hasContentDescription(morePrefix, substring = true))
+        assertTrue("artır düğmesi olmalı", moreButtons().fetchSemanticsNodes().isNotEmpty())
+        moreButtons()[0].performClick()
+        rule.waitForIdle()
+        val oneCase = str(R.string.reyon_order_case_fmt, 1, 0).substringBefore(" = ")
+        val caseNodes = rule.onAllNodes(hasText(oneCase, substring = true)).fetchSemanticsNodes()
+        if (caseNodes.isEmpty()) {
+            val first = moreButtons().fetchSemanticsNodes().first()
+            val koli = rule.onAllNodes(hasText("koli", substring = true)).fetchSemanticsNodes()
+                .map { it.config.getOrNull(SemanticsProperties.Text)?.joinToString { t -> t.text } }
+            val rows = rule.onAllNodes(hasContentDescription(": ", substring = true)).fetchSemanticsNodes()
+                .map { it.config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString() }
+            fail("1 koli görünmeli · düğme ${first.boundsInRoot} devre dışı=${first.config.contains(SemanticsProperties.Disabled)} " +
+                "desc=${first.config.getOrNull(SemanticsProperties.ContentDescription)} · koli metinleri=$koli · satırlar=$rows")
+        }
+
+        // Günü kapat → döküm kartı → Devam.
+        rule.onNodeWithText(str(R.string.reyon_order_close_day)).performClick()
+        rule.onNodeWithText(str(R.string.reyon_order_continue)).assertIsDisplayed()
+        rule.onNodeWithText(str(R.string.reyon_order_continue)).performClick()
+
+        // Kalan günler: uzman ipuçlarıyla sipariş ver, kapat; Kolay beş gün.
+        val done = str(R.string.reyon_order_done_title)
+        val closeWeek = str(R.string.reyon_order_close_week)
+        val closeDay = str(R.string.reyon_order_close_day)
+        var guard = 0
+        while (rule.onAllNodesWithText(done).fetchSemanticsNodes().isEmpty() && guard++ < 10) {
+            repeat(3) { rule.onNodeWithText(str(R.string.reyon_hint)).performClick() }
+            if (rule.onAllNodesWithText(closeWeek).fetchSemanticsNodes().isNotEmpty()) {
+                rule.onNodeWithText(closeWeek).performClick()
+            } else {
+                rule.onNodeWithText(closeDay).performClick()
+            }
+            rule.onNodeWithText(str(R.string.reyon_order_continue)).performClick()
+        }
+        rule.onNodeWithText(done).assertIsDisplayed()
     }
 
     @Test

@@ -5,8 +5,8 @@ import com.za.games.reyon.ReyonLevel
 
 enum class ReyonMode { DAILY, FREE }
 
-/** Oyun türü: diziliş bulmacası ya da uyum denetimi. */
-enum class ReyonKind { PUZZLE, AUDIT, SALES }
+/** Oyun türü: diziliş bulmacası, uyum denetimi, satış dizilişi, sipariş haftası. */
+enum class ReyonKind { PUZZLE, AUDIT, SALES, ORDER }
 
 /**
  * Reyon kalıcı durumu: son seçilen zorluk ve mod, devam eden bulmaca
@@ -171,6 +171,74 @@ class ReyonStore(context: Context) {
         return true
     }
 
+    // --- Sipariş ---
+
+    data class OrderRecord(val score: Int, val target: Int)
+
+    class SavedOrder(
+        val seed: Long,
+        val level: ReyonLevel,
+        val mode: ReyonMode,
+        val day: Long,
+        val snapshot: IntArray,
+    )
+
+    fun saveOrder(seed: Long, level: ReyonLevel, mode: ReyonMode, day: Long, snapshot: IntArray) {
+        prefs.edit()
+            .putLong(KEY_O_SEED, seed)
+            .putString(KEY_O_LEVEL, level.name)
+            .putString(KEY_O_MODE, mode.name)
+            .putLong(KEY_O_DAY, day)
+            .putString(KEY_O_SNAPSHOT, snapshot.joinToString(","))
+            .apply()
+    }
+
+    fun clearOrder() {
+        prefs.edit()
+            .remove(KEY_O_SEED)
+            .remove(KEY_O_LEVEL)
+            .remove(KEY_O_MODE)
+            .remove(KEY_O_DAY)
+            .remove(KEY_O_SNAPSHOT)
+            .apply()
+    }
+
+    fun restoreOrder(): SavedOrder? {
+        if (!prefs.contains(KEY_O_SEED)) return null
+        val level = ReyonLevel.entries.firstOrNull { it.name == prefs.getString(KEY_O_LEVEL, null) } ?: return null
+        val mode = ReyonMode.entries.firstOrNull { it.name == prefs.getString(KEY_O_MODE, null) } ?: return null
+        val raw = prefs.getString(KEY_O_SNAPSHOT, null) ?: return null
+        val snapshot = raw.split(',').map { it.toIntOrNull() ?: return null }.toIntArray()
+        if (snapshot.isEmpty()) return null
+        return SavedOrder(prefs.getLong(KEY_O_SEED, 0L), level, mode, prefs.getLong(KEY_O_DAY, 0L), snapshot)
+    }
+
+    fun orderDailyRecord(day: Long, level: ReyonLevel): OrderRecord? {
+        if (prefs.getLong(KEY_O_DAILY_DAY + level.name, Long.MIN_VALUE) != day) return null
+        return OrderRecord(prefs.getInt(KEY_O_DAILY_SCORE + level.name, 0), prefs.getInt(KEY_O_DAILY_TARGET + level.name, 0))
+    }
+
+    /** Günün en iyi kârı tutulur; daha iyiyse kaydeder ve true döner. */
+    fun saveOrderDaily(day: Long, level: ReyonLevel, score: Int, target: Int): Boolean {
+        val current = orderDailyRecord(day, level)
+        if (current != null && current.score >= score) return false
+        prefs.edit()
+            .putLong(KEY_O_DAILY_DAY + level.name, day)
+            .putInt(KEY_O_DAILY_SCORE + level.name, score)
+            .putInt(KEY_O_DAILY_TARGET + level.name, target)
+            .apply()
+        return true
+    }
+
+    /** Seviyenin en iyi hedef yüzdesi (serbest mod); yoksa 0. */
+    fun orderBest(level: ReyonLevel): Int = prefs.getInt(KEY_O_BEST + level.name, 0)
+
+    fun saveOrderBest(level: ReyonLevel, percent: Int): Boolean {
+        if (percent <= orderBest(level)) return false
+        prefs.edit().putInt(KEY_O_BEST + level.name, percent).apply()
+        return true
+    }
+
     fun saveAuditBest(level: ReyonLevel, time: Int): Boolean {
         val current = auditBest(level)
         if (current in 1..time) return false
@@ -293,5 +361,14 @@ class ReyonStore(context: Context) {
         const val KEY_S_DAILY_SCORE = "sales_daily_score_"
         const val KEY_S_DAILY_TARGET = "sales_daily_target_"
         const val KEY_S_BEST = "sales_best_"
+        const val KEY_O_SEED = "order_seed"
+        const val KEY_O_LEVEL = "order_level"
+        const val KEY_O_MODE = "order_mode"
+        const val KEY_O_DAY = "order_day"
+        const val KEY_O_SNAPSHOT = "order_snapshot"
+        const val KEY_O_DAILY_DAY = "order_daily_day_"
+        const val KEY_O_DAILY_SCORE = "order_daily_score_"
+        const val KEY_O_DAILY_TARGET = "order_daily_target_"
+        const val KEY_O_BEST = "order_best_"
     }
 }

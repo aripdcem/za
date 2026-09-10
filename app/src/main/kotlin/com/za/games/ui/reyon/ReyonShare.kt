@@ -8,6 +8,7 @@ import com.za.games.platform.ShareDraw
 import com.za.games.platform.drawCentered
 import com.za.games.reyon.Brand
 import com.za.games.reyon.ReyonAuditState
+import com.za.games.reyon.ReyonOrderState
 import com.za.games.reyon.ReyonSalesState
 import com.za.games.reyon.ReyonState
 import com.za.games.reyon.ShelfItem
@@ -39,6 +40,13 @@ internal fun salesPainter(state: ReyonSalesState, res: Resources): (Canvas, Rect
     val sales = state.sales
     val items = sales.products.mapNotNull { p -> state.placement(p.id)?.let { ShelfItem(p, it.row, it.col, p.facings) } }
     return shelfPainter(items, sales.rows, sales.cols, res, emptyList())
+}
+
+/** Sipariş paylaşımı: plan rafı (stok düzeyleri kartta yer almaz). */
+internal fun orderPainter(state: ReyonOrderState, res: Resources): (Canvas, RectF) -> Unit {
+    val order = state.order
+    val items = order.items.map { ShelfItem(it.product, it.row, it.col, it.product.facings) }
+    return shelfPainter(items, order.rows, order.cols, res, emptyList())
 }
 
 private fun shelfPainter(items: List<ShelfItem>, rows: Int, cols: Int, res: Resources, rings: List<Int>): (Canvas, RectF) -> Unit = { canvas, rect ->

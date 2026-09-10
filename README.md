@@ -257,14 +257,26 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   puandır; ≥ hedef 3 yıldız, ≥ %90 2, ≥ %75 1. Canlı puan ve kural dökümü, seçili ürünün katkısı, bloklarda puan
   rozeti; tamamlayınca hedef dizilişi görme ve düzenlemeye dönme; günlük ürün seti (günün en iyi puanı), serbest modda
   hedef yüzdesi rekoru
-- Motor `games/reyon`: `SalesRules`/`SalesScorer`/`SalesOptimizer`/`ReyonSalesState` (puan tabloları, kısmi
+- **Sipariş modu** (stok devri): raf planı sabit, iş stok. Beş–yedi gün boyunca her gün ürün başına kaç koli
+  sipariş edileceğine karar verilir: talep aralık olarak görünür (gerçekleşen talep tohumdan gelir), siparişler ertesi
+  sabah gelir (Zor'da ağırlar iki gün sonra), rafa sığmayan iade olur (−1/birim); satış marj kazandırır (+4, ★ +6),
+  akşam rafta kalan her birim bekleme öder (−1), raf ömrü dolan fire olur (−2, ★ −4; süt/ayran 2, yumurta/peynir 3,
+  tereyağı 4 gün); hafta sonu içecek ve atıştırmalık ×1,4, promosyon günü ×2,5 (menüde duyurulur). Hedef, aynı
+  tahminleri gören uzman politikanın (teslim günü talebini emniyet payıyla karşılayan sipariş-üstü düzeyi) aynı
+  haftadaki kârı; ≥ hedef 3 yıldız, ≥ %90 2, ≥ %75 1. Raf tuvali stok doluluğunu gösterir; ürün satırlarında stok,
+  bugünün ve teslim gününün tahmini, gelen teslimat, bozulacak birimler ve koli adımlayıcısı; ipucu uzmanın önerisini
+  yazar; gün kapanış dökümü (satış, kayıp, bekleme, fire, iade, sabah teslimatı); hafta sonunda stok devri ve hizmet
+  düzeyi uzmanla karşılaştırılır; günlük hafta (günün en iyi kârı), serbest modda hedef yüzdesi rekoru
+- Motor `games/reyon`: `OrderRules`/`OrderExpert`/`ReyonOrderGenerator`/`ReyonOrderState` (sipariş kuralları, uzman
+  politika, hafta üretimi, gün kapanışı, kayıt); `SalesRules`/`SalesScorer`/`SalesOptimizer`/`ReyonSalesState` (puan tabloları, kısmi
   puanlama, iyileştirici, satış durumu); `ReyonAuditGenerator`/`ReyonAuditState` (sapma üretimi ve doğrulama, dokunma, ipucu, kayıt);
   `ReyonGenerator` (düzen örnekleme, aday ipuçları, seçim/küçültme, iş
   sayaçları), `Propagator`/`ReyonSolver`/`ReyonDeducer` (kısıt yayılımı, geri izleme, çıkarım izi), `ReyonState`
-  (yerleştirme, geri alma, durum, ipucu, kayıt); 39 test: kural değerlendirme, kaba kuvvetle çapraz doğrulama,
+  (yerleştirme, geri alma, durum, ipucu, kayıt); 46 test: kural değerlendirme, kaba kuvvetle çapraz doğrulama,
   çözümü düşürmeyen yayılım, determinizm, tek çözüm, tahminsizlik, brif uzunluğu, üretim bütçesi, denetim
   değişmezleri (ayrık ve görünür sapmalar, tür kapsamı, dokunma mekaniği), satış puanlaması (elle hesaplı
-  örnek), hedef ≥ taban ve geçerli tam doluluk, iyileştirici bütçesi; `ReyonBalanceProbe`
+  örnek), hedef ≥ taban ve geçerli tam doluluk, iyileştirici bütçesi, sipariş gün kuralları (elle izlenen hafta),
+  tahmin aralığı, uzman siparişlerinin tekrar oynanışının hedefi birebir vermesi, kayıt tur dönüşü; `ReyonBalanceProbe`
 
 ### Vergici ve Toplam Kapma (`games/sayi`)
 - **Vergici** (Taxman): 1–N tahtası; böleni kalmış bir sayıyı alırsın, vergici o sayının tahtadaki tüm bölenlerini
