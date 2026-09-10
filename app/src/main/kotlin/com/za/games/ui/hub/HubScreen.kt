@@ -1078,3 +1078,39 @@ fun UcurtmaArt(modifier: Modifier = Modifier) {
         listOf(0.42f to 0.58f, 0.36f to 0.66f, 0.3f to 0.72f).forEach { (x, y) -> drawCircle(Color(0xFFFDE68A), radius = w * 0.025f, center = Offset(w * x, w * y)) }
     }
 }
+
+@Composable
+fun DalgicArt(modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        drawRoundRect(Color(0xFF0C4A6E), size = Size(w, w), cornerRadius = CornerRadius(w * 0.12f, w * 0.12f))
+        drawRect(Color(0xFFBAE6FD), Offset(0f, 0f), Size(w, w * 0.14f))
+        drawRect(Color(0xFFF0F9FF), Offset(0f, w * 0.13f), Size(w, w * 0.015f))
+        drawRect(Color(0xFFD6B27A), Offset(0f, w * 0.9f), Size(w, w * 0.1f))
+        // Denizaltı.
+        drawRoundRect(Color(0xFFFACC15), Offset(w * 0.28f, w * 0.4f), Size(w * 0.36f, w * 0.15f), CornerRadius(w * 0.075f, w * 0.075f))
+        drawRoundRect(Color(0xFFCA8A04), Offset(w * 0.4f, w * 0.32f), Size(w * 0.11f, w * 0.09f), CornerRadius(w * 0.02f, w * 0.02f))
+        drawCircle(Color(0xFF7DD3FC), radius = w * 0.03f, center = Offset(w * 0.56f, w * 0.47f))
+        drawRect(Color(0xFFCA8A04), Offset(w * 0.24f, w * 0.38f), Size(w * 0.04f, w * 0.19f))
+        // Dalgıç.
+        drawCircle(Color(0xFFFCD9B6), radius = w * 0.035f, center = Offset(w * 0.8f, w * 0.7f))
+        drawRoundRect(Color(0xFF1F2937), Offset(w * 0.64f, w * 0.68f), Size(w * 0.14f, w * 0.06f), CornerRadius(w * 0.03f, w * 0.03f))
+        // Köpekbalığı.
+        val shark = androidx.compose.ui.graphics.Path().apply {
+            moveTo(w * 0.1f, w * 0.75f)
+            lineTo(w * 0.3f, w * 0.68f)
+            lineTo(w * 0.42f, w * 0.75f)
+            lineTo(w * 0.3f, w * 0.82f)
+            close()
+        }
+        drawPath(shark, Color(0xFF94A3B8))
+        val fin = androidx.compose.ui.graphics.Path().apply {
+            moveTo(w * 0.24f, w * 0.7f)
+            lineTo(w * 0.28f, w * 0.6f)
+            lineTo(w * 0.33f, w * 0.7f)
+            close()
+        }
+        drawPath(fin, Color(0xFF94A3B8))
+        drawCircle(Color(0xFF111827), radius = w * 0.03f, center = Offset(w * 0.6f, w * 0.86f))
+    }
+}

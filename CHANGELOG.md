@@ -2,6 +2,9 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.32.0 (2026-09-10)
+- Yeni oyun: **Dalgıç** — denizaltıyla dalgıç kurtarma. Denizaltı parmakla sürüklenir, torpidolar baktığı yöne kendiliğinden gider; dalgıçlar altışar toplanıp yüzeyde teslim edilir (tam yük +300), oksijen dalarken azalır yüzeyde dolar, daldıktan sonra dalgıçsız yüzeye çıkmak can götürür. Köpekbalıkları, torpido atan düşman denizaltılar, zincirli mayınlar ve Boğaz akıntı bantları; her teslimde dalga artar. Günlük deniz (3 deneme) ve serbest mod
+
 ## 0.31.0 (2026-09-10)
 - Yeni oyun: **Uçurtma** — basılı tut yüksel, bırak alçal; çatılar, bacalar, elektrik telleri (alçak, yüksek, çift) ve rakip uçurtmalar arasında sonsuz uçuş. Uçurtma kavgası kuralı: rakibin üstünden geçince ipini kesersin (bonus), altından geçince senin ipin kesilir. Kurdeleler puan; her 100 m kilometre taşı
 - Görevler ve ekipman: üç görev aynı anda açık (mesafe, kurdele, tel altı, çatı sıyırma, kesme), tamamlanan yerine sıradaki gelir; 2, 5 ve 9 görevde Kuyruk (yavaş alçalma), Makara (güçlü yükseliş) ve Cam tozu (rakip ipine bağışık, kesme bonusu iki kat) açılır. Günlük gökyüzü (3 deneme) ve serbest mod

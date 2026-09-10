@@ -39,6 +39,15 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.32.0", "2026-09-10",
+            tr = listOf(
+                "Yeni oyun: Dalgıç — denizaltıyla dalgıç kurtar: altışar topla, yüzeyde teslim et, oksijene dikkat. Köpekbalıkları, düşman denizaltılar, mayınlar ve Boğaz akıntısı; günlük deniz",
+            ),
+            en = listOf(
+                "New game: Dalgıç — rescue divers by submarine: collect six, surface to deliver, watch your oxygen. Sharks, enemy subs, mines and the Bosphorus current; daily sea",
+            ),
+        ),
+        ReleaseNote(
             "0.31.0", "2026-09-10",
             tr = listOf(
                 "Yeni oyun: Uçurtma — basılı tut yüksel, bırak alçal; çatılar, teller ve rakip uçurtmalar arasında sonsuz uçuş. Rakibin üstünden geç, ipini kes; görevleri tamamla, kuyruk, makara ve cam tozunu aç",

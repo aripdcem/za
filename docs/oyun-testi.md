@@ -55,6 +55,7 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Raket: orta bir oyuncu botu kolay bilgisayarı yener, zora yenilir, seviyeler sıralı ve her maç biter; tavan hızda vuruş kaçmaz (tünelleme yok) | `RaketWorldTest` |
 | Tuşe: şerit dizisi tohumdan deterministik, her şerit kullanılır, tekrar payı sınırlı; Sonsuz'da sıradaki karo tamamen çıkana dek vurulabilir; parçalar aralıkta ve oktav sıçramasız; sentez notanın frekansını %3 içinde tutar | `TuseWorldTest` |
 | Uçurtma: üretilen dünya her sütunda ≥ 0,3 birim boşluk bırakır (tavan zorlukta da); rakibin üstünden geçen keser, altından geçen kesilir; dikkatli pilot 12 uçuşun en az 8'inde 300 m'yi geçer | `UcurtmaWorldTest` |
+| Dalgıç: doğan her şey şeritlerde ve suda kalır, mayınlar alt şeritlerde ve en çok üç; boş yüzeye çıkış can götürür ama başta değil; pilot 20 dalışın en az 14'ünde teslim eder | `DalgicWorldTest` |
 | Metin kontrastı WCAG AA eşiğini tutar | `ThemeContrastTest` |
 
 Yeni bir ölçüm bulgusu düzeltildiğinde, mümkünse **paylı bir değişmez** olarak
@@ -88,7 +89,9 @@ doğrulayın**, ve bir bulguyu koda yazmadan önce bulgunun kendisini sınayın.
 - `ANDROID_HOME` ya da `~/Android/Sdk`
 - Python: `Pillow`, `numpy`
 
-Ölçüm aracı: `tools/cihaz_testi.py`.
+Ölçüm aracı: `tools/cihaz_testi.py`. İki parmak gerektiren ölçümler için
+`tools/coklu_dokunus.py` (uinput ile sanal dokunmatik; `input`/`sendevent`
+tek parmakla sınırlı).
 
 ---
 
@@ -397,6 +400,9 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Viraj | ✅ | **60 · 3 · %100 · 34 ms** | — (tuşla) | ✅ kusur yok | 2026-09-09 |
 | Filo | ✅ | **60 · 1 · %81 · 31 ms** | ✅ düzeltildi | ✅ düzeltildi | 2026-09-09 |
 | Reyon | ✅ | olay güdümlü (boşta 0) · kaydırmada **60 · 0 · %6,8 · 20 ms** | ✅ adımlayıcı 48×48 dp (v0.28.1) | ✅ ölçüldü (diziliş + denetim + satış + sipariş) | 2026-09-10 |
+| Raket | ✅ | **58 · 15 · %48 · 26 ms** (GPU 21 ms) | ✅ kazanç 1,24 · ölü bölge yok · iki parmak ayrı | ✅ seviyeler sıralı | 2026-09-10 |
+| Tuşe | ✅ | olay güdümlü (vuruşta 21 ms, GPU 15,5) | ✅ iki parmak 15 ms arayla da sayılıyor | ✅ Sonsuz eğrisi | 2026-09-10 |
+| Uçurtma | ✅ | **59 · 5 · %60 · 34 ms** (GPU 20 ms) | ✅ tutuşa yanıt ~100 ms · tel 2,3 dp / 8,2:1 | ✅ pilot eğrisi | 2026-09-10 |
 
 **E · erişilebilirlik:** tüm oyunlarda etiketsiz dokunulabilir öğe kalmadı
 (tek bulgu Kıskaç'ın kolay mod anahtarıydı, düzeltildi). Kontrast CI'da
@@ -1188,7 +1194,7 @@ oyuncuya yeniliyor (kenar vuruşu tavan hızda risklidir). Orta ve zor maçlar
 kolayı ≥ %70 yener, zora ≤ %35 yenilir, seviyeler sıralı, her maç biter
 (`aiLevelsAreOrderedAndTheEasyOneIsBeatable`). Ayrıca tavan hızda 210
 konumda vuruşun kaçmadığı (`noTunnelingAtTopSpeed`) ve falsonun raket hızından
-geldiği doğrulanır. A–C cihazda koşulmadı.
+geldiği doğrulanır. Cihaz koşumu (A–C) aşağıda.
 
 ### Tuşe · 2026-09-10
 
@@ -1209,9 +1215,125 @@ tempo belirleyici; 11 satır/s tavanı (saniyede 11 dokunuş) insan sınırını
 üstünde, sonsuz koşu yok. Klasik ve Günlük'te akış olmadığı için ölçüt
 yalnızca dokunuş hızı; 50 karo iyi bir oyuncuda 8–10 s. Değişmez teste
 çevrilen: sıradaki karo tamamen çıkana dek vurulabilir (`arcadeTileCanBeTappedUntilItFullyLeaves`),
-hız karo başına artar ve kaçan karo koşuyu bitirir. A–C cihazda koşulmadı;
-cihazda ayrıca bakılacak: dokunuş–nota gecikmesi (SoundPool) ve iki parmakla
-art arda dokunuşta ikisinin de sayılması.
+hız karo başına artar ve kaçan karo koşuyu bitirir. Cihaz koşumu (A–C),
+dokunuş–nota gecikmesi ve iki parmak ölçümü aşağıda.
+
+### Raket · cihazda · 2026-09-10
+
+Sürüm sayfasındaki v0.30.0 APK'sıyla, SM-A515F'te.
+
+**A — koşum.** Üç mod da baştan sona oynandı: duvar (ralli + "Top kaçtı" kartı),
+iki kişi (11–2, "Alt oyuncu kazandı"), bilgisayar/Kolay (9–11, "Bilgisayar
+kazandı"). Ana ekrana alıp dönünce skor korunuyor ve oyun kendiliğinden
+duraklıyor ("Devam et"); geri tuşu hub'a çıkarıyor. `logcat` `AndroidRuntime:E`
+boş.
+
+**B — kare hızı.** 12 s'de 700 kare (58,3 kare/s), kaçan vsync 12, jank %35,7,
+p50 25 ms; 15 s'de 869 kare (57,9 kare/s), kaçan vsync 15, jank %48, p50 26 ms.
+Faz dökümü: **GPU 21,0 ms** (90p 22,5), çizim kaydı 1,2 ms, girdi→traversal
+1,0 ms, toplam 25,8 ms. Aşırı çizim ölçüldü: kortun %97,7'si 2×, %0,6'sı 4×+ —
+yani sorun katman sayısı değil, dolgu. Okuma: kare hızı hedefin sınırında ama
+Raket, kütükteki **kaçan vsync'i sıfırdan belirgin biçimde ayrılan ilk oyun**
+(saniyede ~1 kare). GPU 16,7 ms bütçesinin üstünde; bakılacak yer tam ekran
+gradyan + topun hâlesi ve izi (`drawCircle` alfa katmanları).
+
+**C — sürükleme kazancı.** Parmak yolu → raket hareketi (medyan, sayı olunca
+raket ortaya döndüğü için yönü tutmayan örnekler elendi):
+
+| parmak | 10 px | 20 px | 40 px | 80 px | 160 px |
+| --- | --- | --- | --- | --- | --- |
+| raket | 12,1 px | 25,0 px | 49,5 px | 98,9 px | 199,1 px |
+| kazanç | 1,21 | 1,25 | 1,24 | 1,24 | 1,24 |
+
+Koddaki 1,25 cihazda birebir çıkıyor ve **ölü bölge yok**: 10 px'lik (3,8 dp)
+parmak yolu bile rakete geçiyor — olaylar doğrudan okunduğu için Filo'daki 8 dp
+dokunma toleransı burada ödenmiyor. Raketin gidebildiği aralık 143 → 936 px
+(793 px); uçtan uca parmak yolu 793 / 1,25 = 634 px = **38 mm**, yani tek
+başparmak hamlesiyle geçilebiliyor (Filo'da düzeltme sonrası 41 mm; sınır
+55 mm).
+
+**C — iki parmak aynı anda.** `adb shell input` tek parmak enjekte ediyor,
+`sendevent` ise SELinux yüzünden reddediliyor ("Permission denied"; shell
+`/dev/input`'a yazamıyor). Bu yüzden CTS'in yolu kullanıldı: `uinput` ile sanal
+bir dokunmatik kaydedilip olaylar oradan basıldı
+([`tools/coklu_dokunus.py`](../tools/coklu_dokunus.py)). Tek jestte iki parmak,
+zıt yönlere:
+
+| deneme | üst parmak | üst raket | alt parmak | alt raket |
+| --- | --- | --- | --- | --- |
+| 1 | −260 px | −330 px | +260 px | +325 px |
+| 2 | +260 px | +330 px | −260 px | −325 px |
+| 3 | −260 px | −342 px | +260 px | +325 px |
+
+İki raket aynı anda ve birbirinden bağımsız sürülüyor; taraf ataması ekranın
+ortasına göre doğru çalışıyor ve kazanç iki tarafta da 1,25. (Raket duvara
+dayanmışsa o parmak 0 hareket veriyor — kırpma beklenen davranış.)
+
+**Ses ve titreşim.** 8 saniyelik rallide HAL'in `fast_out` akışı 137 satır
+günlük bastı; titreşim geçmişinde `com.za.games` için 45–50 ms'lik TOUCH
+darbelerinden 51 kayıt var. İkisi de çalışıyor.
+
+**360 dp.** Menü kartı: mod çipleri, zorluk çipleri ve "Başla" görünüyor,
+"Menüye dön" kaydırınca geliyor.
+
+### Tuşe · cihazda · 2026-09-10
+
+**A — koşum.** Klasik/Türk Marşı 50 karo baştan sona vuruldu ("Bitti!", rekor
+kartı; sürücünün temposu 0,3 karo/s olduğu için süre 163,79 s). Arka plandan
+dönünce durum korunuyor, geri tuşu hub'a çıkıyor, `logcat` temiz.
+
+**B — kare hızı.** Klasik oyuncunun temposuyla ilerlediği için çizim yalnız
+karo animasyonunda sürüyor: 161 s'lik turda 6777 kare, p50 21 ms, kaçan vsync
+44 (saniyede 0,3), jank %7,7. Dokunuşlu bölümün faz dökümü: toplam 21,4 ms
+(90p 21,8), GPU 15,5 ms, çizim kaydı 1,8 ms, girdi→traversal 2,8 ms.
+
+**C — dokunuş ile nota arasındaki gecikme.** Nota, dokunuşu işleyen aynı
+çağrıda çalınıyor; ölçülebilen iki parça: (1) girdi→kare tamamlandı **21,4 ms**
+(medyan; 90p 21,8), (2) ses yolu — cihazın miksleri 48 kHz, hızlı çıkış
+periyodu 4 ms ve gecikmesi **7,96 ms**, ve notalar çalarken HAL günlüğü akışın
+`fast_out` üzerinde olduğunu yazıyor ("This stream has 1 tracks"). Yani nota,
+dokunuştan ~10–20 ms sonra ses yoluna giriyor; **akustik uçtan uca gecikme
+mikrofon olmadan ölçülemez**, bu kadarı yazılım tarafının temiz olduğunu
+gösterir. Not: notalar 22.050 Hz üretiliyor, mikser 48.000 Hz — SoundPool yine
+de hızlı yola girdi, ama 48 kHz üretmek yeniden örneklemeyi tamamen kaldırır.
+
+**C — iki parmakla art arda dokunuş.** Sıradaki iki karonun şeridi ekrandan
+okunup ikisine üst üste dokunuldu:
+
+| dokunuşlar arası | sonuç |
+| --- | --- |
+| 116–146 ms (`input tap` ×2) | 4/4 denemede ikisi de sayıldı (+2) |
+| 30 ms (`uinput`) | 2/2 (+2) |
+| 15 ms (`uinput`) | 2/2 (+2) |
+| aynı çerçevede (iki parmak birlikte iniyor) | 2/2 (+2) |
+
+Farklı şeritlerde de tutuyor; dokunuşlar kaybolmuyor.
+
+**360 dp.** Menü kartı "Başla"ya kadar sığıyor, "Menüye dön" kaydırınca geliyor.
+
+**Ezgiler.** Nota dizileri elle okundu; Türk Marşı'nın girişi Rondo alla
+Turca'nın ilk üç ölçüsüyle birebir:
+
+```
+ölçülen:  B4 A4 G#4 A4 C5 | D5 C5 B4 C5 E5 | F5 E5 D#5 E5 B5
+beklenen: B4 A4 G#4 A4 C5 | D5 C5 B4 C5 E5 | F5 E5 D#5 E5 B5
+```
+
+Devamı (A5 G#5 A5 B5 · A5 G#5 A5 C6 A5) aynı figürün sadeleştirilmiş hâli —
+yanlış değil, düzenleme. Öbürlerinin girişleri de yerinde: Daha Dün Annemizin
+(C C G G A A G), Mutlu Yıllar (G G A G C B), Neşeye Övgü (E E F G G F E D C C
+D E E D D), Für Elise (E5 D#5 E5 D#5 E5 B4 D5 C5 A4), Menuet (D5 G A B C D G
+G), Greensleeves (A C D E F E D B G).
+
+**Tını (ölçüm).** `NoteSynth` çıktısı çözümlendi (A4): süre 0,50 s, tepe 0,565
+(kırpma yok), harmonikler temele göre **0 / −6,9 / −13,7 / −20,9 / −27,7 dB**
+ve beşincinin üstünde bileşen yok; zarf 9 ms'de tepe yapıyor, 160 ms'de
+yarılanıyor, sonunda −22 dB. Okuma: yumuşak, koyu ve kısa bir ton; atak
+gürültüsü ve 2,2 kHz üstü bileşen olmadığı için gerçek piyanonun yanında
+"boğuk" duyulur. Beğenilmezse iki düğme de tek yerde: `NoteSynth.HARMONICS`
+(daha çok ve daha güçlü üst harmonik) ve `exp(-t * (3,5 + 2k))` sönümü (küçük
+katsayı = uzun kuyruk). Kulakla doğrulama için notalar ve ezgiler WAV olarak
+üretilip dinlenmek üzere gönderildi.
 
 ### Uçurtma · 2026-09-10
 
@@ -1242,10 +1364,103 @@ tozu 1079 / 2213 (kesme bonusu 50). Okuma: ölümlerin neredeyse tamamı tel;
 0,5 s göründüğünden reaksiyonu belirleyen engel; pilotlar 700–1150 m
 arasında, insan için 300–600 m makul bir ilk hedef. Değişmez teste
 çevrilen: geçilebilirlik (her sütunda ≥ 0,3 birim boşluk, 3 mesafede 12
-tohum), kesme kuralı ve pilotun açılışı geçmesi. A–C cihazda koşulmadı;
-cihazda bakılacak: basılı tutma gecikmesi, ip ve tel çizgilerinin
-kalınlığı (tel öldürücü, görünür olmalı), 360 dp'de menü kartının görev
-listesiyle kayması.
+tohum), kesme kuralı ve pilotun açılışı geçmesi. Cihaz koşumu (A–C) aşağıda.
+
+### Uçurtma · cihazda · 2026-09-10
+
+Sürüm sayfasındaki v0.31.0 APK'sıyla (aynı imza, yerinde güncelleme).
+
+**A — koşum.** Serbest modda birkaç uçuş yapıldı. Hiç dokunulmayan uçuş 20 m'de
+çatıya çarpıyor ve kart geliyor ("Çatıya çarptın", mesafe · kurdele · kesme,
+Paylaş / Yeniden başlat / Başa dön / Menüye dön). Enjekte edilen basılı-tut
+örüntüleriyle 49–84 m uçuldu; bir uçuşta "tel altı 2/2" görevi tamamlandı. Ana
+ekrana alıp dönünce mesafe ve uçuş korunuyor, geri tuşu hub'a çıkıyor, `logcat`
+`AndroidRuntime:E` boş. Günlük modun günde üç denemesi olduğu için ölçümler
+Serbest'te yapıldı.
+
+**B — kare hızı.** Uçuş süren 7 s'lik pencerede 414 kare (**59,1 kare/s**),
+kaçan vsync 5, jank %60, p50 34 ms, p90 40 ms. Fazlar: **GPU 20,0 ms** (90p
+29,9), çizim kaydı 1,4 ms, girdi→traversal 1,6 ms, toplam 26,6 ms. Raket'le
+aynı desen: kare hızı hedefi tutuyor ama GPU 16,7 ms bütçesinin üstünde ve p50
+34 ms ile kütüğün en yüksek kare gecikmesi (Viraj'la aynı). Sebep aynı yerde
+aranmalı: tam ekran gökyüzü gradyanı + bulut/bina katmanları.
+
+**C — basılı tutma gecikmesi.** 60 kare/s ekran kaydı alınıp uçurtmanın y'si
+kare kare izlendi; dokunuşlar `uinput` ile bilinen örüntüyle basıldı (1000 ms
+tut / 700 ms bırak).
+
+| ölçüt | değer |
+| --- | --- |
+| parmak indi → gözle görülür ilk hareket (10 px ≈ 3,8 dp) | 83–119 ms (medyan ~100 ms) |
+| bunun sistem payı (girdi→kare tamamlandı) | ~26 ms |
+| yerden tavana çıkış | ~2,1 s (1330 px) |
+| yükseliş / alçalış hızı (90p) | 0,72 / 0,90 birim/s (VMAX 1,15) |
+
+Okuma: kontrol aç-kapa değil rampalı; kısa tutuşlarda tavan hıza varılmıyor ve
+parmak kalkınca dönüş yumuşak. Gecikmenin büyük kısmı fizik rampası, sistem
+payı değil. **His yargısı ölçümle verilemez**: gecikme ve rampa bunlar, ama
+"iyi hissettiriyor mu" sorusunu gerçek bir parmak yanıtlar.
+
+**C — tel görünürlüğü.** Aynı kayıttan telin dikey kesiti:
+
+- koyu çekirdek **6 px = 2,3 dp**, hemen üstünde 2 px beyaz vurgu
+- gökyüzüne karşı kontrast **8,2:1** (gök 156,211,248 · tel 32,49,71); grafik
+  ögeleri için WCAG eşiği 3:1
+- telin sağ kenardan uçurtma sütununa (732 px) gelişi: ölçülen kayma hızı
+  **850 px/s = 0,80 birim/s** (BASE_SPEED) → **0,86 s**; tavan hızda
+  (1,3 birim/s) **0,53 s**. D bölümündeki "tavan hızda 0,5 s" cihazda doğrulandı.
+- o 0,53 s'de uçurtmanın alabileceği dikey yol ≈ 0,31 birim.
+
+Yani telin sorunu kalınlık ya da kontrast değil, **süre**: çizgi ince ama koyu
+ve beyaz vurgusuyla ayırt ediliyor; öldüren şey ekranda kaldığı yarım saniye.
+Görünürlük artırılacaksa kalınlıktan çok erken uyarı (direk gölgesi, telin
+ekrana girmeden önce beliren işareti) işe yarar.
+
+**360 dp.** Menü kartı görev listesi + ekipman satırıyla ekranı aşıyor:
+"Başla" ve "Menüye dön" ilk ekranda görünmüyor, **bir kaydırmayla geliyor** ve
+kart içeriği kırpılmıyor. (0.28.1'deki `OverlayCard` kaydırması burada da
+tutuyor.)
+
+**Gerçek zorluk hissi — ölçülemedi.** Sürücü insan değil: ekranı okuyup karar
+veremediği için sabit örüntüyle uçtu ve 20–84 m'de kaldı; motor içi pilot
+ölçümü ise 700–1150 m. İkisi de bir insanın ne yaşayacağını söylemiyor.
+Cihazda söylenebilecek olan tepki bütçesi: **tel ekrana girdikten sonra
+0,53–0,86 s**, o sürede en çok ~0,3 birim dikey yol. Gerisi gerçek bir el ister.
+
+> Ölçüm notu: sonuç kartı ekranın ortasını kapladığı için kör enjekte edilen
+> basılı-tutuşlar iki kez "Paylaş" düğmesine denk geldi ve sistem paylaşım
+> sayfasını açtı. Uçuş örüntüleri kartın üstünde kalan bir noktaya (y ≈ 600)
+> alınmalı.
+
+### Dalgıç · 2026-09-10
+
+**D — pilot ölçümü** (`./gradlew :games:dalgic:probe`, 20 dalış/pilot,
+v0.32.0). Pilot en yakın dalgıca gider, yük dolunca ya da oksijen 9 s'nin
+altına inip elinde dalgıç varsa yüzeye çıkar, önündeki tehditten bir şerit
+kayarak kaçar.
+
+**Bulgu 1 (pilot).** İlk sürümde pilot oksijen azalınca dalgıçsız da yüzeye
+çıkıyordu; 60 can kaybının 20–25'i "boş yüzeye çıkış"tı. Kural doğru (yüzeyi
+bedava oksijen deposu yapmanın bedeli), pilot yanlıştı: dalgıç yoksa sonuna
+dek aramak, can bedeli aynı olduğundan hep daha iyi. Düzeltildi. Ayrıca ilk
+dalga yumuşatıldı: doğum aralığı 1,5 → 1,7 s, köpekbalığı hızı 0,25–0,40 →
+0,22–0,36 birim/s.
+
+| pilot | tepki | ort. skor | ort. dalga | ort. dalgıç | ort. süre | köpekbalığı | düşman | torpido | mayın | oksijen | boş çıkış |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| acemi | 0,35 s | 1566 | 6,1 | 13,8 | 75 s | 25 | 13 | 2 | 8 | 12 | 0 |
+| orta | 0,20 s | 1412 | 6,3 | 13,4 | 71 s | 14 | 9 | 2 | 16 | 19 | 0 |
+| uzman | 0,10 s | 1000 | 5,5 | 10,5 | 67 s | 22 | 6 | 1 | 10 | 21 | 0 |
+
+Okuma: üç canla 65–75 s, iki–üç tam yük; can kayıpları köpekbalığı, mayın
+ve oksijen arasında dağılıyor, tek bir tehdit baskın değil. "Uzman" pilotun
+daha kötü olması pilotun sık hedef değiştirip titremesinden, oyundan değil;
+insan için ilk hedef 1000 puan ve 5. dalga. Değişmez teste çevrilen: doğum
+şeritlerde kalır (6 tohum × 60 s), boş yüzeye çıkış kuralı, pilot 20
+dalışın en az 14'ünde teslim eder. A–C cihazda koşulmadı; cihazda bakılacak:
+2B sürükleme kazancı 1,3 (Filo 1,35 ile aynı his mi), akıntı bantlarının
+okunurluğu, mayın zincirlerinin küçük ekranda görünürlüğü, oksijen uyarısının
+duyulabilirliği.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

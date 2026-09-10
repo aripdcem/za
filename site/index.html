@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#F3F6FB" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0B0F1A" media="(prefers-color-scheme: dark)">
 <title>ZA · zero-ads games</title>
-<meta name="description" content="ZA: Android için sıfır reklam, sıfır izleyici, sıfır izin oyun platformu. Blok, Viraj, Filo, Raket, Tuşe, Uçurtma, 2048, Yılan, Sudoku, Mayın Tarlası, Kakuro, Reyon, Tavla ve Türkçe kelime oyunları — saf oyun.">
+<meta name="description" content="ZA: Android için sıfır reklam, sıfır izleyici, sıfır izin oyun platformu. Blok, Viraj, Filo, Raket, Tuşe, Uçurtma, Dalgıç, 2048, Yılan, Sudoku, Mayın Tarlası, Kakuro, Reyon, Tavla ve Türkçe kelime oyunları — saf oyun.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B0F1A'/%3E%3Cg fill='%234DE1FF'%3E%3Crect x='7' y='7' width='4' height='4' rx='1'/%3E%3Crect x='12' y='7' width='4' height='4' rx='1'/%3E%3Crect x='17' y='7' width='4' height='4' rx='1'/%3E%3Crect x='22' y='7' width='4' height='4' rx='1'/%3E%3Crect x='17' y='12' width='4' height='4' rx='1'/%3E%3Crect x='12' y='16' width='4' height='4' rx='1'/%3E%3Crect x='7' y='21' width='4' height='4' rx='1'/%3E%3Crect x='12' y='21' width='4' height='4' rx='1'/%3E%3Crect x='17' y='21' width='4' height='4' rx='1'/%3E%3Crect x='22' y='21' width='4' height='4' rx='1'/%3E%3C/g%3E%3C/svg%3E">
 <style>
   /* Tema: düğme yok; sistem tercihine (prefers-color-scheme) uyulur. */
@@ -145,6 +145,7 @@
   .card.raket { background-image: linear-gradient(90deg, rgba(94, 234, 212, 0.10), transparent 60%); }
   .card.tuse { background-image: linear-gradient(90deg, rgba(232, 121, 249, 0.10), transparent 60%); }
   .card.ucurtma { background-image: linear-gradient(90deg, rgba(96, 184, 245, 0.12), transparent 60%); }
+  .card.dalgic { background-image: linear-gradient(90deg, rgba(250, 204, 21, 0.10), transparent 60%); }
   .card.muted { opacity: .65; }
   .art {
     flex: 0 0 auto;
@@ -393,6 +394,22 @@
       <div class="info">
         <h3>Uçurtma</h3>
         <p>Basılı tut yüksel, bırak alçal: çatılar, teller ve rakip uçurtmalar arasında sonsuz uçuş. Rakibin üstünden geç, ipini kes; görevleri tamamla, kuyruk, makara ve cam tozunu aç. Günlük gökyüzü, üç deneme.</p>
+      </div>
+    </section>
+    <section class="card dalgic">
+      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(5,11px);grid-auto-rows:11px;gap:2px">
+        <i style="grid-area:1/1/6/6;background:#0C4A6E"></i>
+        <i style="grid-area:1/1/2/6;background:#BAE6FD;transform:scaleY(.6);transform-origin:top"></i>
+        <i style="grid-area:5/1/6/6;background:#D6B27A;transform:scaleY(.5);transform-origin:bottom"></i>
+        <i style="grid-area:2/2/3/5;background:#FACC15;border-radius:8px;transform:scaleY(.7)"></i>
+        <i style="grid-area:2/3;background:#CA8A04;transform:scale(.5,.5) translateY(-60%)"></i>
+        <i style="grid-area:4/4;background:#FCD9B6;border-radius:50%;transform:scale(.5)"></i>
+        <i style="grid-area:4/1/5/3;background:#94A3B8;clip-path:polygon(0 50%,35% 20%,100% 50%,35% 80%)"></i>
+        <i style="grid-area:4/5;background:#111827;border-radius:50%;transform:scale(.55)"></i>
+      </div>
+      <div class="info">
+        <h3>Dalgıç</h3>
+        <p>Denizaltıyla dalgıç kurtar: altışar topla, yüzeyde teslim et, oksijene dikkat. Köpekbalıkları, torpido atan düşman denizaltılar, zincirli mayınlar ve Boğaz akıntısı; dalgıçsız yüzeye çıkmak can götürür. Günlük deniz, üç deneme.</p>
       </div>
     </section>
       </div>

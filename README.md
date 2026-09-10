@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Reyon**, **Raket**, **Tuşe**, **Uçurtma**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Reyon**, **Raket**, **Tuşe**, **Uçurtma**, **Dalgıç**.
 
 Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç çipleri, seçim kalıcı) ve en üstte son oynanan dört oyun için hızlı erişim şeridi bulunur.
 
@@ -325,6 +325,22 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   10 test: determinizm, fizik sınırları, ekipman etkisi, hız rampası, çatı/baca/tel/ip çarpmaları, üstten kesme ve
   cam tozu bağışıklığı, kurdele/tel altı/sıyırma sayımı, **geçilebilirlik değişmezi** (her sütunda ≥ 0,3 birim
   boşluk, tavan zorlukta da), görev ilerlemesi, dikkatli pilotun açılışı geçmesi; pilot ölçümü `:games:ucurtma:probe`
+
+### Dalgıç
+- **Denizaltıyla kurtarma** (Seaquest türü, kendi tasarımımız): dikey deniz, yüzey üstte, taban altta; denizaltı
+  parmakla 2B sürüklenir (kazanç 1,3), yönü son yatay hareketten gelir, torpidolar dalmışken o yöne kendiliğinden
+  gider (0,6 s'de bir). Dalgıçlar dokununca toplanır (6 kapasite), yüzeye çıkınca teslim: dalgıç başına 50 + dalga × 10,
+  tam yükte +300; her teslim dalgayı artırır (düşman hızı ve doğum sıklığı ×(1 + 0,12 × dalga)), akıntılar yeniden dizilir
+- **Oksijen** 30 s, dalarken azalır, yüzeyde saniyede 10 dolar; 8 s'de uyarı, biterse can gider. Daldıktan sonra
+  **dalgıçsız yüzeye çıkmak can götürür** (Seaquest kuralı): oksijeni bedavaya doldurmanın bedeli
+- **Tehditler**: köpekbalıkları (salınarak yüzer), düşman denizaltılar (2,4 s'de bir torpido; dost torpido düşman
+  torpidosunu yolda düşürür), zincirli mayınlar (alt şeritlerde, en çok 3, çarpınca patlar). Can kaybında denizaltı
+  yüzeye döner, 2 s dokunulmaz; 3 can. **Boğaz akıntısı**: üç bant denizaltıyı ve dalgıçları yana sürükler
+- **Günlük mod** herkese aynı deniz, günde 3 deneme; serbest mod rastgele tohum. Ana menü rekoru skor
+- Motor `games/dalgic`: `DalgicWorld` (sürüş, oksijen, şerit doğumu, torpidolar, çarpışma, teslim, akıntılar); 10 test:
+  determinizm, sürüş sınırları ve yön, oksijen döngüsü, kapasite ve teslim bonusu, boş yüzeye çıkış kuralı,
+  köpekbalığı/mayın ve dokunulmazlık, torpido davranışları (ileri atış, düşman ateşi, torpido çarpışması, dalga puanı),
+  akıntılar, doğumun şeritlerde kalması, pilotun teslim edebilmesi; pilot ölçümü `:games:dalgic:probe`
 
 ### Vergici ve Toplam Kapma (`games/sayi`)
 - **Vergici** (Taxman): 1–N tahtası; böleni kalmış bir sayıyı alırsın, vergici o sayının tahtadaki tüm bölenlerini
