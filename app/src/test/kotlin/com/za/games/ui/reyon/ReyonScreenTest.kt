@@ -1,11 +1,13 @@
 package com.za.games.ui.reyon
 
+import android.content.Context
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.za.games.R
 import com.za.games.game
@@ -13,6 +15,7 @@ import com.za.games.setZaContent
 import com.za.games.str
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,6 +25,20 @@ class ReyonScreenTest {
 
     @get:Rule
     val rule = createComposeRule()
+
+    /**
+     * Robolectric aynı sınıfın testleri arasında SharedPreferences'ı paylaşabiliyor;
+     * yarım kalan bir tur (ör. satış testinin bıraktığı) sonraki testi menü yerine
+     * o turla açar. Her test temiz kayıtla başlar.
+     */
+    @Before
+    fun clearSavedState() {
+        ApplicationProvider.getApplicationContext<Context>()
+            .getSharedPreferences("za_reyon", Context.MODE_PRIVATE)
+            .edit()
+            .clear()
+            .commit()
+    }
 
     @Test
     fun hintsPlaceProductsUndoReturnsThemAndThePuzzleGetsSolved() {
