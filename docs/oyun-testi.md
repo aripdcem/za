@@ -1134,6 +1134,14 @@ açıkken `erisim` çıktısında sıfır sınırlı düğüm 0; adımlayıcı d
   dokunulabilir öğe koymamak**: dokunarak keşif açıkken alta durum çubuğu
   kadar ek pay vermek ya da eylem satırını kural metninin üstüne almak.
 
+**Hafta grafiği (v0.28.2, cihazda).** Kolay bir hafta sonuna kadar oynanıp sonuç
+kartı 411 dp ve 360 dp'de bakıldı: çubuklar (1. gün +32, 2. gün +26, kalan üç
+gün 0), biriken devir çizgisi kartın yazdığı sayıya varıyor (12,5), uzman devri
+kesikli çizgide (3,9). 360 dp'de kart kayıyor; grafik de altındaki düğmeler de
+okunuyor. Ekran okuyucu açıklaması günleri kârıyla veriyor: "Hafta grafiği:
+1. gün +32, 2. gün +26, … · stok devri 12,5 (uzman 3,9)". Çökme yok, `logcat`
+temiz.
+
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
 Bu belgenin ilk hâlinde "uygulama geneli kare hızı sorunu" diye bir açık konu
