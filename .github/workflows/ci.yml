@@ -41,6 +41,24 @@ jobs:
       - name: Arayüz testleri (Robolectric + Compose)
         run: ./gradlew :app:testDebugUnitTest
 
+      # Başarısız testlerin mesajı ve yığın izi kütükte görünsün; rapor artefaktı
+      # her ortamdan indirilemiyor.
+      - name: Başarısız testlerin mesajları
+        if: failure()
+        run: |
+          python3 - <<'EOF'
+          import glob, xml.etree.ElementTree as ET
+          files = glob.glob('app/build/test-results/**/*.xml', recursive=True) + glob.glob('games/*/build/test-results/**/*.xml', recursive=True)
+          for f in files:
+              root = ET.parse(f).getroot()
+              for tc in root.findall('testcase'):
+                  for fl in list(tc.findall('failure')) + list(tc.findall('error')):
+                      print(f"::group::{root.get('name')}.{tc.get('name')}")
+                      print((fl.get('message') or '')[:2000])
+                      print((fl.text or '')[:4000])
+                      print('::endgroup::')
+          EOF
+
       - name: Test raporlarını yükle
         if: failure()
         uses: actions/upload-artifact@v4
