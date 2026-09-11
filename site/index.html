@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#F3F6FB" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0B0F1A" media="(prefers-color-scheme: dark)">
 <title>ZA · zero-ads games</title>
-<meta name="description" content="ZA: Android için sıfır reklam, sıfır izleyici, sıfır izin oyun platformu. Blok, Viraj, Filo, Raket, Tuşe, Uçurtma, Dalgıç, Bostan, Sincap, Çekirge, 2048, Yılan, Sudoku, Mayın Tarlası, Kakuro, Reyon, Tavla ve Türkçe kelime oyunları — saf oyun.">
+<meta name="description" content="ZA: Android için sıfır reklam, sıfır izleyici, sıfır izin oyun platformu. Blok, Viraj, Filo, Raket, Tuşe, Uçurtma, Dalgıç, Bostan, Sincap, Çekirge, Cici, 2048, Yılan, Sudoku, Mayın Tarlası, Kakuro, Reyon, Tavla ve Türkçe kelime oyunları — saf oyun.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B0F1A'/%3E%3Cg fill='%234DE1FF'%3E%3Crect x='7' y='7' width='4' height='4' rx='1'/%3E%3Crect x='12' y='7' width='4' height='4' rx='1'/%3E%3Crect x='17' y='7' width='4' height='4' rx='1'/%3E%3Crect x='22' y='7' width='4' height='4' rx='1'/%3E%3Crect x='17' y='12' width='4' height='4' rx='1'/%3E%3Crect x='12' y='16' width='4' height='4' rx='1'/%3E%3Crect x='7' y='21' width='4' height='4' rx='1'/%3E%3Crect x='12' y='21' width='4' height='4' rx='1'/%3E%3Crect x='17' y='21' width='4' height='4' rx='1'/%3E%3Crect x='22' y='21' width='4' height='4' rx='1'/%3E%3C/g%3E%3C/svg%3E">
 <style>
   /* Tema: düğme yok; sistem tercihine (prefers-color-scheme) uyulur. */
@@ -149,6 +149,7 @@
   .card.bostan { background-image: linear-gradient(90deg, rgba(132, 204, 22, 0.12), transparent 60%); }
   .card.sincap { background-image: linear-gradient(90deg, rgba(217, 119, 6, 0.12), transparent 60%); }
   .card.cekirge { background-image: linear-gradient(90deg, rgba(101, 163, 13, 0.12), transparent 60%); }
+  .card.cici { background-image: linear-gradient(90deg, rgba(129, 140, 248, 0.14), transparent 60%); }
   .card.muted { opacity: .65; }
   .art {
     flex: 0 0 auto;
@@ -474,6 +475,24 @@
       <div class="info">
         <h3>Çekirge</h3>
         <p>Tarlaya inen çekirge sürüsüne karşı ilaç pompalı çiftçi. Sürükle yürü, dokun fıskırt; tek fıskırtma kuralı: öncekisi varmadan yenisi atılamaz. Sürü seyreldikçe hızlanır, saman balyaları aşınır, kraliçe üstten geçer. Günlük tarla, üç deneme.</p>
+      </div>
+    </section>
+    <section class="card cici">
+      <div class="art" aria-hidden="true" style="grid-template-columns:repeat(5,11px);grid-auto-rows:11px;gap:2px">
+        <i style="grid-area:1/1/6/6;background:#14123A"></i>
+        <i style="grid-area:1/1;background:#E0E7FF;border-radius:50%;transform:scale(.25)"></i>
+        <i style="grid-area:2/5;background:#E0E7FF;border-radius:50%;transform:scale(.25)"></i>
+        <i style="grid-area:4/1;background:#E0E7FF;border-radius:50%;transform:scale(.25)"></i>
+        <i style="grid-area:1/5;background:#6D28D9;border-radius:50%"></i>
+        <i style="grid-area:2/2/4/4;background:#F8FAFC;border-radius:50%"></i>
+        <i style="grid-area:2/4;background:#F59E0B;transform:scale(.45)"></i>
+        <i style="grid-area:5/1;background:#EF4444;border-radius:50%"></i>
+        <i style="grid-area:4/4/6/6;background:#9CA3AF;border-radius:50%;transform:scale(.8)"></i>
+        <i style="grid-area:5/3;background:#D4A373;border-radius:50%;transform:scale(.5)"></i>
+      </div>
+      <div>
+        <h3>Cici</h3>
+        <p>Bölüm 1: Uzayda. Beyaz muhabbet kuşu Cici'yi sürükle: ballı yem 7, kuş yemi 5, su 2 puan; uzay kedilerinden ve seken kırmızı toptan kaç. Her ikramda sevinir, kıpırdamazsa sıkılıp puan kaybeder. Günlük uzay, üç deneme.</p>
       </div>
     </section>
       </div>

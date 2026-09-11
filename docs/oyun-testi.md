@@ -60,6 +60,7 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Bostan: üretilen her seviye uzman politikasıyla kazanılır (6 tohum × 3 zorluk), türler dalga dizinine göre açılır, bütçe aşılmaz, zorluklar saldırgan sayısında sıralı; tuzak kurulmadan kemirilir, kurulunca kemirene patlar | `BostanStateTest` |
 | Sincap: her basamakta en az bir dal ve güvenli kaçış (30 tohum × 400 basamak, güvenli yol araması), kargalı basamağın altında kuru dal yok; pilot boşluğa atlamaz, 10 tohumda ortalama ≥ 20 basamak | `SincapWorldTest` |
 | Çekirge: tek fıskırtma kuralı, sürü kenarda dönüp iner ve seyreldikçe hızlanır, dokunulmazlıkta tükürük can götürmez, balyalar üç kaynaktan aşınır, sürü çiftçi hizasında istila; pilot 6 tohumun en az 4'ünde ilk dalgayı temizler | `CekirgeWorldTest` |
+| Cici: üç ikram sabit puan (7/5/2) ve seri; 2 s'de sıkılma, 3 s'den sonra saniyede 1 puan, sıfırda durur; kedi/top teması can götürür, 2 s dokunulmazlık; top kenarlarda kalır ve rampayla hızlanır; her şey kenardan girer ve ekranı terk edince silinir; pilot 12 tohumun en az 9'unda 100 puanı geçer, ortalama ≥ 45 s | `CiciWorldTest` |
 | Metin kontrastı WCAG AA eşiğini tutar | `ThemeContrastTest` |
 
 Yeni bir ölçüm bulgusu düzeltildiğinde, mümkünse **paylı bir değişmez** olarak
@@ -2065,6 +2066,42 @@ kaydırma zıplatır ve yürüme sürer. Viraj ve Filo eylem gerektirmedi: orta
 şeridin direksiyonu düzleştirmesi tasarım (dönüşü koruyarak frenlemek ikinci
 parmağın işi), Filo'da gemi parmağın önünde gidiyor. Ölçülecek: 100 / 130 /
 150 ms dokunuşlar ve 20 / 30 dp'lik yukarı kaydırmalar.
+
+### Cici · 2026-09-11
+
+**D — pilot ölçümü** (`./gradlew :games:cici:probe`, 20 koşu/pilot, en çok
+300 s, v0.37.0). Pilot tepki süresinde bir en "değerli" ikramı seçer
+(puan / uzaklık, 0,4 s sonraki yerine nişan; kedi ya da topun 0,3 birim
+dibindeki ikram avlanmaz), 0,26 birim içinde *yaklaşan* bir tehdit varsa
+yoluna dik kaçar ve tehdit 0,36'ya açılana dek kaçışı sürdürür, ikram yoksa
+sıkılmamak için ortada dolanır.
+
+**Bulgu 1 (top).** İlk ölçümde top 0,30 → 0,62 birim/s ve temas payı 0,85
+ile üç pilot da kısa yaşadı: acemi 26 s / 86 puan, uzman 85 s / 306; her
+koşuda 3 candan ~2'sini top götürdü. Top 0,24 → 0,55 birim/s, temas payı
+0,80, ilk top 2 → 3. saniyede.
+
+**Bulgu 2 (pilot).** Tehdidin tersine kaçan ve hemen ava dönen pilot topla
+av arasında salınıyordu (Çekirge'deki "güvenli hedef" bulgusunun aynısı).
+Kaçış yola dik ve gecikmeli bırakılan (1,4×) hâle getirildi, tehlikenin
+dibindeki ikram elendi: uzman 67 → 141 s.
+
+| pilot | tepki | ort. skor | ort. süre | biten | yem / su / ballı | kedi / top | kayıp puan | en iyi seri |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| acemi | 0,35 s | 178 | 52 s | 20 | 22,1 / 12,2 / 6,2 | 1,3 / 1,7 | 0 | 22,3 |
+| orta | 0,20 s | 250 | 71 s | 20 | 31,2 / 17,6 / 8,5 | 1,1 / 1,9 | 0 | 28,8 |
+| uzman | 0,10 s | 502 | 141 s | 19 | 63,2 / 30,9 / 17,7 | 1,1 / 1,9 | 0 | 33,2 |
+
+Okuma: acemi bir dakikaya yakın, uzman iki buçuk dakika uçuyor; koşuları
+kedi ile top yaklaşık eşit bitiriyor (can başına ~1,1 kedi, ~1,9 top), yani
+top hâlâ baş tehlike ama artık tek başına değil. Puan dağılımı ikramların
+çıkma oranını izliyor (yem %55, su %30, ballı %15); ballı yem koşu başına
+6–18 kez alınıyor. Hareketsizlik cezası hiç işlemedi: pilot her tepkide
+hedef değiştiriyor; ceza tasarım gereği ancak parmağını bırakan oyuncuya
+işler (2 s'de "sıkıldı", 3 s'den sonra saniyede 1). İnsan için ilk hedef
+100 puan ve bir dakika. Cihaz koşumu (A–C) bekliyor: sürükleme kazancı 1,3
+(Dalgıç ile aynı), sıkılma uyarısının fark edilirliği, kask/gözün 34 dp'de
+okunurluğu, koyu zeminde siyah kedinin konturu.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

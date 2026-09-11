@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Reyon**, **Raket**, **Tuşe**, **Uçurtma**, **Dalgıç**, **Bostan**, **Sincap**, **Çekirge**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Reyon**, **Raket**, **Tuşe**, **Uçurtma**, **Dalgıç**, **Bostan**, **Sincap**, **Çekirge**, **Cici**.
 
 Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç çipleri, seçim kalıcı) ve en üstte son oynanan dört oyun için hızlı erişim şeridi bulunur.
 
@@ -407,6 +407,25 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   ve türler, tek mermi kuralı, sütunun alt çekirgesi ve puan, kenarda dönüş ve iniş, seyrelince ve dalgayla hızlanma,
   tükürük ve dokunulmazlık, balya aşınması (üç kaynak), kraliçe geçişi ve bonusu, dalga temizliği, istila, günlük
   tohum ve pilot; ölçüm `:games:cekirge:probe`
+
+### Cici
+- **Bölüm 1: Uzayda** (kendi tasarımımız): beyaz muhabbet kuşu Cici uzayda süzülür; parmakla sürüklenir (bire bir,
+  hız sınırı 1,3 arena/s), dikey arena 1 × 1,6. Kenarlardan süzülen ikramlar dokununca yakalanır: **ballı yem 7**,
+  **kuş yemi 5**, **su 2** puan (çıkma oranı %15 / %55 / %30)
+- Tehlikeler: **uzay kedileri** yanlardan geçer, 45. saniyeden sonra Cici'nin hizasına kıvrılmaya başlar; **kırmızı top**
+  3. saniyede en uzak köşeden çıkar, kenarlardan seker ve hızlanır (0,24 → 0,55 arena/s), 120. saniyede ikincisi gelir.
+  Temas can götürür: 3 can, 2 s dokunulmazlık, seri sıfırlanır
+- **Sevinç**: her ikramda Cici sevinir (kalpler, cıvıltı); 3 s içinde art arda yakalamalar seriyi büyütür, her üçüncüde
+  "Cici çok sevindi!" kutlaması. **Hareketsizlik**: 2 s kıpırdamayınca sıkılır (yarı kapalı göz), 3 s'den sonra her
+  saniye 1 puan gider, sıfırın altına inmez; hareket parmak girişiyle ölçülür
+- Zorluk 180 s boyunca doğrusal artar: ikram aralığı 1,3 → 0,7 s ve hızı ×1,8, kedi aralığı 8 → 3,5 s ve hızı ×1,9.
+  **Günlük uzay** herkese aynı akışı verir (günde 3 deneme); serbest mod rastgele tohum, rekor skor
+- Motor `games/cici`: `CiciWorld` (arena, sürükleme hedefi, ikram/kedi/top akışı, temas, sevinç serisi,
+  hareketsizlik cezası, zorluk rampası, bölüm sabiti), `CiciBots` (ölçüm pilotu: değer/uzaklık ile ikram seçimi,
+  yaklaşan tehdidin yoluna dik kaçış); 11 test: determinizm, sınır ve hız, üç ikramın puanı ve seri, ruh hâli,
+  hareketsizlik cezası (2 s uyarı, 3 s sonra saniyede 1, sıfırda durur), kedi/top teması ve dokunulmazlık, topun
+  kenarlardan sekmesi ve hızlanması, rampanın tekdüzeliği, doğumun kenardan gelip ekranı terk etmesi, pilotun
+  puan alıp hayatta kalması, özet
 
 ### Vergici ve Toplam Kapma (`games/sayi`)
 - **Vergici** (Taxman): 1–N tahtası; böleni kalmış bir sayıyı alırsın, vergici o sayının tahtadaki tüm bölenlerini

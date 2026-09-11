@@ -39,6 +39,15 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.37.0", "2026-09-11",
+            tr = listOf(
+                "Yeni oyun: Cici — Bölüm 1: Uzayda. Beyaz muhabbet kuşu Cici'yi sürükle; ballı yem 7, kuş yemi 5, su 2 puan; uzay kedilerinden ve seken kırmızı toptan kaç (3 can). Her ikramda sevinir, art arda yakalayınca sevinci büyür; 3 saniye kıpırdamazsa sıkılır ve puan kaybeder. Günlük uzay (3 deneme) ve serbest mod",
+            ),
+            en = listOf(
+                "New game: Cici — Chapter 1: In Space. Drag Cici the white budgie; honey sticks 7, seed 5, water 2 points; dodge the space cats and the bouncing red ball (3 lives). Every treat makes her happy and streaks grow the joy; sit still for 3 seconds and she gets bored and loses points. Daily space (3 attempts) and free mode",
+            ),
+        ),
+        ReleaseNote(
             "0.36.1", "2026-09-11",
             tr = listOf(
                 "Kuyu: kısa dokunuş eşiği 130 ms'ye indi, kısa yürüme dürtmeleri artık zıplatmıyor; yürüme parmağını yukarı kaydırmak da zıplatır",

@@ -9,7 +9,7 @@ plugins {
 // Sürüm tek kaynaktan yönetilir: release.yml, etiketten türettiği sürümü
 // -PzaVersion=X.Y.Z olarak geçirir; yerel derlemeler alttaki varsayılanı
 // kullanır. versionCode = major*10000 + minor*100 + patch.
-val zaVersion: String = (project.findProperty("zaVersion") as? String) ?: "0.36.1"
+val zaVersion: String = (project.findProperty("zaVersion") as? String) ?: "0.37.0"
 val zaVersionCode: Int = zaVersion.split('.').map { it.toInt() }.let { (major, minor, patch) ->
     require(major < 214 && minor < 100 && patch < 100) { "Geçersiz sürüm: $zaVersion" }
     // AGP, versionCode için pozitif tamsayı ister.
@@ -110,6 +110,7 @@ dependencies {
     implementation(project(":games:bostan"))
     implementation(project(":games:sincap"))
     implementation(project(":games:cekirge"))
+    implementation(project(":games:cici"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
