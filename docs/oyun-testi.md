@@ -409,6 +409,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Dalgıç | ✅ | **58 · 14 · %12 · 24 ms** | ✅ 2B kazanç 1,3 · ölü bölge yok · zincir 1,5 dp / 1,54:1 | ✅ tehdit dağılımı | 2026-09-10 |
 | Bostan | ✅ | **61 · 1 · %87 · 34 ms** (v0.34.1) | ✅ hücre 411 dp'de 77×77, 360 dp'de 67×47 dp | ✅ ölçek ve uzman | 2026-09-11 |
 | Sincap | ✅ | **58 · 11 · %66 · 31 ms** (toplam 39,6 ms) | ⚠ erişim ipucu 1,32:1 · zıplama 150 ms | ✅ pilot ve dağılım | 2026-09-11 |
+| Çekirge | ✅ | **60 · 7 · %84 · 29 ms** | ✅ eşik 290–310 ms · iki başparmak ✓ · ⚠ tükürük 1,05:1 | ✅ formasyon ve pilot | 2026-09-11 |
 
 **E · erişilebilirlik:** tüm oyunlarda etiketsiz dokunulabilir öğe kalmadı
 (tek bulgu Kıskaç'ın kolay mod anahtarıydı, düzeltildi). Kontrast CI'da
@@ -1835,10 +1836,81 @@ Okuma: koşular 1–1,5 dakika, 2–3 dalga; bitiren hep tükürük, istila yok.
 çok durmasından; insan için ilk hedef 1000 puan ve 2. dalga. Balyalar
 oyuncunun kendi fıskırtmasını da yutar (klasik kural): sütunlar balyaların
 arasından ya da açılan kanaldan vurulur — testler bunu 3. sütunla ve
-kraliçeyi orta boşluktan vurarak kurar. A–C cihazda koşulmadı; cihazda
-bakılacak: sürükleme–dokunuş ayrımı (300 ms, dokunma toleransı), iki
-başparmakla oynanabilirlik, çekirge sprite'ının 35 taneyle okunurluğu, balya
-hücrelerinin küçük ekranda görünürlüğü, tükürüğün kontrastı.
+kraliçeyi orta boşluktan vurarak kurar. Cihaz koşumu (A–C) aşağıda.
+
+### Çekirge · cihazda · 2026-09-11
+
+v0.35.0 APK'sıyla, Serbest. Dokunuşlar `uinput` ile bilinen sürelerde basıldı
+(`tools/coklu_dokunus.py`), sonuç oyunun kendi durumundan okundu
+("Tarla: skor N, M çekirge, K can").
+
+**A — koşum.** Sürükleyerek yürüme, dokunarak fıskırtma ve öldürme çalışıyor
+(8 dokunuşta 35 → 27 çekirge, skor 100); can bitince sonuç kartı geliyor, rekor
+yazılıyor. Ana ekrana alıp dönünce durum korunuyor, geri tuşu hub'a çıkıyor,
+`logcat` `AndroidRuntime:E` boş.
+
+**B — kare hızı.** 9,5 s'lik oyun penceresinde 566 kare (**59,6 kare/s**), kaçan
+vsync 7, jank %84, p50 29 ms, p90 32 ms. Fazlar: toplam 24,3 ms, GPU 19,8 ms,
+komut→swap 10,5 ms, çizim kaydı 1,2 ms. 35 sprite kare bütçesini zorlamıyor;
+maliyet yine dolguda.
+
+**C — sürükleme ile dokunuş ayrımı (300 ms).** Parmak kıpırdamadan basılı tutulup
+bırakıldı:
+
+| basılı tutma | 150 ms | 250 ms | 290 ms | 310 ms | 350 ms | 500 ms |
+| --- | --- | --- | --- | --- | --- | --- |
+| fıskırtma | ✓ | ✓ | ✓ | — | — | — |
+
+Eşik ölçümde **290 ms ile 310 ms arasında**; kodda `TAP_MS = 300`. Ayrım net:
+uzun basış fıskırtmıyor, kısa dokunuş her seferinde fıskırtıyor.
+
+Sürükleme tarafı (kazanç 1,2):
+
+| parmak yolu | 20 px (7,6 dp) | 60 px | 150 px |
+| --- | --- | --- | --- |
+| çiftçi | **0 px** | 57 px (0,95) | 180 px (**1,20**) |
+
+Yani kısa hareketler dokunma toleransına gidiyor (tolerans bilerek yutulmuyor,
+sürükleme onu aşınca başlıyor); uzun sürüklemede kazanç tam 1,2. Dokunuşu
+yürüyüşten ayıran şey bu tolerans, bedeli de ilk ~8 dp.
+
+**C — iki başparmakla oynanabilirlik.** Bir parmak basılı tutup sürüklerken
+(yürüme) ikinci parmak kısa dokunuşla fıskırttı: çiftçi 541 → 988 px yürüdü
+**ve** aynı jestte fıskırtma çıktı (35 → 34 çekirge, skor +10). Ters yön de
+tutuyor (988 → 628). Kod parmak kimliği başına karar verdiği için iki
+başparmak birbirini kesmiyor.
+
+**C — 35 çekirgeyle sprite okunurluğu.** Sprite **34 dp** geniş, sütun aralığı
+37 dp (yani ~3 dp boşluk), 7 sütun × 5 satır. Gökyüzüne karşı kontrast:
+
+| sıra | renk | kontrast |
+| --- | --- | --- |
+| kara | 0x1F2937 | **9,2:1** |
+| kahverengi | 0xA16207 | 3,1:1 |
+| yeşil | 0x65A30D | **1,9:1** |
+| kraliçe | 0xF59E0B | 1,3:1 (palet) |
+
+Okuma: boyut sorun değil (34 dp), ayrım renkte. Yeşil sıra gökyüzüne karşı
+1,9:1'de kalıyor, kraliçe daha da zayıf — kalabalıkta ilk kaybolan bunlar.
+
+**C — balya hücrelerinin görünürlüğü.** 411 dp'de balya **50 × 24 dp**, hücre
+**8,4 dp** (6 × 3); 360 dp'de balya 44 × 20 dp, hücre **7,3 dp**. Balya ↔
+gökyüzü **parlaklık** kontrastı yalnızca **1,04–1,10:1** — sarı ile açık mavi
+neredeyse aynı parlaklıkta, ayrımı tamamen renk tonu yapıyor. Hücre içi çizgi
+balyaya karşı 1,92:1. Sonuç: tek bir hücrenin aşınması küçük ekranda 7 dp'lik
+bir boşluk bırakıyor ve bunu parlaklık farkı değil renk taşıyor; gri tonlamada
+ya da düşük ışıkta balyanın yenmiş kısmı zor seçilir.
+
+**C — tükürüğün kontrastı.** Cihazda ölçülen tükürük **7,6 × 7,6 dp**. Çekirdek
+(0x4ADE80) buğday zeminine karşı **1,05:1**; çevresindeki koyu halka
+(0x166534) palet olarak gökyüzünde 4,28:1, buğdayda 3,90:1 veriyor ama halka
+~1 dp kalınlığında ve kenar yumuşatmayla soluyor: ölçülen en koyu piksel
+zemine karşı **1,61:1**. Çit şeridinin üstünde ilişki tersine dönüyor (halka
+1,01:1, çekirdek 4,06:1).
+
+Okuma: tükürük her zeminde bir yarısıyla okunuyor, ama 7,6 dp'lik bir cisimde
+1 dp'lik halkaya bel bağlanıyor. En ucuz iyileştirme halkayı kalınlaştırmak
+(ya da çekirdeği koyulaştırmak); mermi zaten küçük ve hızlı.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
