@@ -394,7 +394,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Kıskaç | ✅ | olay güdümlü (0 · 0) | — | ✅ düzeltildi | 2026-09-09 |
 | Türetme | ✅ | olay güdümlü (0 · 0) | — | ✅ dengeli | 2026-09-09 |
 | Dizgi | ✅ | olay güdümlü (0 · 0) | — | ✅ torba sağlam | 2026-09-09 |
-| Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | ✅ 220 ms eşiği ölçüldü (kıpırdamayan kısa basış zıplatıyor) · v0.36.1: 130 ms + yukarı kaydırma | ✅ düzeltildi | 2026-09-11 |
+| Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | ✅ v0.36.1 cihazda doğrulandı: 130 ms eşiği + 28 dp yukarı kaydırma (2 koşum) | ✅ düzeltildi | 2026-09-11 |
 | Geçit | ✅ | **60 · 1 · %1,2 · 22 ms** | — (ayrık hamle) | ✅ adil | 2026-09-09 |
 | Tavla | ✅ | olay güdümlü (0 · 0) | — | ✅ düzeltildi | 2026-09-09 |
 | Balkon | ✅ | **60 · 2 · %39,6 · 25 ms** | — (nokta nişan) | ✅ bilinçli tercih | 2026-09-09 |
@@ -1994,6 +1994,23 @@ kalkarsa oyuncu hem yürüyor hem zıplıyor (zıplama ~97 px = 37 dp, ~0,25 s).
 Kaçış yolu koddaki tolerans: parmak dokunma toleransını aşacak kadar kayarsa
 zıplama iptal oluyor (son satır). Yani "kısa dokunuş = zıplama" kuralı
 korunuyor, bedeli de kıpırdamadan yapılan kısa yürüme dürtmeleri.
+
+**Doğrulama (v0.36.1: eşik 130 ms + yukarı kaydırma).** Aynı yöntemle, iki
+bağımsız koşumda:
+
+| jest | beklenen | 1. koşum | 2. koşum |
+| --- | --- | --- | --- |
+| 100 ms dokunuş | zıplat | ✅ zıpladı (97 px) | ✅ zıpladı (129 px) |
+| 130 ms dokunuş | zıplat | ✅ zıpladı (97 px) | ✅ zıpladı (97 px) |
+| 150 ms dokunuş | yalnız yürü | ✅ yalnız yürüdü | ✅ yalnız yürüdü |
+| 20 dp yukarı kaydırma | zıplatma | ✅ zıplamadı | ✅ zıplamadı |
+| 30 dp yukarı kaydırma | zıplat | ✅ zıpladı (148 px) | ✅ zıpladı (122 px) |
+
+Beşi de iki koşumda da beklendiği gibi: eşik 130 ms'de kapanıyor (150 ms artık
+yalnız yürütüyor, v0.36.0'daki 220 ms'lik istenmeyen zıplama kalmadı) ve
+`FLICK_DP = 28 dp` sınırı 20 ile 30 dp arasını doğru ayırıyor. Yukarı kaydırma
+yürürken de zıplatıyor: 30 dp'lik koşumda oyuncu hem zıpladı hem yürümeye
+devam etti.
 
 **Kuyu — iki başparmak.** Birinci parmak basılı tutup yürütürken ikinci parmağın
 kısa dokunuşları üç denemenin üçünde zıplattı (tepe 128–196 px) ve yürüme
