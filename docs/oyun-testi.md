@@ -394,15 +394,15 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Kıskaç | ✅ | olay güdümlü (0 · 0) | — | ✅ düzeltildi | 2026-09-09 |
 | Türetme | ✅ | olay güdümlü (0 · 0) | — | ✅ dengeli | 2026-09-09 |
 | Dizgi | ✅ | olay güdümlü (0 · 0) | — | ✅ torba sağlam | 2026-09-09 |
-| Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | bekliyor | ✅ düzeltildi | 2026-09-09 |
+| Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | ✅ 220 ms eşiği ölçüldü (kıpırdamayan kısa basış zıplatıyor) · v0.36.1: 130 ms + yukarı kaydırma | ✅ düzeltildi | 2026-09-11 |
 | Geçit | ✅ | **60 · 1 · %1,2 · 22 ms** | — (ayrık hamle) | ✅ adil | 2026-09-09 |
 | Tavla | ✅ | olay güdümlü (0 · 0) | — | ✅ düzeltildi | 2026-09-09 |
 | Balkon | ✅ | **60 · 2 · %39,6 · 25 ms** | — (nokta nişan) | ✅ bilinçli tercih | 2026-09-09 |
 | Kakuro | ✅ | olay güdümlü (0 · 0) | — | ✅ üretim bütçesi | 2026-09-09 |
 | Vergici | ✅ | olay güdümlü (0 · 0) | — | ✅ düğüm bütçeli çözücü | 2026-09-09 |
 | Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | ✅ mevcut testlerle | 2026-09-09 |
-| Viraj | ✅ | **60 · 3 · %100 · 34 ms** | bekliyor (v0.36: dokunmatik) | ✅ kusur yok | 2026-09-09 |
-| Filo | ✅ | **60 · 1 · %81 · 31 ms** | ✅ düzeltildi | ✅ düzeltildi | 2026-09-09 |
+| Viraj | ✅ | **60 · 3 · %100 · 34 ms** | ✅ bölge 438/642 px · ok ipuçları 7,5–8,1:1 | ✅ kusur yok | 2026-09-11 |
+| Filo | ✅ | **60 · 1 · %81 · 31 ms** | ✅ dikey band: gemi parmaktan 157 dp yukarıda | ✅ düzeltildi | 2026-09-11 |
 | Reyon | ✅ | olay güdümlü (boşta 0) · kaydırmada **60 · 0 · %6,8 · 20 ms** | ✅ adımlayıcı 48×48 dp (v0.28.1) | ✅ ölçüldü (diziliş + denetim + satış + sipariş) | 2026-09-10 |
 | Raket | ✅ | **58 · 15 · %48 · 26 ms** (GPU 21 ms) | ✅ kazanç 1,24 · ölü bölge yok · iki parmak ayrı | ✅ seviyeler sıralı | 2026-09-10 |
 | Tuşe | ✅ | olay güdümlü (vuruşta 21 ms, GPU 15,5) | ✅ iki parmak 15 ms arayla da sayılıyor | ✅ Sonsuz eğrisi | 2026-09-10 |
@@ -1971,6 +1971,83 @@ bölge sınırları 432 / 648 px: başparmaklar orta şeride rahat ulaşıyor mu
 yoksa fren için ikinci parmak mı tercih ediliyor; ipuç oklarının kontrastı.
 Filo'da dikey bandın üst ucu (0,55) baş parmakla gemi arasında görüş bırakıyor
 mu, gemi parmağın altında kalıyor mu.
+
+### Kuyu · Viraj · Filo — dokunmatik kontrol ölçümü · 2026-09-11
+
+v0.36.0 APK'sıyla. Dokunuşlar `uinput` ile bilinen sürelerde/yollarda basıldı
+(`tools/coklu_dokunus.py`), tepki 60 kare/s ekran kaydından ve oyunun kendi
+durum metninden okundu.
+
+**Kuyu — 220 ms eşiği ve istenmeyen zıplama.** Parmak oyuncunun sütunundan uzağa
+konup kıpırdatılmadan bırakıldı:
+
+| basılı tutma | yürüdü mü | zıpladı mı |
+| --- | --- | --- |
+| 150 ms | evet (242 → 338 px) | **evet** |
+| 200 ms | evet (338 → 465 px) | **evet** |
+| 260 ms | evet (465 → 624 px) | hayır |
+| 400 ms | evet (624 → 687 px) | hayır |
+| 150 ms + parmak kaydırılarak | evet | hayır |
+
+Yani **evet, oluyor**: yürümek için kısa basıp bırakan parmak 220 ms'nin altında
+kalkarsa oyuncu hem yürüyor hem zıplıyor (zıplama ~97 px = 37 dp, ~0,25 s).
+Kaçış yolu koddaki tolerans: parmak dokunma toleransını aşacak kadar kayarsa
+zıplama iptal oluyor (son satır). Yani "kısa dokunuş = zıplama" kuralı
+korunuyor, bedeli de kıpırdamadan yapılan kısa yürüme dürtmeleri.
+
+**Kuyu — iki başparmak.** Birinci parmak basılı tutup yürütürken ikinci parmağın
+kısa dokunuşları üç denemenin üçünde zıplattı (tepe 128–196 px) ve yürüme
+kesilmedi (oyuncu x 735 → 850 arasında ilerlemeye devam etti). Roller ilk
+parmak kalkana dek sabit olduğu için iki başparmak birbirini kesmiyor.
+
+**Viraj — bölge sınırları ve fren.** Tuval 1016 px (x 32…1048), yani sınırlar
+**438 / 642 px**, orta şerit **203 px = 77 dp = 12,3 mm** (belgedeki 432/648
+tam 1080 px'lik tuval içindir; cihazda 16 px kenar payı var). Üç saniyede alınan
+yol:
+
+| giriş | 3 s'de yol |
+| --- | --- |
+| dokunmadan | 1064 m |
+| orta şerit basılı (fren) | **212 m** |
+| sol bölge basılı (yalnız direksiyon) | 880 m |
+| sol bölge + ikinci parmak | **238 m** |
+
+Okuma: fren iki yoldan da çalışıyor, ama **ikinci parmak direksiyonu bırakmadan
+frenliyor**; orta şeride geçmek aynı anda direksiyonu da düzleştiriyor (lider
+parmağın bölgesi z=0 olur). Tasarım bu yüzden ikinci parmağı ödüllendiriyor:
+viraj içinde yavaşlamak isteyen sürücü, direksiyonu tutan başparmağını orta
+şeride taşırsa dönüşü kaybediyor. "Başparmak orta şeride rahat ulaşır mı"
+sorusunun geometrisi ölçüldü (şerit ekranın tam ortasında, 12,3 mm geniş,
+alt kenara yakın); tercih yargısı gerçek ele ait.
+
+**Viraj — ok ipuçlarının kontrastı.** Sol/sağ chevron **32 × 56 dp**, yola karşı
+**7,5–8,1:1**; ortadaki FREN hapının yazısı hapa karşı **7,4:1**. İpuçlarının
+konumu bölgelerle örtüşüyor (chevron merkezleri 280 ve 798 px, FREN 540 px),
+yani ekran hangi bölgenin nerede olduğunu doğru gösteriyor.
+
+**Filo — bandın üst ucunda gemi parmağın altında mı?** Hayır. Dikey sürüklemede
+ölçülen kazanç 1,1–1,2 olduğu için gemi parmaktan önde gidiyor; bandın üst
+ucunda (gemi y ≈ 1088'de duruyor, artık yükselmiyor) parmak y = 1500'de kalıyor:
+**gemi parmağın 412 px = 157 dp yukarısında**. Başparmak gemiyi örtmüyor.
+
+Tavana dayandıktan sonra geri dönüşte ölü yol da yok — sürükleme göreli
+olduğundan gemi hemen tepki veriyor:
+
+| aşağı parmak yolu | gemi |
+| --- | --- |
+| 60 px | 87 px (oran 1,45) |
+| 120 px | 148 px (oran 1,23) |
+
+**Düzeltme (v0.36.1).** Kuyu'da dokunuş eşiği 220 → **130 ms**: tablodaki 150 ve
+200 ms'lik dürtmeler artık yalnız yürütür, hızlı dokunuş (tipik 60–120 ms)
+zıplatmaya devam eder. Tek parmakla oynayan yürürken de zıplayabilsin diye
+yürüme parmağını **160 ms içinde 28 dp yukarı kaydırmak** zıplatır (havadaysa
+üç adımlık ateş); yeniden kurulmak için parmak en alçak noktasından 8 dp aşağı
+inmeli ya da kalkmalı. Testler: 160 ms'lik dürtme zıplatmaz, yürürken yukarı
+kaydırma zıplatır ve yürüme sürer. Viraj ve Filo eylem gerektirmedi: orta
+şeridin direksiyonu düzleştirmesi tasarım (dönüşü koruyarak frenlemek ikinci
+parmağın işi), Filo'da gemi parmağın önünde gidiyor. Ölçülecek: 100 / 130 /
+150 ms dokunuşlar ve 20 / 30 dp'lik yukarı kaydırmalar.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

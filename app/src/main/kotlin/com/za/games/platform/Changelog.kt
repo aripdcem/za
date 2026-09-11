@@ -39,6 +39,15 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.36.1", "2026-09-11",
+            tr = listOf(
+                "Kuyu: kısa dokunuş eşiği 130 ms'ye indi, kısa yürüme dürtmeleri artık zıplatmıyor; yürüme parmağını yukarı kaydırmak da zıplatır",
+            ),
+            en = listOf(
+                "Kuyu: the quick-tap threshold dropped to 130 ms so short walking nudges no longer jump; flicking the walking finger upward also jumps",
+            ),
+        ),
+        ReleaseNote(
             "0.36.0", "2026-09-11",
             tr = listOf(
                 "Kuyu ve Viraj: kontrol tuşları kalktı, tuval ekranı kaplıyor. Kuyu'da parmağını tut, oyuncu o sütuna yürür; ikinci parmak zıplatır, havada basılıyken aşağı ateş eder; kısa dokunuş da zıplatır. Viraj'da sol/sağ yarı direksiyon, orta şerit ya da ikinci parmak fren",

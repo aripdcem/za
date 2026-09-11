@@ -110,8 +110,19 @@ private val GateStripe = Color(0xFF9CA3AF)
 private val ChestColor = Color(0xFFD97706)
 private val ChestLid = Color(0xFF78350F)
 
-/** Kıpırdamadan bu süre içinde kalkan tek parmak "dokunuş" sayılır ve zıplatır. */
-private const val TAP_MS = 220L
+/**
+ * Kıpırdamadan bu süre içinde kalkan tek parmak "dokunuş" sayılır ve zıplatır.
+ * Cihaz ölçümü (docs/oyun-testi.md): 150–200 ms'lik yürüme dürtmeleri 220 ms
+ * eşiğinde de zıplatıyordu; 130 ms hızlı dokunuşu geçirir, dürtmeyi geçirmez.
+ */
+private const val TAP_MS = 130L
+
+/** Yürüme parmağı [FLICK_MS] içinde bu kadar yukarı kayarsa zıplatır (yürürken de). */
+private val FLICK_DP = 28.dp
+private const val FLICK_MS = 160L
+
+/** Yeni bir yukarı kaydırma için parmak en alçak noktasından bu kadar aşağı inmeli (ya da kalkmalı). */
+private val FLICK_REARM_DP = 8.dp
 
 @Composable
 fun KuyuScreen(
@@ -773,22 +784,55 @@ private fun KuyuCanvas(
                 // Dokunmatik kontrol, tuş yok: ilk parmak yürütür (oyuncu parmağın
                 // sütununa yürür, parmak kaydıkça hedef güncellenir), sonraki her
                 // parmak zıplatır / havada basılıyken ateş eder; tek parmağın kısa
-                // dokunuşu zıplatır. Roller basışta verilir, kalkana dek değişmez.
+                // dokunuşu ya da yukarı kaydırması zıplatır. Roller basışta verilir,
+                // kalkana dek değişmez.
                 awaitEachGesture {
                     val first = awaitFirstDown(requireUnconsumed = false)
                     val slop = viewConfiguration.touchSlop
+                    val flickPx = FLICK_DP.toPx()
+                    val rearmPx = FLICK_REARM_DP.toPx()
                     var steerId: PointerId? = null
                     val fireIds = HashSet<PointerId>()
                     val downAt = HashMap<PointerId, Long>()
                     val starts = HashMap<PointerId, Offset>()
                     val moved = HashSet<PointerId>()
+                    // Yürüme parmağının son FLICK_MS içindeki (zaman, y) izi; yukarı kaydırma buradan okunur.
+                    val trail = ArrayDeque<Pair<Long, Float>>()
+                    var flickArmed = true
+                    var flickLowY = 0f
                     fun column(x: Float): Float = x / (size.width.toFloat() / KuyuWorld.WIDTH)
+                    fun trackFlick(c: PointerInputChange) {
+                        val y = c.position.y
+                        if (!flickArmed) {
+                            flickLowY = minOf(flickLowY, y)
+                            if (y - flickLowY >= rearmPx) {
+                                flickArmed = true
+                                trail.clear()
+                            } else {
+                                return
+                            }
+                        }
+                        val now = c.uptimeMillis
+                        trail.addLast(now to y)
+                        while (trail.isNotEmpty() && now - trail.first().first > FLICK_MS) trail.removeFirst()
+                        var lowest = y
+                        for (s in trail) if (s.second > lowest) lowest = s.second
+                        if (lowest - y >= flickPx) {
+                            viewModel.tapJump()
+                            flickArmed = false
+                            flickLowY = y
+                            trail.clear()
+                        }
+                    }
                     fun assign(c: PointerInputChange) {
                         downAt[c.id] = c.uptimeMillis
                         starts[c.id] = c.position
                         if (steerId == null) {
                             steerId = c.id
                             viewModel.steerAt(column(c.position.x))
+                            flickArmed = true
+                            trail.clear()
+                            trail.addLast(c.uptimeMillis to c.position.y)
                         } else {
                             fireIds += c.id
                             viewModel.pressFire(true)
@@ -804,6 +848,7 @@ private fun KuyuCanvas(
                                 if (c.pressed) {
                                     if (c.id !in moved && (c.position - (starts[c.id] ?: c.position)).getDistance() > slop) moved += c.id
                                     viewModel.steerAt(column(c.position.x))
+                                    trackFlick(c)
                                 } else if (c.changedToUpIgnoreConsumed()) {
                                     viewModel.steerAt(null)
                                     val quick = c.uptimeMillis - (downAt[c.id] ?: c.uptimeMillis) <= TAP_MS
