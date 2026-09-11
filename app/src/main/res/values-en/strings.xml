@@ -1026,7 +1026,7 @@
     <string name="cekirge_board_desc_fmt">Field: score %1$d, %2$d grasshoppers, %3$d lives</string>
     <string name="game_cici">Cici</string>
     <string name="game_cici_tagline">Cici the white budgie in space: catch seed, water and honey sticks; dodge the cats and the red ball</string>
-    <string name="cici_chapter_space">Chapter 1 · In Space</string>
+    <string name="cici_chapter_space">In Space</string>
     <string name="cici_intro">Cici is a white budgerigar, drifting through space in this chapter. Drag with your finger: catch seed, water and honey sticks; dodge the cats and the bouncing red ball (3 lives). Every treat makes her very happy, and catching them back to back makes the joy grow. But if she sits still for too long she gets bored and loses points.</string>
     <string name="cici_rules">Honey stick 7 · seed 5 · water 2 · after 3 s without moving, 1 point per second is lost</string>
     <string name="cici_daily_desc">Everyone flies the same space today; 3 attempts a day</string>

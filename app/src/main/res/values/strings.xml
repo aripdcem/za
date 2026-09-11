@@ -1026,7 +1026,7 @@
     <string name="cekirge_board_desc_fmt">Tarla: skor %1$d, %2$d çekirge, %3$d can</string>
     <string name="game_cici">Cici</string>
     <string name="game_cici_tagline">Beyaz muhabbet kuşu Cici uzayda: yem, su ve ballı yem yakala; kedilerden ve kırmızı toptan kaç</string>
-    <string name="cici_chapter_space">Bölüm 1 · Uzayda</string>
+    <string name="cici_chapter_space">Uzayda</string>
     <string name="cici_intro">Cici beyaz bir muhabbet kuşu; bu bölümde uzayda süzülüyor. Parmağınla sürükle: yem, su ve ballı yemi yakala; kedilerden ve seken kırmızı toptan kaç (3 can). Her ikramda çok sevinir, art arda yakalarsan sevinci büyür. Ama uzun süre kıpırdamazsa sıkılır ve puan kaybeder.</string>
     <string name="cici_rules">Ballı yem 7 · yem 5 · su 2 · 3 sn kıpırdamayınca saniyede 1 puan gider</string>
     <string name="cici_daily_desc">Herkes bugün aynı uzayda uçar; günde 3 deneme</string>
