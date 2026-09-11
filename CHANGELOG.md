@@ -2,6 +2,9 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.37.1 (2026-09-11)
+- Cici cihaz bulgusu: kedi konturu 1,4 → 2,5 dp, siyah kedi smokin desenli (açık burun ve göğüs) — koyu uzayda gövdesiyle de görünür
+
 ## 0.37.0 (2026-09-11)
 - Yeni oyun: **Cici** — Bölüm 1: Uzayda. Beyaz muhabbet kuşu Cici uzayda süzülür, parmakla sürüklenir; kenarlardan gelen ballı yem (7), kuş yemi (5) ve suyu (2) yakalar, uzay kedilerinden ve kenarlardan seken kırmızı toptan kaçar (3 can). Her ikramda sevinir, 3 s içinde art arda yakalamalar seriyi büyütür; 3 s kıpırdamayınca sıkılır ve saniyede 1 puan kaybeder. Zorluk 3 dakikada artar, 2. dakikada ikinci top. Günlük uzay (3 deneme) ve serbest mod
 

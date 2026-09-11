@@ -412,7 +412,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Bostan | ✅ | **61 · 1 · %87 · 34 ms** (v0.34.1) | ✅ hücre 411 dp'de 77×77, 360 dp'de 67×47 dp | ✅ ölçek ve uzman | 2026-09-11 |
 | Sincap | ✅ | **58 · 11 · %66 · 31 ms** (toplam 39,6 ms) | ⚠ erişim ipucu 1,32:1 · zıplama 150 ms | ✅ pilot ve dağılım | 2026-09-11 |
 | Çekirge | ✅ | **60 · 7 · %84 · 29 ms** | ✅ eşik 290–310 ms · iki başparmak ✓ · ⚠ tükürük 1,05:1 | ✅ formasyon ve pilot | 2026-09-11 |
-| Cici | ✅ | **60 · 1 · %0,5 · 25 ms** | ✅ kazanç 1,3 · uyarı 3 kanal · ⚠ siyah kedi konturu 1,44 dp | ✅ pilot ve ikram dağılımı | 2026-09-11 |
+| Cici | ✅ | **60 · 1 · %0,5 · 25 ms** | ✅ kazanç 1,3 · uyarı 3 kanal · ⚠ siyah kedi konturu 1,44 dp → v0.37.1: 2,5 dp + smokin deseni | ✅ pilot ve ikram dağılımı | 2026-09-11 |
 
 **E · erişilebilirlik:** tüm oyunlarda etiketsiz dokunulabilir öğe kalmadı
 (tek bulgu Kıskaç'ın kolay mod anahtarıydı, düzeltildi). Kontrast CI'da
@@ -2178,6 +2178,16 @@ katar.
 > Not: cihaz koşumunda turuncu ve gri kediler çıktı; siyah kedinin gövde
 > kontrastı palet değerinden, kontur kalınlığı ise aynı çizim kodunun ölçülen
 > geometrisinden (r × 0,07) geliyor.
+
+**Düzeltme (v0.37.1).** Kedi konturu r × 0,07 → **r × 0,12** (41 dp'lik kafada
+1,44 → ~2,5 dp), kuyruğa da kontur; siyah kedi **smokin desenli**: açık burun
+yaması (kafanın alt yarısında 1,0 × 0,6 r) ve göğüs yaması, yani gövdenin
+kendisi de 14:1'lik açık renkle uzaydan ayrılıyor, artık her şey ince çizgiye
+bakmıyor. Gri ve turuncu kediler yalnız kalın konturu aldı. Sürükleme kazancı,
+sıkılma uyarısı, kask ve göz eylem gerektirmedi. HUD etiketinin 2,5 s'de hâlâ
+"Sakin" görünmesi: kodda uyarı 120 karede (2,0 s) kesin; okuma aralığı 1,5 s
+ve kayıt başlangıcıyla kaymış olabilir, cihazda 0,5 s aralıkla yeniden
+bakılacak. Ölçülecek: siyah kedi gövde/yama kontrastı, kontur kalınlığı.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

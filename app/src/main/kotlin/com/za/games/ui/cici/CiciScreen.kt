@@ -557,20 +557,29 @@ private fun DrawScope.drawBall(cx: Float, cy: Float, r: Float) {
     drawCircle(BallShine, radius = r * 0.28f, center = Offset(cx - r * 0.32f, cy - r * 0.34f))
 }
 
-/** Uzay kedisi: kasklı yuvarlak baş, kulaklar, yeşil gözler; koyu gövdeye açık kontur. */
+/**
+ * Uzay kedisi: kasklı yuvarlak baş, kulaklar, yeşil gözler; koyu gövdeye açık kontur.
+ * Cihaz ölçümü (docs/oyun-testi.md): siyah gövde uzaya karşı 1,2:1, kediyi 1,4 dp'lik
+ * kontur taşıyordu; kontur kalınlaştı (r × 0,12 ≈ 2,5 dp) ve siyah kedi smokin desenli
+ * (açık burun ve göğüs), gövdesi de zeminden ayrılsın diye.
+ */
 private fun DrawScope.drawCat(path: Path, cx: Float, cy: Float, r: Float, dir: Int, tint: Int, t: Float) {
     val body = when (tint) {
         0 -> CatGray
         1 -> CatOrange
         else -> CatBlack
     }
+    val tuxedo = tint == 2
+    val outline = r * 0.12f
     val f = dir.toFloat()
     val y = cy + sin(t * 3f) * r * 0.1f
     // Kuyruk ve gövde (arkada).
+    drawLine(CatOutline, Offset(cx - f * r * 1.9f, y + r * 0.1f), Offset(cx - f * r * 2.6f, y - r * 0.5f + sin(t * 4f) * r * 0.3f), strokeWidth = r * 0.24f + outline, cap = StrokeCap.Round)
     drawLine(body, Offset(cx - f * r * 1.9f, y + r * 0.1f), Offset(cx - f * r * 2.6f, y - r * 0.5f + sin(t * 4f) * r * 0.3f), strokeWidth = r * 0.24f, cap = StrokeCap.Round)
     val bx = cx - f * r * 1.4f
     drawOval(body, topLeft = Offset(bx - r * 0.8f, y - r * 0.42f), size = Size(r * 1.6f, r * 0.9f))
-    drawOval(CatOutline, topLeft = Offset(bx - r * 0.8f, y - r * 0.42f), size = Size(r * 1.6f, r * 0.9f), style = Stroke(width = r * 0.06f))
+    if (tuxedo) drawOval(CatOutline, topLeft = Offset(bx - r * 0.45f + f * r * 0.2f, y - r * 0.1f), size = Size(r * 0.8f, r * 0.5f))
+    drawOval(CatOutline, topLeft = Offset(bx - r * 0.8f, y - r * 0.42f), size = Size(r * 1.6f, r * 0.9f), style = Stroke(width = outline))
     // Kulaklar.
     for (side in intArrayOf(-1, 1)) {
         path.reset()
@@ -579,11 +588,12 @@ private fun DrawScope.drawCat(path: Path, cx: Float, cy: Float, r: Float, dir: I
         path.lineTo(cx + side * r * 0.12f, y - r * 0.8f)
         path.close()
         drawPath(path, body)
-        drawPath(path, CatOutline, style = Stroke(width = r * 0.06f))
+        drawPath(path, CatOutline, style = Stroke(width = outline))
     }
-    // Baş.
+    // Baş; smokin kedide açık burun yaması.
     drawCircle(body, radius = r, center = Offset(cx, y))
-    drawCircle(CatOutline, radius = r, center = Offset(cx, y), style = Stroke(width = r * 0.07f))
+    if (tuxedo) drawOval(CatOutline, topLeft = Offset(cx - r * 0.5f, y - r * 0.02f), size = Size(r * 1f, r * 0.62f))
+    drawCircle(CatOutline, radius = r, center = Offset(cx, y), style = Stroke(width = outline))
     // Gözler ve dikey göz bebekleri.
     for (side in intArrayOf(-1, 1)) {
         val ex = cx + side * r * 0.38f

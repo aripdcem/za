@@ -39,6 +39,15 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.37.1", "2026-09-11",
+            tr = listOf(
+                "Cici: kedilerin konturu kalınlaştı, siyah kedi smokin desenli; koyu uzayda daha görünür",
+            ),
+            en = listOf(
+                "Cici: thicker cat outlines and a tuxedo pattern for the black cat; easier to see against dark space",
+            ),
+        ),
+        ReleaseNote(
             "0.37.0", "2026-09-11",
             tr = listOf(
                 "Yeni oyun: Cici — Bölüm 1: Uzayda. Beyaz muhabbet kuşu Cici'yi sürükle; ballı yem 7, kuş yemi 5, su 2 puan; uzay kedilerinden ve seken kırmızı toptan kaç (3 can). Her ikramda sevinir, art arda yakalayınca sevinci büyür; 3 saniye kıpırdamazsa sıkılır ve puan kaybeder. Günlük uzay (3 deneme) ve serbest mod",
