@@ -2,6 +2,9 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.35.2 (2026-09-11)
+- Çekirge cihaz bulguları: sürüklemede ilk 8 dp artık yutulmuyor; yeşil sıra ve kraliçe koyulaştı, çekirgelere kontur; balya hücrelerine koyu kenar; tükürük kalın koyu halka ve koyu çekirdekle çizilir
+
 ## 0.35.1 (2026-09-11)
 - Sincap cihaz bulgusu: erişim ipucu ("^") koyu konturla çizilir, gökyüzüne karşı 1,32:1 yerine yüksek kontrast; gök degradesi önbelleklenerek kare başına gölgelendirici kurulumu kaldırıldı
 

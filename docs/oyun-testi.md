@@ -1912,6 +1912,23 @@ Okuma: tükürük her zeminde bir yarısıyla okunuyor, ama 7,6 dp'lik bir cisim
 1 dp'lik halkaya bel bağlanıyor. En ucuz iyileştirme halkayı kalınlaştırmak
 (ya da çekirdeği koyulaştırmak); mermi zaten küçük ve hızlı.
 
+**Düzeltme (v0.35.2).** Dört bulgu ele alındı, ikisi eylem gerektirmedi:
+
+- *Sürükleme toleransı.* Eşik aşılınca ilk hareket başlangıç noktasından
+  itibaren tümüyle uygulanıyor: 20 px'lik sürüklemede çiftçi artık 0 değil
+  ~24 px yürür; dokunuş ayrımı (300 ms, tolerans) aynen duruyor.
+- *Sprite kontrastı.* Yeşil sıra 0x65A30D → 0x3F6212 (gökyüzüne karşı ~1,9 →
+  ~5:1), kraliçe 0xF59E0B → 0xB45309 (~1,3 → ~3,5:1); bütün çekirgelere ve
+  kraliçeye koyu kontur. Kara ve kahverengi sıra olduğu gibi.
+- *Balya.* Dolgu 0xFACC15 → 0xD97706, her hücreye 1,2 dp koyu kenar
+  (0x7C2D12): aşınan hücre artık parlaklık farkıyla da okunur.
+- *Tükürük.* Halka kalınlaştı (yarıçap ×1,1 → ×1,4, 0x052E16), çekirdek
+  koyulaştı (0x4ADE80 → 0x15803D), üstüne parlak nokta; buğday ve gökyüzü
+  zeminlerinde çekirdek ~2,7–3,6:1, halka 10:1'in üstünde.
+- Sürükleme–dokunuş eşiği (290–310 ms) ve iki başparmak ölçümleri tasarımı
+  doğruladı; kare hızı (59,6, 24,3 ms) eylem gerektirmedi. Kontrast
+  değerleri palet hesabı; cihazda yenilenecek.
+
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
 Bu belgenin ilk hâlinde "uygulama geneli kare hızı sorunu" diye bir açık konu
