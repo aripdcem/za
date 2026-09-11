@@ -1251,3 +1251,48 @@ fun CekirgeArt(modifier: Modifier = Modifier) {
         drawRoundRect(Color(0xFF64748B), Offset(w * 0.56f, w * 0.74f), Size(w * 0.07f, w * 0.14f), CornerRadius(w * 0.02f, w * 0.02f))
     }
 }
+
+/** Cici: uzay, yıldızlar, kasklı beyaz muhabbet kuşu, kırmızı top, uzay kedisi ve yem. */
+@Composable
+fun CiciArt(modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        drawRoundRect(Color(0xFF14123A), size = Size(w, w), cornerRadius = CornerRadius(w * 0.12f, w * 0.12f))
+        for ((sx, sy, r) in listOf(Triple(0.12f, 0.14f, 0.012f), Triple(0.3f, 0.08f, 0.008f), Triple(0.9f, 0.3f, 0.01f), Triple(0.7f, 0.12f, 0.007f), Triple(0.08f, 0.6f, 0.008f), Triple(0.55f, 0.26f, 0.006f), Triple(0.92f, 0.86f, 0.009f))) {
+            drawCircle(Color(0xFFE0E7FF), radius = w * r, center = Offset(w * sx, w * sy))
+        }
+        // Gezegen.
+        drawCircle(Color(0xFF6D28D9), radius = w * 0.11f, center = Offset(w * 0.84f, w * 0.12f))
+        drawOval(Color(0xFFA78BFA), Offset(w * 0.69f, w * 0.1f), Size(w * 0.3f, w * 0.045f))
+        // Kırmızı top.
+        drawCircle(Color(0xFFEF4444), radius = w * 0.075f, center = Offset(w * 0.2f, w * 0.78f))
+        drawCircle(Color(0xFFFCA5A5), radius = w * 0.022f, center = Offset(w * 0.175f, w * 0.755f))
+        // Uzay kedisi (kasklı baş).
+        val kx = w * 0.78f
+        val ky = w * 0.66f
+        drawCircle(Color(0x55BAE6FD), radius = w * 0.13f, center = Offset(kx, ky - w * 0.01f))
+        drawCircle(Color(0xFF9CA3AF), radius = w * 0.085f, center = Offset(kx, ky))
+        drawCircle(Color(0xFF86EFAC), radius = w * 0.016f, center = Offset(kx - w * 0.032f, ky - w * 0.012f))
+        drawCircle(Color(0xFF86EFAC), radius = w * 0.016f, center = Offset(kx + w * 0.032f, ky - w * 0.012f))
+        drawRect(Color(0xFF9CA3AF), Offset(kx - w * 0.075f, ky - w * 0.13f), Size(w * 0.035f, w * 0.07f))
+        drawRect(Color(0xFF9CA3AF), Offset(kx + w * 0.04f, ky - w * 0.13f), Size(w * 0.035f, w * 0.07f))
+        // Yem.
+        for ((dx, dy) in listOf(0.5f to 0.86f, 0.56f to 0.9f, 0.53f to 0.8f)) {
+            drawOval(Color(0xFFD4A373), Offset(w * dx - w * 0.03f, w * dy - w * 0.02f), Size(w * 0.06f, w * 0.04f))
+        }
+        // Cici: gövde, baş, kask, gaga, yanak, göz.
+        val cx = w * 0.42f
+        val cy = w * 0.48f
+        drawLine(Color(0xFFCBD5E1), Offset(cx - w * 0.1f, cy + w * 0.03f), Offset(cx - w * 0.22f, cy + w * 0.1f), strokeWidth = w * 0.035f)
+        drawOval(Color(0xFFF8FAFC), Offset(cx - w * 0.13f, cy - w * 0.06f), Size(w * 0.26f, w * 0.18f))
+        drawOval(Color(0xFFCBD5E1), Offset(cx - w * 0.1f, cy - w * 0.035f), Size(w * 0.15f, w * 0.085f))
+        val hx = cx + w * 0.06f
+        val hy = cy - w * 0.09f
+        drawCircle(Color(0xFFF8FAFC), radius = w * 0.09f, center = Offset(hx, hy))
+        drawCircle(Color(0xFF7DD3FC), radius = w * 0.017f, center = Offset(hx + w * 0.045f, hy + w * 0.03f))
+        drawCircle(Color(0xFF0F172A), radius = w * 0.015f, center = Offset(hx + w * 0.025f, hy - w * 0.02f))
+        drawRect(Color(0xFFF59E0B), Offset(hx + w * 0.06f, hy - w * 0.005f), Size(w * 0.05f, w * 0.035f))
+        drawCircle(Color(0x55BAE6FD), radius = w * 0.13f, center = Offset(hx, hy))
+        drawCircle(Color(0xCCE0F2FE), radius = w * 0.13f, center = Offset(hx, hy), style = androidx.compose.ui.graphics.drawscope.Stroke(width = w * 0.012f))
+    }
+}

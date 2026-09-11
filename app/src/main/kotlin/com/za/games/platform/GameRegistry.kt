@@ -48,6 +48,7 @@ import com.za.games.ui.tuse.TuseScreen
 import com.za.games.ui.ucurtma.UcurtmaScreen
 import com.za.games.ui.bostan.BostanScreen
 import com.za.games.ui.cekirge.CekirgeScreen
+import com.za.games.ui.cici.CiciScreen
 import com.za.games.ui.dalgic.DalgicScreen
 import com.za.games.ui.viraj.VirajScreen
 import com.za.games.ui.snake.SnakeScreen
@@ -372,6 +373,18 @@ object GameRegistry {
             art = { modifier -> CekirgeArt(modifier) },
             screen = { highScore, onScore, onExit ->
                 CekirgeScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "cici",
+            since = "0.37.0",
+            titleRes = R.string.game_cici,
+            taglineRes = R.string.game_cici_tagline,
+            category = GameCategory.ARCADE,
+            accent = Color(0xFF818CF8),
+            art = { modifier -> CiciArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                CiciScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
     )
