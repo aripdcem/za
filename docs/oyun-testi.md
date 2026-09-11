@@ -58,6 +58,7 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Dalgıç: doğan her şey şeritlerde ve suda kalır, mayınlar alt şeritlerde ve en çok üç; boş yüzeye çıkış can götürür ama başta değil; pilot 20 dalışın en az 14'ünde teslim eder | `DalgicWorldTest` |
 | Bostan: üretilen her seviye uzman politikasıyla kazanılır (6 tohum × 3 zorluk), türler dalga dizinine göre açılır, bütçe aşılmaz, zorluklar saldırgan sayısında sıralı; tuzak kurulmadan kemirilir, kurulunca kemirene patlar | `BostanStateTest` |
 | Sincap: her basamakta en az bir dal ve güvenli kaçış (30 tohum × 400 basamak, güvenli yol araması), kargalı basamağın altında kuru dal yok; pilot boşluğa atlamaz, 10 tohumda ortalama ≥ 20 basamak | `SincapWorldTest` |
+| Çekirge: tek fıskırtma kuralı, sürü kenarda dönüp iner ve seyreldikçe hızlanır, dokunulmazlıkta tükürük can götürmez, balyalar üç kaynaktan aşınır, sürü çiftçi hizasında istila; pilot 6 tohumun en az 4'ünde ilk dalgayı temizler | `CekirgeWorldTest` |
 | Metin kontrastı WCAG AA eşiğini tutar | `ThemeContrastTest` |
 
 Yeni bir ölçüm bulgusu düzeltildiğinde, mümkünse **paylı bir değişmez** olarak
@@ -1790,6 +1791,46 @@ gidiyor; ekranı bir uçtan bir uca **~2,1 s**'de tarıyor.
 Okuma: normal temposunda uyarı cömert; hızlandıkça daralıyor ve asıl kısıt
 kargayı görmek değil, **o basamağa vardığında karganın şeridin neresinde
 olacağı** — ekranı 2,1 s'de geçtiği için zamanlama sorusu bu.
+
+### Çekirge · 2026-09-11
+
+**D — pilot ölçümü** (`./gradlew :games:cekirge:probe`, 20 koşu/pilot,
+v0.35.0). Pilot tepki süresinde bir en yakın sütunun alt çekirgesini hedefler
+(fıskırtmanın varış anındaki x'i tahmin eder), başparmak hızıyla oraya kayar,
+hizaya gelince ve fıskırtma boşsa sıkar; 1 s içinde varacak tükürüğün
+yolundaysa en yakın güvenli x'e kaçar, hedef tehlikedeyse yerinde bekler.
+
+**Bulgu 1 (formasyon).** İlk ölçümde üç pilot da 14–20 s'de istilaya
+uğradı (20/20): 8 sütunluk sürü tarlaya göre fazla genişti, yan yolculuk
+0,11 birimdi ve her 1,6 s'de bir iniyordu. Sürü 7 sütuna daraltıldı (aralık
+0,105 → 0,095), başlangıç 0,2 → 0,16, iniş 0,045 → 0,03, hız 0,07 → 0,06:
+tam hızda istila 82 s'ye çıktı.
+
+**Bulgu 2 (pilot).** Sonraki ölçümde istila sıfır, ama 20/20 koşu tükürükle
+bitti (20–38 s): pilot tükürükten kaçıp hemen hedefe — tükürüğün altına —
+dönüyordu. Kaçış "güvenli hedef" kuralına çevrildi (bulunduğu yer tehlikedeyse
+en yakın güvenli x, hedef tehlikedeyse yerinde kal).
+
+**Bulgu 3 (tempo).** Tek fıskırtma kuralıyla 1,25 birim/s'lik fıskırtma
+0,6–0,9 s'de bir atış demekti; 35 çekirge en iyi hâlde 25 s sürerken sürü
+tükürük menziline iniyordu. Fıskırtma 1,8 birim/s, tükürük aralığı 1,3 →
+1,8 s ve ilk dalgada aynı anda 2 tükürük (sonra 3).
+
+| pilot | tepki | başparmak | nişan | ort. skor | ort. dalga | ort. vuruş | ort. süre | istila | can |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| acemi | 0,40 s | 0,6 birim/s | 0,030 | 1799 | 2,55 | 81,9 | 73 s | 0 | 20 |
+| orta | 0,25 s | 0,8 | 0,020 | 1997 | 2,95 | 89,9 | 64 s | 0 | 20 |
+| uzman | 0,12 s | 1,0 | 0,015 | 1577 | 2,50 | 74,5 | 51 s | 0 | 20 |
+
+Okuma: koşular 1–1,5 dakika, 2–3 dalga; bitiren hep tükürük, istila yok.
+"Uzman" pilotun daha kötü olması sık hedef değiştirip sürünün altında daha
+çok durmasından; insan için ilk hedef 1000 puan ve 2. dalga. Balyalar
+oyuncunun kendi fıskırtmasını da yutar (klasik kural): sütunlar balyaların
+arasından ya da açılan kanaldan vurulur — testler bunu 3. sütunla ve
+kraliçeyi orta boşluktan vurarak kurar. A–C cihazda koşulmadı; cihazda
+bakılacak: sürükleme–dokunuş ayrımı (300 ms, dokunma toleransı), iki
+başparmakla oynanabilirlik, çekirge sprite'ının 35 taneyle okunurluğu, balya
+hücrelerinin küçük ekranda görünürlüğü, tükürüğün kontrastı.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

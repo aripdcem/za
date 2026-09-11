@@ -1210,3 +1210,44 @@ fun SincapArt(modifier: Modifier = Modifier) {
         drawCircle(Color(0xFF4ADE80), radius = w * 0.014f, center = Offset(w * 0.525f, w * 0.75f))
     }
 }
+
+/** Çekirge: gökyüzü, buğday tarlası, formasyon hâlinde çekirgeler, saman balyası ve pompalı çiftçi. */
+@Composable
+fun CekirgeArt(modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val w = size.minDimension
+        drawRoundRect(Color(0xFF7DD3FC), size = Size(w, w), cornerRadius = CornerRadius(w * 0.12f, w * 0.12f))
+        drawRect(Color(0xFFE9B949), Offset(0f, w * 0.82f), Size(w, w * 0.18f))
+        drawRect(Color(0xFF3F6212), Offset(0f, w * 0.81f), Size(w, w * 0.02f))
+        for (i in 0 until 5) {
+            drawLine(Color(0xFFC98F2B), Offset(w * (0.1f + i * 0.2f), w), Offset(w * (0.12f + i * 0.2f), w * 0.86f), strokeWidth = w * 0.015f)
+        }
+        // Sürü: 4 × 3.
+        for (r in 0 until 3) {
+            for (c in 0 until 4) {
+                val cx = w * (0.2f + c * 0.2f)
+                val cy = w * (0.14f + r * 0.14f)
+                val color = when (r) {
+                    0 -> Color(0xFF1F2937)
+                    1 -> Color(0xFF65A30D)
+                    else -> Color(0xFFA16207)
+                }
+                drawLine(color, Offset(cx - w * 0.06f, cy - w * 0.02f), Offset(cx + w * 0.06f, cy - w * 0.02f), strokeWidth = w * 0.012f)
+                drawLine(color, Offset(cx - w * 0.06f, cy + w * 0.03f), Offset(cx + w * 0.06f, cy + w * 0.03f), strokeWidth = w * 0.012f)
+                drawOval(color, Offset(cx - w * 0.035f, cy - w * 0.045f), Size(w * 0.07f, w * 0.09f))
+                drawCircle(Color(0xFFF8FAFC), radius = w * 0.008f, center = Offset(cx - w * 0.012f, cy + w * 0.03f))
+                drawCircle(Color(0xFFF8FAFC), radius = w * 0.008f, center = Offset(cx + w * 0.012f, cy + w * 0.03f))
+            }
+        }
+        // Balyalar.
+        drawRect(Color(0xFFFACC15), Offset(w * 0.12f, w * 0.62f), Size(w * 0.16f, w * 0.08f))
+        drawRect(Color(0xFFFACC15), Offset(w * 0.72f, w * 0.62f), Size(w * 0.16f, w * 0.08f))
+        // Fıskırtma.
+        drawLine(Color(0xFFBAE6FD), Offset(w * 0.5f, w * 0.72f), Offset(w * 0.5f, w * 0.6f), strokeWidth = w * 0.02f)
+        // Çiftçi.
+        drawRoundRect(Color(0xFF1D4ED8), Offset(w * 0.44f, w * 0.76f), Size(w * 0.12f, w * 0.14f), CornerRadius(w * 0.03f, w * 0.03f))
+        drawCircle(Color(0xFFFCD9B6), radius = w * 0.045f, center = Offset(w * 0.5f, w * 0.72f))
+        drawOval(Color(0xFFFDE68A), Offset(w * 0.4f, w * 0.66f), Size(w * 0.2f, w * 0.05f))
+        drawRoundRect(Color(0xFF64748B), Offset(w * 0.56f, w * 0.74f), Size(w * 0.07f, w * 0.14f), CornerRadius(w * 0.02f, w * 0.02f))
+    }
+}

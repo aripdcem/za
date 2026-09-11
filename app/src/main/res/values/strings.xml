@@ -1005,4 +1005,29 @@
     <string name="sincap_result_fmt">%1$d m · %2$d fındık</string>
     <string name="sincap_share_fmt">%1$d m tırmandım · %2$d puan</string>
     <string name="sincap_board_desc_fmt">Çınar: yükseklik %1$d m, skor %2$d</string>
+
+    <!-- Çekirge -->
+    <string name="game_cekirge">Çekirge</string>
+    <string name="game_cekirge_tagline">Tarlaya inen çekirge sürüsüne karşı ilaç pompalı çiftçi: tek fıskırtma kuralı, saman balyaları, kraliçe</string>
+    <string name="cekirge_intro">Çekirge sürüsü formasyon hâlinde iner; kenara varınca yön değiştirip bir kademe yaklaşır, seyreldikçe hızlanır. Parmağını sürükle: çiftçi yürür. Dokun: ilaç fıskırt. Tek fıskırtma kuralı: öncekisi hedefe varmadan ya da tarlayı terk etmeden yenisi atılamaz. Tükürükler balyaları aşındırır, çiftçiye çarparsa can gider (3 can). Sürü çiftçi hizasına inerse tarla istila olur. Kraliçe ara sıra üstten geçer: bonus.</string>
+    <string name="cekirge_rules">Kara 30 · yeşil 20 · kahverengi 10 · kraliçe 100–300 · dalga bonusu 100 × dalga · balyalar onarılmaz</string>
+    <string name="cekirge_daily_desc">Herkes bugün aynı tarlayı savunur; günde 3 deneme</string>
+    <string name="cekirge_daily_status_fmt">Bugün: %1$d/%2$d deneme · en iyi %3$d</string>
+    <string name="cekirge_daily_exhausted">Bugünkü denemeler bitti; yarın yeni tarla!</string>
+    <string name="cekirge_best_fmt">Rekor: %1$d puan · %2$d. dalga</string>
+    <string name="cekirge_start">Savun</string>
+    <string name="cekirge_retry_fmt">Yeniden savun (%1$d kaldı)</string>
+    <string name="cekirge_to_menu">Başa dön</string>
+    <string name="cekirge_wave">Dalga</string>
+    <string name="cekirge_lives">Can</string>
+    <string name="cekirge_best">Rekor</string>
+    <string name="cekirge_hint">Sürükle: yürü · Dokun: fıskırt</string>
+    <string name="cekirge_wave_fmt">%1$d. dalga</string>
+    <string name="cekirge_cleared">Sürü temizlendi</string>
+    <string name="cekirge_life_lost">Can gitti!</string>
+    <string name="cekirge_over_invaded">İstila!</string>
+    <string name="cekirge_over_lives">Çiftçi yenildi</string>
+    <string name="cekirge_result_fmt">%1$d. dalga · %2$d çekirge</string>
+    <string name="cekirge_share_fmt">%1$d. dalgaya ulaştım · %2$d puan</string>
+    <string name="cekirge_board_desc_fmt">Tarla: skor %1$d, %2$d çekirge, %3$d can</string>
 </resources>

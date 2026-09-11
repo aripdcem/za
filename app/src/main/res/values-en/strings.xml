@@ -1005,4 +1005,29 @@
     <string name="sincap_result_fmt">%1$d m · %2$d nuts</string>
     <string name="sincap_share_fmt">Climbed %1$d m · %2$d points</string>
     <string name="sincap_board_desc_fmt">Tree: height %1$d m, score %2$d</string>
+
+    <!-- Çekirge -->
+    <string name="game_cekirge">Çekirge</string>
+    <string name="game_cekirge_tagline">A farmer with a sprayer pump against a descending grasshopper swarm: one-shot rule, hay bales, the queen</string>
+    <string name="cekirge_intro">The swarm descends in formation; at the edge it turns and drops a notch, and it speeds up as it thins. Drag: the farmer walks. Tap: spray. One-shot rule: you cannot spray again until the previous shot hits or leaves the field. Spit erodes the bales and costs a life when it hits the farmer (3 lives). If the swarm reaches the farmer\'s row, the field is overrun. The queen crosses the top now and then: bonus.</string>
+    <string name="cekirge_rules">Black 30 · green 20 · brown 10 · queen 100–300 · wave bonus 100 × wave · bales are never repaired</string>
+    <string name="cekirge_daily_desc">Everyone defends the same field today; 3 attempts a day</string>
+    <string name="cekirge_daily_status_fmt">Today: %1$d/%2$d attempts · best %3$d</string>
+    <string name="cekirge_daily_exhausted">Today\'s attempts are used up; a new field tomorrow!</string>
+    <string name="cekirge_best_fmt">Best: %1$d points · wave %2$d</string>
+    <string name="cekirge_start">Defend</string>
+    <string name="cekirge_retry_fmt">Defend again (%1$d left)</string>
+    <string name="cekirge_to_menu">Back to start</string>
+    <string name="cekirge_wave">Wave</string>
+    <string name="cekirge_lives">Lives</string>
+    <string name="cekirge_best">Best</string>
+    <string name="cekirge_hint">Drag: walk · Tap: spray</string>
+    <string name="cekirge_wave_fmt">Wave %1$d</string>
+    <string name="cekirge_cleared">Swarm cleared</string>
+    <string name="cekirge_life_lost">Life lost!</string>
+    <string name="cekirge_over_invaded">Overrun!</string>
+    <string name="cekirge_over_lives">The farmer is beaten</string>
+    <string name="cekirge_result_fmt">wave %1$d · %2$d grasshoppers</string>
+    <string name="cekirge_share_fmt">Reached wave %1$d · %2$d points</string>
+    <string name="cekirge_board_desc_fmt">Field: score %1$d, %2$d grasshoppers, %3$d lives</string>
 </resources>

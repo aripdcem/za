@@ -2,6 +2,9 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.35.0 (2026-09-11)
+- Yeni oyun: **Çekirge** — formasyon ateşi: 7 × 5 çekirge sürüsü yana yürüyüp kenarda iner, seyreldikçe hızlanır; alt sıra tükürük bırakır. Sürükle yürü, dokun fıskırt; tek fıskırtma kuralı: öncekisi hedefe varmadan yenisi atılamaz. Saman balyaları hücre hücre aşınır ve onarılmaz, kraliçe üstten geçer (bonus), sürü çiftçi hizasına inerse istila. Günlük tarla (3 deneme) ve serbest mod
+
 ## 0.34.1 (2026-09-11)
 - Bostan cihaz bulguları: hücreler dikdörtgen (dar ekranda 38 dp kare yerine tam genişlik × sığan yükseklik), su ve dalga çubuğu tuvalin orman şeridinde; basılı tut – kaydır – bırak yerleştirme (hedef hücre bırakmadan görünür); yakındaki damla kart seçiliyken de önce toplanır; dalga duyuruları koyu şerit üstünde; kart beklerken kalan saniye ve daha koyu örtü
 
