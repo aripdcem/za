@@ -1792,6 +1792,14 @@ Okuma: normal temposunda uyarı cömert; hızlandıkça daralıyor ve asıl kıs
 kargayı görmek değil, **o basamağa vardığında karganın şeridin neresinde
 olacağı** — ekranı 2,1 s'de geçtiği için zamanlama sorusu bu.
 
+**Düzeltme (v0.35.1).** Erişim ipucu çift çizgi oldu: koyu mavi kontur
+(20,61,107; genişlik 0,12 basamak) üstüne açık çizgi; işaret biraz da büyüdü
+(yarım genişlik 0,12 → 0,14 basamak). Kontur gökyüzüne karşı ~7:1, açık çizgi
+kontura karşı ~11:1; ölçüm cihazda yenilenecek. Kare gecikmesi için ucuz bir
+adım: gökyüzü degradesi her karede yeniden kurulmak yerine yükseklik kovasına
+göre (1/40) önbellekleniyor; GPU payı (24,9 ms) ayrıca ölçülmeli. Kuru dal,
+kedi göstergesi ve karga görme süresi bulguları eylem gerektirmedi.
+
 ### Çekirge · 2026-09-11
 
 **D — pilot ölçümü** (`./gradlew :games:cekirge:probe`, 20 koşu/pilot,

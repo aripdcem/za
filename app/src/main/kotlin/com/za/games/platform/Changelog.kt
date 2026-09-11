@@ -39,6 +39,15 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.35.1", "2026-09-11",
+            tr = listOf(
+                "Sincap: erişim ipucu koyu konturla çizilir, gökyüzünde artık okunur; gök degradesi önbelleklendi",
+            ),
+            en = listOf(
+                "Sincap: the reach hint is drawn with a dark outline and now reads against the sky; the sky gradient is cached",
+            ),
+        ),
+        ReleaseNote(
             "0.35.0", "2026-09-11",
             tr = listOf(
                 "Yeni oyun: Çekirge — tarlaya inen çekirge sürüsüne karşı ilaç pompalı çiftçi. Sürükle yürü, dokun fıskırt; tek fıskırtma kuralı. Sürü seyreldikçe hızlanır, saman balyaları aşınır, kraliçe üstten geçer; günlük tarla",
