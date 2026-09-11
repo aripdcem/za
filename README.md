@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Reyon**, **Raket**, **Tuşe**, **Uçurtma**, **Dalgıç**, **Bostan**, **Sincap**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Reyon**, **Raket**, **Tuşe**, **Uçurtma**, **Dalgıç**, **Bostan**, **Sincap**, **Çekirge**.
 
 Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç çipleri, seçim kalıcı) ve en üstte son oynanan dört oyun için hızlı erişim şeridi bulunur.
 
@@ -385,6 +385,26 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   yol araması), yön ve erişim kuralı, boşluğa düşme, kuru dal kırılma/kaçış, yılan, karga (kendi dalı, başka
   basamak, zıplarken geçen), kedi yakalama ve hızlanma, fındık/altın puanı, bekletilen dokunuş, kilometre taşları
   ve pilot; ölçüm `:games:sincap:probe`
+
+### Çekirge
+- **Formasyon ateşi** (Space Invaders türü, kendi tasarımımız): 7 × 5 çekirge sürüsü blok hâlinde yana yürür,
+  kenara varınca yön değiştirip 0,03 iner; hız dalgayla (+%15/dalga) ve seyrelmeyle (son çekirge 4 kat) artar.
+  Alt sıradaki çekirgeler tükürük bırakır (1. dalgada 2, sonra 3 uçan; aralık 1,8 → 0,45 s). Üst sıra kara 30,
+  orta iki sıra yeşil 20, alt iki sıra kahverengi 10 puan
+- **Tek fıskırtma kuralı**: ilaç fıskırtması (1,8 birim/s) hedefe varmadan ya da tarlayı terk etmeden yenisi
+  atılamaz; fıskırtma tükürüğü de yolda düşürür. Parmak sürüklemesi çiftçiyi ilk pikselden itibaren yürütür,
+  kıpırdamadan kalkan parmak (≤ 300 ms) sıkar; iki başparmakla oynanabilir (biri yürütür, öteki sıkar)
+- **Saman balyaları** (4 × 6 × 3 hücre) fıskırtma, tükürük ve sürü temasıyla hücre hücre aşınır; dalgalar
+  arasında onarılmaz. Tükürük çiftçiye çarparsa can gider (3 can; 1,5 s dokunulmazlık, sürü 1,2 s durur). Sürü
+  çiftçi hizasına inerse **istila**: candan bağımsız biter. **Kraliçe** 16–28 s'de bir üstten geçer (100/150/200/300)
+- **Dalgalar**: sürü temizlenince 100 × dalga bonus, 1,5 s sonra yeni dalga bir kademe aşağıdan (en çok 0,5) ve daha
+  hızlı başlar. **Günlük mod** herkese aynı tarla (tükürük ve kraliçe zamanları tohumdan), günde 3 deneme; serbest mod
+  rastgele tohum, rekor skor ve dalga. Ana menü rekoru skor
+- Motor `games/cekirge`: `CekirgeWorld` (formasyon, tek mermi, tükürük, balya aşınması, kraliçe, dalga, istila),
+  `CekirgeBots` (ölçüm pilotu: varış anı tahminiyle nişan, tükürük yolundan kaçış); 12 test: determinizm, formasyon
+  ve türler, tek mermi kuralı, sütunun alt çekirgesi ve puan, kenarda dönüş ve iniş, seyrelince ve dalgayla hızlanma,
+  tükürük ve dokunulmazlık, balya aşınması (üç kaynak), kraliçe geçişi ve bonusu, dalga temizliği, istila, günlük
+  tohum ve pilot; ölçüm `:games:cekirge:probe`
 
 ### Vergici ve Toplam Kapma (`games/sayi`)
 - **Vergici** (Taxman): 1–N tahtası; böleni kalmış bir sayıyı alırsın, vergici o sayının tahtadaki tüm bölenlerini

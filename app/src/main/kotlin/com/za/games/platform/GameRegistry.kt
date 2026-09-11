@@ -23,6 +23,7 @@ import com.za.games.ui.hub.RaketArt
 import com.za.games.ui.hub.TuseArt
 import com.za.games.ui.hub.UcurtmaArt
 import com.za.games.ui.hub.BostanArt
+import com.za.games.ui.hub.CekirgeArt
 import com.za.games.ui.hub.DalgicArt
 import com.za.games.ui.hub.VirajArt
 import com.za.games.ui.hub.MinesArt
@@ -46,6 +47,7 @@ import com.za.games.ui.raket.RaketScreen
 import com.za.games.ui.tuse.TuseScreen
 import com.za.games.ui.ucurtma.UcurtmaScreen
 import com.za.games.ui.bostan.BostanScreen
+import com.za.games.ui.cekirge.CekirgeScreen
 import com.za.games.ui.dalgic.DalgicScreen
 import com.za.games.ui.viraj.VirajScreen
 import com.za.games.ui.snake.SnakeScreen
@@ -358,6 +360,18 @@ object GameRegistry {
             art = { modifier -> SincapArt(modifier) },
             screen = { highScore, onScore, onExit ->
                 SincapScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+            },
+        ),
+        GameEntry(
+            id = "cekirge",
+            since = "0.35.0",
+            titleRes = R.string.game_cekirge,
+            taglineRes = R.string.game_cekirge_tagline,
+            category = GameCategory.ARCADE,
+            accent = Color(0xFF65A30D),
+            art = { modifier -> CekirgeArt(modifier) },
+            screen = { highScore, onScore, onExit ->
+                CekirgeScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
     )

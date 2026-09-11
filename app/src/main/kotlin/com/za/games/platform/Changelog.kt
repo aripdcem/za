@@ -39,6 +39,15 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.35.0", "2026-09-11",
+            tr = listOf(
+                "Yeni oyun: Çekirge — tarlaya inen çekirge sürüsüne karşı ilaç pompalı çiftçi. Sürükle yürü, dokun fıskırt; tek fıskırtma kuralı. Sürü seyreldikçe hızlanır, saman balyaları aşınır, kraliçe üstten geçer; günlük tarla",
+            ),
+            en = listOf(
+                "New game: Çekirge — a farmer with a sprayer pump against a descending grasshopper swarm. Drag to walk, tap to spray; one-shot rule. The swarm speeds up as it thins, hay bales erode, the queen crosses the top; daily field",
+            ),
+        ),
+        ReleaseNote(
             "0.34.1", "2026-09-11",
             tr = listOf(
                 "Bostan: dar ekranda daha büyük hücreler, basılı tutup kaydırarak yerleştirme (hedef hücre bırakmadan görünür), yakındaki damla kart seçiliyken de önce toplanır, dalga duyuruları daha okunur, kart beklerken kalan süre",
