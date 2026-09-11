@@ -129,16 +129,16 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 - Sözlük ~180 KB gömülü: 22.569 kök (2-15 harf; şapkalı yazımlar düzleştirilir: belâ → bela); rekor = kazananın skoru
 
 ### Kuyu
-- **Kuyuya düşüş** (Downwell türü, kendi tasarımımız): tek tuş — yerdeyken zıplar, havada basılı
-  tutulunca **botlar aşağı ateş eder** ve düşüşü yavaşlatır; şarjör 8, yere inince ya da düşmana
-  basınca dolar
+- **Kuyuya düşüş** (Downwell türü, kendi tasarımımız): tuş yok, tuvale dokunulur — parmağını tut,
+  oyuncu parmağının sütununa yürür; ikinci parmak yerdeyken zıplatır, havada basılı tutulunca **botlar
+  aşağı ateş eder** ve düşüşü yavaşlatır; tek parmağın kısa dokunuşu da zıplatır. Şarjör 8, yere inince
+  ya da düşmana basınca dolar
 - Düşmanlar: topak ve yarasa (üstüne basılır), dikenli (yalnız mermiyle), duvar tırmanıcısı; havada art
   arda öldürdükçe **kombo**, inişte kombo × 2 taş bonusu; kırılabilir bloklar, taş bırakan bloklar
 - Kuyu 12 sütun genişliğinde, 16 satırlık parçalarla tohumdan üretilir: her satırda en az 3 boşluk,
   dibe kadar geçilebilirlik testle garanti (`games/kuyu`); 3 bölge, derinlikle daha çok ve daha hızlı düşman
 - **Günlük kuyu**: gün numarasından türeyen tohum, herkes aynı kuyuyu oynar, tek deneme; ayrıca serbest mod
-- Kontrol eli ayarı (sağ/sol, Geçit ile ortak): ateş tuşu başparmağın tarafına gelir; 60 Hz sabit adımlı
-  simülasyon, aynı tohum + aynı girdi = aynı oyun
+- Kontrol tuşu yok, tuval ekranı kaplar; 60 Hz sabit adımlı simülasyon, aynı tohum + aynı girdi = aynı oyun
 - **Bölge sonu bekçisi**: her bölgenin son parçası arenadır; bekçi kapının üstünde salınır, yarasa çağırır,
   ölünce kapı açılır. Yeni bölgede simülasyon durur: **3 yükseltmeden biri** (şarjör, can, yayılan atış, hızlı
   botlar, menzil, mıknatıs, kombo, açgözlülük, kalkan, yaylı bacak) ve **taş karşılığı dükkân** (iyileş, şarjör +1,
@@ -193,8 +193,8 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 ### Viraj
 - **Sözde-3D yarış** (OutRun türü yol izdüşümü, kendi tasarımımız): dikey ekranda arkadan görünüm, parça parça
   üretilen yol, yumuşatılmış virajlar ve tepeler, yol kenarı ağaç/çalı/kaya/tabela, uzak tepelerde paralaks
-- Gaz otomatik; ◀ ▶ basılı tutarak direksiyon, FREN tuşu (sağ/sol el ayarı Kuyu ve Geçit ile ortak). Yüksek hızda
-  merkezkaç aracı virajın dışına iter; yol dışı yavaşlatır, kenar nesnelerine çarpmak hızı keser
+- Gaz otomatik; tuş yok: tuvalin sol yarısına dokunmak sola, sağ yarısına dokunmak sağa kırar, orta şerit ya da
+  ikinci parmak fren (ilk saniyelerde bölge ipuçları çizilir). Yüksek hızda merkezkaç aracı virajın dışına iter; yol dışı yavaşlatır, kenar nesnelerine çarpmak hızı keser
 - Rakip kartlar sollamadan kaçınır ve kendi aralarında yol verir; daha yavaş bir rakibe çarpmak hızı düşürüp geriye
   iter, rakibi geçmek +50. Her 600 parçada (3 km) kontrol noktası süre ekler (zorlukla azalır); süre bitince yarış biter
 - Eşyalar: turbo şeridi (2,5 s tavan hız), yağ (direksiyon ters, kayma), koni (yavaşlama), sarı kutu (turbo, bir
@@ -205,8 +205,9 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   çarpışma ve kalkan, eşyalar, pist sınırları, rakiplerin yeniden doğması
 
 ### Filo
-- **Dikey kaydırmalı uzay savaşı**: gemi altta, parmakla sürüklenir (bire bir), ateş otomatik; BOMBA tuşu sağ/sol el
-  ayarına göre başparmak tarafında (ayar Kuyu, Geçit ve Viraj ile ortak)
+- **Dikey kaydırmalı uzay savaşı**: gemi parmakla her yöne sürüklenir (dikeyde ekranın üst üçte birinden alt kenara
+  dek bir bant; yukarı çıkmak yaklaştırır), ateş otomatik; BOMBA tuşu sağ/sol el ayarına göre başparmak tarafında
+  (ayar Geçit ile ortak)
 - Dalgalar tohumdan üretilir: dalış, sinüs, süpürme, halka ve asteroit sürüklenmesi desenlerinde drone, eşek arısı,
   tank ve asteroit grupları; her 5. dalga patron (salınan gövde, yelpaze + nişanlı ateş, canı yarılınca sertleşir).
   Zorluk 26. dalgaya kadar artar (grup sayısı, hız, ateş sıklığı, ağır düşman oranı)

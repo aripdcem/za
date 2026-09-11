@@ -61,6 +61,15 @@ class KuyuViewModel(application: Application) : AndroidViewModel(application) {
     private var left = false
     private var right = false
     private var fire = false
+
+    /** Yürüme parmağının hedef sütunu (karo); parmak yokken null. Oyuncu her adımda oraya yürür. */
+    private var pointerX: Float? = null
+
+    /** Ateş/zıplama parmağı basılı mı (ikinci parmak). */
+    private var fireHeld = false
+
+    /** Tek parmağın kısa dokunuşundan kalan zıplama darbesi (adım). */
+    private var tapFrames = 0
     private var accumulator = 0L
     private var runMode = KuyuMode.FREE
     private var runDay = 0L
@@ -101,6 +110,9 @@ class KuyuViewModel(application: Application) : AndroidViewModel(application) {
         left = false
         right = false
         fire = false
+        pointerX = null
+        fireHeld = false
+        tapFrames = 0
         accumulator = 0L
         _runId.value += 1
         _hud.value = world.hud()
@@ -118,16 +130,19 @@ class KuyuViewModel(application: Application) : AndroidViewModel(application) {
         start()
     }
 
-    fun pressLeft(pressed: Boolean) {
-        left = pressed
+    /** Yürüme parmağı: hedef sütun (karo birimi); null = kalktı. Oyuncu [STEER_DEAD] dışındaysa oraya yürür. */
+    fun steerAt(x: Float?) {
+        pointerX = x
     }
 
-    fun pressRight(pressed: Boolean) {
-        right = pressed
-    }
-
+    /** Ateş/zıplama parmağı: basılıyken yerde zıplar, havada aşağı ateş eder. */
     fun pressFire(pressed: Boolean) {
-        fire = pressed
+        fireHeld = pressed
+    }
+
+    /** Tek parmağın kısa dokunuşu: birkaç adımlık zıplama darbesi. */
+    fun tapJump() {
+        tapFrames = TAP_FRAMES
     }
 
     /**
@@ -141,6 +156,12 @@ class KuyuViewModel(application: Application) : AndroidViewModel(application) {
         var steps = 0
         val out = ArrayList<KuyuEvent>()
         while (accumulator >= STEP_NANOS && steps < MAX_STEPS) {
+            val target = pointerX
+            val center = world.player.centerX
+            left = target != null && target < center - STEER_DEAD
+            right = target != null && target > center + STEER_DEAD
+            fire = fireHeld || tapFrames > 0
+            if (tapFrames > 0) tapFrames--
             out += world.step(KuyuInput(left = left, right = right, fire = fire))
             accumulator -= STEP_NANOS
             steps++
@@ -234,6 +255,9 @@ class KuyuViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private companion object {
+        /** Parmak ile oyuncu merkezi arasındaki ölü bölge (karo): bu kadar yakınsa durur. */
+        const val STEER_DEAD = 0.25f
+        const val TAP_FRAMES = 3
         const val STEP_NANOS = 16_666_667L
         const val MAX_FRAME_NANOS = 100_000_000L
         const val MAX_STEPS = 4

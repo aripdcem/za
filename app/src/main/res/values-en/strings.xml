@@ -165,7 +165,7 @@
     <!-- Kuyu -->
     <string name="game_kuyu">Kuyu</string>
     <string name="game_kuyu_tagline">Down the well: jump, fire your boots, stomp the enemies</string>
-    <string name="kuyu_intro">One button: jump on the ground, hold in the air to fire downward. Landing or stomping an enemy refills the ammo.</string>
+    <string name="kuyu_intro">Hold a finger: the player walks to that column. A second finger jumps on the ground and, held in the air, fires downward; a quick tap with one finger also jumps. Landing or stomping an enemy refills the ammo.</string>
     <string name="kuyu_daily_desc">Everyone drops into the same well today; one attempt.</string>
     <string name="kuyu_daily_done_fmt">Today\'s well: %1$d points, %2$d m deep</string>
     <string name="kuyu_tomorrow">A new well tomorrow!</string>
@@ -173,7 +173,6 @@
     <string name="kuyu_hand_label">Control hand</string>
     <string name="kuyu_hand_right">Right hand</string>
     <string name="kuyu_hand_left">Left hand</string>
-    <string name="kuyu_hand_hint">The fire button sits on your thumb\'s side</string>
     <string name="kuyu_depth">Depth</string>
     <string name="kuyu_depth_fmt">%1$d m</string>
     <string name="kuyu_gems">Gems</string>
@@ -181,15 +180,12 @@
     <string name="kuyu_combo_bonus_fmt">Combo ×%1$d: +%2$d gems</string>
     <string name="kuyu_hp_desc_fmt">Health %1$d/%2$d</string>
     <string name="kuyu_ammo_desc_fmt">Ammo %1$d/%2$d</string>
-    <string name="kuyu_ctrl_left">Move left</string>
-    <string name="kuyu_ctrl_right">Move right</string>
-    <string name="kuyu_ctrl_fire">Jump / fire</string>
     <string name="kuyu_over_title">The well got you</string>
     <string name="kuyu_result_fmt">%1$d m deep · %2$d gems · best combo ×%3$d</string>
     <string name="kuyu_to_start">Back to start</string>
     <string name="kuyu_area_fmt">Area %1$d</string>
     <string name="kuyu_board_desc">Well: depth %1$d m, health %2$d, ammo %3$d</string>
-    <string name="kuyu_hint">◀ ▶ move · ● jump on the ground, hold in the air: fire</string>
+    <string name="kuyu_hint">Hold: walk · second finger: jump, hold in the air: fire · quick tap: jump</string>
 
     <!-- Kuyu: phase 2 (guardian, upgrades, shop, treasure) -->
     <string name="kuyu_choose_upgrade">Pick an upgrade</string>
@@ -500,7 +496,7 @@
     <!-- Viraj -->
     <string name="game_viraj">Viraj</string>
     <string name="game_viraj_tagline">Pseudo-3D racing: drive against the clock, overtake rivals, master the curves</string>
-    <string name="viraj_intro">The throttle is automatic; steer with ◀ ▶, slow down with BRAKE. Checkpoints add time; the race ends when time runs out. Overtaking scores; avoid cones and oil, ride the turbo strips, grab the yellow box.</string>
+    <string name="viraj_intro">The throttle is automatic. Touch the left half to steer left, the right half to steer right; the middle strip or a second finger brakes. Checkpoints add time; the race ends when time runs out. Overtaking scores; avoid cones and oil, ride the turbo strips, grab the yellow box.</string>
     <string name="viraj_daily_desc">Everyone drives the same track today; three attempts a day.</string>
     <string name="viraj_daily_status_fmt">Today: %1$d/%2$d attempts · best %3$d</string>
     <string name="viraj_daily_exhausted">No attempts left today; a new track tomorrow!</string>
@@ -511,9 +507,8 @@
     <string name="viraj_kmh_fmt">%1$d km/h</string>
     <string name="viraj_time_up">Time is up</string>
     <string name="viraj_result_fmt">%1$s km · %2$d overtakes · %3$d checkpoints</string>
-    <string name="viraj_ctrl_left">Steer left</string>
-    <string name="viraj_ctrl_right">Steer right</string>
     <string name="viraj_ctrl_brake">BRAKE</string>
+    <string name="viraj_touch_hint">Left/right half: steer · middle strip or a second finger: brake</string>
     <string name="viraj_checkpoint_fmt">Checkpoint +%1$d s</string>
     <string name="viraj_overtake_fmt">Overtake +%1$d</string>
     <string name="viraj_turbo">Turbo!</string>
@@ -523,13 +518,12 @@
     <string name="viraj_oil">Oil!</string>
     <string name="viraj_cone">Cone</string>
     <string name="viraj_km_fmt">%1$d km</string>
-    <string name="viraj_hand_hint">The brake sits on your thumb\'s side; the setting is shared with Kuyu and Geçit</string>
     <string name="viraj_next_checkpoint">Checkpoint</string>
     <string name="viraj_board_desc">Viraj: %1$d km/h, %2$d m, %3$d overtakes</string>
     <!-- Filo -->
     <string name="game_filo">Filo</string>
     <string name="game_filo_tagline">Vertical space shooter: drag the ship, auto-fire; waves, bosses, power-ups</string>
-    <string name="filo_intro">Drag the ship with your finger; firing is automatic. Clear the enemy waves; every 5th wave brings a boss. Consecutive hits raise the multiplier; collect the drops: W weapon, S shield, B bomb, + points. BOMB wipes bullets and damages everything on screen.</string>
+    <string name="filo_intro">Drag the ship with your finger in any direction (moving up gets you closer, and riskier); firing is automatic. Clear the enemy waves; every 5th wave brings a boss. Consecutive hits raise the multiplier; collect the drops: W weapon, S shield, B bomb, + points. BOMB wipes bullets and damages everything on screen.</string>
     <string name="filo_daily_desc">Everyone fights the same waves today; three attempts a day.</string>
     <string name="filo_daily_status_fmt">Today: %1$d/%2$d attempts · best %3$d</string>
     <string name="filo_daily_exhausted">No attempts left today; a new fleet tomorrow!</string>
@@ -546,7 +540,7 @@
     <string name="filo_result_fmt">Wave %1$d · %2$d enemies</string>
     <string name="filo_ctrl_bomb">Bomb</string>
     <string name="filo_bomb_count_fmt">BOMB ×%1$d</string>
-    <string name="filo_drag_hint">Drag to steer the ship</string>
+    <string name="filo_drag_hint">Drag the ship in any direction</string>
     <string name="filo_points_fmt">+%1$d</string>
     <string name="filo_hit">Hit!</string>
     <string name="filo_shield">Shield!</string>

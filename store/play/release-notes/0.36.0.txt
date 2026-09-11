@@ -1,0 +1,8 @@
+<tr-TR>
+• Kuyu ve Viraj: kontrol tuşları kalktı, oyun alanı ekranı kaplıyor. Kuyu'da parmağını tut, oyuncu o sütuna yürür; ikinci parmak zıplatır ve havada ateş eder. Viraj'da sol/sağ yarı direksiyon, orta şerit ya da ikinci parmak fren.
+• Filo: gemi ileri geri de sürüklenir.
+</tr-TR>
+<en-US>
+• Kuyu and Viraj: the control buttons are gone, the play area fills the screen. Kuyu: hold a finger and the player walks to that column; a second finger jumps and fires in the air. Viraj: left/right half steers, the middle strip or a second finger brakes.
+• Filo: the ship can now be dragged up and down as well.
+</en-US>
