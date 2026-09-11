@@ -406,7 +406,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Tuşe | ✅ | olay güdümlü (vuruşta 21 ms, GPU 15,5) | ✅ iki parmak 15 ms arayla da sayılıyor | ✅ Sonsuz eğrisi | 2026-09-10 |
 | Uçurtma | ✅ | **59 · 5 · %60 · 34 ms** (GPU 20 ms) | ✅ tutuşa yanıt ~100 ms · tel 2,3 dp / 8,2:1 | ✅ pilot eğrisi | 2026-09-10 |
 | Dalgıç | ✅ | **58 · 14 · %12 · 24 ms** | ✅ 2B kazanç 1,3 · ölü bölge yok · zincir 1,5 dp / 1,54:1 | ✅ tehdit dağılımı | 2026-09-10 |
-| Bostan | ✅ | **60 · 5 · %47 · 28 ms** | ⚠ hücre 411 dp'de 72 dp, 360 dp'de **38 dp** | ✅ ölçek ve uzman | 2026-09-11 |
+| Bostan | ✅ | **61 · 1 · %87 · 34 ms** (v0.34.1) | ✅ hücre 411 dp'de 77×77, 360 dp'de 67×47 dp | ✅ ölçek ve uzman | 2026-09-11 |
 | Sincap | ✅ | **58 · 11 · %66 · 31 ms** (toplam 39,6 ms) | ⚠ erişim ipucu 1,32:1 · zıplama 150 ms | ✅ pilot ve dağılım | 2026-09-11 |
 
 **E · erişilebilirlik:** tüm oyunlarda etiketsiz dokunulabilir öğe kalmadı
@@ -1648,6 +1648,24 @@ dönüşüyor.
   sönük**; düzen, simge ve fiyat etiketi aynı yerde duruyor. Ayırt ediliyor ama
   zayıf; kalan süreyi gösteren bir halka ya da daha belirgin soluklaştırma
   "neden basamıyorum" sorusunu ortadan kaldırır.
+
+**Doğrulama turu (v0.34.1, aynı cihaz).**
+
+- **Hücre ölçüsü düzeldi.** 411 dp'de **77 × 77 dp** (önce 72 × 72), 360 × 640
+  dp'de **67 × 47 dp** (önce 38 × 38). Genişlik artık tuvalin tamamını
+  kullanıyor, yükseklik sığdığı kadar kısalıyor; hedef alanı dar ekranda
+  3149 dp² (önce 1444 dp²). Yükseklik 48 dp tabanının 1 dp altında kalıyor ama
+  parmak için belirleyici olan dar eksen artık 47 dp ve geniş eksen 67 dp.
+- **Damla önceliği doğrulandı.** Kart seçiliyken damlaya dokunmak **damlayı
+  topluyor** (su +25), üç denemenin üçünde; ekim yapmıyor. (Önceki turda
+  görülen −50, damlanın ölçüm gecikmesi içinde sönmesiyle karışmıştı; ekran
+  görüntüsüyle dokunuş arasını sıkıştırınca yeni davranış net çıkıyor.)
+- **Yeni yerleştirme jesti** (basılı tut → kaydır → bırak) çalışıyor: sürükleyip
+  bırakınca kart yerleşiyor (su 150 → 100).
+- **B:** 8 s'de 490 kare (61 kare/s), kaçan vsync **1** (önce 5), p50 34 ms,
+  jank %87. `logcat` temiz.
+- Küçük not: 360 dp'de su sayacı ve "Sıradaki dalga" yazısı tarlanın üst orman
+  şeridiyle üst üste biniyor.
 
 **Düzeltme (v0.34.1).** Beş bulgunun beşi ele alındı:
 
