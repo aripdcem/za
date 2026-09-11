@@ -1,0 +1,6 @@
+<tr-TR>
+• Kuyu: kısa yürüme dürtmeleri artık zıplatmıyor (dokunuş eşiği 130 ms); parmağı yukarı kaydırmak da zıplatır.
+</tr-TR>
+<en-US>
+• Kuyu: short walking nudges no longer jump (tap threshold 130 ms); flicking the finger upward also jumps.
+</en-US>

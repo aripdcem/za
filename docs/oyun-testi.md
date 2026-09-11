@@ -394,7 +394,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Kıskaç | ✅ | olay güdümlü (0 · 0) | — | ✅ düzeltildi | 2026-09-09 |
 | Türetme | ✅ | olay güdümlü (0 · 0) | — | ✅ dengeli | 2026-09-09 |
 | Dizgi | ✅ | olay güdümlü (0 · 0) | — | ✅ torba sağlam | 2026-09-09 |
-| Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | ✅ 220 ms eşiği ölçüldü (kıpırdamayan kısa basış zıplatıyor) | ✅ düzeltildi | 2026-09-11 |
+| Kuyu | ✅ | **61 · 0 · %0 · 21 ms** | ✅ 220 ms eşiği ölçüldü (kıpırdamayan kısa basış zıplatıyor) · v0.36.1: 130 ms + yukarı kaydırma | ✅ düzeltildi | 2026-09-11 |
 | Geçit | ✅ | **60 · 1 · %1,2 · 22 ms** | — (ayrık hamle) | ✅ adil | 2026-09-09 |
 | Tavla | ✅ | olay güdümlü (0 · 0) | — | ✅ düzeltildi | 2026-09-09 |
 | Balkon | ✅ | **60 · 2 · %39,6 · 25 ms** | — (nokta nişan) | ✅ bilinçli tercih | 2026-09-09 |
@@ -2037,6 +2037,17 @@ olduğundan gemi hemen tepki veriyor:
 | --- | --- |
 | 60 px | 87 px (oran 1,45) |
 | 120 px | 148 px (oran 1,23) |
+
+**Düzeltme (v0.36.1).** Kuyu'da dokunuş eşiği 220 → **130 ms**: tablodaki 150 ve
+200 ms'lik dürtmeler artık yalnız yürütür, hızlı dokunuş (tipik 60–120 ms)
+zıplatmaya devam eder. Tek parmakla oynayan yürürken de zıplayabilsin diye
+yürüme parmağını **160 ms içinde 28 dp yukarı kaydırmak** zıplatır (havadaysa
+üç adımlık ateş); yeniden kurulmak için parmak en alçak noktasından 8 dp aşağı
+inmeli ya da kalkmalı. Testler: 160 ms'lik dürtme zıplatmaz, yürürken yukarı
+kaydırma zıplatır ve yürüme sürer. Viraj ve Filo eylem gerektirmedi: orta
+şeridin direksiyonu düzleştirmesi tasarım (dönüşü koruyarak frenlemek ikinci
+parmağın işi), Filo'da gemi parmağın önünde gidiyor. Ölçülecek: 100 / 130 /
+150 ms dokunuşlar ve 20 / 30 dp'lik yukarı kaydırmalar.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

@@ -131,7 +131,8 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 ### Kuyu
 - **Kuyuya düşüş** (Downwell türü, kendi tasarımımız): tuş yok, tuvale dokunulur — parmağını tut,
   oyuncu parmağının sütununa yürür; ikinci parmak yerdeyken zıplatır, havada basılı tutulunca **botlar
-  aşağı ateş eder** ve düşüşü yavaşlatır; tek parmağın kısa dokunuşu da zıplatır. Şarjör 8, yere inince
+  aşağı ateş eder** ve düşüşü yavaşlatır; tek parmağın kısa dokunuşu (≤ 130 ms) ya da yukarı kaydırması da zıplatır.
+  Şarjör 8, yere inince
   ya da düşmana basınca dolar
 - Düşmanlar: topak ve yarasa (üstüne basılır), dikenli (yalnız mermiyle), duvar tırmanıcısı; havada art
   arda öldürdükçe **kombo**, inişte kombo × 2 taş bonusu; kırılabilir bloklar, taş bırakan bloklar

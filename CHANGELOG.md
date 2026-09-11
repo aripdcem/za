@@ -2,6 +2,9 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.36.1 (2026-09-11)
+- Kuyu cihaz bulgusu: tek parmağın kısa dokunuş eşiği 220 → 130 ms, 150–200 ms'lik yürüme dürtmeleri artık zıplatmıyor; yürüme parmağını yukarı kaydırmak da zıplatır (yürürken de, 160 ms içinde 28 dp)
+
 ## 0.36.0 (2026-09-11)
 - Kuyu ve Viraj'da kontrol tuşları kalktı, tuval ekranı kaplıyor. Kuyu: parmağını tut, oyuncu parmağının sütununa yürür; ikinci parmak yerdeyken zıplatır, havada basılı tutulunca aşağı ateş eder; tek parmağın kısa dokunuşu da zıplatır. Viraj: sol/sağ yarı direksiyon, orta şerit ya da ikinci parmak fren; ilk saniyelerde bölge ipuçları çizilir
 - Filo: gemi yalnız yatay değil ileri geri de sürüklenir (dikey bant ekranın üst üçte birinden alt kenara dek); düşman nişanı ve çarpışmalar geminin gerçek konumunu izler

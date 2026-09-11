@@ -165,7 +165,7 @@
     <!-- Kuyu -->
     <string name="game_kuyu">Kuyu</string>
     <string name="game_kuyu_tagline">Down the well: jump, fire your boots, stomp the enemies</string>
-    <string name="kuyu_intro">Hold a finger: the player walks to that column. A second finger jumps on the ground and, held in the air, fires downward; a quick tap with one finger also jumps. Landing or stomping an enemy refills the ammo.</string>
+    <string name="kuyu_intro">Hold a finger: the player walks to that column. A second finger jumps on the ground and, held in the air, fires downward; a quick tap or an upward flick with one finger also jumps. Landing or stomping an enemy refills the ammo.</string>
     <string name="kuyu_daily_desc">Everyone drops into the same well today; one attempt.</string>
     <string name="kuyu_daily_done_fmt">Today\'s well: %1$d points, %2$d m deep</string>
     <string name="kuyu_tomorrow">A new well tomorrow!</string>
@@ -185,7 +185,7 @@
     <string name="kuyu_to_start">Back to start</string>
     <string name="kuyu_area_fmt">Area %1$d</string>
     <string name="kuyu_board_desc">Well: depth %1$d m, health %2$d, ammo %3$d</string>
-    <string name="kuyu_hint">Hold: walk · second finger: jump, hold in the air: fire · quick tap: jump</string>
+    <string name="kuyu_hint">Hold: walk · second finger: jump, hold in the air: fire · quick tap or flick up: jump</string>
 
     <!-- Kuyu: phase 2 (guardian, upgrades, shop, treasure) -->
     <string name="kuyu_choose_upgrade">Pick an upgrade</string>

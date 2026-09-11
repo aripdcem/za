@@ -165,7 +165,7 @@
     <!-- Kuyu -->
     <string name="game_kuyu">Kuyu</string>
     <string name="game_kuyu_tagline">Kuyuya düşüş: zıpla, botlarınla ateş et, düşmanlara bas</string>
-    <string name="kuyu_intro">Parmağını tut: oyuncu parmağının sütununa yürür. İkinci parmak yerdeyken zıplatır, havadayken basılı tutunca aşağı ateş eder; tek parmağın kısa dokunuşu da zıplatır. Yere inince ya da bir düşmana basınca şarjör dolar.</string>
+    <string name="kuyu_intro">Parmağını tut: oyuncu parmağının sütununa yürür. İkinci parmak yerdeyken zıplatır, havadayken basılı tutunca aşağı ateş eder; tek parmağın kısa dokunuşu ya da yukarı kaydırması da zıplatır. Yere inince ya da bir düşmana basınca şarjör dolar.</string>
     <string name="kuyu_daily_desc">Herkes bugün aynı kuyuya iner; tek deneme.</string>
     <string name="kuyu_daily_done_fmt">Bugünkü kuyu: %1$d puan, %2$d m derinlik</string>
     <string name="kuyu_tomorrow">Yarın yeni kuyu!</string>
@@ -185,7 +185,7 @@
     <string name="kuyu_to_start">Başa dön</string>
     <string name="kuyu_area_fmt">%1$d. bölge</string>
     <string name="kuyu_board_desc">Kuyu: derinlik %1$d m, can %2$d, mermi %3$d</string>
-    <string name="kuyu_hint">Parmağını tut: yürü · ikinci parmak: zıpla, havada basılı tut: ateş · kısa dokunuş: zıpla</string>
+    <string name="kuyu_hint">Parmağını tut: yürü · ikinci parmak: zıpla, havada basılı tut: ateş · kısa dokunuş ya da yukarı kaydır: zıpla</string>
 
     <!-- Kuyu: 2. evre (bekçi, yükseltme, dükkân, hazine) -->
     <string name="kuyu_choose_upgrade">Bir yükseltme seç</string>

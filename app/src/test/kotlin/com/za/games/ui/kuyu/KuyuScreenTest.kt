@@ -23,7 +23,8 @@ import org.junit.runner.RunWith
 /**
  * Kuyu ekranı: tuş yok, tuvale dokunulur. İlk parmak oyuncuyu parmağın
  * sütununa yürütür, kalkınca durur; ikinci parmak yerdeyken zıplatır; tek
- * parmağın kısa dokunuşu da zıplatır.
+ * parmağın kısa dokunuşu ya da yukarı kaydırması zıplatır, kısa yürüme
+ * dürtmesi zıplatmaz.
  */
 @RunWith(AndroidJUnit4::class)
 class KuyuScreenTest {
@@ -106,5 +107,38 @@ class KuyuScreenTest {
         }
         rule.mainClock.advanceTimeBy(60L)
         assertTrue("kısa dokunuş zıplatır (vy=${vm.world.player.vy})", vm.world.player.vy < 0f)
+    }
+
+    /** Cihaz bulgusu: 150–200 ms'lik yürüme dürtmesi 220 ms eşiğinde zıplatıyordu; eşik 130 ms. */
+    @Test
+    fun shortNudgeWalksWithoutJumping() {
+        val vm = KuyuViewModel(ApplicationProvider.getApplicationContext())
+        startFreeRun(vm)
+        assertTrue(vm.world.player.grounded)
+        field().performTouchInput {
+            down(0, Offset(width - 1f, centerY))
+            advanceEventTime(160L)
+            up(0)
+        }
+        rule.mainClock.advanceTimeBy(60L)
+        assertTrue("160 ms'lik dürtme zıplatmaz (vy=${vm.world.player.vy})", vm.world.player.vy >= 0f)
+    }
+
+    @Test
+    fun flickUpJumpsWhileWalking() {
+        val vm = KuyuViewModel(ApplicationProvider.getApplicationContext())
+        startFreeRun(vm)
+        val field = field()
+        field.performTouchInput { down(0, Offset(width - 1f, height * 0.9f)) }
+        rule.mainClock.advanceTimeBy(120L)
+        assertTrue("yürüyor (vx=${vm.world.player.vx})", vm.world.player.vx > 0f)
+        field.performTouchInput {
+            moveBy(0, Offset(0f, -4f))
+            moveBy(0, Offset(0f, -200f))
+        }
+        rule.mainClock.advanceTimeBy(60L)
+        assertTrue("yukarı kaydırma zıplatır (vy=${vm.world.player.vy})", vm.world.player.vy < 0f)
+        assertTrue("yürüme sürer (vx=${vm.world.player.vx})", vm.world.player.vx > 0f)
+        field.performTouchInput { up(0) }
     }
 }
