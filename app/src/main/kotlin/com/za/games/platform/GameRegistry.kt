@@ -24,6 +24,7 @@ import com.za.games.ui.hub.TuseArt
 import com.za.games.ui.hub.UcurtmaArt
 import com.za.games.ui.hub.BostanArt
 import com.za.games.ui.hub.CekirgeArt
+import com.za.games.ui.hub.CiciArt
 import com.za.games.ui.hub.DalgicArt
 import com.za.games.ui.hub.VirajArt
 import com.za.games.ui.hub.MinesArt
