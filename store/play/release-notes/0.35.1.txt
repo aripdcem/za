@@ -1,0 +1,6 @@
+<tr-TR>
+• Sincap: erişim ipucu koyu konturla çizilir, gökyüzünde artık okunur; gök degradesi önbelleklendi.
+</tr-TR>
+<en-US>
+• Sincap: the reach hint is drawn with a dark outline and now reads against the sky; the sky gradient is cached.
+</en-US>

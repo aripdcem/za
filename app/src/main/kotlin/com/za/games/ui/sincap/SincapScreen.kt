@@ -117,12 +117,32 @@ private val CatEye = Color(0xFF4ADE80)
 private val Squirrel = Color(0xFFB45309)
 private val SquirrelBelly = Color(0xFFFDE68A)
 private val SquirrelTail = Color(0xFFD97706)
-private val Hint = Color(0xCCFFFFFF)
+private val Hint = Color(0xF2FFFFFF)
+private val HintOutline = Color(0xE6143D6B)
 private val Shadow = Color(0x33000000)
 
 /** Ekranda görünen basamak sayısı ve sincabın alt kenardan yüksekliği (basamak). */
 private const val VIEW_LEVELS = 7.5f
 private const val CAM_OFFSET = 2.4f
+
+/**
+ * Gökyüzü degradesi yükseklik kovasına göre önbellekte: her karede yeni
+ * gölgelendirici kurmak yerine renk ancak fark edilir kadar değişince (1/40)
+ * yenilenir (cihaz bulgusu: Sincap'ın kare gecikmesi kütüğün en yükseğiydi).
+ */
+private class SkyBrush {
+    private var bucket = -1
+    private var brush: Brush? = null
+
+    fun at(alt: Float): Brush {
+        val b = (alt * 40f).toInt()
+        val cached = brush
+        if (cached != null && b == bucket) return cached
+        bucket = b
+        val t = b / 40f
+        return Brush.verticalGradient(0f to lerp(SkyTopLow, SkyTopHigh, t), 1f to lerp(SkyBottomLow, SkyBottomHigh, t)).also { brush = it }
+    }
+}
 
 /** Dünya → tuval: x −1..1 genişliğe, y basamakları [VIEW_LEVELS] parçaya. */
 private class Cam(val w: Float, val h: Float, val camY: Float) {
@@ -307,6 +327,7 @@ private fun SincapCanvas(
     val textMeasurer = rememberTextMeasurer()
     val textCache = remember { HashMap<String, TextLayoutResult>() }
     val path = remember { Path() }
+    val sky = remember { SkyBrush() }
     val haptics = LocalZaHaptics.current
     Canvas(
         modifier = modifier
@@ -324,7 +345,7 @@ private fun SincapCanvas(
     ) {
         val tick = frame + fxTick.longValue
         if (tick < 0L) return@Canvas
-        drawTree(viewModel.world, fx, camera[0], frame, path, textMeasurer, textCache, hint, catFmt)
+        drawTree(viewModel.world, fx, camera[0], frame, path, sky, textMeasurer, textCache, hint, catFmt)
     }
 }
 
@@ -334,6 +355,7 @@ private fun DrawScope.drawTree(
     camY: Float,
     frame: Long,
     path: Path,
+    sky: SkyBrush,
     textMeasurer: TextMeasurer,
     cache: HashMap<String, TextLayoutResult>,
     hint: String,
@@ -344,7 +366,7 @@ private fun DrawScope.drawTree(
     val cam = Cam(w, h, camY)
     val u = cam.unit
     val alt = (camY / 250f).coerceIn(0f, 1f)
-    drawRect(Brush.verticalGradient(0f to lerp(SkyTopLow, SkyTopHigh, alt), 1f to lerp(SkyBottomLow, SkyBottomHigh, alt)))
+    drawRect(sky.at(alt))
     // Bulutlar: yarı hızla kayan paralaks katmanı.
     val par = camY * 0.5f
     val first = floor(par / 3.2f).toInt() - 1
@@ -392,8 +414,11 @@ private fun DrawScope.drawTree(
                 if (t < 0) continue
                 val cx = cam.sx(side.x * 0.5f)
                 val cy = cam.sy(t + 0.55f) - pulse * u * 0.06f
-                drawLine(Hint, Offset(cx - u * 0.12f, cy + u * 0.08f), Offset(cx, cy - u * 0.04f), strokeWidth = u * 0.05f, cap = StrokeCap.Round)
-                drawLine(Hint, Offset(cx + u * 0.12f, cy + u * 0.08f), Offset(cx, cy - u * 0.04f), strokeWidth = u * 0.05f, cap = StrokeCap.Round)
+                // Koyu kontur üstüne açık çizgi: gökyüzüne karşı kontrast (cihaz bulgusu: tek açık çizgi 1,32:1 kalıyordu).
+                drawLine(HintOutline, Offset(cx - u * 0.14f, cy + u * 0.09f), Offset(cx, cy - u * 0.05f), strokeWidth = u * 0.12f, cap = StrokeCap.Round)
+                drawLine(HintOutline, Offset(cx + u * 0.14f, cy + u * 0.09f), Offset(cx, cy - u * 0.05f), strokeWidth = u * 0.12f, cap = StrokeCap.Round)
+                drawLine(Hint, Offset(cx - u * 0.14f, cy + u * 0.09f), Offset(cx, cy - u * 0.05f), strokeWidth = u * 0.05f, cap = StrokeCap.Round)
+                drawLine(Hint, Offset(cx + u * 0.14f, cy + u * 0.09f), Offset(cx, cy - u * 0.05f), strokeWidth = u * 0.05f, cap = StrokeCap.Round)
             }
         }
         // Kedi: görünürse gövdede, değilse alt kenarda gösterge.
