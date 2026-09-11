@@ -412,6 +412,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Bostan | ✅ | **61 · 1 · %87 · 34 ms** (v0.34.1) | ✅ hücre 411 dp'de 77×77, 360 dp'de 67×47 dp | ✅ ölçek ve uzman | 2026-09-11 |
 | Sincap | ✅ | **58 · 11 · %66 · 31 ms** (toplam 39,6 ms) | ⚠ erişim ipucu 1,32:1 · zıplama 150 ms | ✅ pilot ve dağılım | 2026-09-11 |
 | Çekirge | ✅ | **60 · 7 · %84 · 29 ms** | ✅ eşik 290–310 ms · iki başparmak ✓ · ⚠ tükürük 1,05:1 | ✅ formasyon ve pilot | 2026-09-11 |
+| Cici | ✅ | **60 · 1 · %0,5 · 25 ms** | ✅ kazanç 1,3 · uyarı 3 kanal · ⚠ siyah kedi konturu 1,44 dp | ✅ pilot ve ikram dağılımı | 2026-09-11 |
 
 **E · erişilebilirlik:** tüm oyunlarda etiketsiz dokunulabilir öğe kalmadı
 (tek bulgu Kıskaç'ın kolay mod anahtarıydı, düzeltildi). Kontrast CI'da
@@ -2102,6 +2103,81 @@ işler (2 s'de "sıkıldı", 3 s'den sonra saniyede 1). İnsan için ilk hedef
 100 puan ve bir dakika. Cihaz koşumu (A–C) bekliyor: sürükleme kazancı 1,3
 (Dalgıç ile aynı), sıkılma uyarısının fark edilirliği, kask/gözün 34 dp'de
 okunurluğu, koyu zeminde siyah kedinin konturu.
+
+### Cici · cihazda · 2026-09-11
+
+v0.37.0 APK'sıyla, Serbest. Sürükleme ölçümü 60 kare/s ekran kaydından
+(kuş kendi başına da süzüldüğü için ekran görüntüsü çifti yanıltıyor),
+kontrastlar ekran pikselinden.
+
+**A — koşum.** Sürükleyip ikram toplama, can kaybı, seri sayacı ve sonuç kartı
+çalışıyor; `logcat` `AndroidRuntime:E` boş.
+
+**B — kare hızı.** 9,2 s'de 557 kare (**60,5 kare/s**), kaçan vsync **1**, jank
+**%0,5**, p50 25 ms, p90 26 ms. Fazlar: toplam 25,6 ms, GPU 18,9 ms,
+girdi→traversal 4,1 ms. Son dönem eklenen oyunların en temizi (Raket %48,
+Uçurtma %60, Sincap %66, Çekirge %84 jank).
+
+**C — sürükleme hissi.** Kayıttaki sürükleme patlamalarından:
+
+| jest | parmak | kuş | kazanç |
+| --- | --- | --- | --- |
+| yatay sol | −300 px | −388 px | **1,29** |
+| dikey aşağı | +300 px | +375 px | **1,25** |
+| yatay sağ | +300 px | +291 px | 0,97 (kenara dayandı) |
+
+Yani kodda yazan 1,3 iki eksende de çıkıyor (Dalgıç'ta 1,20–1,31 ölçülmüştü).
+Fark şurada: Cici parmak bırakıldığında da süzülmeye devam ediyor, dolayısıyla
+kısa dokunuşlarda "kazanç" hissi kendi ataletiyle karışıyor; ölçüm de ancak
+hızlı patlama penceresinde temiz çıkıyor.
+
+**C — sıkılma uyarısının fark edilirliği.** Uyarı üç kanaldan birden geliyor:
+
+| kanal | ölçüm |
+| --- | --- |
+| HUD etiketi "Sıkıldı" | harf yüksekliği 9 dp, kırmızı (248,113,113), zemine **6,9:1** |
+| kuşun üstünde uçan yazı "Cici sıkıldı…" | 0xCBD5E1, uzay zeminine **11,8:1**, ömür 1,6 s |
+| göz | mutlu kapalı gülen gözden yarı kapalı hilale dönüyor (5,7 × 3 dp, kafaya karşı 6,1:1) |
+
+Cihazda zamanlama: dokunuş kesildikten 2,5 s sonra HUD hâlâ "Sakin", 5,7 s'de
+"Sıkıldı" (kodda IDLE_WARN 2 s; okuma aralığım 1,5 s). Ceza da görünür işliyor:
+beklerken skor 2 → 0 düştü (IDLE_PENALTY 3 s, saniyede 1 puan).
+
+**C — kask ve gözün okunurluğu.** Ölçülen (kuş ekranın ortasında):
+
+| öge | boyut | kontrast |
+| --- | --- | --- |
+| kafa (beyaz) | — | uzay zeminine **15,6:1** |
+| kask halkası | dış çap **43 dp**, halka 6–8 dp | uzaya 2,6:1 · **beyaz kafaya 6,0:1** |
+| göz (sıkkın hilal) | 5,7 × 3 dp | kafaya **6,1:1** |
+
+Okuma: kask uzaya karşı sönük (saydam cam, tasarım gereği) ama beyaz kafanın
+üstünde 6:1 ile net bir halka olarak okunuyor; göz küçük ama zemini beyaz
+olduğu için ayırt ediliyor. Yani 34–43 dp'lik kafada ikisi de çalışıyor —
+kritik olan kafanın beyazlığı, kask kendi başına taşımıyor.
+
+**C — koyu zeminde siyah kedinin konturu.** Kedi kafası cihazda **41 dp**
+(çap 108 px), kontur çizgisi `r × 0,07` = ölçülen **3,8 px = 1,44 dp**.
+Kontrastlar:
+
+| öge | uzay zeminine |
+| --- | --- |
+| kontur (229,231,235) | **14,2:1** |
+| siyah kedi gövdesi (31,41,55) | **1,2:1** |
+| gri kedi | 6,9:1 |
+| turuncu kedi | 6,3:1 |
+| kedi gözü ↔ siyah gövde | 10,5:1 |
+
+Yani siyah kedi gövdesiyle uzaydan ayrılmıyor; onu görünür kılan **1,44 dp'lik
+kontur**, kask halkası ve yeşil gözler. Kontur işini yapıyor (kayıttaki turuncu
+kedide kesitte açık çizgi olarak ölçüldü) ama kıl payı: aynı sahnede gri ve
+turuncu kediler gövdeleriyle 6–7:1 verirken siyahta her şey bu çizgiye bakıyor.
+Kalınlaştırmak ya da siyah kediye hafif bir iç parlaklık vermek ucuz bir pay
+katar.
+
+> Not: cihaz koşumunda turuncu ve gri kediler çıktı; siyah kedinin gövde
+> kontrastı palet değerinden, kontur kalınlığı ise aynı çizim kodunun ölçülen
+> geometrisinden (r × 0,07) geliyor.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
