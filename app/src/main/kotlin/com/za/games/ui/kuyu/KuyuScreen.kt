@@ -2,6 +2,13 @@ package com.za.games.ui.kuyu
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.ui.input.pointer.PointerId
+import androidx.compose.ui.input.pointer.PointerInputChange
+import androidx.compose.ui.input.pointer.changedToDownIgnoreConsumed
+import androidx.compose.ui.input.pointer.changedToUpIgnoreConsumed
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.background
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -9,7 +16,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -58,7 +64,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -74,7 +79,6 @@ import com.za.games.kuyu.Upgrade
 import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
 import com.za.games.ui.common.GameTopBar
-import com.za.games.ui.common.HoldButton
 import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.formatScore
@@ -106,6 +110,9 @@ private val GateStripe = Color(0xFF9CA3AF)
 private val ChestColor = Color(0xFFD97706)
 private val ChestLid = Color(0xFF78350F)
 
+/** Kıpırdamadan bu süre içinde kalkan tek parmak "dokunuş" sayılır ve zıplatır. */
+private const val TAP_MS = 220L
+
 @Composable
 fun KuyuScreen(
     highScore: Long,
@@ -115,7 +122,6 @@ fun KuyuScreen(
 ) {
     val phase by viewModel.phase.collectAsStateWithLifecycle()
     val mode by viewModel.mode.collectAsStateWithLifecycle()
-    val leftHanded by viewModel.leftHanded.collectAsStateWithLifecycle()
     val daily by viewModel.daily.collectAsStateWithLifecycle()
     val hud by viewModel.hud.collectAsStateWithLifecycle()
     val runId by viewModel.runId.collectAsStateWithLifecycle()
@@ -241,16 +247,12 @@ fun KuyuScreen(
                 KuyuPhase.MENU -> StartCard(
                     mode = mode,
                     daily = daily,
-                    leftHanded = leftHanded,
                     onMode = viewModel::setMode,
-                    onHand = viewModel::setLeftHanded,
                     onStart = startRun,
                     onExit = onExit,
                 )
                 KuyuPhase.PAUSED -> PauseCard(
                     daily = mode == KuyuMode.DAILY,
-                    leftHanded = leftHanded,
-                    onHand = viewModel::setLeftHanded,
                     onResume = viewModel::resume,
                     onRestart = restartRun,
                     onMenu = viewModel::toMenu,
@@ -276,7 +278,6 @@ fun KuyuScreen(
             }
         }
 
-        Controls(leftHanded = leftHanded, viewModel = viewModel)
     }
 }
 
@@ -540,62 +541,6 @@ private fun ChoiceCard(
     }
 }
 
-/** Kontrol satırı: ateş tuşu seçilen başparmağın tarafında. */
-@Composable
-private fun Controls(leftHanded: Boolean, viewModel: KuyuViewModel) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 8.dp)
-            .height(84.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        if (leftHanded) {
-            FireButton(viewModel)
-            Spacer(Modifier.weight(0.25f))
-            MoveButtons(viewModel)
-        } else {
-            MoveButtons(viewModel)
-            Spacer(Modifier.weight(0.25f))
-            FireButton(viewModel)
-        }
-    }
-}
-
-@Composable
-private fun RowScope.MoveButtons(viewModel: KuyuViewModel) {
-    HoldButton(
-        label = "◀",
-        description = stringResource(R.string.kuyu_ctrl_left),
-        modifier = Modifier
-            .weight(1f)
-            .fillMaxHeight(),
-        onPressChange = viewModel::pressLeft,
-    )
-    HoldButton(
-        label = "▶",
-        description = stringResource(R.string.kuyu_ctrl_right),
-        modifier = Modifier
-            .weight(1f)
-            .fillMaxHeight(),
-        onPressChange = viewModel::pressRight,
-    )
-}
-
-@Composable
-private fun RowScope.FireButton(viewModel: KuyuViewModel) {
-    HoldButton(
-        label = "●",
-        description = stringResource(R.string.kuyu_ctrl_fire),
-        modifier = Modifier
-            .weight(1.3f)
-            .fillMaxHeight(),
-        accent = true,
-        fontSize = 30.sp,
-        onPressChange = viewModel::pressFire,
-    )
-}
-
 @Composable
 private fun ModeChip(
     label: String,
@@ -629,31 +574,10 @@ private fun ModeChip(
 }
 
 @Composable
-private fun HandChips(leftHanded: Boolean, onHand: (Boolean) -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        ModeChip(
-            label = stringResource(R.string.kuyu_hand_right),
-            selected = !leftHanded,
-            modifier = Modifier.weight(1f),
-        ) { onHand(false) }
-        ModeChip(
-            label = stringResource(R.string.kuyu_hand_left),
-            selected = leftHanded,
-            modifier = Modifier.weight(1f),
-        ) { onHand(true) }
-    }
-}
-
-@Composable
 private fun StartCard(
     mode: KuyuMode,
     daily: KuyuDaily?,
-    leftHanded: Boolean,
     onMode: (KuyuMode) -> Unit,
-    onHand: (Boolean) -> Unit,
     onStart: () -> Unit,
     onExit: () -> Unit,
 ) {
@@ -708,16 +632,10 @@ private fun StartCard(
             }
         }
         Text(
-            text = stringResource(R.string.kuyu_hand_label),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-        )
-        HandChips(leftHanded = leftHanded, onHand = onHand)
-        Text(
-            text = stringResource(R.string.kuyu_hand_hint),
+            text = stringResource(R.string.kuyu_hint),
             style = MaterialTheme.typography.labelSmall,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
         )
         Spacer(Modifier.height(4.dp))
         if (mode == KuyuMode.DAILY && daily != null) {
@@ -738,8 +656,6 @@ private fun StartCard(
 @Composable
 private fun PauseCard(
     daily: Boolean,
-    leftHanded: Boolean,
-    onHand: (Boolean) -> Unit,
     onResume: () -> Unit,
     onRestart: () -> Unit,
     onMenu: () -> Unit,
@@ -751,7 +667,6 @@ private fun PauseCard(
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
         )
-        HandChips(leftHanded = leftHanded, onHand = onHand)
         Spacer(Modifier.height(4.dp))
         Button(onClick = onResume, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.resume))
@@ -853,7 +768,60 @@ private fun KuyuCanvas(
     Canvas(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .semantics { contentDescription = desc },
+            .semantics { contentDescription = desc }
+            .pointerInput(viewModel) {
+                // Dokunmatik kontrol, tuş yok: ilk parmak yürütür (oyuncu parmağın
+                // sütununa yürür, parmak kaydıkça hedef güncellenir), sonraki her
+                // parmak zıplatır / havada basılıyken ateş eder; tek parmağın kısa
+                // dokunuşu zıplatır. Roller basışta verilir, kalkana dek değişmez.
+                awaitEachGesture {
+                    val first = awaitFirstDown(requireUnconsumed = false)
+                    val slop = viewConfiguration.touchSlop
+                    var steerId: PointerId? = null
+                    val fireIds = HashSet<PointerId>()
+                    val downAt = HashMap<PointerId, Long>()
+                    val starts = HashMap<PointerId, Offset>()
+                    val moved = HashSet<PointerId>()
+                    fun column(x: Float): Float = x / (size.width.toFloat() / KuyuWorld.WIDTH)
+                    fun assign(c: PointerInputChange) {
+                        downAt[c.id] = c.uptimeMillis
+                        starts[c.id] = c.position
+                        if (steerId == null) {
+                            steerId = c.id
+                            viewModel.steerAt(column(c.position.x))
+                        } else {
+                            fireIds += c.id
+                            viewModel.pressFire(true)
+                        }
+                    }
+                    assign(first)
+                    first.consume()
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        for (c in event.changes) {
+                            if (c.changedToDownIgnoreConsumed() && c.id != steerId && c.id !in fireIds) assign(c)
+                            if (c.id == steerId) {
+                                if (c.pressed) {
+                                    if (c.id !in moved && (c.position - (starts[c.id] ?: c.position)).getDistance() > slop) moved += c.id
+                                    viewModel.steerAt(column(c.position.x))
+                                } else if (c.changedToUpIgnoreConsumed()) {
+                                    viewModel.steerAt(null)
+                                    val quick = c.uptimeMillis - (downAt[c.id] ?: c.uptimeMillis) <= TAP_MS
+                                    if (quick && c.id !in moved && fireIds.isEmpty()) viewModel.tapJump()
+                                    steerId = null
+                                }
+                            } else if (c.id in fireIds && c.changedToUpIgnoreConsumed()) {
+                                fireIds -= c.id
+                                if (fireIds.isEmpty()) viewModel.pressFire(false)
+                            }
+                            c.consume()
+                        }
+                        if (event.changes.none { it.pressed }) break
+                    }
+                    viewModel.steerAt(null)
+                    viewModel.pressFire(false)
+                }
+            },
     ) {
         // Sayaçlar çizim evresinde okunur: simülasyon adımı ve efekt karesi yeniden çizim tetikler.
         if (frame < 0L || fxTick.longValue < 0L) return@Canvas

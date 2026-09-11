@@ -92,6 +92,14 @@ class VirajViewModel(application: Application) : AndroidViewModel(application) {
         applyInput()
     }
 
+    /** Dokunmatik kontrol: [steer] −1/0/1 ve [brake] tek çağrıda (bölge hesabı ekranda). */
+    fun setTouch(steer: Int, brake: Boolean) {
+        left = steer < 0
+        right = steer > 0
+        this.brake = brake
+        applyInput()
+    }
+
     private fun applyInput() {
         world.steer = (if (right) 1 else 0) - (if (left) 1 else 0)
         world.brake = brake

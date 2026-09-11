@@ -165,7 +165,7 @@
     <!-- Kuyu -->
     <string name="game_kuyu">Kuyu</string>
     <string name="game_kuyu_tagline">Kuyuya düşüş: zıpla, botlarınla ateş et, düşmanlara bas</string>
-    <string name="kuyu_intro">Tek tuş: yerdeyken zıplar, havadayken basılı tutunca aşağı ateş eder. Yere inince ya da bir düşmana basınca şarjör dolar.</string>
+    <string name="kuyu_intro">Parmağını tut: oyuncu parmağının sütununa yürür. İkinci parmak yerdeyken zıplatır, havadayken basılı tutunca aşağı ateş eder; tek parmağın kısa dokunuşu da zıplatır. Yere inince ya da bir düşmana basınca şarjör dolar.</string>
     <string name="kuyu_daily_desc">Herkes bugün aynı kuyuya iner; tek deneme.</string>
     <string name="kuyu_daily_done_fmt">Bugünkü kuyu: %1$d puan, %2$d m derinlik</string>
     <string name="kuyu_tomorrow">Yarın yeni kuyu!</string>
@@ -173,7 +173,6 @@
     <string name="kuyu_hand_label">Kontrol eli</string>
     <string name="kuyu_hand_right">Sağ el</string>
     <string name="kuyu_hand_left">Sol el</string>
-    <string name="kuyu_hand_hint">Ateş tuşu başparmağının olduğu tarafa gelir</string>
     <string name="kuyu_depth">Derinlik</string>
     <string name="kuyu_depth_fmt">%1$d m</string>
     <string name="kuyu_gems">Taş</string>
@@ -181,15 +180,12 @@
     <string name="kuyu_combo_bonus_fmt">Kombo ×%1$d: +%2$d taş</string>
     <string name="kuyu_hp_desc_fmt">Can %1$d/%2$d</string>
     <string name="kuyu_ammo_desc_fmt">Mermi %1$d/%2$d</string>
-    <string name="kuyu_ctrl_left">Sola git</string>
-    <string name="kuyu_ctrl_right">Sağa git</string>
-    <string name="kuyu_ctrl_fire">Zıpla / ateş et</string>
     <string name="kuyu_over_title">Kuyu seni yuttu</string>
     <string name="kuyu_result_fmt">%1$d m derinlik · %2$d taş · en iyi kombo ×%3$d</string>
     <string name="kuyu_to_start">Başa dön</string>
     <string name="kuyu_area_fmt">%1$d. bölge</string>
     <string name="kuyu_board_desc">Kuyu: derinlik %1$d m, can %2$d, mermi %3$d</string>
-    <string name="kuyu_hint">◀ ▶ hareket · ● yerde zıpla, havada basılı tut: ateş</string>
+    <string name="kuyu_hint">Parmağını tut: yürü · ikinci parmak: zıpla, havada basılı tut: ateş · kısa dokunuş: zıpla</string>
 
     <!-- Kuyu: 2. evre (bekçi, yükseltme, dükkân, hazine) -->
     <string name="kuyu_choose_upgrade">Bir yükseltme seç</string>
@@ -500,7 +496,7 @@
     <!-- Viraj -->
     <string name="game_viraj">Viraj</string>
     <string name="game_viraj_tagline">Sözde-3D yarış: süreye karşı sür, rakipleri solla, virajlara hâkim ol</string>
-    <string name="viraj_intro">Gaz otomatik; ◀ ▶ ile direksiyon, FREN ile yavaşla. Kontrol noktaları süre ekler, süre bitince yarış biter. Rakipleri sollamak puan; koni ve yağdan kaçın, turbo şeridine bin, sarı kutuyu kap.</string>
+    <string name="viraj_intro">Gaz otomatik. Sol yarıya dokun: sola, sağ yarıya: sağa kır; orta şerit ya da ikinci parmak: fren. Kontrol noktaları süre ekler, süre bitince yarış biter. Rakipleri sollamak puan; koni ve yağdan kaçın, turbo şeridine bin, sarı kutuyu kap.</string>
     <string name="viraj_daily_desc">Herkes bugün aynı pisti sürer; günde 3 deneme.</string>
     <string name="viraj_daily_status_fmt">Bugün: %1$d/%2$d deneme · en iyi %3$d</string>
     <string name="viraj_daily_exhausted">Bugünkü denemeler bitti; yarın yeni pist!</string>
@@ -511,9 +507,8 @@
     <string name="viraj_kmh_fmt">%1$d km/s</string>
     <string name="viraj_time_up">Süre doldu</string>
     <string name="viraj_result_fmt">%1$s km · %2$d sollama · %3$d kontrol noktası</string>
-    <string name="viraj_ctrl_left">Sola kır</string>
-    <string name="viraj_ctrl_right">Sağa kır</string>
     <string name="viraj_ctrl_brake">FREN</string>
+    <string name="viraj_touch_hint">Sol/sağ yarı: direksiyon · orta şerit ya da ikinci parmak: fren</string>
     <string name="viraj_checkpoint_fmt">Kontrol noktası +%1$d sn</string>
     <string name="viraj_overtake_fmt">Sollama +%1$d</string>
     <string name="viraj_turbo">Turbo!</string>
@@ -523,13 +518,12 @@
     <string name="viraj_oil">Yağ!</string>
     <string name="viraj_cone">Koni</string>
     <string name="viraj_km_fmt">%1$d km</string>
-    <string name="viraj_hand_hint">Fren tuşu başparmağının olduğu tarafa gelir; ayar Kuyu ve Geçit ile ortaktır</string>
     <string name="viraj_next_checkpoint">Kontrol noktası</string>
     <string name="viraj_board_desc">Viraj: %1$d km/s, %2$d m, %3$d sollama</string>
     <!-- Filo -->
     <string name="game_filo">Filo</string>
     <string name="game_filo_tagline">Dikey uzay savaşı: gemiyi sürükle, ateş otomatik; dalgalar, patronlar, güç artırımları</string>
-    <string name="filo_intro">Gemiyi parmağınla sürükle; ateş otomatik. Düşman dalgalarını temizle, her 5. dalgada patron gelir. Art arda vuruşlar çarpanı büyütür; düşen güçleri topla: W silah, S kalkan, B bomba, + puan. BOMBA mermileri siler, ekrandaki herkese hasar verir.</string>
+    <string name="filo_intro">Gemiyi parmağınla her yöne sürükle (yukarı çıkmak yaklaştırır, riskli); ateş otomatik. Düşman dalgalarını temizle, her 5. dalgada patron gelir. Art arda vuruşlar çarpanı büyütür; düşen güçleri topla: W silah, S kalkan, B bomba, + puan. BOMBA mermileri siler, ekrandaki herkese hasar verir.</string>
     <string name="filo_daily_desc">Herkes bugün aynı dalgalarla savaşır; günde 3 deneme.</string>
     <string name="filo_daily_status_fmt">Bugün: %1$d/%2$d deneme · en iyi %3$d</string>
     <string name="filo_daily_exhausted">Bugünkü denemeler bitti; yarın yeni filo!</string>
@@ -546,7 +540,7 @@
     <string name="filo_result_fmt">Dalga %1$d · %2$d düşman</string>
     <string name="filo_ctrl_bomb">Bomba</string>
     <string name="filo_bomb_count_fmt">BOMBA ×%1$d</string>
-    <string name="filo_drag_hint">Gemiyi sürükleyerek yönlendir</string>
+    <string name="filo_drag_hint">Gemiyi her yöne sürükle</string>
     <string name="filo_points_fmt">+%1$d</string>
     <string name="filo_hit">Vuruldun!</string>
     <string name="filo_shield">Kalkan!</string>

@@ -39,6 +39,17 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.36.0", "2026-09-11",
+            tr = listOf(
+                "Kuyu ve Viraj: kontrol tuşları kalktı, tuval ekranı kaplıyor. Kuyu'da parmağını tut, oyuncu o sütuna yürür; ikinci parmak zıplatır, havada basılıyken aşağı ateş eder; kısa dokunuş da zıplatır. Viraj'da sol/sağ yarı direksiyon, orta şerit ya da ikinci parmak fren",
+                "Filo: gemi ileri geri de sürüklenir; yukarı çıkmak yaklaştırır, riski artırır",
+            ),
+            en = listOf(
+                "Kuyu and Viraj: the control buttons are gone, the canvas fills the screen. Kuyu: hold a finger and the player walks to that column; a second finger jumps and, held in the air, fires downward; a quick tap also jumps. Viraj: left/right half steers, the middle strip or a second finger brakes",
+                "Filo: the ship can now also be dragged up and down; moving up gets you closer, and riskier",
+            ),
+        ),
+        ReleaseNote(
             "0.35.2", "2026-09-11",
             tr = listOf(
                 "Çekirge: sürüklemede ilk hareket kaybolmuyor; yeşil çekirgeler, kraliçe, balya hücreleri ve tükürük gökyüzünde daha okunur",

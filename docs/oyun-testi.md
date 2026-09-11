@@ -36,6 +36,7 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Değişmez | Nerede |
 | --- | --- |
 | Silah yükseltmesi patron hasarını düşürmez | `FiloWorldTest` |
+| Filo: gemi dikey bantta kalır, düşman mermisi ve çarpışma geminin canlı konumunu izler | `FiloWorldTest` |
 | Yükseltme havada kalma bütçesini kısaltmaz | `KuyuWorldTest` |
 | Üretilen tahta tahminsiz çözülebilir | `MinesStateTest` |
 | Tahmin hakkı ikili arama derinliğini karşılar | `KiskacStateTest` |
@@ -400,7 +401,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Kakuro | ✅ | olay güdümlü (0 · 0) | — | ✅ üretim bütçesi | 2026-09-09 |
 | Vergici | ✅ | olay güdümlü (0 · 0) | — | ✅ düğüm bütçeli çözücü | 2026-09-09 |
 | Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | ✅ mevcut testlerle | 2026-09-09 |
-| Viraj | ✅ | **60 · 3 · %100 · 34 ms** | — (tuşla) | ✅ kusur yok | 2026-09-09 |
+| Viraj | ✅ | **60 · 3 · %100 · 34 ms** | bekliyor (v0.36: dokunmatik) | ✅ kusur yok | 2026-09-09 |
 | Filo | ✅ | **60 · 1 · %81 · 31 ms** | ✅ düzeltildi | ✅ düzeltildi | 2026-09-09 |
 | Reyon | ✅ | olay güdümlü (boşta 0) · kaydırmada **60 · 0 · %6,8 · 20 ms** | ✅ adımlayıcı 48×48 dp (v0.28.1) | ✅ ölçüldü (diziliş + denetim + satış + sipariş) | 2026-09-10 |
 | Raket | ✅ | **58 · 15 · %48 · 26 ms** (GPU 21 ms) | ✅ kazanç 1,24 · ölü bölge yok · iki parmak ayrı | ✅ seviyeler sıralı | 2026-09-10 |
@@ -1928,6 +1929,48 @@ Okuma: tükürük her zeminde bir yarısıyla okunuyor, ama 7,6 dp'lik bir cisim
 - Sürükleme–dokunuş eşiği (290–310 ms) ve iki başparmak ölçümleri tasarımı
   doğruladı; kare hızı (59,6, 24,3 ms) eylem gerektirmedi. Kontrast
   değerleri palet hesabı; cihazda yenilenecek.
+
+### Dokunmatik kontroller (Kuyu, Viraj, Filo) · 2026-09-11
+
+**D — tasarım ve motor** (v0.36.0). Kuyu ile Viraj'daki tuş sırası kaldırıldı;
+tuval artık üst çubuk ve kartlar dışındaki alanın tamamını kaplar (dar
+telefonda tuş sırası kadar, ~96 dp, oyun alanı kazanılır). Filo'ya dikey
+sürükleme eklendi. Üçü de ekranın `pointerInput` katmanında çözülür, motorlar
+girdiyi eskisi gibi alır; determinizm testleri aynen geçer.
+
+- *Kuyu.* İlk parmak yürütür: oyuncu her adımda parmağın sütununa doğru
+  yürür, merkeze `STEER_DEAD` = 0,25 karo yaklaşınca durur; parmak kaydıkça
+  hedef güncellenir. Sonraki her parmak "ateş" tuşunun yerini alır: yerdeyken
+  zıplatır, havada basılı tutulunca botlar aşağı ateş eder. Tek parmağın
+  kısa dokunuşu (`TAP_MS` = 220 ms, tolerans içinde, ateş parmağı yokken)
+  `TAP_FRAMES` = 3 adımlık bir zıplama darbesi verir. Roller basışta verilir,
+  parmak kalkana dek değişmez; yürüme parmağı kalkarsa sıradaki basış yürüme
+  olur. Kontrol eli ayarı Kuyu'dan kalktı (Geçit ve Filo'da duruyor).
+- *Viraj.* Tuvalin sol %40'ı sola, sağ %40'ı sağa kırar; orta şerit
+  (`ZONE_LEFT`..`ZONE_RIGHT` = 0,4..0,6) düz gidip fren yapar. İlk basan
+  parmak direksiyonu belirler, ikinci parmak (nerede olursa olsun) fren.
+  Parmak bölgeler arasında kayınca direksiyon anında güncellenir. Koşunun
+  ilk 8 s'inde (`ZONE_HINT_FRAMES` = 480) köşelerde oklar ve ortada FREN
+  etiketi çizilir, son 1,5 s'de söner.
+- *Filo.* Sürükleme iki eksende `DRAG_GAIN` = 1,35 ile geçer; gemi
+  `PLAYER_MIN_Y` = 0,55 ile `PLAYER_MAX_Y` = 1,52 (yükseklik 1,6) arasında
+  kırpılır, yani ekranın üst üçte birinden alt kenara dek bir bant. Düşman
+  nişanı, mermi çıkışı, güç toplama ve çarpışma zaten canlı `playerY`
+  okuduğundan yukarı çıkmak yaklaşmak demek: mermiler daha çabuk varır.
+
+Testler: `KuyuScreenTest` (menüde tuş yok; basılı parmak yürütür, kayınca
+yön değişir, kalkınca durur; ikinci parmak zıplatır; kısa dokunuş zıplatır),
+`VirajScreenTest` (yarılar ve orta şerit, ikinci parmak, kalkış; direksiyonun
+simülasyona geçmesi ve duraklatma), `FiloWorldTest` (+2: dikey bant kırpması,
+yalnız x verilince y'nin korunması; yukarıdaki gemiye mermi çarpması).
+
+**Cihazda ölçülecekler (A–C, bekliyor).** Kuyu'da 220 ms dokunuş eşiği:
+yürümeye başlarken parmak 220 ms içinde kalkarsa istenmeyen zıplama olur mu;
+bir başparmak yürütüp öbürü zıplatırken ergonomi. Viraj'da 1080 px genişlikte
+bölge sınırları 432 / 648 px: başparmaklar orta şeride rahat ulaşıyor mu,
+yoksa fren için ikinci parmak mı tercih ediliyor; ipuç oklarının kontrastı.
+Filo'da dikey bandın üst ucu (0,55) baş parmakla gemi arasında görüş bırakıyor
+mu, gemi parmağın altında kalıyor mu.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

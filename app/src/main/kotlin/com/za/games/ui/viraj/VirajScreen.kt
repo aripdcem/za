@@ -2,12 +2,17 @@ package com.za.games.ui.viraj
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.ui.input.pointer.PointerId
+import androidx.compose.ui.input.pointer.changedToDownIgnoreConsumed
+import androidx.compose.ui.input.pointer.changedToUpIgnoreConsumed
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -69,7 +75,6 @@ import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
 import com.za.games.platform.ShareContent
 import com.za.games.ui.common.GameTopBar
-import com.za.games.ui.common.HoldButton
 import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.ShareButton
@@ -128,6 +133,13 @@ private val CarColors = listOf(
     Color(0xFFF472B6), Color(0xFF34D399), Color(0xFFE2E8F0),
 )
 
+/** Dokunmatik bölgeler: tuval genişliğinin bu payından solu sola kırar, sağı sağa; aradaki şerit fren. */
+private const val ZONE_LEFT = 0.4f
+private const val ZONE_RIGHT = 0.6f
+
+/** Bölge ipuçlarının gösterildiği kare sayısı (60 Hz). */
+private const val ZONE_HINT_FRAMES = 480
+
 @Composable
 fun VirajScreen(
     highScore: Long,
@@ -140,7 +152,6 @@ fun VirajScreen(
     val daily by viewModel.daily.collectAsStateWithLifecycle()
     val hud by viewModel.hud.collectAsStateWithLifecycle()
     val runId by viewModel.runId.collectAsStateWithLifecycle()
-    val leftHanded by viewModel.leftHanded.collectAsStateWithLifecycle()
     val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current
     val resources = LocalContext.current.resources
@@ -252,15 +263,11 @@ fun VirajScreen(
                 VirajPhase.MENU -> StartCard(
                     mode = mode,
                     daily = daily,
-                    leftHanded = leftHanded,
-                    onHand = viewModel::setLeftHanded,
                     onMode = viewModel::setMode,
                     onStart = startRun,
                     onExit = onExit,
                 )
                 VirajPhase.PAUSED -> PauseCard(
-                    leftHanded = leftHanded,
-                    onHand = viewModel::setLeftHanded,
                     onResume = viewModel::resume,
                     onRestart = restartRun,
                     onMenu = viewModel::toMenu,
@@ -279,7 +286,6 @@ fun VirajScreen(
             }
         }
 
-        Controls(leftHanded = leftHanded, viewModel = viewModel)
     }
 }
 
@@ -369,16 +375,99 @@ private fun VirajCanvas(
     val proj = remember { Array(DRAW + 1) { Proj() } }
     val clip = remember { FloatArray(DRAW + 1) }
     val path = remember { Path() }
+    val brakeLabel = stringResource(R.string.viraj_ctrl_brake)
     Canvas(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .semantics { contentDescription = desc },
+            .semantics { contentDescription = desc }
+            .pointerInput(viewModel) {
+                // Dokunmatik kontrol, tuş yok: ilk parmağın bölgesi direksiyon (sol
+                // yarı sola, sağ yarı sağa, orta şerit düz ve fren), her ek parmak fren.
+                // Bölge parmak kayınca güncellenir; roller kalkana dek değişmez.
+                awaitEachGesture {
+                    val first = awaitFirstDown(requireUnconsumed = false)
+                    val order = ArrayList<PointerId>()
+                    val zones = HashMap<PointerId, Int>()
+                    fun zoneOf(x: Float): Int {
+                        val f = x / size.width
+                        return if (f < ZONE_LEFT) -1 else if (f > ZONE_RIGHT) 1 else 0
+                    }
+                    fun apply() {
+                        val lead = order.firstOrNull()
+                        if (lead == null) {
+                            viewModel.setTouch(0, false)
+                            return
+                        }
+                        val z = zones[lead] ?: 0
+                        viewModel.setTouch(z, z == 0 || order.size >= 2)
+                    }
+                    order += first.id
+                    zones[first.id] = zoneOf(first.position.x)
+                    first.consume()
+                    apply()
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        var changed = false
+                        for (c in event.changes) {
+                            if (c.changedToDownIgnoreConsumed() && c.id !in zones) {
+                                order += c.id
+                                zones[c.id] = zoneOf(c.position.x)
+                                changed = true
+                            } else if (c.pressed && c.id in zones) {
+                                val z = zoneOf(c.position.x)
+                                if (z != zones[c.id]) {
+                                    zones[c.id] = z
+                                    changed = true
+                                }
+                            }
+                            if (c.changedToUpIgnoreConsumed() && c.id in zones) {
+                                order.remove(c.id)
+                                zones.remove(c.id)
+                                changed = true
+                            }
+                            c.consume()
+                        }
+                        if (changed) apply()
+                        if (event.changes.none { it.pressed }) break
+                    }
+                    viewModel.setTouch(0, false)
+                }
+            },
     ) {
         // Kare sayaçları okunur ki her adımda yeniden çizilsin.
         val tick = frame + fxTick.longValue
         if (tick < 0L) return@Canvas
         drawScene(viewModel.world, fx, proj, clip, path, textMeasurer, textCache)
+        drawTouchZones(viewModel.world, textMeasurer, textCache, brakeLabel)
     }
+}
+
+/** Koşunun ilk saniyelerinde bölge ipuçları: köşelerde oklar, ortada fren etiketi; sonra söner. */
+private fun DrawScope.drawTouchZones(world: VirajWorld, textMeasurer: TextMeasurer, cache: HashMap<String, TextLayoutResult>, brakeLabel: String) {
+    if (world.frames <= 0 || world.frames > ZONE_HINT_FRAMES) return
+    val alpha = ((ZONE_HINT_FRAMES - world.frames) / 90f).coerceIn(0f, 1f) * 0.85f
+    val w = size.width
+    val h = size.height
+    val y = h * 0.86f
+    val u = w * 0.03f
+    val color = Color.White.copy(alpha = alpha)
+    val edge = Color.Black.copy(alpha = alpha * 0.6f)
+    for (side in intArrayOf(-1, 1)) {
+        val cx = if (side < 0) w * 0.2f else w * 0.8f
+        val tip = cx + side * u * 1.2f
+        for ((c, sw) in listOf(edge to u * 0.9f, color to u * 0.45f)) {
+            drawLine(c, Offset(cx - side * u * 0.6f, y - u * 1.2f), Offset(tip, y), strokeWidth = sw, cap = StrokeCap.Round)
+            drawLine(c, Offset(cx - side * u * 0.6f, y + u * 1.2f), Offset(tip, y), strokeWidth = sw, cap = StrokeCap.Round)
+        }
+    }
+    val layout = cache.getOrPut("zone|$brakeLabel") {
+        textMeasurer.measure(AnnotatedString(brakeLabel), style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Black, color = Color.White))
+    }
+    val pad = u * 0.8f
+    val tx = w / 2f - layout.size.width / 2f
+    val ty = y - layout.size.height / 2f
+    drawRoundRect(Color.Black.copy(alpha = alpha * 0.55f), topLeft = Offset(tx - pad, ty - pad * 0.4f), size = Size(layout.size.width + pad * 2f, layout.size.height + pad * 0.8f), cornerRadius = CornerRadius(pad, pad))
+    drawText(layout, topLeft = Offset(tx, ty), alpha = alpha)
 }
 
 private fun DrawScope.drawScene(
@@ -683,8 +772,6 @@ private fun DrawScope.drawTexts(fx: VirajFx, width: Float, height: Float, textMe
 private fun StartCard(
     mode: VirajMode,
     daily: VirajDaily?,
-    leftHanded: Boolean,
-    onHand: (Boolean) -> Unit,
     onMode: (VirajMode) -> Unit,
     onStart: () -> Unit,
     onExit: () -> Unit,
@@ -724,16 +811,10 @@ private fun StartCard(
             )
         }
         Text(
-            text = stringResource(R.string.kuyu_hand_label),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-        )
-        HandChips(leftHanded = leftHanded, onHand = onHand)
-        Text(
-            text = stringResource(R.string.viraj_hand_hint),
+            text = stringResource(R.string.viraj_touch_hint),
             style = MaterialTheme.typography.labelSmall,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
         )
         Spacer(Modifier.height(4.dp))
         if (mode == VirajMode.DAILY && exhausted) {
@@ -753,8 +834,6 @@ private fun StartCard(
 
 @Composable
 private fun PauseCard(
-    leftHanded: Boolean,
-    onHand: (Boolean) -> Unit,
     onResume: () -> Unit,
     onRestart: () -> Unit,
     onMenu: () -> Unit,
@@ -766,7 +845,6 @@ private fun PauseCard(
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
         )
-        HandChips(leftHanded = leftHanded, onHand = onHand)
         Spacer(Modifier.height(4.dp))
         Button(onClick = onResume, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.resume))
@@ -875,66 +953,3 @@ private fun ModeChip(label: String, selected: Boolean, modifier: Modifier = Modi
     }
 }
 
-@Composable
-private fun HandChips(leftHanded: Boolean, onHand: (Boolean) -> Unit) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        ModeChip(stringResource(R.string.kuyu_hand_right), !leftHanded, Modifier.weight(1f)) { onHand(false) }
-        ModeChip(stringResource(R.string.kuyu_hand_left), leftHanded, Modifier.weight(1f)) { onHand(true) }
-    }
-}
-
-/** Direksiyon tuşları bir yanda, fren öbür yanda; fren seçilen başparmağın tarafındadır. */
-@Composable
-private fun Controls(leftHanded: Boolean, viewModel: VirajViewModel) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 8.dp)
-            .height(84.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        if (leftHanded) {
-            BrakeButton(viewModel)
-            Spacer(Modifier.weight(0.2f))
-            SteerButtons(viewModel)
-        } else {
-            SteerButtons(viewModel)
-            Spacer(Modifier.weight(0.2f))
-            BrakeButton(viewModel)
-        }
-    }
-}
-
-@Composable
-private fun RowScope.SteerButtons(viewModel: VirajViewModel) {
-    HoldButton(
-        label = "◀",
-        description = stringResource(R.string.viraj_ctrl_left),
-        modifier = Modifier
-            .weight(1f)
-            .fillMaxHeight(),
-        onPressChange = viewModel::pressLeft,
-    )
-    HoldButton(
-        label = "▶",
-        description = stringResource(R.string.viraj_ctrl_right),
-        modifier = Modifier
-            .weight(1f)
-            .fillMaxHeight(),
-        onPressChange = viewModel::pressRight,
-    )
-}
-
-@Composable
-private fun RowScope.BrakeButton(viewModel: VirajViewModel) {
-    HoldButton(
-        label = stringResource(R.string.viraj_ctrl_brake),
-        description = stringResource(R.string.viraj_ctrl_brake),
-        modifier = Modifier
-            .weight(1.2f)
-            .fillMaxHeight(),
-        accent = true,
-        fontSize = 20.sp,
-        onPressChange = viewModel::pressBrake,
-    )
-}

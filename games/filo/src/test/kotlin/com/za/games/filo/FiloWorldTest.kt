@@ -345,6 +345,41 @@ class FiloWorldTest {
         assertEquals(FiloWorld.PLAYER_MARGIN, w.playerX, 1e-6f)
     }
 
+    /** Dikey sürükleme: gemi [FiloWorld.PLAYER_MIN_Y]..[FiloWorld.PLAYER_MAX_Y] bandında kalır; yalnız x verilince y korunur. */
+    @Test
+    fun verticalSteeringStaysInsideTheBand() {
+        val w = arena()
+        w.step()
+        assertEquals(FiloWorld.PLAYER_Y, w.playerY, 1e-6f)
+        w.steerBy(0f, -5f)
+        w.step()
+        assertEquals(FiloWorld.PLAYER_MIN_Y, w.playerY, 1e-6f)
+        w.steerBy(0f, 5f)
+        w.step()
+        assertEquals(FiloWorld.PLAYER_MAX_Y, w.playerY, 1e-6f)
+        w.steerTo(0.5f, 1f)
+        w.steerBy(0.1f, -0.2f)
+        w.step()
+        assertEquals(0.6f, w.playerX, 1e-6f)
+        assertEquals(0.8f, w.playerY, 1e-6f)
+        w.steerTo(0.3f)
+        w.step()
+        assertEquals(0.3f, w.playerX, 1e-6f)
+        assertEquals(0.8f, w.playerY, 1e-6f)
+    }
+
+    /** Yukarı çıkan gemi düşmanın mermisine daha çabuk yakalanır: mermi ve çarpışma canlı [FiloWorld.playerY]'yi kullanır. */
+    @Test
+    fun enemyBulletsAndCollisionsFollowTheShipVertically() {
+        val w = arena()
+        w.setLivesForTest(5)
+        w.steerTo(0.5f, FiloWorld.PLAYER_MIN_Y)
+        w.step()
+        w.addEnemyBulletForTest(0.5f, FiloWorld.PLAYER_MIN_Y, 0f, 0f)
+        val ev = w.step()
+        assertTrue("mermi yeni konumdaki gemiye çarpmalı: $ev", ev.any { it is FiloEvent.PlayerHit })
+    }
+
     @Test
     fun hudSummarizesInitialState() {
         val h = arena().hud()

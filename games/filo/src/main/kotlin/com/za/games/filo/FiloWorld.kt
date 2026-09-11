@@ -30,6 +30,10 @@ class FiloWorld(val seed: Long) {
         const val PLAYER_Y = 1.42f
         const val PLAYER_RADIUS = 0.038f
         const val PLAYER_MARGIN = 0.05f
+
+        /** Geminin dikey bandı: [PLAYER_MIN_Y] üstte (düşmanlara yakın), [PLAYER_MAX_Y] altta. Başlangıç [PLAYER_Y]. */
+        const val PLAYER_MIN_Y = 0.55f
+        const val PLAYER_MAX_Y = HEIGHT - 0.08f
         const val FIRE_INTERVAL = 0.17f
         const val BULLET_SPEED = 2.6f
         const val BULLET_RADIUS = 0.012f
@@ -89,7 +93,8 @@ class FiloWorld(val seed: Long) {
 
     var playerX = WIDTH / 2f
         private set
-    val playerY: Float get() = PLAYER_Y
+    var playerY = PLAYER_Y
+        private set
     var lives = LIVES
         private set
     var bombs = BOMBS
@@ -130,6 +135,7 @@ class FiloWorld(val seed: Long) {
     private var chainTimer = 0f
     private var nextId = 1
     private var targetX = WIDTH / 2f
+    private var targetY = PLAYER_Y
 
     val multiplier: Int get() = 1 + min(3, chain / 4)
     val boss: Enemy? get() = enemies.firstOrNull { it.kind == EnemyKind.BOSS && it.alive }
@@ -154,13 +160,14 @@ class FiloWorld(val seed: Long) {
         )
     }
 
-    /** Gemiyi verilen sütuna götürür (sürükleme girişi; sınırlar içinde kırpılır). */
-    fun steerTo(x: Float) {
+    /** Gemiyi verilen noktaya götürür (sürükleme girişi; yatayda kenar payı, dikeyde [PLAYER_MIN_Y]..[PLAYER_MAX_Y] içinde kırpılır). */
+    fun steerTo(x: Float, y: Float = targetY) {
         targetX = x.coerceIn(PLAYER_MARGIN, WIDTH - PLAYER_MARGIN)
+        targetY = y.coerceIn(PLAYER_MIN_Y, PLAYER_MAX_Y)
     }
 
-    /** Gemiyi yatay kaydırır (parmak farkı). */
-    fun steerBy(dx: Float) = steerTo(targetX + dx)
+    /** Gemiyi kaydırır (parmak farkı); [dy] pozitifse aşağı. */
+    fun steerBy(dx: Float, dy: Float = 0f) = steerTo(targetX + dx, targetY + dy)
 
     /**
      * Bomba: düşman mermilerini siler, ekrandaki düşmanlara hasar verir.
@@ -186,6 +193,7 @@ class FiloWorld(val seed: Long) {
         frames++
         val dt = STEP
         playerX = targetX
+        playerY = targetY
         invuln = max(0f, invuln - dt)
 
         // Dalga akışı.

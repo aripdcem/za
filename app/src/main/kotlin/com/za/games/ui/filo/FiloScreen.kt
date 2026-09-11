@@ -375,18 +375,22 @@ private fun FiloCanvas(
                 // her parmak basışının ilk ~1,3 mm'si kayboluyor, kısa
                 // düzeltmeler hiç işlemiyordu. Olaylar doğrudan okunarak gemi
                 // ilk pikselden itibaren sürükleniyor. Bkz. docs/oyun-testi.md.
+                // Gemi her yöne sürüklenir: yatayda kenar payı, dikeyde üst ve alt bant sınırı.
                 awaitEachGesture {
                     val ilk = awaitFirstDown(requireUnconsumed = false)
                     var sonX = ilk.position.x
+                    var sonY = ilk.position.y
                     while (true) {
                         val olay = awaitPointerEvent()
                         val nokta = olay.changes.firstOrNull { it.id == ilk.id } ?: break
                         if (!nokta.pressed) break
                         val dx = nokta.position.x - sonX
+                        val dy = nokta.position.y - sonY
                         sonX = nokta.position.x
-                        if (dx != 0f) {
+                        sonY = nokta.position.y
+                        if (dx != 0f || dy != 0f) {
                             val scale = arenaScale(size.width.toFloat(), size.height.toFloat())
-                            if (scale > 0f) viewModel.drag(dx * DRAG_GAIN / scale)
+                            if (scale > 0f) viewModel.drag(dx * DRAG_GAIN / scale, dy * DRAG_GAIN / scale)
                         }
                         nokta.consume()
                     }

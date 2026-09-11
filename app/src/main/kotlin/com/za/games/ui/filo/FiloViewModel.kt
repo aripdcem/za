@@ -74,9 +74,9 @@ class FiloViewModel(application: Application) : AndroidViewModel(application) {
 
     fun attemptsLeft(): Int = DAILY_ATTEMPTS - (store.daily(todayEpoch())?.attempts ?: 0)
 
-    /** Parmak sürüklemesi: oyun alanı genişliği cinsinden yatay fark. */
-    fun drag(dx: Float) {
-        if (_phase.value == FiloPhase.PLAYING) world.steerBy(dx)
+    /** Parmak sürüklemesi: oyun alanı birimi cinsinden yatay ve dikey fark ([dy] pozitifse aşağı). */
+    fun drag(dx: Float, dy: Float = 0f) {
+        if (_phase.value == FiloPhase.PLAYING) world.steerBy(dx, dy)
     }
 
     /** Bomba; hak yoksa ya da oyun sürmüyorsa etkisiz. */

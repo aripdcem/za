@@ -2,6 +2,10 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.36.0 (2026-09-11)
+- Kuyu ve Viraj'da kontrol tuşları kalktı, tuval ekranı kaplıyor. Kuyu: parmağını tut, oyuncu parmağının sütununa yürür; ikinci parmak yerdeyken zıplatır, havada basılı tutulunca aşağı ateş eder; tek parmağın kısa dokunuşu da zıplatır. Viraj: sol/sağ yarı direksiyon, orta şerit ya da ikinci parmak fren; ilk saniyelerde bölge ipuçları çizilir
+- Filo: gemi yalnız yatay değil ileri geri de sürüklenir (dikey bant ekranın üst üçte birinden alt kenara dek); düşman nişanı ve çarpışmalar geminin gerçek konumunu izler
+
 ## 0.35.2 (2026-09-11)
 - Çekirge cihaz bulguları: sürüklemede ilk 8 dp artık yutulmuyor; yeşil sıra ve kraliçe koyulaştı, çekirgelere kontur; balya hücrelerine koyu kenar; tükürük kalın koyu halka ve koyu çekirdekle çizilir
 
