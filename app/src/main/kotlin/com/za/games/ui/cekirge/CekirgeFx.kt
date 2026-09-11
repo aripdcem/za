@@ -108,7 +108,7 @@ class CekirgeFx {
 
     private fun bugColor(kind: BugKind): Color = when (kind) {
         BugKind.KARA -> Color(0xFF374151)
-        BugKind.YESIL -> Color(0xFF84CC16)
+        BugKind.YESIL -> Color(0xFF65A30D)
         BugKind.KAHVE -> Color(0xFFCA8A04)
     }
 

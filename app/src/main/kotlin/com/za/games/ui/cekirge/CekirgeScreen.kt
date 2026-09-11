@@ -91,16 +91,19 @@ private val Cloud = Color(0xAAFFFFFF)
 private val Hedge = Color(0xFF3F6212)
 private val Wheat = Color(0xFFE9B949)
 private val WheatDark = Color(0xFFC98F2B)
-private val Straw = Color(0xFFFACC15)
-private val StrawDark = Color(0xFFCA8A04)
+private val Straw = Color(0xFFD97706)
+private val StrawDark = Color(0xFFB45309)
+private val StrawEdge = Color(0xFF7C2D12)
 private val BugKara = Color(0xFF1F2937)
-private val BugYesil = Color(0xFF65A30D)
+private val BugYesil = Color(0xFF3F6212)
 private val BugKahve = Color(0xFFA16207)
 private val BugEye = Color(0xFFF8FAFC)
-private val QueenBody = Color(0xFFF59E0B)
+private val BugOutline = Color(0xD90F172A)
+private val QueenBody = Color(0xFFB45309)
 private val QueenWing = Color(0x88FFFFFF)
-private val SpitColor = Color(0xFF4ADE80)
-private val SpitDark = Color(0xFF166534)
+private val SpitColor = Color(0xFF15803D)
+private val SpitRing = Color(0xFF052E16)
+private val SpitLight = Color(0xFF86EFAC)
 private val ShotColor = Color(0xFFBAE6FD)
 private val ShotCore = Color(0xFFFFFFFF)
 private val Overalls = Color(0xFF1D4ED8)
@@ -309,10 +312,19 @@ private fun CekirgeCanvas(
                             }
                             val start = starts[c.id] ?: continue
                             if (c.pressed) {
-                                val dx = c.position.x - (lastX[c.id] ?: c.position.x)
+                                val prev = lastX[c.id] ?: c.position.x
                                 lastX[c.id] = c.position.x
-                                if (c.id !in moved && (c.position - start).getDistance() > slop) moved += c.id
-                                if (c.id in moved && dx != 0f && scale > 0f) viewModel.drag(dx * DRAG_GAIN / scale)
+                                if (c.id !in moved) {
+                                    if ((c.position - start).getDistance() > slop) {
+                                        moved += c.id
+                                        // Tolerans yutulmaz: ilk hareket başlangıçtan itibaren tümüyle uygulanır (cihaz bulgusu: ilk ~8 dp kayboluyordu).
+                                        val dx0 = c.position.x - start.x
+                                        if (dx0 != 0f && scale > 0f) viewModel.drag(dx0 * DRAG_GAIN / scale)
+                                    }
+                                } else {
+                                    val dx = c.position.x - prev
+                                    if (dx != 0f && scale > 0f) viewModel.drag(dx * DRAG_GAIN / scale)
+                                }
                             } else if (c.changedToUpIgnoreConsumed()) {
                                 if (c.id !in moved && c.uptimeMillis - (downAt[c.id] ?: c.uptimeMillis) <= TAP_MS) {
                                     if (!viewModel.fire()) fx.onFireBlocked(sound)
@@ -382,6 +394,8 @@ private fun DrawScope.drawFarm(
                     val y = (b.top + cy * b.cellH) * s
                     drawRect(Straw, topLeft = Offset(x, y), size = Size(cw + 0.5f, ch + 0.5f))
                     drawLine(StrawDark, Offset(x + cw * 0.2f, y + ch * 0.7f), Offset(x + cw * 0.8f, y + ch * 0.4f), strokeWidth = ch * 0.12f)
+                    // Koyu hücre kenarı: aşınan hücre parlaklık farkıyla da okunsun (balya ↔ gökyüzü 1,04:1 idi).
+                    drawRect(StrawEdge, topLeft = Offset(x, y), size = Size(cw + 0.5f, ch + 0.5f), style = Stroke(width = 1.2.dp.toPx()))
                 }
             }
         }
@@ -399,8 +413,10 @@ private fun DrawScope.drawFarm(
             val x = sp.x * s
             val y = sp.y * s
             drawLine(SpitColor.copy(alpha = 0.5f), Offset(x, y - 0.03f * s), Offset(x, y), strokeWidth = 0.012f * s, cap = StrokeCap.Round)
-            drawCircle(SpitDark, CekirgeWorld.SPIT_HALF * s * 1.1f, Offset(x, y))
-            drawCircle(SpitColor, CekirgeWorld.SPIT_HALF * s * 0.8f, Offset(x, y))
+            // Kalın koyu halka + koyu çekirdek + parlak nokta: her zeminde okunur (cihaz bulgusu: 1 dp'lik halka soluyordu).
+            drawCircle(SpitRing, CekirgeWorld.SPIT_HALF * s * 1.4f, Offset(x, y))
+            drawCircle(SpitColor, CekirgeWorld.SPIT_HALF * s * 0.95f, Offset(x, y))
+            drawCircle(SpitLight, CekirgeWorld.SPIT_HALF * s * 0.35f, Offset(x - CekirgeWorld.SPIT_HALF * s * 0.3f, y - CekirgeWorld.SPIT_HALF * s * 0.3f))
         }
         val shot = world.shot
         if (shot != null) {
@@ -470,6 +486,9 @@ private fun DrawScope.drawBug(b: Bug, cx: Float, cy: Float, s: Float, stride: Bo
     }
     drawOval(color, topLeft = Offset(cx - bw * 0.6f, cy - bh * 0.9f), size = Size(bw * 1.2f, bh * 1.8f))
     drawCircle(color, bh * 0.55f, Offset(cx, cy + bh * 0.85f))
+    // Koyu kontur: yeşil ve kahverengi sıralar gökyüzüne karşı kontur olmadan 1,9–3,1:1 kalıyordu.
+    drawOval(BugOutline, topLeft = Offset(cx - bw * 0.6f, cy - bh * 0.9f), size = Size(bw * 1.2f, bh * 1.8f), style = Stroke(width = bh * 0.16f))
+    drawCircle(BugOutline, bh * 0.55f, Offset(cx, cy + bh * 0.85f), style = Stroke(width = bh * 0.16f))
     drawLine(color, Offset(cx - bh * 0.2f, cy + bh * 1.1f), Offset(cx - bh * 0.6f, cy + bh * 1.7f), strokeWidth = bh * 0.12f)
     drawLine(color, Offset(cx + bh * 0.2f, cy + bh * 1.1f), Offset(cx + bh * 0.6f, cy + bh * 1.7f), strokeWidth = bh * 0.12f)
     drawCircle(BugEye, bh * 0.14f, Offset(cx - bh * 0.25f, cy + bh * 0.9f))
@@ -484,6 +503,8 @@ private fun DrawScope.drawQueen(cx: Float, cy: Float, s: Float, dir: Int, frame:
     drawOval(QueenWing, topLeft = Offset(cx + qw * 0.2f, cy - qh * 1.6f * flap), size = Size(qw * 0.9f, qh * 1.6f * flap))
     drawOval(QueenBody, topLeft = Offset(cx - qw, cy - qh * 0.7f), size = Size(qw * 2f, qh * 1.4f))
     drawCircle(QueenBody, qh * 0.7f, Offset(cx + dir * qw * 1.05f, cy - qh * 0.1f))
+    drawOval(BugOutline, topLeft = Offset(cx - qw, cy - qh * 0.7f), size = Size(qw * 2f, qh * 1.4f), style = Stroke(width = qh * 0.14f))
+    drawCircle(BugOutline, qh * 0.7f, Offset(cx + dir * qw * 1.05f, cy - qh * 0.1f), style = Stroke(width = qh * 0.14f))
     drawCircle(BugEye, qh * 0.2f, Offset(cx + dir * qw * 1.2f, cy - qh * 0.25f))
     // Taç.
     val crown = Path()

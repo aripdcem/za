@@ -1,0 +1,6 @@
+<tr-TR>
+• Çekirge: sürüklemede ilk hareket kaybolmuyor; yeşil çekirgeler, kraliçe, balya hücreleri ve tükürük gökyüzünde daha okunur.
+</tr-TR>
+<en-US>
+• Çekirge: the first few dp of a drag are no longer lost; green grasshoppers, the queen, bale cells and spit read better against the sky.
+</en-US>

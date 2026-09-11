@@ -1229,7 +1229,7 @@ fun CekirgeArt(modifier: Modifier = Modifier) {
                 val cy = w * (0.14f + r * 0.14f)
                 val color = when (r) {
                     0 -> Color(0xFF1F2937)
-                    1 -> Color(0xFF65A30D)
+                    1 -> Color(0xFF3F6212)
                     else -> Color(0xFFA16207)
                 }
                 drawLine(color, Offset(cx - w * 0.06f, cy - w * 0.02f), Offset(cx + w * 0.06f, cy - w * 0.02f), strokeWidth = w * 0.012f)
