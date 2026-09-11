@@ -412,7 +412,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Bostan | ✅ | **61 · 1 · %87 · 34 ms** (v0.34.1) | ✅ hücre 411 dp'de 77×77, 360 dp'de 67×47 dp | ✅ ölçek ve uzman | 2026-09-11 |
 | Sincap | ✅ | **58 · 11 · %66 · 31 ms** (toplam 39,6 ms) | ⚠ erişim ipucu 1,32:1 · zıplama 150 ms | ✅ pilot ve dağılım | 2026-09-11 |
 | Çekirge | ✅ | **60 · 7 · %84 · 29 ms** | ✅ eşik 290–310 ms · iki başparmak ✓ · ⚠ tükürük 1,05:1 | ✅ formasyon ve pilot | 2026-09-11 |
-| Cici | ✅ | **60 · 1 · %0,5 · 25 ms** | ✅ kazanç 1,3 · uyarı 3 kanal · ⚠ siyah kedi konturu 1,44 dp → v0.37.1: 2,5 dp + smokin deseni | ✅ pilot ve ikram dağılımı | 2026-09-11 |
+| Cici | ✅ | **60 · 1 · %0,5 · 25 ms** | ✅ uyarı 2,03 s · v0.37.1 doğrulandı: kontur 1,9–2,3 dp + smokin yaması 13,7:1 | ✅ pilot ve ikram dağılımı | 2026-09-11 |
 
 **E · erişilebilirlik:** tüm oyunlarda etiketsiz dokunulabilir öğe kalmadı
 (tek bulgu Kıskaç'ın kolay mod anahtarıydı, düzeltildi). Kontrast CI'da
@@ -2178,6 +2178,41 @@ katar.
 > Not: cihaz koşumunda turuncu ve gri kediler çıktı; siyah kedinin gövde
 > kontrastı palet değerinden, kontur kalınlığı ise aynı çizim kodunun ölçülen
 > geometrisinden (r × 0,07) geliyor.
+
+**Nüans düzeltmesi (0,5 s'lik değil, kare kare ölçüm).** Önceki turda "2,5 s'de
+hâlâ Sakin, 5,7 s'de Sıkıldı" okumam 1,5 s'lik yoklama aralığının artığıydı;
+haklı çıktı. Bu kez ölçüm 60 kare/s kayıttan, HUD etiketinin rengi kare kare
+sınıflandırılarak yapıldı (Mutlu camgöbeği · Sakin gri · Sıkıldı kırmızı) ve
+referans olarak enjekte edilen sürüklemenin kendisi kullanıldı:
+
+| olay | video zamanı |
+| --- | --- |
+| sürükleme patlaması (kuşun hızı > 250 px/s) | 1,90 → 2,48 s |
+| enjekte edilen son hareket olayı (8 × 35 ms) | ≈ 2,18 s |
+| HUD etiketi "Sıkıldı" | **4,21 s** |
+
+Yani son girdiden uyarıya **2,03 s** (kuşun ataletle durduğu ana göre 1,73 s).
+Koddaki `IDLE_WARN = 120 kare = 2,0 s` cihazda birebir. Ayrıca gözlenen bir
+ayrıntı: ikram yakalamak ruh hâlini "Mutlu"ya çeviriyor ve sayaç sıfırlanıyor,
+bu yüzden boşta bekleme ölçümü kuşu ikramlardan uzak bir köşeye çekerek
+yapılmalı — ilk denemede kuş sürekli ikram yakaladığı için etiket hiç
+"Sıkıldı"ya gelmemişti.
+
+**Siyah (smokin) kedi — v0.37.1 ölçümü.** Kayıttan kuştan ayrık bir kare
+bulundu; kesit 1 px adımla okundu:
+
+| öge | ölçüm | uzay zeminine | ham gövdeye |
+| --- | --- | --- | --- |
+| ham siyah gövde (29,40,53) | kaskın dışında (kulak/kuyruk) | **1,17:1** | — |
+| kask camından görünen gövde (80,105,120) | kaskın içinde | **3,02:1** | — |
+| smokin yaması (216,230,242) | 8 px = **3,0 dp** genişlik | **13,7:1** | **11,7:1** |
+| kontur (226,229,240) | **5–6 px = 1,9–2,3 dp** | 13,9:1 | 11,9:1 |
+
+Okuma: gövde rengi hâlâ zeminden ayrılmıyor (1,17:1) — bu kaçınılmaz, siyah
+kedi siyah. Ama artık kediyi tek bir kıl payı taşımıyor: kontur v0.37.0'daki
+1,44 dp'den **1,9–2,3 dp**'ye çıkmış, üstüne smokin yaması 3 dp genişliğinde ve
+13,7:1 ile geliyor, kask camı da gövdeyi 3:1'e yükseltiyor. Üç kanal birlikte
+siyah kediyi koyu zeminde okunur kılıyor.
 
 **Düzeltme (v0.37.1).** Kedi konturu r × 0,07 → **r × 0,12** (41 dp'lik kafada
 1,44 → ~2,5 dp), kuyruğa da kontur; siyah kedi **smokin desenli**: açık burun
