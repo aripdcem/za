@@ -3,7 +3,9 @@ package com.za.games.ui.cici
 import android.content.Context
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -39,7 +41,8 @@ class CiciScreenTest {
     @Test
     fun menuShowsChapterRulesAndModes() {
         rule.setZaContent { CiciScreen(highScore = 0L, onScore = {}, onExit = {}) }
-        rule.onNodeWithText(str(R.string.cici_chapter_space)).assertExists()
+        // Bölüm adı durum çubuğunda da yazar; menüdeki çip tıklanabilir olanı.
+        rule.onNode(hasText(str(R.string.cici_chapter_space)) and hasClickAction()).assertExists()
         rule.onNodeWithText(str(R.string.cici_rules)).assertExists()
         rule.onNodeWithText(str(R.string.cici_daily_desc)).assertExists()
         rule.onNodeWithText(str(R.string.mode_free)).performClick()
