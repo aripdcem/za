@@ -5,6 +5,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import kotlin.math.abs
 import kotlin.random.Random
 
 class VirajWorldTest {
@@ -12,7 +13,7 @@ class VirajWorldTest {
     private val seg = VirajWorld.SEGMENT_LENGTH
     private val max = VirajWorld.MAX_SPEED
 
-    private fun run(world: VirajWorld, frames: Int, steer: Int = 0, brake: Boolean = false): List<VirajEvent> {
+    private fun run(world: VirajWorld, frames: Int, steer: Float = 0f, brake: Boolean = false): List<VirajEvent> {
         world.steer = steer
         world.brake = brake
         val out = ArrayList<VirajEvent>()
@@ -25,9 +26,9 @@ class VirajWorldTest {
         val out = ArrayList<VirajEvent>()
         repeat(frames) {
             world.steer = when {
-                world.playerX > 0.1f -> -1
-                world.playerX < -0.1f -> 1
-                else -> 0
+                world.playerX > 0.1f -> -1f
+                world.playerX < -0.1f -> 1f
+                else -> 0f
             }
             out += world.step()
         }
@@ -43,9 +44,9 @@ class VirajWorldTest {
         val rng = Random(5)
         repeat(900) {
             val steer = when (rng.nextInt(6)) {
-                0 -> -1
-                1 -> 1
-                else -> 0
+                0 -> -1f
+                1 -> 1f
+                else -> 0f
             }
             val brake = rng.nextInt(25) == 0
             a.steer = steer
@@ -75,7 +76,7 @@ class VirajWorldTest {
     fun offRoadSlowsDown() {
         val w = clean()
         run(w, 300)
-        run(w, 130, steer = -1)
+        run(w, 130, steer = -1f)
         assertTrue("yol dışında olmalı: ${w.playerX}", w.playerX < -1f)
         assertTrue("yavaşlamalı: ${w.speed}", w.speed <= max * 0.3f)
     }
@@ -176,8 +177,78 @@ class VirajWorldTest {
         val oilEvents = run(oil, 2)
         assertTrue(oilEvents.any { it == VirajEvent.Slip })
         assertTrue(oil.slipT > 0f)
-        run(oil, 12, steer = 1)
+        run(oil, 12, steer = 1f)
         assertTrue("yağda direksiyon ters: ${oil.playerX}", oil.playerX < 0f)
+    }
+
+    /** Sürükleme kontrolü: araç parmağın hedefine gider, varınca düzelir, aşmaz. */
+    @Test
+    fun draggingSteersTheCarToTheFingerTarget() {
+        val w = clean()
+        w.setSpeedForTest(max)
+        w.steerTo(0.6f)
+        assertEquals("hedef araçtan en çok STEER_LEAD açılır", VirajWorld.STEER_LEAD, w.targetX, 1e-4f)
+        repeat(120) {
+            w.steerTo(0.6f)
+            w.step()
+        }
+        assertEquals("araç hedefe oturur", 0.6f, w.playerX, 0.02f)
+        assertTrue("hedefteyken direksiyon düzelir: ${w.steer}", abs(w.steer) < 0.25f)
+        // Orantılı: uzak hedef tam kilit, yakın hedef az kırar.
+        val far = clean()
+        far.setSpeedForTest(max)
+        far.steerTo(2f)
+        far.step()
+        assertEquals(1f, far.steer, 1e-4f)
+        val near = clean()
+        near.setSpeedForTest(max)
+        near.steerTo(0.05f)
+        near.step()
+        assertTrue("yakın hedef az kırar: ${near.steer}", near.steer in 0.05f..0.6f)
+        // Doğrudan yazmak hedefi bırakır: araç merkezkaçla sürüklenir, geri dönmez.
+        val manual = clean()
+        manual.setSpeedForTest(max)
+        manual.steerTo(0.5f)
+        repeat(60) { manual.step() }
+        manual.steer = 0f
+        val held = manual.playerX
+        repeat(30) { manual.step() }
+        assertTrue("elle 0 yazınca hedefe dönmez", abs(manual.playerX - held) < 0.2f)
+    }
+
+    /** Parmak kalkınca araç son çizgisini tutar: merkezkaç onu kenara sürüklemez. */
+    @Test
+    fun theCarHoldsItsLineAfterTheFingerLifts() {
+        val curvy = clean(7L)
+        // Virajın en sertine git: merkezkaç orada en çok sürükler.
+        val curved = (1..2000).maxByOrNull { abs(curvy.track.segment(it).curve) }!!
+        assertTrue("viraj bulunmalı: ${curvy.track.segment(curved).curve}", abs(curvy.track.segment(curved).curve) > 1f)
+        curvy.jumpToSegmentForTest(curved)
+        curvy.setSpeedForTest(max * 0.6f)
+        curvy.steerTo(0.3f)
+        repeat(60) { curvy.step() }
+        val line = curvy.playerX
+        repeat(180) { curvy.step() }
+        assertTrue("çizgi korunur: $line → ${curvy.playerX}", abs(curvy.playerX - line) < 0.25f)
+        assertTrue("asfaltta kalır", abs(curvy.playerX) < 1f)
+    }
+
+    /** Yağda hedef takibi durur: parmak kıpırdamazsa araç kendi kendine tam kilide gitmez. */
+    @Test
+    fun oilSuspendsTargetFollowing() {
+        val w = clean()
+        w.setSpeedForTest(max)
+        w.steerTo(0f)
+        repeat(30) { w.step() }
+        w.track.segment(w.playerSegmentIndex + 1).item = Item(ItemKind.OIL, 0f)
+        val ev = run(w, 2)
+        assertTrue(ev.any { it == VirajEvent.Slip })
+        repeat(60) { w.step() } // parmak duruyor: yalnız kayma sürükler
+        assertEquals("hedef araca sabitlenir", w.playerX, w.targetX, 1e-4f)
+        assertTrue("kendi kendine tam kilit yok: ${w.steer}", abs(w.steer) < 0.2f)
+        val drifted = abs(w.playerX)
+        assertTrue("kayma yine de sürükler: $drifted", drifted > 0.2f)
+        assertTrue("ama kenara yapışmaz: $drifted", drifted < VirajWorld.MAX_X - 0.2f)
     }
 
     @Test

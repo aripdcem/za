@@ -133,12 +133,18 @@ private val CarColors = listOf(
     Color(0xFFF472B6), Color(0xFF34D399), Color(0xFFE2E8F0),
 )
 
-/** Dokunmatik bölgeler: tuval genişliğinin bu payından solu sola kırar, sağı sağa; aradaki şerit fren. */
-private const val ZONE_LEFT = 0.4f
-private const val ZONE_RIGHT = 0.6f
+/**
+ * Sürükleme kazancı: tuvalin tam genişliğince sürüklemek aracın hedef çizgisini
+ * bu kadar yol yarı genişliği kaydırır (ekranın yarısı bir kenardan öbürüne yeter).
+ */
+private const val DRAG_UNITS_PER_WIDTH = 3.5f
 
-/** Bölge ipuçlarının gösterildiği kare sayısı (60 Hz). */
-private const val ZONE_HINT_FRAMES = 480
+/** Direksiyon parmağı bastığı noktanın bu kadar altına çekilirse fren; [BRAKE_RELEASE_DP] üstünde bırakılır. */
+private val BRAKE_PULL_DP = 64.dp
+private val BRAKE_RELEASE_DP = 40.dp
+
+/** Kontrol ipuçlarının gösterildiği kare sayısı (60 Hz). */
+private const val HINT_FRAMES = 480
 
 @Composable
 fun VirajScreen(
@@ -381,56 +387,64 @@ private fun VirajCanvas(
             .clip(RoundedCornerShape(16.dp))
             .semantics { contentDescription = desc }
             .pointerInput(viewModel) {
-                // Dokunmatik kontrol, tuş yok: ilk parmağın bölgesi direksiyon (sol
-                // yarı sola, sağ yarı sağa, orta şerit düz ve fren), her ek parmak fren.
-                // Bölge parmak kayınca güncellenir; roller kalkana dek değişmez.
+                // Dokunmatik kontrol, tuş ve bölge yok: ilk parmak direksiyon —
+                // yatay sürükleme aracın hedef çizgisini kaydırır (Filo'daki gibi
+                // orantılı; motor o çizgiye kırar, varınca düzelir ve parmak
+                // kalkınca çizgiyi tutar). Parmağı bastığı noktanın altına çekmek
+                // ya da ikinci bir parmak fren yapar.
                 awaitEachGesture {
                     val first = awaitFirstDown(requireUnconsumed = false)
-                    val order = ArrayList<PointerId>()
-                    val zones = HashMap<PointerId, Int>()
-                    fun zoneOf(x: Float): Int {
-                        val f = x / size.width
-                        return if (f < ZONE_LEFT) -1 else if (f > ZONE_RIGHT) 1 else 0
+                    val unitsPerPx = DRAG_UNITS_PER_WIDTH / size.width
+                    val pullPx = BRAKE_PULL_DP.toPx()
+                    val releasePx = BRAKE_RELEASE_DP.toPx()
+                    val brakeIds = HashSet<PointerId>()
+                    var steerId: PointerId? = first.id
+                    var lastX = first.position.x
+                    var downY = first.position.y
+                    var pulled = false
+                    fun applyBrake() {
+                        viewModel.setBrake(pulled || brakeIds.isNotEmpty())
                     }
-                    fun apply() {
-                        val lead = order.firstOrNull()
-                        if (lead == null) {
-                            viewModel.setTouch(0, false)
-                            return
-                        }
-                        val z = zones[lead] ?: 0
-                        viewModel.setTouch(z, z == 0 || order.size >= 2)
-                    }
-                    order += first.id
-                    zones[first.id] = zoneOf(first.position.x)
                     first.consume()
-                    apply()
                     while (true) {
                         val event = awaitPointerEvent()
-                        var changed = false
                         for (c in event.changes) {
-                            if (c.changedToDownIgnoreConsumed() && c.id !in zones) {
-                                order += c.id
-                                zones[c.id] = zoneOf(c.position.x)
-                                changed = true
-                            } else if (c.pressed && c.id in zones) {
-                                val z = zoneOf(c.position.x)
-                                if (z != zones[c.id]) {
-                                    zones[c.id] = z
-                                    changed = true
+                            if (c.changedToDownIgnoreConsumed() && c.id != steerId && c.id !in brakeIds) {
+                                if (steerId == null) {
+                                    steerId = c.id
+                                    lastX = c.position.x
+                                    downY = c.position.y
+                                    pulled = false
+                                } else {
+                                    brakeIds += c.id
                                 }
+                                applyBrake()
                             }
-                            if (c.changedToUpIgnoreConsumed() && c.id in zones) {
-                                order.remove(c.id)
-                                zones.remove(c.id)
-                                changed = true
+                            if (c.id == steerId) {
+                                if (c.pressed) {
+                                    val dx = c.position.x - lastX
+                                    lastX = c.position.x
+                                    if (dx != 0f) viewModel.drag(dx * unitsPerPx)
+                                    val pull = c.position.y - downY
+                                    val now = if (pulled) pull > releasePx else pull > pullPx
+                                    if (now != pulled) {
+                                        pulled = now
+                                        applyBrake()
+                                    }
+                                } else if (c.changedToUpIgnoreConsumed()) {
+                                    steerId = null
+                                    pulled = false
+                                    applyBrake()
+                                }
+                            } else if (c.id in brakeIds && c.changedToUpIgnoreConsumed()) {
+                                brakeIds -= c.id
+                                applyBrake()
                             }
                             c.consume()
                         }
-                        if (changed) apply()
                         if (event.changes.none { it.pressed }) break
                     }
-                    viewModel.setTouch(0, false)
+                    viewModel.setBrake(false)
                 }
             },
     ) {
@@ -438,37 +452,49 @@ private fun VirajCanvas(
         val tick = frame + fxTick.longValue
         if (tick < 0L) return@Canvas
         drawScene(viewModel.world, fx, proj, clip, path, textMeasurer, textCache)
-        drawTouchZones(viewModel.world, textMeasurer, textCache, brakeLabel)
+        drawTouchHints(viewModel.world, textMeasurer, textCache, brakeLabel)
     }
 }
 
-/** Koşunun ilk saniyelerinde bölge ipuçları: köşelerde oklar, ortada fren etiketi; sonra söner. */
-private fun DrawScope.drawTouchZones(world: VirajWorld, textMeasurer: TextMeasurer, cache: HashMap<String, TextLayoutResult>, brakeLabel: String) {
-    if (world.frames <= 0 || world.frames > ZONE_HINT_FRAMES) return
-    val alpha = ((ZONE_HINT_FRAMES - world.frames) / 90f).coerceIn(0f, 1f) * 0.85f
+/** Koşunun ilk saniyelerinde kontrol ipuçları: yatay sürükleme oku, altında fren için aşağı ok; sonra söner. */
+private fun DrawScope.drawTouchHints(world: VirajWorld, textMeasurer: TextMeasurer, cache: HashMap<String, TextLayoutResult>, brakeLabel: String) {
+    if (world.frames <= 0 || world.frames > HINT_FRAMES) return
+    val alpha = ((HINT_FRAMES - world.frames) / 90f).coerceIn(0f, 1f) * 0.85f
     val w = size.width
     val h = size.height
-    val y = h * 0.86f
     val u = w * 0.03f
+    val y = h * 0.78f
+    val cx = w / 2f
+    val half = w * 0.19f
     val color = Color.White.copy(alpha = alpha)
     val edge = Color.Black.copy(alpha = alpha * 0.6f)
+    // Sürükleme çubuğu ve iki ucundaki oklar.
+    for ((c, sw) in listOf(edge to u * 0.5f, color to u * 0.22f)) {
+        drawLine(c, Offset(cx - half, y), Offset(cx + half, y), strokeWidth = sw, cap = StrokeCap.Round)
+    }
     for (side in intArrayOf(-1, 1)) {
-        val cx = if (side < 0) w * 0.2f else w * 0.8f
-        val tip = cx + side * u * 1.2f
-        for ((c, sw) in listOf(edge to u * 0.9f, color to u * 0.45f)) {
-            drawLine(c, Offset(cx - side * u * 0.6f, y - u * 1.2f), Offset(tip, y), strokeWidth = sw, cap = StrokeCap.Round)
-            drawLine(c, Offset(cx - side * u * 0.6f, y + u * 1.2f), Offset(tip, y), strokeWidth = sw, cap = StrokeCap.Round)
+        val tip = cx + side * (half + u * 0.55f)
+        for ((c, sw) in listOf(edge to u * 0.7f, color to u * 0.32f)) {
+            drawLine(c, Offset(tip - side * u * 0.7f, y - u * 0.7f), Offset(tip, y), strokeWidth = sw, cap = StrokeCap.Round)
+            drawLine(c, Offset(tip - side * u * 0.7f, y + u * 0.7f), Offset(tip, y), strokeWidth = sw, cap = StrokeCap.Round)
         }
     }
-    val layout = cache.getOrPut("zone|$brakeLabel") {
+    // Fren: aşağı ok ve etiket.
+    val by = y + u * 2.2f
+    for ((c, sw) in listOf(edge to u * 0.7f, color to u * 0.32f)) {
+        drawLine(c, Offset(cx - u * 0.7f, by - u * 0.7f), Offset(cx, by), strokeWidth = sw, cap = StrokeCap.Round)
+        drawLine(c, Offset(cx + u * 0.7f, by - u * 0.7f), Offset(cx, by), strokeWidth = sw, cap = StrokeCap.Round)
+    }
+    val layout = cache.getOrPut("hint|$brakeLabel") {
         textMeasurer.measure(AnnotatedString(brakeLabel), style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Black, color = Color.White))
     }
-    val pad = u * 0.8f
-    val tx = w / 2f - layout.size.width / 2f
-    val ty = y - layout.size.height / 2f
+    val pad = u * 0.7f
+    val tx = cx - layout.size.width / 2f
+    val ty = by + u * 0.9f
     drawRoundRect(Color.Black.copy(alpha = alpha * 0.55f), topLeft = Offset(tx - pad, ty - pad * 0.4f), size = Size(layout.size.width + pad * 2f, layout.size.height + pad * 0.8f), cornerRadius = CornerRadius(pad, pad))
     drawText(layout, topLeft = Offset(tx, ty), alpha = alpha)
 }
+
 
 private fun DrawScope.drawScene(
     world: VirajWorld,

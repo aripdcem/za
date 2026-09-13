@@ -496,7 +496,7 @@
     <!-- Viraj -->
     <string name="game_viraj">Viraj</string>
     <string name="game_viraj_tagline">Pseudo-3D racing: drive against the clock, overtake rivals, master the curves</string>
-    <string name="viraj_intro">The throttle is automatic. Touch the left half to steer left, the right half to steer right; the middle strip or a second finger brakes. Checkpoints add time; the race ends when time runs out. Overtaking scores; avoid cones and oil, ride the turbo strips, grab the yellow box.</string>
+    <string name="viraj_intro">The throttle is automatic. Drag your finger left and right: the car steers to the line your finger points at, straightens out when it gets there, and holds that line after you lift off. Pulling the finger down, or a second finger, brakes. Checkpoints add time; the race ends when time runs out. Overtaking scores; avoid cones and oil, ride the turbo strips, grab the yellow box.</string>
     <string name="viraj_daily_desc">Everyone drives the same track today; three attempts a day.</string>
     <string name="viraj_daily_status_fmt">Today: %1$d/%2$d attempts · best %3$d</string>
     <string name="viraj_daily_exhausted">No attempts left today; a new track tomorrow!</string>
@@ -508,7 +508,7 @@
     <string name="viraj_time_up">Time is up</string>
     <string name="viraj_result_fmt">%1$s km · %2$d overtakes · %3$d checkpoints</string>
     <string name="viraj_ctrl_brake">BRAKE</string>
-    <string name="viraj_touch_hint">Left/right half: steer · middle strip or a second finger: brake</string>
+    <string name="viraj_touch_hint">Drag your finger: the car follows · pull down or use a second finger to brake</string>
     <string name="viraj_checkpoint_fmt">Checkpoint +%1$d s</string>
     <string name="viraj_overtake_fmt">Overtake +%1$d</string>
     <string name="viraj_turbo">Turbo!</string>

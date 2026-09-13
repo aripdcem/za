@@ -14,7 +14,11 @@ import kotlin.random.Random
  * ([SEGMENT_LENGTH] uzunluğunda parçalar); yanal konumlar yol yarı
  * genişliği kesridir (−1..1 asfalt, ötesi toprak).
  *
- * Kurallar: gaz otomatiktir, [steer] ile direksiyon, [brake] ile fren. Yol
+ * Kurallar: gaz otomatiktir, [steer] ile orantılı direksiyon, [brake] ile
+ * fren. Direksiyon iki yoldan verilir: ya [steer] doğrudan yazılır (−1..1),
+ * ya da [steerBy]/[steerTo] ile parmağın gösterdiği yanal hedef sürülür —
+ * araç o hedefe doğru kırar ve varınca düzelir (ekranın sürükleme kontrolü).
+ * Yol
  * dışı yavaşlatır ve kenar nesnelerine çarpmak hızı keser. Daha yavaş bir
  * rakibe çarpmak hızı düşürür ve geriye iter; rakibi geçmek puan verir. Her
  * [CHECKPOINT_EVERY] parçada kontrol noktası süre ekler; süre bitince koşu
@@ -44,6 +48,12 @@ class VirajWorld(val seed: Long) {
         const val CAR_WIDTH = 0.3f
         const val ITEM_WIDTH = 0.34f
         const val MAX_X = 2.2f
+
+        /** Hedef takibinde direksiyon sertliği: [steer] = fark × bu kat (±1'de doyar). */
+        const val STEER_GAIN = 8f
+
+        /** Hedef araçtan en çok bu kadar açılır: hızlı bir fiske aracı sürüklemeye devam etmez. */
+        const val STEER_LEAD = 0.5f
 
         const val START_TIME = 40f
         const val MAX_TIME = 60f
@@ -98,9 +108,25 @@ class VirajWorld(val seed: Long) {
     var frames = 0
         private set
 
-    /** Giriş: −1 sol, 0 düz, 1 sağ. */
-    var steer = 0
+    /**
+     * Giriş: −1 sol … 1 sağ, ara değerler orantılıdır. Doğrudan yazmak parmak
+     * hedefini bırakır; [steerBy]/[steerTo] yeniden devralır.
+     */
+    var steer: Float
+        get() = steerInput
+        set(value) {
+            steerInput = value.coerceIn(-1f, 1f)
+            targeting = false
+        }
+
+    /** Parmağın gösterdiği yanal hedef; araç oraya sürülür. */
+    var targetX = 0f
+        private set
+
     var brake = false
+
+    private var steerInput = 0f
+    private var targeting = false
 
     val cars = ArrayList<Car>()
 
@@ -120,6 +146,21 @@ class VirajWorld(val seed: Long) {
     val playerSegmentIndex: Int get() = segmentIndexOf(playerZ)
     val meters: Int get() = (position * METERS_PER_UNIT).toInt()
     val kmh: Int get() = (speed / MAX_SPEED * KMH_AT_MAX).toInt()
+
+    /** Sürükleme girişi: hedefi [dx] kadar kaydırır (yol yarı genişliği birimi). */
+    fun steerBy(dx: Float) = steerTo(targetX + dx)
+
+    /**
+     * Sürükleme girişi: hedefi verilen yanal konuma taşır. Hedef araçtan en çok
+     * [STEER_LEAD] kadar açılabilir; parmak kalkınca araç son hedefi tutmayı sürdürür.
+     */
+    fun steerTo(x: Float) {
+        targeting = true
+        targetX = x.coerceIn(
+            max(-MAX_X, playerX - STEER_LEAD),
+            min(MAX_X, playerX + STEER_LEAD),
+        )
+    }
 
     fun segmentIndexOf(z: Float): Int = max(0, floor(z / SEGMENT_LENGTH).toInt())
 
@@ -152,12 +193,18 @@ class VirajWorld(val seed: Long) {
         val speedPct = speed / MAX_SPEED
         val dx = dt * 2f * speedPct
 
+        // Hedef takibi: direksiyon, parmak hedefi ile araç arasındaki farktan orantılı çıkar.
+        if (targeting) steerInput = ((targetX - playerX) * STEER_GAIN).coerceIn(-1f, 1f)
+
         // Direksiyon ve merkezkaç; yağda direksiyon ters ve araç kayar.
-        val dir = if (slipT > 0f) -steer else steer
+        val dir = if (slipT > 0f) -steerInput else steerInput
         playerX += dir * dx
         playerX -= dx * speedPct * seg.curve * CENTRIFUGAL
         if (slipT > 0f) playerX += slipDrift * dt
         playerX = playerX.coerceIn(-MAX_X, MAX_X)
+        // Yağda hedef tutulmaz: kayarken yalnız o karedeki sürükleme kırar (ters yöne).
+        if (slipT > 0f) targetX = playerX
+        targetX = targetX.coerceIn(-MAX_X, MAX_X)
 
         // Hız: fren, turbo ya da gaz.
         val maxNow = if (turboT > 0f) MAX_SPEED * TURBO_FACTOR else MAX_SPEED

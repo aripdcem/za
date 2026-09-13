@@ -2,6 +2,9 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.38.0 (2026-09-13)
+- Viraj kontrolü Filo'nunki gibi: sol/sağ bölge yerine **sürükleme**. Parmağı kaydırmak aracın hedef çizgisini taşır, direksiyon orantılı kırar (uzak hedef tam kilit, yakın hedef az), araç çizgiye varınca düzelir ve parmak kalkınca çizgiyi tutar. Fren: parmağı aşağı çekmek ya da ikinci parmak. Yağda hedef takibi askıya alınır, kayarken yalnız o anki sürükleme ters yöne kırar. Yol fiziği (merkezkaç, tutulabilen azami hız) değişmedi
+
 ## 0.37.1 (2026-09-11)
 - Cici cihaz bulgusu: kedi konturu 1,4 → 2,5 dp, siyah kedi smokin desenli (açık burun ve göğüs) — koyu uzayda gövdesiyle de görünür
 
