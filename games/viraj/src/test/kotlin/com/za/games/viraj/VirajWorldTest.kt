@@ -216,6 +216,35 @@ class VirajWorldTest {
         assertTrue("elle 0 yazınca hedefe dönmez", abs(manual.playerX - held) < 0.2f)
     }
 
+    /**
+     * Hedef payı ([VirajWorld.STEER_LEAD]): tek karelik bir fiske aracı en çok
+     * bir pay kadar taşır, aynı yolu süren sürekli sürükleme çok daha uzağa
+     * götürür. Cihazda ölçülemedi (araç yoldan çıkınca yanal referans kalmıyor),
+     * bu yüzden davranış burada sabitlendi.
+     */
+    @Test
+    fun theLeadClampCapsFlicksButNotSustainedDrags() {
+        val flick = clean()
+        flick.setSpeedForTest(max)
+        flick.steerBy(3f)
+        assertEquals("fiske hedefi bir payla sınırlı", VirajWorld.STEER_LEAD, flick.targetX, 1e-4f)
+        repeat(120) { flick.step() }
+
+        val sweep = clean()
+        sweep.setSpeedForTest(max)
+        repeat(60) {
+            sweep.steerBy(0.05f) // aynı 3 birimlik yol, 60 kareye yayılmış
+            sweep.step()
+        }
+        repeat(60) { sweep.step() }
+
+        assertTrue("fiske payı aşmaz: ${flick.playerX}", flick.playerX < VirajWorld.STEER_LEAD + 0.15f)
+        assertTrue(
+            "sürekli sürükleme daha uzağa götürür: ${sweep.playerX} / ${flick.playerX}",
+            sweep.playerX > flick.playerX + 0.3f,
+        )
+    }
+
     /** Parmak kalkınca araç son çizgisini tutar: merkezkaç onu kenara sürüklemez. */
     @Test
     fun theCarHoldsItsLineAfterTheFingerLifts() {

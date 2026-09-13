@@ -403,7 +403,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Kakuro | ✅ | olay güdümlü (0 · 0) | — | ✅ üretim bütçesi | 2026-09-09 |
 | Vergici | ✅ | olay güdümlü (0 · 0) | — | ✅ düğüm bütçeli çözücü | 2026-09-09 |
 | Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | ✅ mevcut testlerle | 2026-09-09 |
-| Viraj | ✅ | **60 · 3 · %100 · 34 ms** | v0.38: bölge → sürükleme, bekliyor | ✅ kusur yok | 2026-09-13 |
+| Viraj | ✅ | **60 · 3 · %100 · 34 ms** | ✅ v0.38: kenardan kenara 35 mm · fren eşiği 64 dp (56 dp'de açılmıyor) | ✅ kusur yok | 2026-09-13 |
 | Filo | ✅ | **60 · 1 · %81 · 31 ms** | ✅ dikey band: gemi parmaktan 157 dp yukarıda | ✅ düzeltildi | 2026-09-11 |
 | Reyon | ✅ | olay güdümlü (boşta 0) · kaydırmada **60 · 0 · %6,8 · 20 ms** | ✅ adımlayıcı 48×48 dp (v0.28.1) | ✅ ölçüldü (diziliş + denetim + satış + sipariş) | 2026-09-10 |
 | Raket | ✅ | **58 · 15 · %48 · 26 ms** (GPU 21 ms) | ✅ kazanç 1,24 · ölü bölge yok · iki parmak ayrı | ✅ seviyeler sıralı | 2026-09-10 |
@@ -2273,6 +2273,79 @@ tam yol) yoksa başparmak için fazla mı; `STEER_LEAD` 0,5 aracın parmağın
 gerisinde kalması hissini veriyor mu; 64 dp'lik aşağı çekme başparmak
 yayında yanlışlıkla frenletiyor mu (yay tipik olarak 20–40 dp iniyor);
 yağda ters kırmanın yeni hâli anlaşılır mı.
+
+### Viraj · sürükleme kontrolü · 2026-09-13
+
+v0.38.0 (cihaza temiz kurulum). Ölçüm zor tarafı: Viraj'da araç ekranda sabit
+durur, yol kayar; ayrıca çarpışmalar hızı ve yolu bozduğu için hız/mesafe
+üzerinden çıkarım gürültülü. Temiz ayrım koşunun ilk saniyelerinde (engelsiz
+pencere) alındı.
+
+**Sürükleme kazancı 3,5 — başparmak için doğru mu?** Tuval genişliği cihazda
+1016 px = 387 dp = **61,4 mm**. Koddaki eşleme (tuvalin tamamı = 3,5 yol yarı
+genişliği) bu ölçüyle şuna karşılık geliyor:
+
+| hareket | parmak yolu |
+| --- | --- |
+| ortadan yol kenarına (1 yarı genişlik) | 290 px = 111 dp = **17,6 mm** |
+| kenardan kenara (tam yol) | 580 px = 221 dp = **35 mm** |
+| tuvalin yarısı | 508 px = 30,7 mm (tam yolun %88'i) |
+
+Yani "yarım ekran = tam yol" yaklaşık doğru: tam yol biraz daha fazla, ekranın
+%57'si. Cihazda doğrulandı: çeyrek ekranlık (254 px) sürükleme aracı yol
+kenarına taşıyor, yarım ekranlık (508 px) sürükleme aracı çimene çıkarıyor
+(ekran görüntüleri). Başparmak açısından 35 mm rahat bir yay içinde (Filo
+ölçümünde 41 mm tek başparmakla geçilebilir, 55 mm sınır kabul edilmişti);
+duyarlılık yüksek tarafta: **1 mm parmak ≈ yol genişliğinin %3'ü**.
+
+**0,5'lik hedef payı (STEER_LEAD) aracı parmağın gerisinde bırakır mı?**
+Kodda hedef, araçtan en çok 0,5 yarı genişlik açılabiliyor. Sonucu iki yönlü:
+araç parmağın gösterdiği çizginin en fazla yarım yarı-genişlik gerisinde
+kalıyor (≈ 9 mm parmak karşılığı), ama **hızlı ve uzun bir sürükleme tam
+yolu bankaya yazmıyor** — parmak yarım ekran süpürse bile hedef o an aracın
+0,5 ötesine kırpılıyor, araç ilerledikçe hedef yeniden açılıyor. Yani hızlı
+süpürme yavaş süpürmeden daha kısa mesafe kazandırır.
+
+> Cihazda ölçülemedi: hızlı/yavaş süpürmenin son yanal konumu. Araç yoldan
+> çıkınca yol merkezi ve kerb referansları kayboluyor, kalan gösterge (hız,
+> mesafe) çarpışmalarla kirleniyor. Bu farkı ölçmek için motor tarafında bir
+> yanal konum göstergesi (ya da ekran testinde `targetX`/`carX` okuması) gerek.
+
+**64 dp aşağı çekme başparmak yayında yanlışlıkla frenletir mi?** Eşik cihazda
+doğrulandı — koşu başındaki engelsiz pencerede, dik aşağı çekip 2,2 s tutarak:
+
+| aşağı çekme | hız (başta → 2,2 s sonra) | fren |
+| --- | --- | --- |
+| 0 dp | 89 → 89 | hayır |
+| 56 dp | 30 → 58 (hızlanıyor) | **hayır** |
+| 64 dp | 30 → **11** | **evet** |
+| 72 dp | 30 → 9 | evet |
+| 96 dp | 240 → 12 | evet |
+
+Yani fren tam 64 dp'de açılıyor, 56 dp'de açılmıyor. Geometri: 64 dp =
+**10,2 mm**. Başparmak tabanından ~90 mm yarıçapla ±30 mm yatay süpüren bir yay
+uçta ≈ 30²/(2·90) = **5 mm ≈ 31 dp** düşer; telefonu daha aşağıdan tutan kısa
+kavrayışta (yarıçap ~60 mm) düşüş ≈ 7,5 mm ≈ **47 dp**. Her iki durumda da eşiğin
+altında, pay 1,4–2 kat. Sonuç: doğal yayda yanlışlıkla frenleme beklenmiyor,
+ama telefonu alttan tutup geniş süpüren oyuncuda pay inceliyor — eşik
+düşürülecekse bu iki sayı (31 ve 47 dp) sınırı belirler.
+
+**Kayıt (v0.38.0, kod değişikliği yok).** Üç ölçüm de tasarımı doğruladı, eşik
+ve kazanç olduğu gibi kalıyor. İki şey kalıcılaştırıldı:
+
+- *Fren eşiğinin alt sınırı koda yazıldı.* `BRAKE_PULL_DP` yorumunda artık
+  başparmak yayının kendi düşüşü duruyor (uzun kavrayış ~31 dp, kısa kavrayış
+  ~47 dp): eşik ileride düşürülecekse sınır bu iki sayı, altına inilirse yatay
+  süpürme yanlışlıkla frenletir.
+- *Hedef payının cihazda ölçülemeyen farkı teste çevrildi.*
+  `VirajWorldTest.theLeadClampCapsFlicksButNotSustainedDrags`: 3 birimlik tek
+  karelik fiske aracı en çok bir pay taşıyor, aynı 3 birim 60 kareye yayılınca
+  araç en az 0,3 birim daha uzağa gidiyor. Cihazda yanal referans olmadığı için
+  bu ayrım artık depoda duruyor.
+
+Duyarlılık notu (1 mm ≈ yolun %3'ü) tasarım gereği: yol 35 mm parmak yoluna
+sığıyor, çünkü tek başparmakla kenardan kenara geçilebilmesi isteniyor. Daha
+düşük kazanç aracı sakinleştirir ama tam yolu tek süpürmeye sığdırmaz.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
