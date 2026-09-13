@@ -69,8 +69,9 @@ class VirajScreenTest {
         road.performTouchInput { moveBy(0, Offset(width * 0.25f, 0f)) }
         assertTrue("sürükleme hedefi sağa taşır: ${vm.world.targetX}", vm.world.targetX > 0.2f)
         val x0 = vm.world.playerX
-        rule.mainClock.advanceTimeBy(500L)
-        assertTrue("araç hedefe gider: ${vm.world.playerX} / $x0", vm.world.playerX > x0 + 0.05f)
+        // Yanal yetki hızla artar (2 × hız kesri); araç duruştan kalkarken yavaş kırar.
+        rule.mainClock.advanceTimeBy(1_500L)
+        assertTrue("araç hedefe gider: ${vm.world.playerX} / $x0", vm.world.playerX > x0 + 0.15f)
         assertTrue("orantılı direksiyon: ${vm.world.steer}", vm.world.steer > 0f && vm.world.steer <= 1f)
 
         road.performTouchInput { down(1, Offset(width * 0.2f, centerY)) }
@@ -99,7 +100,7 @@ class VirajScreenTest {
             moveBy(0, Offset(width * 0.3f, 0f))
         }
         val x0 = vm.world.playerX
-        rule.mainClock.advanceTimeBy(500L)
+        rule.mainClock.advanceTimeBy(1_500L)
         assertTrue("sağa sürüklenince araç sağa kayar (${vm.world.playerX} / $x0)", vm.world.playerX > x0)
         road.performTouchInput { up(0) }
         rule.onNodeWithText(str(R.string.pause)).performClick()
