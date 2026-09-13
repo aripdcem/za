@@ -36,12 +36,8 @@ class VirajBalanceProbe {
         fun step(): List<VirajEvent> {
             if (tick % max(1, skill.latency) == 0) decide()
             tick++
-            val fark = wantX - world.playerX
-            world.steer = when {
-                fark > 0.05f -> 1
-                fark < -0.05f -> -1
-                else -> 0
-            }
+            // Ekrandaki sürükleme kontrolünün aynısı: sürücü hedefi gösterir, motor orantılı kırar.
+            world.steerTo(wantX)
             world.brake = wantBrake
             return world.step()
         }

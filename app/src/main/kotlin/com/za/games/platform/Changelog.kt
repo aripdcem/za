@@ -39,6 +39,15 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.38.0", "2026-09-13",
+            tr = listOf(
+                "Viraj artık Filo gibi sürüklenerek sürülüyor: parmağını kaydır, araç o çizgiye orantılı kırar ve orada kalır; sol/sağ bölge kalktı. Fren için parmağı aşağı çek ya da ikinci parmağını bas",
+            ),
+            en = listOf(
+                "Viraj is now driven by dragging, like Filo: slide your finger and the car steers proportionally to that line and holds it; the left/right zones are gone. Brake by pulling the finger down or with a second finger",
+            ),
+        ),
+        ReleaseNote(
             "0.37.1", "2026-09-11",
             tr = listOf(
                 "Cici: kedilerin konturu kalınlaştı, siyah kedi smokin desenli; koyu uzayda daha görünür",

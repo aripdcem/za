@@ -60,6 +60,7 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Bostan: üretilen her seviye uzman politikasıyla kazanılır (6 tohum × 3 zorluk), türler dalga dizinine göre açılır, bütçe aşılmaz, zorluklar saldırgan sayısında sıralı; tuzak kurulmadan kemirilir, kurulunca kemirene patlar | `BostanStateTest` |
 | Sincap: her basamakta en az bir dal ve güvenli kaçış (30 tohum × 400 basamak, güvenli yol araması), kargalı basamağın altında kuru dal yok; pilot boşluğa atlamaz, 10 tohumda ortalama ≥ 20 basamak | `SincapWorldTest` |
 | Çekirge: tek fıskırtma kuralı, sürü kenarda dönüp iner ve seyreldikçe hızlanır, dokunulmazlıkta tükürük can götürmez, balyalar üç kaynaktan aşınır, sürü çiftçi hizasında istila; pilot 6 tohumun en az 4'ünde ilk dalgayı temizler | `CekirgeWorldTest` |
+| Viraj: sürükleme aracı hedef çizgisine götürür ve orada düzelir, hedef araçtan en çok STEER_LEAD açılır, parmak kalkınca çizgi korunur, yağda hedef takibi askıya alınır | `VirajWorldTest` |
 | Cici: üç ikram sabit puan (7/5/2) ve seri; 2 s'de sıkılma, 3 s'den sonra saniyede 1 puan, sıfırda durur; kedi/top teması can götürür, 2 s dokunulmazlık; top kenarlarda kalır ve rampayla hızlanır; her şey kenardan girer ve ekranı terk edince silinir; pilot 12 tohumun en az 9'unda 100 puanı geçer, ortalama ≥ 45 s | `CiciWorldTest` |
 | Metin kontrastı WCAG AA eşiğini tutar | `ThemeContrastTest` |
 
@@ -402,7 +403,7 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 | Kakuro | ✅ | olay güdümlü (0 · 0) | — | ✅ üretim bütçesi | 2026-09-09 |
 | Vergici | ✅ | olay güdümlü (0 · 0) | — | ✅ düğüm bütçeli çözücü | 2026-09-09 |
 | Toplam Kapma | ✅ | olay güdümlü (0 · 0) | — | ✅ mevcut testlerle | 2026-09-09 |
-| Viraj | ✅ | **60 · 3 · %100 · 34 ms** | ✅ bölge 438/642 px · ok ipuçları 7,5–8,1:1 | ✅ kusur yok | 2026-09-11 |
+| Viraj | ✅ | **60 · 3 · %100 · 34 ms** | v0.38: bölge → sürükleme, bekliyor | ✅ kusur yok | 2026-09-13 |
 | Filo | ✅ | **60 · 1 · %81 · 31 ms** | ✅ dikey band: gemi parmaktan 157 dp yukarıda | ✅ düzeltildi | 2026-09-11 |
 | Reyon | ✅ | olay güdümlü (boşta 0) · kaydırmada **60 · 0 · %6,8 · 20 ms** | ✅ adımlayıcı 48×48 dp (v0.28.1) | ✅ ölçüldü (diziliş + denetim + satış + sipariş) | 2026-09-10 |
 | Raket | ✅ | **58 · 15 · %48 · 26 ms** (GPU 21 ms) | ✅ kazanç 1,24 · ölü bölge yok · iki parmak ayrı | ✅ seviyeler sıralı | 2026-09-10 |
@@ -2223,6 +2224,55 @@ sıkılma uyarısı, kask ve göz eylem gerektirmedi. HUD etiketinin 2,5 s'de h�
 "Sakin" görünmesi: kodda uyarı 120 karede (2,0 s) kesin; okuma aralığı 1,5 s
 ve kayıt başlangıcıyla kaymış olabilir, cihazda 0,5 s aralıkla yeniden
 bakılacak. Ölçülecek: siyah kedi gövde/yama kontrastı, kontur kalınlığı.
+
+### Viraj · sürükleme kontrolü · 2026-09-13
+
+**Bulgu (kullanıcı).** "Filo'daki oynama kolaylığı Viraj'da yok, kontrol
+oldukça zor." Haklı: v0.36.0'da tuşlar kalkmıştı ama kontrol **tuş olarak
+kalmıştı** — sol/sağ bölge `steer`'e yalnız −1/0/1 yazıyordu, yani ekrana
+taşınmış bir D-pad. Filo'da parmak gemiyi *taşıyor*; Viraj'da parmak yalnız
+"tam sola kır" diyordu. Aradaki fark oran: 240 km/s'te tam kilit yanal 2
+birim/s demek, oyuncunun eli bunu ancak basıp bırakarak ölçebiliyordu.
+
+**Değişiklik (v0.38.0).** Direksiyon orantılı oldu ve parmak hedef gösteriyor:
+
+| önce (v0.36–0.37) | sonra (v0.38) |
+| --- | --- |
+| `steer: Int` = −1 / 0 / 1 | `steer: Float` = −1…1, ara değerler orantılı |
+| sol %40 / sağ %40 bölgesi | yatay sürükleme: hedef çizgi (`steerTo`/`steerBy`) |
+| parmak kalkınca direksiyon düz | parmak kalkınca araç çizgiyi tutar |
+| orta şerit = düz + fren (direksiyonu da düşürüyordu) | orta şerit yok; fren = parmağı 64 dp aşağı çekmek ya da ikinci parmak |
+
+Motor: `steer = (hedef − araç) × STEER_GAIN(8)`, ±1'de doyar. Hedef araçtan
+en çok `STEER_LEAD` = 0,5 yol yarı genişliği açılır — hızlı bir fiske aracı
+parmak durduktan sonra sürüklemesin diye. Ekran kazancı
+`DRAG_UNITS_PER_WIDTH` = 3,5: tuvalin yarısı bir kenardan öbürüne yetiyor.
+Yağda hedef takibi askıya alınır (hedef her karede araca sabitlenir), yani
+kayarken yalnız o karedeki sürükleme ters yöne kırar; parmağını bırakan
+oyuncu kendi kendine tam kilide gitmez.
+
+**Fizik değişmedi.** Merkezkaç, tutulabilen azami hız tablosu, süre bütçesi
+aynı. Makine sürücüsünde fark ölçüm gürültüsü kadar — bang-bang bir bot için
+orantılı direksiyon hafif dezavantaj, insan için mesele bu değil:
+
+| sürücü | v0.37 (◄ ► ile) | v0.38 (sürükleme) |
+| --- | --- | --- |
+| acemi | 19,3 kontrol noktası | 18,6 |
+| orta | 19,9 | 19,6 |
+| usta | 20,6 | 20,3 |
+
+Testler (`VirajWorldTest`, 16): araç hedefe oturur ve orada düzelir
+(|steer| < 0,25), uzak hedef tam kilit / yakın hedef az kırar, elle `steer`
+yazmak hedefi bırakır, virajın en sertinde parmak kalktıktan sonra çizgi
+0,25 birimden az kayar, yağda hedef araca sabitlenir ve araç kenara yapışmaz.
+`VirajScreenTest`: sürükleme hedefi taşır ve araç oraya gider, ikinci parmak
+ve aşağı çekme frenler, parmak kalkınca fren bırakılır.
+
+**Cihazda ölçülecekler (A–C).** Sürükleme kazancı 3,5 doğru mu (yarım ekran =
+tam yol) yoksa başparmak için fazla mı; `STEER_LEAD` 0,5 aracın parmağın
+gerisinde kalması hissini veriyor mu; 64 dp'lik aşağı çekme başparmak
+yayında yanlışlıkla frenletiyor mu (yay tipik olarak 20–40 dp iniyor);
+yağda ters kırmanın yeni hâli anlaşılır mı.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

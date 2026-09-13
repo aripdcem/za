@@ -194,8 +194,12 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 ### Viraj
 - **Sözde-3D yarış** (OutRun türü yol izdüşümü, kendi tasarımımız): dikey ekranda arkadan görünüm, parça parça
   üretilen yol, yumuşatılmış virajlar ve tepeler, yol kenarı ağaç/çalı/kaya/tabela, uzak tepelerde paralaks
-- Gaz otomatik; tuş yok: tuvalin sol yarısına dokunmak sola, sağ yarısına dokunmak sağa kırar, orta şerit ya da
-  ikinci parmak fren (ilk saniyelerde bölge ipuçları çizilir). Yüksek hızda merkezkaç aracı virajın dışına iter; yol dışı yavaşlatır, kenar nesnelerine çarpmak hızı keser
+- Gaz otomatik; tuş ve bölge yok, **Filo'daki gibi sürüklenir**: parmağı sağa sola kaydırmak aracın hedef çizgisini
+  taşır, motor o çizgiye **orantılı** kırar (`steer` −1..1 = fark × 8, ±1'de doyar), varınca düzelir ve parmak kalkınca
+  çizgi korunur; hedef araçtan en çok 0,5 yol yarı genişliği açılır, hızlı bir fiske aracı sürüklemeye devam etmez.
+  Parmağı 64 dp aşağı çekmek ya da ikinci parmak fren yapar (ilk saniyelerde ipuçları çizilir). Yağda hedef takibi
+  askıya alınır: kayarken yalnız o andaki sürükleme, ters yöne kırar. Yüksek hızda merkezkaç aracı virajın dışına
+  iter; yol dışı yavaşlatır, kenar nesnelerine çarpmak hızı keser
 - Rakip kartlar sollamadan kaçınır ve kendi aralarında yol verir; daha yavaş bir rakibe çarpmak hızı düşürüp geriye
   iter, rakibi geçmek +50. Her 600 parçada (3 km) kontrol noktası süre ekler (zorlukla azalır); süre bitince yarış biter
 - Eşyalar: turbo şeridi (2,5 s tavan hız), yağ (direksiyon ters, kayma), koni (yavaşlama), sarı kutu (turbo, bir

@@ -1,0 +1,6 @@
+<tr-TR>
+• Viraj artık Filo gibi sürüklenerek sürülüyor: parmağını kaydır, araç o çizgiye kırar ve orada kalır. Fren için parmağı aşağı çek ya da ikinci parmağını bas.
+</tr-TR>
+<en-US>
+• Viraj is now driven by dragging, like Filo: slide your finger and the car steers to that line and holds it. Brake by pulling the finger down or with a second finger.
+</en-US>

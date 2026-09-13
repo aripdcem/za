@@ -52,9 +52,6 @@ class VirajViewModel(application: Application) : AndroidViewModel(application) {
     private val _frame = MutableStateFlow(0L)
     val frame: StateFlow<Long> = _frame.asStateFlow()
 
-    private var left = false
-    private var right = false
-    private var brake = false
     private var accumulator = 0L
     private var runMode = VirajMode.FREE
     private var runDay = 0L
@@ -77,32 +74,16 @@ class VirajViewModel(application: Application) : AndroidViewModel(application) {
 
     fun attemptsLeft(): Int = DAILY_ATTEMPTS - (store.daily(todayEpoch())?.attempts ?: 0)
 
-    fun pressLeft(pressed: Boolean) {
-        left = pressed
-        applyInput()
+    /**
+     * Parmak sürüklemesi: yol yarı genişliği biriminde yatay fark. Araç parmağın
+     * gösterdiği çizgiye orantılı kırar; parmak kalkınca o çizgiyi tutar.
+     */
+    fun drag(dx: Float) {
+        if (_phase.value == VirajPhase.PLAYING) world.steerBy(dx)
     }
 
-    fun pressRight(pressed: Boolean) {
-        right = pressed
-        applyInput()
-    }
-
-    fun pressBrake(pressed: Boolean) {
-        brake = pressed
-        applyInput()
-    }
-
-    /** Dokunmatik kontrol: [steer] −1/0/1 ve [brake] tek çağrıda (bölge hesabı ekranda). */
-    fun setTouch(steer: Int, brake: Boolean) {
-        left = steer < 0
-        right = steer > 0
-        this.brake = brake
-        applyInput()
-    }
-
-    private fun applyInput() {
-        world.steer = (if (right) 1 else 0) - (if (left) 1 else 0)
-        world.brake = brake
+    fun setBrake(pressed: Boolean) {
+        world.brake = pressed
     }
 
     /** Seçili modda yeni koşu; günlük hak bittiyse başlamaz. */
@@ -124,7 +105,7 @@ class VirajViewModel(application: Application) : AndroidViewModel(application) {
         runMode = mode
         runDay = today
         accumulator = 0L
-        applyInput()
+        world.brake = false
         _runId.value += 1
         _hud.value = world.hud()
         _frame.value += 1
@@ -171,6 +152,7 @@ class VirajViewModel(application: Application) : AndroidViewModel(application) {
 
     fun pause() {
         if (_phase.value != VirajPhase.PLAYING) return
+        setBrake(false)
         _phase.value = VirajPhase.PAUSED
     }
 

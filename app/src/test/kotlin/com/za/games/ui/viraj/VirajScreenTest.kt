@@ -22,9 +22,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Viraj ekranı: tuş yok, tuvale dokunulur. Sol yarı sola, sağ yarı sağa kırar;
- * orta şerit ya da ikinci parmak fren; parmak kalkınca direksiyon düz, fren
- * bırakılır.
+ * Viraj ekranı: tuş ve bölge yok, tuval sürüklenir. Yatay sürükleme aracın
+ * hedef çizgisini kaydırır (orantılı direksiyon), parmağı aşağı çekmek ya da
+ * ikinci parmak fren yapar; parmak kalkınca fren bırakılır, çizgi korunur.
  */
 @RunWith(AndroidJUnit4::class)
 class VirajScreenTest {
@@ -58,33 +58,35 @@ class VirajScreenTest {
     }
 
     @Test
-    fun halvesSteerMiddleAndSecondFingerBrake() {
+    fun draggingSteersProportionallyAndBothBrakesWork() {
         val vm = VirajViewModel(ApplicationProvider.getApplicationContext())
         startFreeRun(vm)
         val road = road()
-        road.performTouchInput { down(0, Offset(width * 0.1f, centerY)) }
-        assertEquals("sol yarı sola kırar", -1, vm.world.steer)
+        road.performTouchInput { down(0, center) }
+        assertEquals("basış tek başına direksiyon kırmaz", 0f, vm.world.targetX, 1e-4f)
         assertFalse(vm.world.brake)
 
-        road.performTouchInput { down(1, Offset(width * 0.9f, centerY)) }
-        assertEquals("ikinci parmak direksiyonu değiştirmez", -1, vm.world.steer)
-        assertTrue("ikinci parmak fren", vm.world.brake)
+        road.performTouchInput { moveBy(0, Offset(width * 0.25f, 0f)) }
+        assertTrue("sürükleme hedefi sağa taşır: ${vm.world.targetX}", vm.world.targetX > 0.2f)
+        val x0 = vm.world.playerX
+        rule.mainClock.advanceTimeBy(500L)
+        assertTrue("araç hedefe gider: ${vm.world.playerX} / $x0", vm.world.playerX > x0 + 0.05f)
+        assertTrue("orantılı direksiyon: ${vm.world.steer}", vm.world.steer > 0f && vm.world.steer <= 1f)
 
+        road.performTouchInput { down(1, Offset(width * 0.2f, centerY)) }
+        assertTrue("ikinci parmak fren", vm.world.brake)
         road.performTouchInput { up(1) }
-        assertEquals(-1, vm.world.steer)
         assertFalse("ikinci parmak kalkınca fren bırakılır", vm.world.brake)
 
-        road.performTouchInput { moveTo(0, Offset(width * 0.5f, centerY)) }
-        assertEquals("orta şerit düz", 0, vm.world.steer)
-        assertTrue("orta şerit fren", vm.world.brake)
-
-        road.performTouchInput { moveTo(0, Offset(width * 0.9f, centerY)) }
-        assertEquals("sağ yarı sağa kırar", 1, vm.world.steer)
-        assertFalse(vm.world.brake)
-
+        road.performTouchInput { moveBy(0, Offset(0f, 260f)) }
+        assertTrue("parmağı aşağı çekmek fren", vm.world.brake)
         road.performTouchInput { up(0) }
-        assertEquals("parmak kalkınca düz", 0, vm.world.steer)
-        assertFalse(vm.world.brake)
+        assertFalse("parmak kalkınca fren bırakılır", vm.world.brake)
+
+        // Parmak kalkınca araç son çizgisini tutmayı sürdürür.
+        val before = vm.world.playerX
+        rule.mainClock.advanceTimeBy(400L)
+        assertTrue("çizgiye gitmeyi sürdürür: $before → ${vm.world.playerX}", vm.world.playerX >= before)
     }
 
     @Test
@@ -92,11 +94,13 @@ class VirajScreenTest {
         val vm = VirajViewModel(ApplicationProvider.getApplicationContext())
         startFreeRun(vm)
         val road = road()
-        road.performTouchInput { down(0, Offset(width * 0.9f, centerY)) }
+        road.performTouchInput {
+            down(0, center)
+            moveBy(0, Offset(width * 0.3f, 0f))
+        }
         val x0 = vm.world.playerX
         rule.mainClock.advanceTimeBy(500L)
-        assertEquals(1, vm.world.steer)
-        assertTrue("sağa kırılınca araç sağa kayar (${vm.world.playerX} / $x0)", vm.world.playerX > x0)
+        assertTrue("sağa sürüklenince araç sağa kayar (${vm.world.playerX} / $x0)", vm.world.playerX > x0)
         road.performTouchInput { up(0) }
         rule.onNodeWithText(str(R.string.pause)).performClick()
         rule.mainClock.advanceTimeByFrame()
