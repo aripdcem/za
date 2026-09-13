@@ -139,7 +139,14 @@ private val CarColors = listOf(
  */
 private const val DRAG_UNITS_PER_WIDTH = 3.5f
 
-/** Direksiyon parmağı bastığı noktanın bu kadar altına çekilirse fren; [BRAKE_RELEASE_DP] üstünde bırakılır. */
+/**
+ * Direksiyon parmağı bastığı noktanın bu kadar altına çekilirse fren;
+ * [BRAKE_RELEASE_DP] üstünde bırakılır. Cihazda doğrulandı (bkz.
+ * docs/oyun-testi.md): 56 dp'de açılmıyor, 64 dp'de açılıyor. Alt sınır
+ * başparmak yayının kendi düşüşüdür — uzun kavrayışta ~31 dp, telefonu
+ * alttan tutan kısa kavrayışta ~47 dp; eşik bunların altına indirilmemeli,
+ * yoksa yatay süpürme yanlışlıkla frenletir.
+ */
 private val BRAKE_PULL_DP = 64.dp
 private val BRAKE_RELEASE_DP = 40.dp
 

@@ -2330,6 +2330,23 @@ altında, pay 1,4–2 kat. Sonuç: doğal yayda yanlışlıkla frenleme beklenmi
 ama telefonu alttan tutup geniş süpüren oyuncuda pay inceliyor — eşik
 düşürülecekse bu iki sayı (31 ve 47 dp) sınırı belirler.
 
+**Kayıt (v0.38.0, kod değişikliği yok).** Üç ölçüm de tasarımı doğruladı, eşik
+ve kazanç olduğu gibi kalıyor. İki şey kalıcılaştırıldı:
+
+- *Fren eşiğinin alt sınırı koda yazıldı.* `BRAKE_PULL_DP` yorumunda artık
+  başparmak yayının kendi düşüşü duruyor (uzun kavrayış ~31 dp, kısa kavrayış
+  ~47 dp): eşik ileride düşürülecekse sınır bu iki sayı, altına inilirse yatay
+  süpürme yanlışlıkla frenletir.
+- *Hedef payının cihazda ölçülemeyen farkı teste çevrildi.*
+  `VirajWorldTest.theLeadClampCapsFlicksButNotSustainedDrags`: 3 birimlik tek
+  karelik fiske aracı en çok bir pay taşıyor, aynı 3 birim 60 kareye yayılınca
+  araç en az 0,3 birim daha uzağa gidiyor. Cihazda yanal referans olmadığı için
+  bu ayrım artık depoda duruyor.
+
+Duyarlılık notu (1 mm ≈ yolun %3'ü) tasarım gereği: yol 35 mm parmak yoluna
+sığıyor, çünkü tek başparmakla kenardan kenara geçilebilmesi isteniyor. Daha
+düşük kazanç aracı sakinleştirir ama tam yolu tek süpürmeye sığdırmaz.
+
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
 Bu belgenin ilk hâlinde "uygulama geneli kare hızı sorunu" diye bir açık konu
