@@ -36,7 +36,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -97,7 +96,13 @@ internal fun ReyonSalesContent(
     val sound = LocalZaSound.current
     val res = LocalContext.current.resources
 
-    var countedSeed by rememberSaveable { mutableLongStateOf(Long.MIN_VALUE) }
+    // Aynı çözüm ekran yeniden kurulunca (döndürme, menüye gidip dönme, mod
+    // değişimi) ikinci kez sayılmasın: ViewModel'de sonuç dururken sayaç mevcut
+    // durumdan başlatılır. rememberSaveable burada yetmez: kökte
+    // SaveableStateHolder yok, menüye dönüşte kayıt silinir (bkz. SudokuScreen).
+    var countedSeed by remember {
+        mutableLongStateOf(if (result != null) state?.sales?.seed ?: Long.MIN_VALUE else Long.MIN_VALUE)
+    }
     val latestCompleted by rememberUpdatedState(onCompleted)
     LaunchedEffect(result) {
         val seed = state?.sales?.seed ?: return@LaunchedEffect
