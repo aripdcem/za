@@ -96,7 +96,7 @@
     <string name="kiskac_lower_label">Gizli kelime bundan sonra</string>
     <string name="kiskac_upper_label">Gizli kelime bundan önce</string>
     <string name="kiskac_attempts_fmt">Tahmin: %1$d/%2$d</string>
-    <string name="kiskac_hint">Tahmin, kelimenin önünde mi sonrasında mı söyler; kolay modda sınırlara uzaklık yüzdesi görünür (A %%0, Z %%100)</string>
+    <string name="kiskac_hint" formatted="false">Tahmin, kelimenin önünde mi sonrasında mı söyler; kolay modda sınırlara uzaklık yüzdesi görünür (A %0, Z %100)</string>
     <string name="kiskac_after_fmt">%%%1$d uzakta</string>
     <string name="kiskac_before_fmt">%%%1$d uzakta</string>
     <string name="kiskac_easy_mode">Kolay mod</string>
@@ -483,7 +483,7 @@
     <string name="about_cc_note">Kelime listeleri FrequencyWords\'ten türetildiği için CC BY-SA 4.0 koşullarıyla paylaşılır; lisans metni:</string>
     <string name="about_license_show">Apache 2.0 lisans metnini göster</string>
     <string name="about_license_hide">Lisans metnini gizle</string>
-    <string name="about_app_license">ZA\'nın kaynak kodu GNU GPL v3 ile açıktır. "ZA" adı ve logosu lisansa dahil değildir.</string>
+    <string name="about_app_license">ZA\'nın kaynak kodu GNU GPL v3 ile açıktır. \"ZA\" adı ve logosu lisansa dahil değildir.</string>
     <string name="about_app_license_link">Lisans metni (GitHub)</string>
 
     <!-- Yenilikler -->
