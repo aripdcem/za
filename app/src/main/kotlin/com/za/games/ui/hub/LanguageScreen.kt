@@ -36,8 +36,8 @@ const val LANGUAGE_LIST_TAG = "language_list"
 /**
  * Dil seçimi.
  *
- * İlk satır "telefonun dili"dir ([ZaLocale.SYSTEM]); altında desteklenen on
- * dört dil kendi adlarıyla listelenir. Seçim uygulanınca etkinlik yeniden
+ * İlk satır "telefonun dili"dir ([ZaLocale.SYSTEM]); altında desteklenen
+ * diller kendi adlarıyla listelenir. Seçim uygulanınca etkinlik yeniden
  * oluşur, o yüzden ekran seçimden sonra kendiliğinden kapanır.
  *
  * [selected] kullanıcının açık seçimi, [effective] o an çizilen dil: kullanıcı

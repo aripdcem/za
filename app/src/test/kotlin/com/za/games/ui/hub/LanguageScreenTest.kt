@@ -3,6 +3,7 @@ package com.za.games.ui.hub
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -33,7 +34,9 @@ class LanguageScreenTest {
 
     @Test
     fun listsEverySupportedLanguageByItsOwnName() {
-        show()
+        // Açık bir seçimle: "telefonun dili" satırı o zaman alt satırda dil adı
+        // yazmaz, her ad listede tek geçer.
+        show(selected = "en")
         val list = rule.onNodeWithTag(LANGUAGE_LIST_TAG)
         for (tag in ZaLocale.TAGS) {
             val name = ZaLocale.endonym(tag)
@@ -44,10 +47,19 @@ class LanguageScreenTest {
 
     @Test
     fun offersThePhoneLanguageAndNamesWhatItResolvedTo() {
+        // Seçim "telefonun dili"ndeyken satır hangi dile düşüldüğünü alt satırda
+        // yazar: "English" o zaman iki kez geçer (bu satır + listedeki İngilizce).
         show(selected = ZaLocale.SYSTEM)
         rule.onNodeWithText(str(R.string.language_system)).assertIsDisplayed()
-        // Seçim "telefonun dili"ndeyken satır hangi dile düşüldüğünü de yazar.
-        rule.onNodeWithText(ZaLocale.endonym("en")).assertIsDisplayed()
+        assertEquals(2, rule.onAllNodesWithText(ZaLocale.endonym("en")).fetchSemanticsNodes().size)
+    }
+
+    @Test
+    fun anExplicitChoiceDropsTheResolvedLanguageLine() {
+        // Türkçe seçiliyken "telefonun dili" satırı alt satır yazmaz: "English"
+        // yalnız listedeki İngilizce satırında geçer.
+        show(selected = "tr")
+        assertEquals(1, rule.onAllNodesWithText(ZaLocale.endonym("en")).fetchSemanticsNodes().size)
     }
 
     @Test

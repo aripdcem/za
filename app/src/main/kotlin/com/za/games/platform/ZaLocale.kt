@@ -16,9 +16,9 @@ import java.util.Locale
 /**
  * Uygulamanın dili.
  *
- * Varsayılan dil İngilizce'dir (`res/values`); Türkçe ve diğer on iki dil
- * kendi `res/values-<dil>` klasörlerinde durur. Listede olmayan bir dile
- * ayarlı telefon İngilizce görür.
+ * Varsayılan dil İngilizce'dir (`res/values`); her çeviri kendi
+ * `res/values-<dil>` klasöründe durur. Listede olmayan bir dile ayarlı telefon
+ * İngilizce görür.
  *
  * Dili telefondan bağımsız seçmek iki yoldan yürür:
  * - Android 13+ (API 33): sistemin kendi uygulama-dili altyapısı
@@ -34,11 +34,15 @@ object ZaLocale {
     const val SYSTEM = ""
 
     /**
-     * Desteklenen diller. `res/xml/locales_config.xml` ile birebir aynı
-     * olmalı; [ZaLocaleTest] ikisini karşılaştırır.
+     * Desteklenen diller: yalnız gerçekten çevirisi olanlar. Listede olup
+     * `values-<dil>` karşılığı olmayan bir dil sistem seçicisinde çıkar ama
+     * kullanıcıya İngilizce verir — `tools/check_strings.py` bunu hata sayar.
+     *
+     * `res/xml/locales_config.xml` ile birebir aynı olmalı; [ZaLocaleTest] ve
+     * denetim betiği ikisini karşılaştırır.
      */
     val TAGS: List<String> = listOf(
-        "en", "tr", "de", "fr", "nl", "es", "pt", "it", "da", "sv", "nb", "fi", "ru", "ar",
+        "en", "tr", "de",
     )
 
     /** Dilin kendi dilindeki adı. Seçicide kullanıcı kendi dilini tanısın diye elle yazılı. */
