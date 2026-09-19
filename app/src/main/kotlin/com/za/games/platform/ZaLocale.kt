@@ -42,7 +42,7 @@ object ZaLocale {
      * denetim betiği ikisini karşılaştırır.
      */
     val TAGS: List<String> = listOf(
-        "en", "tr", "de", "fr", "nl", "es", "pt", "it", "da", "sv", "nb", "fi",
+        "en", "tr", "de", "fr", "nl", "es", "pt", "it", "da", "sv", "nb", "fi", "ru", "ar",
     )
 
     /** Dilin kendi dilindeki adı. Seçicide kullanıcı kendi dilini tanısın diye elle yazılı. */
