@@ -28,6 +28,7 @@ Aşamalar farklı otomatikleşiyor; ayrımı bilerek koruyoruz:
 | **C** giriş kalibrasyonu | Sürüm öncesi, gerçek cihazda — gerçek dokunma ve ekran ölçeği gerekir |
 | **D** denge | **CI**: değişmez testleri `test` görevinde, ölçüm koşumları `probe` adımında |
 | **E** erişilebilirlik | Kontrast **CI**'da (`ThemeContrastTest`); etiketler sürüm öncesi cihazda |
+| **F** diller | Metin bütünlüğü ve dil listeleri **CI**'da (`tools/check_strings.py`, `ZaLocaleTest`); taşma, kırpma ve sağdan sola yerleşim sürüm öncesi cihazda |
 
 CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 çürümesini engellemek**. Asıl koruma, ölçülen doğruların değişmez testine
@@ -268,6 +269,49 @@ Yoğun ızgaralarda ve klavyelerde 48 dp zaten geometrik olarak imkânsız:
 Sudoku'nun 9×9 tahtası 411 dp genişlikte en çok 45 dp hücre verebilir, 29
 harflik klavye satırına 10 tuş sığdırınca tuş 40 dp olur. Buton boyutu kodda
 tanımlı olduğu için bu eksen kod incelemesine bırakıldı.
+
+## F · Diller (cihaz)
+
+14 dil eklendikçe kırılan şey kurallar değil **yerleşim**: aynı düğme Almanca'da
+iki katı uzunlukta, Arapça sağdan sola akıyor. `tools/check_strings.py` metinlerin
+varlığını ve biçim belirteçlerini garanti eder, ama bir düğmenin içinde kırpıldığını
+göremez — o yüzden bu aşama cihazda koşar.
+
+Uygulamanın dilini değiştirmek: ana menünün üst çubuğundaki dil düğmesi
+(Android 13+ sistem seçicisini açar), ya da
+
+```bash
+adb shell am start -a android.settings.APP_LOCALE_SETTINGS -d package:com.za.games
+```
+
+Her dil için tam tur gerekmez; **üç dil** yeterlidir ve neden seçildikleri şu:
+
+| Dil | Neyi ölçer |
+| --- | --- |
+| **Almanca** | En uzun metinler. Düğme etiketleri, kart başlıkları ve çip satırları burada taşar |
+| **Arapça** | Sağdan sola yerleşim ve rakamlar. Skor, süre ve çarpan Latin rakam kalmalı |
+| **Fince** | Uzun bileşik kelimeler; Almanca'da sığan bir etiket burada satır ortasından kırılabilir |
+
+Bakılacaklar:
+
+1. **Taşma ve kırpma.** Ana menü çipleri, oyun kartları, üst çubuk, bitiş kartları,
+   Reyon'un blok etiketleri, Bostan'ın kart çubuğu. Bir metin üç noktayla kesiliyorsa
+   ya kısaltılır ya kutu esnetilir.
+2. **Sağdan sola (Arapça).** Geri düğmesi ve ikonlar aynaya döner; **oyun tuvalleri
+   dönmez** — Blok'ta sol duvar solda kalır, Tavla'nın haneleri yer değiştirmez.
+   Tuvaller `Canvas` üstünde kendi eksenini çizdiği için beklenen davranış budur;
+   tersi olursa hata.
+3. **Rakamlar.** Arapça cihazda skor, rekor, süre ve `×2.5` gibi çarpanlar Latin
+   rakamla yazılmalı (`ZaLocale.number`/`decimal`). `١٢٣٤` görülürse bir çağrı
+   atlanmış demektir.
+4. **Kelime oyunları.** Beş Harf, Kıskaç, Türetme ve Dizgi listede kalır ve telefon
+   Türkçe değilken **İngilizce** açılır (Türkçe değil): klavye Türk alfabesini,
+   kelimeler Türkçe sözlüğü kullanmaya devam eder.
+5. **Büyük harf.** Üst çubuk ve skor kartı başlıkları arayüzün diliyle büyütülür;
+   İngilizce arayüzde "CONTINUE" yazmalı, "CONTİNUE" değil.
+6. **Dil seçimi kalıcı.** Dili değiştir, uygulamayı tamamen kapat, yeniden aç:
+   seçilen dil korunmalı. Android 12 ve altında bu ayar uygulamanın kendi
+   kayıtlarında saklanır, o yüzden ayrı ölçülür.
 
 ## D · Denge ölçümü
 
