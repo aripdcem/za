@@ -54,7 +54,7 @@ import com.za.games.ui.dalgic.DalgicScreen
 import com.za.games.ui.viraj.VirajScreen
 import com.za.games.ui.snake.SnakeScreen
 import com.za.games.ui.sudoku.SudokuScreen
-import com.za.games.ui.tetris.TetrisScreen
+import com.za.games.ui.blok.BlokScreen
 import com.za.games.ui.turetme.TuretmeScreen
 
 /**
@@ -65,15 +65,15 @@ object GameRegistry {
 
     val games: List<GameEntry> = listOf(
         GameEntry(
-            id = "tetris",
+            id = "blok",
             since = "0.1.0",
-            titleRes = R.string.game_tetris,
-            taglineRes = R.string.game_tetris_tagline,
+            titleRes = R.string.game_blok,
+            taglineRes = R.string.game_blok_tagline,
             category = GameCategory.ARCADE,
             accent = Color(0xFF22D3EE),
             art = { modifier -> TetrominoArt(modifier) },
             screen = { highScore, onScore, onExit ->
-                TetrisScreen(highScore = highScore, onScore = onScore, onExit = onExit)
+                BlokScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
         GameEntry(

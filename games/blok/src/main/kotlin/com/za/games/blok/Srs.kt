@@ -1,9 +1,9 @@
-package com.za.games.tetris
+package com.za.games.blok
 
 /**
  * Super Rotation System (SRS) duvar tekmesi (wall kick) tabloları.
  *
- * Tablolar Tetris Guideline'daki (dx, dy) çiftleriyle yazılmıştır; dy yukarı
+ * Tablolar Blok Guideline'daki (dx, dy) çiftleriyle yazılmıştır; dy yukarı
  * yönde pozitiftir. Tahta koordinatına çevirirken dCol = dx, dRow = -dy olur.
  */
 object Srs {

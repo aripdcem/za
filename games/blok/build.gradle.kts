@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-// Tetris oyun motoru: saf Kotlin/JVM, Android'e bağımlı değil.
+// Blok oyun motoru: saf Kotlin/JVM, Android'e bağımlı değil.
 // Böylece kurallar cihazsız test edilebilir ve motor başka platformlara taşınabilir.
 plugins {
     alias(libs.plugins.kotlin.jvm)
@@ -27,7 +27,7 @@ tasks.test {
     filter { excludeTestsMatching("*Probe") }
 }
 
-// Denge ölçümü: ./gradlew :games:tetris:probe  (bkz. docs/oyun-testi.md)
+// Denge ölçümü: ./gradlew :games:blok:probe  (bkz. docs/oyun-testi.md)
 tasks.register<Test>("probe") {
     description = "Denge ölçüm koşumunu çalıştırır ve raporu basar."
     group = "verification"

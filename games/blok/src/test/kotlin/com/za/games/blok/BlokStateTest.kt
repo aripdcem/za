@@ -1,4 +1,4 @@
-package com.za.games.tetris
+package com.za.games.blok
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
@@ -6,16 +6,16 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class TetrisStateTest {
+class BlokStateTest {
 
     private fun filledRowExcept(vararg gaps: Int): List<Tetromino?> =
-        List(TetrisState.WIDTH) { col -> if (col in gaps) null else Tetromino.Z }
+        List(BlokState.WIDTH) { col -> if (col in gaps) null else Tetromino.Z }
 
     // --- Doğuş ve torba (7-bag) ---
 
     @Test
     fun `new game deals every tetromino exactly once in the first bag`() {
-        val state = TetrisState.newGame(seed = 1L)
+        val state = BlokState.newGame(seed = 1L)
         val firstBag = (listOf(state.active.type) + state.next.take(6)).toSet()
         assertEquals(Tetromino.entries.toSet(), firstBag)
         assertEquals(13, state.next.size) // iki torba - aktif taş
@@ -23,15 +23,15 @@ class TetrisStateTest {
 
     @Test
     fun `same seed produces identical games`() {
-        assertEquals(TetrisState.newGame(42L), TetrisState.newGame(42L))
-        val a = TetrisState.newGame(42L).hardDrop().moveLeft().rotate()
-        val b = TetrisState.newGame(42L).hardDrop().moveLeft().rotate()
+        assertEquals(BlokState.newGame(42L), BlokState.newGame(42L))
+        val a = BlokState.newGame(42L).hardDrop().moveLeft().rotate()
+        val b = BlokState.newGame(42L).hardDrop().moveLeft().rotate()
         assertEquals(a, b)
     }
 
     @Test
     fun `pieces spawn centered with bottom row visible`() {
-        val state = TetrisState.newGame(seed = 3L)
+        val state = BlokState.newGame(seed = 3L)
         assertEquals(-1, state.active.row)
         val cols = state.active.cells.map { it.col }
         assertTrue(cols.all { it in 3..6 })
@@ -41,19 +41,19 @@ class TetrisStateTest {
 
     @Test
     fun `piece stops at the walls`() {
-        var state = TetrisState.newGame(seed = 5L)
+        var state = BlokState.newGame(seed = 5L)
         repeat(15) { state = state.moveLeft() }
         assertEquals(0, state.active.cells.minOf { it.col })
         assertEquals(state, state.moveLeft())
 
         repeat(15) { state = state.moveRight() }
-        assertEquals(TetrisState.WIDTH - 1, state.active.cells.maxOf { it.col })
+        assertEquals(BlokState.WIDTH - 1, state.active.cells.maxOf { it.col })
         assertEquals(state, state.moveRight())
     }
 
     @Test
     fun `tick moves the active piece down one row`() {
-        val state = TetrisState.newGame(seed = 9L)
+        val state = BlokState.newGame(seed = 9L)
         val ticked = state.tick()
         assertEquals(state.active.row + 1, ticked.active.row)
         assertEquals(state.score, ticked.score)
@@ -61,7 +61,7 @@ class TetrisStateTest {
 
     @Test
     fun `soft drop scores one point per cell`() {
-        val state = TetrisState.newGame(seed = 9L)
+        val state = BlokState.newGame(seed = 9L)
         val dropped = state.softDrop()
         assertEquals(state.active.row + 1, dropped.active.row)
         assertEquals(state.score + 1, dropped.score)
@@ -92,7 +92,7 @@ class TetrisStateTest {
 
     @Test
     fun `wall kick rescues a rotation against the left wall`() {
-        val base = TetrisState.newGame(seed = 3L)
+        val base = BlokState.newGame(seed = 3L)
         // Sol duvara yaslanmış dikey T: kutu col=-1'de ama tüm hücreler tahtada.
         val state = base.copy(active = ActivePiece(Tetromino.T, rotation = 1, row = 5, col = -1))
         val rotated = state.rotate(clockwise = true)
@@ -105,7 +105,7 @@ class TetrisStateTest {
 
     @Test
     fun `hard drop locks the piece and spawns the next one`() {
-        val state = TetrisState.newGame(seed = 21L)
+        val state = BlokState.newGame(seed = 21L)
         val expectedNext = state.next.first()
         val dropped = state.hardDrop()
         assertEquals(4, dropped.board.sumOf { row -> row.count { it != null } })
@@ -117,7 +117,7 @@ class TetrisStateTest {
 
     @Test
     fun `hard drop lands exactly on the ghost position`() {
-        val state = TetrisState.newGame(seed = 21L)
+        val state = BlokState.newGame(seed = 21L)
         val ghost = state.ghost
         assertTrue(ghost.row >= state.active.row)
         val dropped = state.hardDrop()
@@ -128,7 +128,7 @@ class TetrisStateTest {
 
     @Test
     fun `soft drop on the floor locks the piece`() {
-        val base = TetrisState.newGame(seed = 11L)
+        val base = BlokState.newGame(seed = 11L)
         val state = base.copy(active = ActivePiece(Tetromino.O, rotation = 0, row = 18, col = 4))
         val locked = state.softDrop()
         assertEquals(Tetromino.O, locked.board[19][4])
@@ -138,7 +138,7 @@ class TetrisStateTest {
 
     @Test
     fun `single line clear scores 100 times level plus drop bonus`() {
-        val base = TetrisState.newGame(seed = 13L)
+        val base = BlokState.newGame(seed = 13L)
         val board = base.board.toMutableList()
         board[19] = filledRowExcept(4, 5)
         val state = base.copy(board = board, active = ActivePiece(Tetromino.O, 0, -1, 4))
@@ -159,7 +159,7 @@ class TetrisStateTest {
 
     @Test
     fun `four line clear scores 800`() {
-        val base = TetrisState.newGame(seed = 13L)
+        val base = BlokState.newGame(seed = 13L)
         val board = base.board.toMutableList()
         for (r in 16..19) board[r] = filledRowExcept(9)
         val state = base.copy(board = board, active = ActivePiece(Tetromino.I, rotation = 1, row = 0, col = 7))
@@ -176,10 +176,10 @@ class TetrisStateTest {
 
     @Test
     fun `next queue never runs dry`() {
-        var state = TetrisState.newGame(seed = 31L)
+        var state = BlokState.newGame(seed = 31L)
         repeat(10) {
-            if (state.status == TetrisStatus.RUNNING) state = state.hardDrop()
-            assertTrue(state.next.size >= TetrisState.VISIBLE_NEXT)
+            if (state.status == BlokStatus.RUNNING) state = state.hardDrop()
+            assertTrue(state.next.size >= BlokState.VISIBLE_NEXT)
         }
     }
 
@@ -187,7 +187,7 @@ class TetrisStateTest {
 
     @Test
     fun `hold swaps once per piece`() {
-        val state = TetrisState.newGame(seed = 7L)
+        val state = BlokState.newGame(seed = 7L)
         val first = state.active.type
         val second = state.next.first()
 
@@ -205,7 +205,7 @@ class TetrisStateTest {
 
     @Test
     fun `hold cannot swap a piece into a blocked spawn`() {
-        val base = TetrisState.newGame(seed = 3L)
+        val base = BlokState.newGame(seed = 3L)
         val board = base.board.toMutableList()
         board[0] = filledRowExcept(0, 1, 2, 7, 8, 9) // doğuş sütunları (3..6) dolu
         val state = base.copy(
@@ -214,14 +214,14 @@ class TetrisStateTest {
             hold = Tetromino.O,
             holdUsed = false,
         )
-        assertEquals(TetrisStatus.OVER, state.holdPiece().status)
+        assertEquals(BlokStatus.OVER, state.holdPiece().status)
     }
 
     // --- Seviye ve yerçekimi ---
 
     @Test
     fun `level rises every ten lines and gravity speeds up`() {
-        val base = TetrisState.newGame(seed = 17L)
+        val base = BlokState.newGame(seed = 17L)
         assertEquals(1, base.level)
         assertEquals(2, base.copy(lines = 10).level)
         assertEquals(4, base.copy(lines = 35).level)
@@ -236,26 +236,26 @@ class TetrisStateTest {
 
     @Test
     fun `paused game ignores moves and resumes cleanly`() {
-        val paused = TetrisState.newGame(seed = 23L).pause()
-        assertEquals(TetrisStatus.PAUSED, paused.status)
+        val paused = BlokState.newGame(seed = 23L).pause()
+        assertEquals(BlokStatus.PAUSED, paused.status)
         assertEquals(paused, paused.tick())
         assertEquals(paused, paused.moveLeft())
         assertEquals(paused, paused.hardDrop())
-        assertEquals(TetrisStatus.RUNNING, paused.togglePause().status)
+        assertEquals(BlokStatus.RUNNING, paused.togglePause().status)
     }
 
     @Test
     fun `stacking to the top ends the game`() {
-        var state = TetrisState.newGame(seed = 99L)
+        var state = BlokState.newGame(seed = 99L)
         var safety = 0
-        while (state.status != TetrisStatus.OVER && safety < 500) {
+        while (state.status != BlokStatus.OVER && safety < 500) {
             state = state.hardDrop()
             safety++
         }
-        assertEquals(TetrisStatus.OVER, state.status)
+        assertEquals(BlokStatus.OVER, state.status)
         assertTrue(state.score > 0)
         assertEquals(state, state.hardDrop()) // oyun bitince hamle işlemez
         assertEquals(state, state.togglePause())
-        assertNotEquals(TetrisStatus.OVER, TetrisState.newGame(seed = 1L).status)
+        assertNotEquals(BlokStatus.OVER, BlokState.newGame(seed = 1L).status)
     }
 }

@@ -1,4 +1,4 @@
-package com.za.games.tetris
+package com.za.games.blok
 
 /** Tahta üzerindeki bir hücre konumu. Satırlar yukarıdan aşağı artar. */
 data class Cell(val row: Int, val col: Int)

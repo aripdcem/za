@@ -29,7 +29,7 @@ class ZaAppTest {
     fun opensGameAndReturnsToHubWithRecentRow() {
         launch()
         rule.onAllNodesWithText(str(R.string.play))[0].performClick()
-        rule.onNodeWithText(titleOf(R.string.game_tetris)).assertIsDisplayed()
+        rule.onNodeWithText(titleOf(R.string.game_blok)).assertIsDisplayed()
         rule.onNodeWithContentDescription(str(R.string.back)).performClick()
         rule.onNodeWithText(str(R.string.hub_tagline)).assertIsDisplayed()
         rule.onNodeWithText(str(R.string.hub_recent).uppercase(Locale.getDefault())).assertIsDisplayed()

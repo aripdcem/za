@@ -39,6 +39,17 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.39.0", "2026-09-19",
+            tr = listOf(
+                "Mağaza yayınına hazırlık: Android 16'ya (API 36) göre derleniyor, sürüm paketi Play biçiminde de üretiliyor",
+                "Blok baştan sona kendi adını taşıyor; eski rekor ve son oynananlar kaydı korunur",
+            ),
+            en = listOf(
+                "Store-release prep: built against Android 16 (API 36), the release pipeline also produces the Play bundle",
+                "Blok now carries its own name throughout; your old record and recently-played entry are kept",
+            ),
+        ),
+        ReleaseNote(
             "0.38.0", "2026-09-13",
             tr = listOf(
                 "Viraj artık Filo gibi sürüklenerek sürülüyor: parmağını kaydır, araç o çizgiye orantılı kırar ve orada kalır; sol/sağ bölge kalktı. Fren için parmağı aşağı çek ya da ikinci parmağını bas",
@@ -294,12 +305,12 @@ object Changelog {
         ReleaseNote(
             "0.21.0", "2026-09-08",
             tr = listOf(
-                "Tetris'in adı Blok oldu (Tetris tescilli marka)",
+                "Düşen blok oyununun adı Blok oldu",
                 "Hakkında ekranı: sürüm, bağlantılar, açık kaynak lisansları",
                 "Gizlilik politikası sayfası; sitede oyunlar gruplandı",
             ),
             en = listOf(
-                "Tetris renamed to Blok (Tetris is a registered trademark)",
+                "The falling-blocks game is now called Blok",
                 "About screen: version, links, open source licenses",
                 "Privacy policy page; games grouped on the website",
             ),

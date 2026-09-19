@@ -1,20 +1,20 @@
-package com.za.games.tetris
+package com.za.games.blok
 
 import org.junit.Test
 
 /**
  * Blok denge ölçümü — birim testi değil, rapor üretir
- * (bkz. docs/oyun-testi.md). `./gradlew :games:tetris:probe` ile koşar.
+ * (bkz. docs/oyun-testi.md). `./gradlew :games:blok:probe` ile koşar.
  *
  * Blok'ta zaman baskısı tek yerden gelir: yerçekimi. Seviye her 10 satırda bir
  * artar ve düşme aralığı kısalır. Ölçümün sorusu: hangi seviyede parça,
  * oyuncunun onu yerleştirmesine yetecek süreden az havada kalıyor?
  */
-class TetrisBalanceProbe {
+class BlokBalanceProbe {
 
-    /** Bir parçanın tepeden dibe düşme süresi (s); [TetrisState.HEIGHT] hücre. */
+    /** Bir parçanın tepeden dibe düşme süresi (s); [BlokState.HEIGHT] hücre. */
     private fun dususSuresi(seviye: Int): Float =
-        gravityMillis(seviye) * TetrisState.HEIGHT / 1000f
+        gravityMillis(seviye) * BlokState.HEIGHT / 1000f
 
     @Test
     fun gravityCurve() {

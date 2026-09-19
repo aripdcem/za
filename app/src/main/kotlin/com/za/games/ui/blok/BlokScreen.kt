@@ -1,4 +1,4 @@
-package com.za.games.ui.tetris
+package com.za.games.ui.blok
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
@@ -49,8 +49,8 @@ import com.za.games.R
 import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
-import com.za.games.tetris.TetrisState
-import com.za.games.tetris.TetrisStatus
+import com.za.games.blok.BlokState
+import com.za.games.blok.BlokStatus
 import com.za.games.ui.common.GameOverOverlay
 import com.za.games.ui.common.GameTopBar
 import com.za.games.ui.common.PadButton
@@ -60,11 +60,11 @@ import com.za.games.platform.ShareContent
 import java.util.Locale
 
 @Composable
-fun TetrisScreen(
+fun BlokScreen(
     highScore: Long,
     onScore: (Long) -> Unit,
     onExit: () -> Unit,
-    viewModel: TetrisViewModel = viewModel(),
+    viewModel: BlokViewModel = viewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val haptics = LocalZaHaptics.current
@@ -74,9 +74,9 @@ fun TetrisScreen(
 
     // Skoru oyun sonunda ve ekrandan ayrılırken platforma bildir. Bitiş
     // sesi yalnızca canlı geçişte çalar (ekrana geri girişte tekrar etmez).
-    var overHeard by remember { mutableStateOf(state.status == TetrisStatus.OVER) }
+    var overHeard by remember { mutableStateOf(state.status == BlokStatus.OVER) }
     LaunchedEffect(state.status) {
-        if (state.status == TetrisStatus.OVER) {
+        if (state.status == BlokStatus.OVER) {
             latestOnScore(state.score)
             if (!overHeard) {
                 overHeard = true
@@ -122,7 +122,7 @@ fun TetrisScreen(
     }
     // Geri tuşu: önce duraklat, tekrar basınca menüye dön.
     BackHandler {
-        if (state.status == TetrisStatus.RUNNING) viewModel.pause() else onExit()
+        if (state.status == BlokStatus.RUNNING) viewModel.pause() else onExit()
     }
 
     // "Yeni rekor" rozetini bu oturumun başındaki rekora göre belirle.
@@ -138,14 +138,14 @@ fun TetrisScreen(
             .background(MaterialTheme.colorScheme.background)
             .safeDrawingPadding(),
     ) {
-        GameTopBar(title = stringResource(R.string.game_tetris), onExit = onExit) {
+        GameTopBar(title = stringResource(R.string.game_blok), onExit = onExit) {
             TextButton(
                 onClick = viewModel::togglePause,
-                enabled = state.status != TetrisStatus.OVER,
+                enabled = state.status != BlokStatus.OVER,
             ) {
                 Text(
                     text = stringResource(
-                        if (state.status == TetrisStatus.PAUSED) R.string.resume else R.string.pause,
+                        if (state.status == BlokStatus.PAUSED) R.string.resume else R.string.pause,
                     ),
                 )
             }
@@ -173,18 +173,18 @@ fun TetrisScreen(
                     flashAlpha = clearFlash.value,
                 )
                 when (state.status) {
-                    TetrisStatus.PAUSED -> PausedOverlay(
+                    BlokStatus.PAUSED -> PausedOverlay(
                         onResume = viewModel::togglePause,
                         onRestart = restart,
                         onExit = onExit,
                     )
-                    TetrisStatus.OVER -> GameOverOverlay(
+                    BlokStatus.OVER -> GameOverOverlay(
                         score = state.score,
                         isRecord = state.score > previousBest.longValue,
                         onRestart = restart,
                         onExit = onExit,
                         share = ShareContent(
-                            gameId = "tetris",
+                            gameId = "blok",
                             headline = stringResource(R.string.share_score_fmt, formatScore(state.score)),
                             details = listOf(
                                 stringResource(R.string.level) + " " + state.level,
@@ -192,7 +192,7 @@ fun TetrisScreen(
                             ),
                         ),
                     )
-                    TetrisStatus.RUNNING -> Unit
+                    BlokStatus.RUNNING -> Unit
                 }
             }
 
@@ -206,7 +206,7 @@ fun TetrisScreen(
         }
 
         Text(
-            text = stringResource(R.string.tetris_hint),
+            text = stringResource(R.string.blok_hint),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             textAlign = TextAlign.Center,
@@ -231,7 +231,7 @@ fun TetrisScreen(
 }
 
 @Composable
-private fun SidePanel(state: TetrisState, highScore: Long, modifier: Modifier = Modifier) {
+private fun SidePanel(state: BlokState, highScore: Long, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -241,7 +241,7 @@ private fun SidePanel(state: TetrisState, highScore: Long, modifier: Modifier = 
         }
         PanelBox(label = stringResource(R.string.next_label)) {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                repeat(TetrisState.VISIBLE_NEXT) { index ->
+                repeat(BlokState.VISIBLE_NEXT) { index ->
                     PiecePreview(type = state.next.getOrNull(index))
                 }
             }

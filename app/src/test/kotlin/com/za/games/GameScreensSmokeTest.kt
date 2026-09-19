@@ -19,7 +19,7 @@ class GameScreensSmokeTest(private val gameId: String) {
         @JvmStatic
         @ParameterizedRobolectricTestRunner.Parameters(name = "{0}")
         fun games(): List<Array<Any>> = listOf(
-            "tetris", "2048", "snake", "sudoku", "mines", "kiskac", "besharf", "turetme",
+            "blok", "2048", "snake", "sudoku", "mines", "kiskac", "besharf", "turetme",
             "dizgi", "kuyu", "gecit", "tavla", "balkon", "kakuro", "vergici", "toplam", "viraj", "filo", "reyon", "raket", "tuse", "ucurtma", "dalgic", "bostan", "sincap", "cekirge", "cici",
         ).map { arrayOf<Any>(it) }
     }

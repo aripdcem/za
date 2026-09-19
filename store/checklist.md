@@ -37,7 +37,7 @@ temsil etmez.
 
 - [ ] Sürüm derlemesini gerçek cihaza kur (hata ayıklama derlemesiyle ölçme):
       `./gradlew :app:assembleRelease` → `apksigner sign` → `adb install -r`
-- [ ] **A · koşum:** `python3 tools/cihaz_testi.py tarama` — 18 oyun açılıyor,
+- [ ] **A · koşum:** `python3 tools/cihaz_testi.py tarama` — 27 oyun açılıyor,
       oynanıyor, `logcat` temiz
 - [ ] **B · kare hızı:** sürekli çizen oyunlarda (Yılan, Kuyu, Geçit, Balkon,
       Viraj, Filo) `python3 tools/cihaz_testi.py kare --sure 15`; kare/s ≥ 58
@@ -51,5 +51,8 @@ temsil etmez.
       (`./gradlew :games:<oyun>:probe`)
 
 ## Yapı
-- [ ] Android App Bundle (AAB) üret: `./gradlew :app:bundleRelease` (release.yml'e AAB çıktısı eklenmeli)
-- [ ] `versionCode` her yüklemede artmalı (release.yml etiketten türetir)
+- [x] Android App Bundle (AAB) üret: `release.yml` her sürümde `za-<etiket>-play.aab` çıkarır (APK yandan kurulum için kalır)
+- [x] `versionCode` her yüklemede artmalı (release.yml etiketten türetir)
+- [x] `targetSdk`/`compileSdk` 36 (Android 16); Play yeni uygulamalarda tabanı her yıl yükseltir, Console güncel değeri söyler
+- [x] Motor testleri sürüm kapısında eksiksiz: `./gradlew :games:engineTests` (liste `games/` altından türetilir)
+- [ ] Android 16 nüansı: hedef 36 olduğu için büyük ekranlarda dikey kilit yok sayılabilir. Telefonda etkisi yok; tablet ekran görüntüsü verilecekse yerleşim önce cihazda görülmeli

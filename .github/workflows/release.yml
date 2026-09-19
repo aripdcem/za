@@ -1,6 +1,6 @@
 name: Release
 
-# İmzalı APK üretimi. `v*` etiketi push'lanınca çalışır, APK'yı GitHub
+# İmzalı APK ve Play için AAB üretimi. `v*` etiketi push'lanınca çalışır, APK'yı GitHub
 # Release'e `za.apk` adıyla ekler; Pages sitesindeki indirme bağlantısı
 # releases/latest/download/za.apk adresinden her zaman en yeni sürümü verir.
 #
@@ -39,7 +39,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Motor birim testleri
-        run: ./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test :games:kiskac:test :games:turetme:test :games:dizgi:test :games:kuyu:test :games:gecit:test :games:tavla:test :games:balkon:test :games:kakuro:test :games:sayi:test :games:viraj:test :games:filo:test :games:reyon:test
+        run: ./gradlew :games:engineTests
 
       - name: Arayüz testleri (Robolectric + Compose)
         run: ./gradlew :app:testDebugUnitTest
@@ -60,18 +60,20 @@ jobs:
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
 
-      - name: İmzalı release APK derle
-        run: ./gradlew :app:assembleRelease -PzaVersion=${{ steps.version.outputs.version }}
+      - name: İmzalı release APK ve AAB derle
+        run: ./gradlew :app:assembleRelease :app:bundleRelease -PzaVersion=${{ steps.version.outputs.version }}
         env:
           ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/za-release.jks
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
 
-      - name: Yayın dosyalarını hazırla (APK + kaynak arşivleri + SHA256)
+      - name: Yayın dosyalarını hazırla (APK + AAB + kaynak arşivleri + SHA256)
         run: |
           TAG="${{ steps.version.outputs.tag }}"
           mkdir -p dist
           cp app/build/outputs/apk/release/app-release.apk "dist/za-$TAG.apk"
           cp app/build/outputs/apk/release/app-release.apk dist/za.apk
+          # Play Console'a yüklenen paket; yandan kurulamaz, APK onun için.
+          cp app/build/outputs/bundle/release/app-release.aab "dist/za-$TAG-play.aab"
           git archive --format=zip --prefix="za-$TAG/" -o "dist/za-$TAG-source.zip" HEAD
           git archive --format=tar.gz --prefix="za-$TAG/" -o "dist/za-$TAG-source.tar.gz" HEAD
           cd dist && sha256sum za* > SHA256SUMS.txt && cat SHA256SUMS.txt
