@@ -33,7 +33,7 @@ class HubScreenTest {
     @Test
     fun registryHoldsTheKnownGames() {
         val expected = listOf(
-            "tetris", "2048", "snake", "sudoku", "mines", "kiskac", "besharf", "turetme",
+            "blok", "2048", "snake", "sudoku", "mines", "kiskac", "besharf", "turetme",
             "dizgi", "kuyu", "gecit", "tavla", "balkon", "kakuro", "vergici", "toplam", "viraj", "filo", "reyon", "raket", "tuse", "ucurtma", "dalgic", "bostan", "sincap", "cekirge", "cici",
         )
         assertEquals(expected, games.map { it.id })
@@ -67,7 +67,7 @@ class HubScreenTest {
         val list = rule.onNodeWithTag(HUB_LIST_TAG)
         list.performScrollToNode(hasText(str(R.string.game_dizgi)))
         rule.onNodeWithText(str(R.string.game_dizgi)).assertIsDisplayed()
-        val blok = runCatching { list.performScrollToNode(hasText(str(R.string.game_tetris))) }
+        val blok = runCatching { list.performScrollToNode(hasText(str(R.string.game_blok))) }
         assertTrue("Blok kelime grubunda listelenmemeli", blok.isFailure)
     }
 

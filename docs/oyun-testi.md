@@ -678,7 +678,7 @@ geliyor. Tutarlı tasarım.
 
 ### Blok · 2026-09-09
 
-**D — zorluk eğrisi** (`./gradlew :games:tetris:probe`). **Sorun yok.**
+**D — zorluk eğrisi** (`./gradlew :games:blok:probe`). **Sorun yok.**
 
 Blok'ta zaman baskısı tek yerden gelir: yerçekimi. Seviye her 10 satırda artar,
 düşme aralığı Guideline formülüyle kısalır ve 50 ms tabanında durur.

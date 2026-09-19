@@ -12,16 +12,16 @@
     <string name="high_score_fmt">Rekor: %1$s</string>
     <string name="coming_soon">Yeni oyunlar yolda…</string>
 
-    <!-- Blok (düşen bloklar; eski adı Tetris tescilli marka olduğundan değiştirildi) -->
-    <string name="game_tetris">Blok</string>
-    <string name="game_tetris_tagline">Düşen dörtlü bloklar: satırları tamamla, taşı tut, gölgesiyle nişan al</string>
+    <!-- Blok (düşen dörtlü bloklar) -->
+    <string name="game_blok">Blok</string>
+    <string name="game_blok_tagline">Düşen dörtlü bloklar: satırları tamamla, taşı tut, gölgesiyle nişan al</string>
     <string name="score">Skor</string>
     <string name="high_score">Rekor</string>
     <string name="level">Seviye</string>
     <string name="lines">Satır</string>
     <string name="next_label">Sıradaki</string>
     <string name="hold_label">Tut</string>
-    <string name="tetris_hint">Tahtaya dokunarak döndür, sürükleyerek kaydır</string>
+    <string name="blok_hint">Tahtaya dokunarak döndür, sürükleyerek kaydır</string>
     <string name="pause">Duraklat</string>
     <string name="resume">Devam et</string>
     <string name="restart">Yeniden başlat</string>
@@ -303,7 +303,7 @@
     <string name="tavla_off_tray">Toplama tepsisi</string>
 
     <!-- Tahta açıklamaları (ekran okuyucu) -->
-    <string name="tetris_board_desc">Blok tahtası: seviye %1$d, %2$d satır, skor %3$d</string>
+    <string name="blok_board_desc">Blok tahtası: seviye %1$d, %2$d satır, skor %3$d</string>
     <string name="snake_board_desc">Yılan tahtası: uzunluk %1$d, skor %2$d</string>
     <string name="mines_board_desc">Mayın tarlası %1$d×%2$d: %3$d mayın, %4$d bayrak</string>
 

@@ -1,10 +1,10 @@
-package com.za.games.ui.tetris
+package com.za.games.ui.blok
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.za.games.tetris.TetrisState
-import com.za.games.tetris.TetrisStatus
-import com.za.games.tetris.gravityMillis
+import com.za.games.blok.BlokState
+import com.za.games.blok.BlokStatus
+import com.za.games.blok.gravityMillis
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,24 +15,24 @@ import kotlinx.coroutines.launch
 
 /**
  * Motoru süren katman: yerçekimi döngüsünü işletir ve oyuncu girdilerini
- * değişmez [TetrisState] geçişlerine çevirir.
+ * değişmez [BlokState] geçişlerine çevirir.
  */
-class TetrisViewModel : ViewModel() {
+class BlokViewModel : ViewModel() {
 
-    private val _state = MutableStateFlow(TetrisState.newGame())
-    val state: StateFlow<TetrisState> = _state.asStateFlow()
+    private val _state = MutableStateFlow(BlokState.newGame())
+    val state: StateFlow<BlokState> = _state.asStateFlow()
 
     init {
         viewModelScope.launch {
             while (true) {
                 val current = _state.value
-                if (current.status != TetrisStatus.RUNNING) {
+                if (current.status != BlokStatus.RUNNING) {
                     // Duraklatma/oyun sonu: koşmaya başlayana dek bekle.
-                    _state.first { it.status == TetrisStatus.RUNNING }
+                    _state.first { it.status == BlokStatus.RUNNING }
                     continue
                 }
                 delay(gravityMillis(current.level))
-                _state.update { if (it.status == TetrisStatus.RUNNING) it.tick() else it }
+                _state.update { if (it.status == BlokStatus.RUNNING) it.tick() else it }
             }
         }
     }
@@ -55,5 +55,5 @@ class TetrisViewModel : ViewModel() {
 
     fun togglePause() = _state.update { it.togglePause() }
 
-    fun newGame() = _state.update { TetrisState.newGame() }
+    fun newGame() = _state.update { BlokState.newGame() }
 }

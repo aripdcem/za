@@ -85,7 +85,7 @@ def main():
         clear += tone(0.06, lambda t, f=f: f, "square", 0.24, 3.5)
     write("sfx_clear.wav", clear)
 
-    # Büyük an (Tetris, 2048): dörtlü arpej + uzun tepe notası.
+    # Büyük an (dört satır, 2048): dörtlü arpej + uzun tepe notası.
     big = []
     for f in (523.25, 659.25, 783.99):
         big += tone(0.07, lambda t, f=f: f, "square", 0.24, 3.0)

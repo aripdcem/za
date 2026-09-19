@@ -2,6 +2,11 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.39.0 (2026-09-19)
+- Play yayını için yapı hazırlığı: sürüm iş akışı artık imzalı APK'nın yanında Play'e yüklenecek **AAB** de üretiyor; `targetSdk`/`compileSdk` 36 (Android 16); manifeste oyun kategorisi
+- Blok tamamen kendi adıyla: modül `games/blok`, paket `com.za.games.blok`, sınıflar ve metin kimlikleri `blok_*`. Eski kimlikle saklanan rekor ve "son oynananlar" kaydı bir kez taşınır
+- Sürüm kapısı bayatlamıyor: motor testleri artık tek `:games:engineTests` göreviyle koşuyor, liste `games/` altından türetiliyor. Önceki hâlinde sürüm iş akışı 26 motorun 18'ini koşuyordu
+
 ## 0.38.0 (2026-09-13)
 - Viraj kontrolü Filo'nunki gibi: sol/sağ bölge yerine **sürükleme**. Parmağı kaydırmak aracın hedef çizgisini taşır, direksiyon orantılı kırar (uzak hedef tam kilit, yakın hedef az), araç çizgiye varınca düzelir ve parmak kalkınca çizgiyi tutar. Fren: parmağı aşağı çekmek ya da ikinci parmak. Yağda hedef takibi askıya alınır, kayarken yalnız o anki sürükleme ters yöne kırar. Yol fiziği (merkezkaç, tutulabilen azami hız) değişmedi
 

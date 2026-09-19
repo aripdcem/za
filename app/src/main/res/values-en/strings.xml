@@ -12,16 +12,16 @@
     <string name="high_score_fmt">Best: %1$s</string>
     <string name="coming_soon">More games on the way…</string>
 
-    <!-- Blok (falling blocks; renamed because Tetris is a registered trademark) -->
-    <string name="game_tetris">Blok</string>
-    <string name="game_tetris_tagline">Falling four-square blocks: complete lines, hold a piece, aim with the ghost</string>
+    <!-- Blok (falling four-square blocks) -->
+    <string name="game_blok">Blok</string>
+    <string name="game_blok_tagline">Falling four-square blocks: complete lines, hold a piece, aim with the ghost</string>
     <string name="score">Score</string>
     <string name="high_score">Best</string>
     <string name="level">Level</string>
     <string name="lines">Lines</string>
     <string name="next_label">Next</string>
     <string name="hold_label">Hold</string>
-    <string name="tetris_hint">Tap the board to rotate, drag to slide</string>
+    <string name="blok_hint">Tap the board to rotate, drag to slide</string>
     <string name="pause">Pause</string>
     <string name="resume">Resume</string>
     <string name="restart">Restart</string>
@@ -303,7 +303,7 @@
     <string name="tavla_off_tray">Bear-off tray</string>
 
     <!-- Board descriptions (screen reader) -->
-    <string name="tetris_board_desc">Blok board: level %1$d, %2$d lines, score %3$d</string>
+    <string name="blok_board_desc">Blok board: level %1$d, %2$d lines, score %3$d</string>
     <string name="snake_board_desc">Snake board: length %1$d, score %2$d</string>
     <string name="mines_board_desc">Minefield %1$d×%2$d: %3$d mines, %4$d flags</string>
 

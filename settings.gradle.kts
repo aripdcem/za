@@ -23,7 +23,7 @@ dependencyResolutionManagement {
 rootProject.name = "za"
 
 include(":app")
-include(":games:tetris")
+include(":games:blok")
 include(":games:g2048")
 include(":games:snake")
 include(":games:sudoku")

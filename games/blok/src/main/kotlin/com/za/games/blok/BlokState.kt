@@ -1,14 +1,14 @@
-package com.za.games.tetris
+package com.za.games.blok
 
 import kotlin.math.pow
 import kotlin.random.Random
 
-enum class TetrisStatus { RUNNING, PAUSED, OVER }
+enum class BlokStatus { RUNNING, PAUSED, OVER }
 
 /**
  * Oyunun tamamı: değişmez (immutable) bir durum makinesi.
  *
- * Her hamle (`tick`, `moveLeft`, `hardDrop`...) yeni bir [TetrisState] döndürür.
+ * Her hamle (`tick`, `moveLeft`, `hardDrop`...) yeni bir [BlokState] döndürür.
  * Rastgelelik `bagSeed` üzerinden deterministiktir: aynı tohumla başlayan iki
  * oyun, aynı hamlelerle birebir aynı sonucu üretir. Bu, motoru test edilebilir
  * ve ileride "yeniden oynatma" (replay) gibi özelliklere hazır kılar.
@@ -17,7 +17,7 @@ enum class TetrisStatus { RUNNING, PAUSED, OVER }
  * hold + hayalet taş, Guideline skorlaması (100/300/500/800 x seviye,
  * yumuşak düşüş +1/hücre, sert düşüş +2/hücre), her 10 satırda seviye atlama.
  */
-data class TetrisState(
+data class BlokState(
     val width: Int,
     val height: Int,
     /** Kilitlenmiş hücreler; board[satır][sütun], üst satır 0. Boş hücre null. */
@@ -30,7 +30,7 @@ data class TetrisState(
     val holdUsed: Boolean,
     val score: Long,
     val lines: Int,
-    val status: TetrisStatus,
+    val status: BlokStatus,
     /** Torba yenilemede kullanılacak RNG tohumu. */
     val bagSeed: Long,
     /** Son kilitlenmede temizlenen satır sayısı (arayüz efektleri için). */
@@ -58,18 +58,18 @@ data class TetrisState(
         c in 0 until width && r < height && (r < 0 || board[r][c] == null)
     }
 
-    fun moveLeft(): TetrisState = shifted(0, -1)
+    fun moveLeft(): BlokState = shifted(0, -1)
 
-    fun moveRight(): TetrisState = shifted(0, 1)
+    fun moveRight(): BlokState = shifted(0, 1)
 
-    private fun shifted(dRow: Int, dCol: Int): TetrisState {
-        if (status != TetrisStatus.RUNNING) return this
+    private fun shifted(dRow: Int, dCol: Int): BlokState {
+        if (status != BlokStatus.RUNNING) return this
         val moved = active.moved(dRow, dCol)
         return if (fits(moved)) copy(active = moved) else this
     }
 
-    fun rotate(clockwise: Boolean = true): TetrisState {
-        if (status != TetrisStatus.RUNNING) return this
+    fun rotate(clockwise: Boolean = true): BlokState {
+        if (status != BlokStatus.RUNNING) return this
         val turned = active.rotated(clockwise)
         for ((dRow, dCol) in Srs.kicks(active.type, active.rotation, turned.rotation)) {
             val candidate = turned.moved(dRow, dCol)
@@ -79,30 +79,30 @@ data class TetrisState(
     }
 
     /** Yerçekimi adımı: bir satır in; inemiyorsa taşı kilitle. */
-    fun tick(): TetrisState = when {
-        status != TetrisStatus.RUNNING -> this
+    fun tick(): BlokState = when {
+        status != BlokStatus.RUNNING -> this
         fits(active.moved(1, 0)) -> copy(active = active.moved(1, 0))
         else -> locked()
     }
 
     /** Oyuncunun hızlandırdığı düşüş: hücre başına +1 puan; zeminde ise kilitler. */
-    fun softDrop(): TetrisState = when {
-        status != TetrisStatus.RUNNING -> this
+    fun softDrop(): BlokState = when {
+        status != BlokStatus.RUNNING -> this
         fits(active.moved(1, 0)) -> copy(active = active.moved(1, 0), score = score + 1)
         else -> locked()
     }
 
     /** Sert düşüş: taş dibe iner ve anında kilitlenir; hücre başına +2 puan. */
-    fun hardDrop(): TetrisState {
-        if (status != TetrisStatus.RUNNING) return this
+    fun hardDrop(): BlokState {
+        if (status != BlokStatus.RUNNING) return this
         var drop = 0
         while (fits(active.moved(drop + 1, 0))) drop++
         return copy(active = active.moved(drop, 0), score = score + 2L * drop).locked()
     }
 
     /** Aktif taşı beklemeye al; taş başına bir kez kullanılabilir. */
-    fun holdPiece(): TetrisState {
-        if (status != TetrisStatus.RUNNING || holdUsed) return this
+    fun holdPiece(): BlokState {
+        if (status != BlokStatus.RUNNING || holdUsed) return this
         val stored = active.type
         val held = hold
         val swapped = if (held == null) {
@@ -118,22 +118,22 @@ data class TetrisState(
             copy(active = spawnPiece(held, width), hold = stored, holdUsed = true)
         }
         // Doğuş noktası dolu ise oyun biter; taş yığının içine giremez.
-        return if (swapped.fits(swapped.active)) swapped else swapped.copy(status = TetrisStatus.OVER)
+        return if (swapped.fits(swapped.active)) swapped else swapped.copy(status = BlokStatus.OVER)
     }
 
-    fun pause(): TetrisState =
-        if (status == TetrisStatus.RUNNING) copy(status = TetrisStatus.PAUSED) else this
+    fun pause(): BlokState =
+        if (status == BlokStatus.RUNNING) copy(status = BlokStatus.PAUSED) else this
 
-    fun togglePause(): TetrisState = when (status) {
-        TetrisStatus.RUNNING -> copy(status = TetrisStatus.PAUSED)
-        TetrisStatus.PAUSED -> copy(status = TetrisStatus.RUNNING)
-        TetrisStatus.OVER -> this
+    fun togglePause(): BlokState = when (status) {
+        BlokStatus.RUNNING -> copy(status = BlokStatus.PAUSED)
+        BlokStatus.PAUSED -> copy(status = BlokStatus.RUNNING)
+        BlokStatus.OVER -> this
     }
 
-    private fun locked(): TetrisState {
+    private fun locked(): BlokState {
         val cells = active.cells
         // Tahtanın üstünde kilitlenme = tavana dayanma = oyun sonu.
-        if (cells.any { it.row < 0 }) return copy(status = TetrisStatus.OVER)
+        if (cells.any { it.row < 0 }) return copy(status = BlokStatus.OVER)
 
         val grid = board.map { it.toMutableList() }
         for ((r, c) in cells) grid[r][c] = active.type
@@ -169,7 +169,7 @@ data class TetrisState(
             clearEvents = clearEvents + if (cleared > 0) 1 else 0,
             locks = locks + 1,
         )
-        return if (state.fits(spawned)) state else state.copy(status = TetrisStatus.OVER)
+        return if (state.fits(spawned)) state else state.copy(status = BlokStatus.OVER)
     }
 
     companion object {
@@ -180,10 +180,10 @@ data class TetrisState(
         /** Taşlar tahtanın hemen üstünde, alt sırası görünür şekilde doğar. */
         private const val SPAWN_ROW = -1
 
-        fun newGame(seed: Long = Random.nextLong()): TetrisState {
+        fun newGame(seed: Long = Random.nextLong()): BlokState {
             val rng = Random(seed)
             val queue = Tetromino.entries.shuffled(rng) + Tetromino.entries.shuffled(rng)
-            return TetrisState(
+            return BlokState(
                 width = WIDTH,
                 height = HEIGHT,
                 board = List(HEIGHT) { List(WIDTH) { null } },
@@ -193,7 +193,7 @@ data class TetrisState(
                 holdUsed = false,
                 score = 0L,
                 lines = 0,
-                status = TetrisStatus.RUNNING,
+                status = BlokStatus.RUNNING,
                 bagSeed = rng.nextLong(),
             )
         }

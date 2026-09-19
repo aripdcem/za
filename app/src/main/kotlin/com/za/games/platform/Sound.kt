@@ -15,7 +15,7 @@ enum class Sfx(@RawRes val res: Int) {
     /** Satır temizleme. */
     CLEAR(R.raw.sfx_clear),
 
-    /** Büyük an: Tetris (4 satır), 2048'e ulaşma. */
+    /** Büyük an: dört satır birden, 2048'e ulaşma. */
     BIG(R.raw.sfx_big),
 
     /** Taş kilitlenmesi / sert düşüş. */

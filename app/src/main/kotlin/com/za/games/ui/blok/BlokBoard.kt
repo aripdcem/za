@@ -1,4 +1,4 @@
-package com.za.games.ui.tetris
+package com.za.games.ui.blok
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -17,9 +17,9 @@ import androidx.compose.ui.input.pointer.changedToUpIgnoreConsumed
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.unit.dp
-import com.za.games.tetris.Tetromino
-import com.za.games.tetris.TetrisState
-import com.za.games.tetris.TetrisStatus
+import com.za.games.blok.Tetromino
+import com.za.games.blok.BlokState
+import com.za.games.blok.BlokStatus
 import kotlin.math.abs
 import kotlin.math.min
 import androidx.compose.ui.res.stringResource
@@ -44,7 +44,7 @@ fun Tetromino.color(): Color = when (this) {
  */
 @Composable
 fun BoardCanvas(
-    state: TetrisState,
+    state: BlokState,
     onMove: (Int) -> Unit,
     onSoftDrop: () -> Unit,
     onRotate: () -> Unit,
@@ -53,7 +53,7 @@ fun BoardCanvas(
     flashAlpha: Float = 0f,
 ) {
     val boardWidth = state.width
-    val boardDesc = stringResource(R.string.tetris_board_desc, state.level, state.lines, state.score)
+    val boardDesc = stringResource(R.string.blok_board_desc, state.level, state.lines, state.score)
     Canvas(
         modifier = modifier
             .semantics { contentDescription = boardDesc }
@@ -104,12 +104,12 @@ fun BoardCanvas(
                 }
             },
     ) {
-        drawTetrisBoard(state, flashRows, flashAlpha)
+        drawBlokBoard(state, flashRows, flashAlpha)
     }
 }
 
-private fun DrawScope.drawTetrisBoard(
-    state: TetrisState,
+private fun DrawScope.drawBlokBoard(
+    state: BlokState,
     flashRows: List<Int>,
     flashAlpha: Float,
 ) {
@@ -150,7 +150,7 @@ private fun DrawScope.drawTetrisBoard(
         }
     }
 
-    if (state.status != TetrisStatus.OVER) {
+    if (state.status != BlokStatus.OVER) {
         val ghostColor = state.active.type.color().copy(alpha = 0.35f)
         state.ghost.cells.forEach { (r, c) ->
             if (r >= 0) {

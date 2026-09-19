@@ -31,7 +31,7 @@ za/
 │       ├── ui/&lt;oyun&gt;/            # Oyunların Compose arayüzleri
 │       └── ui/theme/             # ZA teması
 ├── games/
-│   ├── tetris/  g2048/  snake/   # Oyun motorları: saf Kotlin/JVM, Android'e
+│   ├── blok/    g2048/  snake/   # Oyun motorları: saf Kotlin/JVM, Android'e
 │   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ kuyu/ gecit/ tavla/ balkon/ kakuro/ sayi/ viraj/ filo/ reyon/ # bağımsız, her biri kendi birim testleriyle
 ├── tools/                        # gen_sfx.py (sesler), gen_words.py + gen_turetme.py + gen_dizgi.py (kelime listeleri)
 │                                 # cihaz_testi.py (cihaz üstü kare hızı / giriş ölçümü)
@@ -56,7 +56,7 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
 **Sonuç paylaşımı:** her oyunun bitiş kartındaki **Paylaş** düğmesi 1080 px genişliğinde bir sonuç kartı (PNG) ve kısa bir metin üretip Android'in paylaşım sayfasına verir (`platform/Share.kt`). Kakuro, Sudoku, Mayın Tarlası, Beş Harf, 2048 ve Dizgi'de karta bitmiş tahta da çizilir; Beş Harf metne 🟩🟨⬛ ızgarasını ekler ve günlük kelimeyi ele vermez. Kart uygulamanın önbelleğine yazılır, yalnızca seçilen uygulamaya ve yalnızca okuma için açılır (`FileProvider`): depolama izni gerekmez, "0 izin" sözü bozulmaz.
 
 ### Blok
-- Düşen bloklar; eski adı Tetris tescilli marka olduğundan yeniden adlandırıldı (modül adı `games/tetris` teknik olarak kaldı)
+- Düşen dörtlü bloklar. Oyun, modül (`games/blok`), paket ve metin kimlikleri baştan sona **Blok** adını taşır: marka benzerliği bırakılmadı
 - 10×20 tahta, **7'li torba** rastgeleliği, **SRS rotasyon** + tam duvar tekmesi tabloları
 - **Hold**, 3 taşlık sıradaki kuyruğu, **hayalet taş**, satır temizlemede parlamalı animasyon + ses
 - Guideline skorlaması (100/300/500/800 × seviye; yumuşak +1, sert +2/hücre) ve yerçekimi eğrisi
@@ -450,7 +450,7 @@ Gereksinimler: JDK 17+, Android SDK (compileSdk 35). Android Studio ile açıp �
 
 ```bash
 ./gradlew :app:assembleDebug        # APK: app/build/outputs/apk/debug/
-./gradlew :games:tetris:test :games:g2048:test :games:snake:test :games:sudoku:test :games:mines:test :games:besharf:test :games:kiskac:test :games:turetme:test :games:dizgi:test :games:kuyu:test :games:gecit:test :games:tavla:test :games:balkon:test :games:kakuro:test :games:sayi:test
+./gradlew :games:engineTests   # games/ altındaki bütün motorlar (liste elle tutulmaz)
 ```
 
 Motor testleri Android SDK gerektirmez. Sürüm `-PzaVersion=X.Y.Z` özelliğiyle geçilir; release iş akışı bunu etiketten türetir (`versionCode` = `major*10000 + minor*100 + patch`).
@@ -519,4 +519,4 @@ Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
 
 ### English summary
 
-**ZA** is an Android platform for truly ad-free games ("zero ad game play"): no ads, no trackers, no permissions (not even INTERNET), no purchases. It ships **Blok** (a falling-blocks puzzle: SRS-style wall kicks, 7-bag, hold, ghost piece, line-clear flash + sound), **2048** and **Snake**. Game rules live in deterministic, fully unit-tested pure Kotlin modules under `games/`; the Compose UI lives in `app`. Sound effects are tiny procedurally generated WAVs (`tools/gen_sfx.py`) and can be muted from the hub. Add a game by writing an engine module, a Compose screen, and one `GameEntry` in `GameRegistry`. Build with `./gradlew :app:assembleDebug`, test engines with `./gradlew :games:tetris:test :games:g2048:test :games:snake:test`. Licensed under GPL-3.0-or-later; the "ZA" name and logo are not part of the license.
+**ZA** is an Android platform for truly ad-free games ("zero ad game play"): no ads, no trackers, no permissions (not even INTERNET), no purchases. It ships **Blok** (a falling-blocks puzzle: SRS-style wall kicks, 7-bag, hold, ghost piece, line-clear flash + sound), **2048** and **Snake**. Game rules live in deterministic, fully unit-tested pure Kotlin modules under `games/`; the Compose UI lives in `app`. Sound effects are tiny procedurally generated WAVs (`tools/gen_sfx.py`) and can be muted from the hub. Add a game by writing an engine module, a Compose screen, and one `GameEntry` in `GameRegistry`. Build with `./gradlew :app:assembleDebug`, test engines with `./gradlew :games:engineTests`. Licensed under GPL-3.0-or-later; the "ZA" name and logo are not part of the license.

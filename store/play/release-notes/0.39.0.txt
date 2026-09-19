@@ -1,0 +1,8 @@
+<tr-TR>
+• Android 16'ya göre derlendi; mağaza yayını için yapı hazırlığı.
+• Blok baştan sona kendi adını taşıyor; rekorunuz ve son oynananlar kaydı korunur.
+</tr-TR>
+<en-US>
+• Built against Android 16; build preparation for the store release.
+• Blok now carries its own name throughout; your record and recently-played entry are kept.
+</en-US>
