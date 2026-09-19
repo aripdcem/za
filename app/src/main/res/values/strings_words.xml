@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Beş Harf, Kıskaç, Türetme ve Dizgi metinleri.
+
+  Bu dört oyun Türkçe kelime listeleriyle oynanır (games/besharf, games/kiskac,
+  games/turetme, games/dizgi altındaki sözlükler). Arayüzünü on iki dile
+  çevirmek oyunu oynanır kılmayacağı için metinleri yalnızca Türkçe ve
+  İngilizce tutuluyor: başka bir dile ayarlı telefonda Android bu anahtarları
+  string başına varsayılana, yani İngilizce'ye düşürür.
+
+  tools:ignore="MissingTranslation" bu bilinçli boşluk için; strings.xml'de
+  lint açık kalır ve gerçek çeviri eksiklerini yakalamaya devam eder.
+
+  Bir dil için kelime listesi hazırlandığında bu oyunların metinleri o dilin
+  values-<dil>/strings_words.xml dosyasına eklenir.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <!-- Beş Harf -->
+    <string name="game_besharf">Beş Harf</string>
+    <string name="game_besharf_tagline">Turkish word guessing: daily puzzle + free play</string>
+    <string name="not_in_list">Not in the word list</string>
+    <string name="too_short">Enter 5 letters</string>
+    <string name="streak_label">Streak</string>
+    <string name="answer_was">Answer: %1$s</string>
+    <string name="new_word">New word</string>
+    <string name="guesses_fmt">Solved in %1$d/%2$d</string>
+    <string name="lost_title">Not this time 😔</string>
+    <string name="tomorrow_new_word">A new word tomorrow!</string>
+    <string name="show_board">Show the board</string>
+    <string name="key_enter">ENTER</string>
+    <string name="besharf_hint">🟩 right spot  🟨 in the word  ⬛ not in the word</string>
+
+    <!-- Kıskaç -->
+    <string name="game_kiskac">Kıskaç</string>
+    <string name="game_kiskac_tagline">Alphabetical squeeze: trap the Turkish word between two bounds</string>
+    <string name="kiskac_lower_label">The hidden word comes after</string>
+    <string name="kiskac_upper_label">The hidden word comes before</string>
+    <string name="kiskac_attempts_fmt">Guesses: %1$d/%2$d</string>
+    <string name="kiskac_hint">Each guess says before or after; easy mode shows the distance percentages to each bound (A 0%%, Z 100%%)</string>
+    <string name="kiskac_after_fmt">%1$d%% away</string>
+    <string name="kiskac_before_fmt">%1$d%% away</string>
+    <string name="kiskac_easy_mode">Easy mode</string>
+    <string name="kiskac_easy_mode_desc">Shows the distance percentages to each bound</string>
+    <string name="already_tried">Already tried that one</string>
+
+    <!-- Türetme -->
+    <string name="game_turetme">Türetme</string>
+    <string name="game_turetme_tagline">Build Turkish words from the letters — can you find them all?</string>
+    <string name="turetme_hint">Make words of 3+ letters; the base word earns a bonus</string>
+    <string name="found_label">Found</string>
+    <string name="already_found">Already found that one</string>
+    <string name="shuffle_letters">Shuffle letters</string>
+    <string name="turetme_completed">You found them all! 🎉</string>
+    <string name="turetme_empty">Tap letters to build a word, then press ENTER</string>
+    <string name="turetme_give_up">Give up</string>
+    <string name="turetme_give_up_confirm">Give up?</string>
+    <string name="turetme_give_up_detail">The round ends and the words you missed are revealed.</string>
+    <string name="turetme_give_up_yes">Give up and reveal</string>
+    <string name="turetme_revealed">Words you missed are shown outlined</string>
+
+    <!-- Dizgi -->
+    <string name="game_dizgi">Dizgi</string>
+    <string name="game_dizgi_tagline">Pass-and-play Turkish word board: lay letters, cross words, score</string>
+    <string name="dizgi_players_title">How many players?</string>
+    <string name="dizgi_players_hint">Played in turns on the same phone; only the current player sees their tiles. The first word must cross the center star.</string>
+    <string name="dizgi_start">Start</string>
+    <string name="dizgi_player_n">Player %1$d</string>
+    <string name="dizgi_turn_of">Turn: %1$s</string>
+    <string name="dizgi_handover">Hand the phone to the next player; only they will see the tiles</string>
+    <string name="dizgi_ready">I\'m ready</string>
+    <string name="dizgi_bag_count">Bag: %1$d</string>
+    <string name="dizgi_confirm_move">Play</string>
+    <string name="dizgi_recall">Recall</string>
+    <string name="dizgi_pass">Pass</string>
+    <string name="dizgi_exchange">Swap</string>
+    <string name="dizgi_exchange_n">Swap (%1$d)</string>
+    <string name="dizgi_cancel">Cancel</string>
+    <string name="dizgi_joker_pick">Which letter should the joker be?</string>
+    <string name="dizgi_move_pass">%1$s passed</string>
+    <string name="dizgi_move_exchange">%1$s swapped tiles</string>
+    <string name="dizgi_move_words">%1$s: %2$s (+%3$d)</string>
+    <string name="dizgi_bingo">Bingo! +50</string>
+    <string name="dizgi_inv_empty">Place tiles on the board first</string>
+    <string name="dizgi_inv_line">Tiles must sit in a single row or column</string>
+    <string name="dizgi_inv_gap">The word cannot have gaps</string>
+    <string name="dizgi_inv_connect">New tiles must touch the existing ones</string>
+    <string name="dizgi_inv_center">The first word must cross the center star</string>
+    <string name="dizgi_inv_short">Build a word of at least two letters</string>
+    <string name="dizgi_inv_word">Not in the dictionary: %1$s</string>
+    <string name="dizgi_inv_exchange">Swapping needs at least 7 tiles in the bag</string>
+    <string name="dizgi_exchange_hint">Tap the tiles to swap (%1$d selected), then press Swap</string>
+    <string name="dizgi_pass_confirm">Pass your turn?</string>
+    <string name="dizgi_pass_detail">The turn moves on. If everyone passes twice in a row, the game ends.</string>
+    <string name="dizgi_new_confirm">Start a new game?</string>
+    <string name="dizgi_new_detail">The current game will be discarded.</string>
+    <string name="dizgi_finished">Game over</string>
+    <string name="dizgi_winner">Winner: %1$s</string>
+    <string name="dizgi_draw">It\'s a draw!</string>
+    <string name="dizgi_legend_dl">2H double letter</string>
+    <string name="dizgi_legend_tl">3H triple letter</string>
+    <string name="dizgi_legend_dw">2K double word</string>
+    <string name="dizgi_legend_tw">3K triple word</string>
+    <string name="dizgi_board_desc">Dizgi board: %1$d tiles placed, %2$d pending</string>
+</resources>

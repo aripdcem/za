@@ -22,7 +22,6 @@ import com.za.games.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.util.Locale
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -112,7 +111,10 @@ object ShareCard {
     fun render(context: Context, content: ShareContent): Bitmap {
         val entry = entryOf(content.gameId)
         val accent = entry?.accent?.toArgb() ?: DEFAULT_ACCENT
-        val gameName = entry?.let { context.getString(it.titleRes) }.orEmpty().uppercase(Locale.getDefault())
+        // Uygulamanın o an çizdiği dil; composable olmadığı için appLocale()
+        // yerine bağlamın yapılandırmasından okunur.
+        val locale = context.resources.configuration.locales[0]
+        val gameName = entry?.let { context.getString(it.titleRes) }.orEmpty().uppercase(locale)
         val maxW = WIDTH - 2 * PAD
 
         val blocks = ArrayList<Block>()

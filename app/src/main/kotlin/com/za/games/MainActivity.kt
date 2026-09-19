@@ -1,5 +1,6 @@
 package com.za.games
 
+import android.content.Context
 import android.os.Bundle
 import android.view.accessibility.AccessibilityManager
 import androidx.activity.ComponentActivity
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.za.games.platform.ZaLocale
 import com.za.games.ui.theme.ZaTheme
 
 class MainActivity : ComponentActivity() {
@@ -29,6 +31,15 @@ class MainActivity : ComponentActivity() {
     private val touchExplorationListener = AccessibilityManager.TouchExplorationStateChangeListener { enabled ->
         touchExploring.value = enabled
         hideSystemBars()
+    }
+
+    /**
+     * Seçili dili uygular. Android 13+ bunu sistem düzeyinde yaptığı için
+     * [ZaLocale.wrap] orada bağlamı olduğu gibi döndürür; 8-12'de kaydedilen
+     * dile sarar.
+     */
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(ZaLocale.wrap(newBase))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

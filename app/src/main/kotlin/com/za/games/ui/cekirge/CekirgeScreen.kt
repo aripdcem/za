@@ -81,6 +81,7 @@ import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.ShareButton
 import com.za.games.ui.common.formatScore
 import com.za.games.ui.common.modeShareLabel
+import java.util.Locale
 import kotlin.math.min
 import kotlin.math.sin
 import kotlinx.coroutines.isActive
@@ -143,7 +144,7 @@ fun CekirgeScreen(
     val fx = remember { CekirgeFx() }
     val fxTick = remember { mutableLongStateOf(0L) }
     val waveFmt = stringResource(R.string.cekirge_wave_fmt)
-    fx.waveLabel = { String.format(waveFmt, it) }
+    fx.waveLabel = { String.format(Locale.ROOT, waveFmt, it) }
     fx.clearedLabel = stringResource(R.string.cekirge_cleared)
     fx.lifeLabel = stringResource(R.string.cekirge_life_lost)
     fx.invadedLabel = stringResource(R.string.cekirge_over_invaded)

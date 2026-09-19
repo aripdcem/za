@@ -50,6 +50,8 @@ import com.za.games.platform.GameCategory
 import com.za.games.platform.Changelog
 import com.za.games.platform.GameEntry
 import com.za.games.platform.ReleaseNote
+import com.za.games.platform.ZaLocale
+import com.za.games.platform.appLocale
 import java.util.Locale
 import kotlin.math.PI
 import kotlin.math.cos
@@ -69,6 +71,9 @@ fun HubScreen(
     hapticsOn: Boolean = true,
     onToggleHaptics: () -> Unit = {},
     onAbout: () -> Unit = {},
+    /** Başlıktaki dil düğmesinde yazan kod; o an çizilen dil (ör. "tr"). */
+    languageCode: String = "en",
+    onLanguage: () -> Unit = {},
     /** Güncellemeden sonra gösterilen sürüm notu; null = kart yok. */
     whatsNew: ReleaseNote? = null,
     onDismissWhatsNew: () -> Unit = {},
@@ -90,7 +95,7 @@ fun HubScreen(
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        item { HubHeader(soundOn, onToggleSound, hapticsOn, onToggleHaptics, onAbout) }
+        item { HubHeader(soundOn, onToggleSound, hapticsOn, onToggleHaptics, languageCode, onLanguage, onAbout) }
         item { CategoryChips(selected = category, onSelect = onCategory) }
         if (whatsNew != null) {
             item { WhatsNewCard(note = whatsNew, onDismiss = onDismissWhatsNew) }
@@ -139,7 +144,7 @@ private fun WhatsNewCard(note: ReleaseNote, onDismiss: () -> Unit) {
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             )
-            note.notes().forEach { line ->
+            note.notes(appLocale()).forEach { line ->
                 Text(text = "• $line", style = MaterialTheme.typography.bodyMedium)
             }
             Button(onClick = onDismiss, modifier = Modifier.padding(top = 4.dp)) {
@@ -191,7 +196,7 @@ private fun FilterChip(label: String, selected: Boolean, onClick: () -> Unit) {
 private fun RecentRow(games: List<GameEntry>, onPlay: (GameEntry) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
-            text = stringResource(R.string.hub_recent).uppercase(Locale.getDefault()),
+            text = stringResource(R.string.hub_recent).uppercase(appLocale()),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
         )
@@ -256,6 +261,8 @@ private fun HubHeader(
     onToggleSound: () -> Unit,
     hapticsOn: Boolean,
     onToggleHaptics: () -> Unit,
+    languageCode: String,
+    onLanguage: () -> Unit,
     onAbout: () -> Unit,
 ) {
     Column(modifier = Modifier.padding(bottom = 8.dp)) {
@@ -285,6 +292,20 @@ private fun HubHeader(
                 modifier = Modifier.semantics { contentDescription = hapticsToggleDescription },
             ) {
                 Text(text = if (hapticsOn) "📳" else "📴", fontSize = 22.sp)
+            }
+            // Dil düğmesi kürenin yerine o an çizilen dilin kodunu gösterir:
+            // uygulamayı anlamadığı bir dilde açan kullanıcı ne seçili olduğunu
+            // görür ve dokununca listeye girer.
+            val languageDescription = stringResource(R.string.language_title)
+            IconButton(
+                onClick = onLanguage,
+                modifier = Modifier.semantics { contentDescription = languageDescription },
+            ) {
+                Text(
+                    text = languageCode.uppercase(Locale.ROOT),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Black,
+                )
             }
             val aboutDescription = stringResource(R.string.about_title)
             IconButton(
@@ -373,7 +394,7 @@ private fun GameCard(game: GameEntry, highScore: Long, isNew: Boolean, onPlay: (
                         Text(
                             text = stringResource(
                                 R.string.high_score_fmt,
-                                String.format(Locale.getDefault(), "%,d", highScore),
+                                ZaLocale.number(highScore),
                             ),
                             style = MaterialTheme.typography.labelMedium,
                             color = game.accent,

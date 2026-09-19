@@ -74,6 +74,7 @@ import com.za.games.R
 import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
 import com.za.games.platform.ShareContent
+import com.za.games.platform.ZaLocale
 import com.za.games.ui.common.GameTopBar
 import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.ScoreCard
@@ -87,7 +88,6 @@ import com.za.games.viraj.SpriteKind
 import com.za.games.viraj.VirajHud
 import com.za.games.viraj.VirajWorld
 import kotlinx.coroutines.isActive
-import java.util.Locale
 import kotlin.math.PI
 import kotlin.math.max
 import kotlin.math.sin
@@ -904,7 +904,7 @@ private fun OverCard(
     onMenu: () -> Unit,
     onExit: () -> Unit,
 ) {
-    val km = String.format(Locale.getDefault(), "%.1f", hud.meters / 1000f)
+    val km = ZaLocale.decimal(hud.meters / 1000f)
     val result = stringResource(R.string.viraj_result_fmt, km, hud.overtakes, hud.checkpoints)
     OverlayCard {
         Text(

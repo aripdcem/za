@@ -81,6 +81,7 @@ import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.ShareButton
 import com.za.games.ui.common.formatScore
 import com.za.games.ui.common.modeShareLabel
+import java.util.Locale
 import kotlin.math.exp
 import kotlin.math.floor
 import kotlin.math.min
@@ -185,7 +186,7 @@ fun SincapScreen(
     fx.crackingLabel = stringResource(R.string.sincap_cracking)
     fx.catLabel = stringResource(R.string.sincap_cat_close)
     val milestoneFmt = stringResource(R.string.sincap_milestone_fmt)
-    fx.milestoneLabel = { String.format(milestoneFmt, it) }
+    fx.milestoneLabel = { String.format(Locale.ROOT, milestoneFmt, it) }
     val causes = DeathCause.entries.associateWith { causeLabel(it) }
     fx.overLabel = { causes[it] ?: it.name }
 
@@ -426,7 +427,7 @@ private fun DrawScope.drawTree(
         if (catScreen < h + u * 0.5f) {
             drawCat(cam.sx(0f), catScreen, u, frame)
         } else if (world.status == SincapStatus.RUNNING) {
-            val label = String.format(catFmt, world.catGap.roundToInt())
+            val label = String.format(Locale.ROOT, catFmt, world.catGap.roundToInt())
             val layout = cache.getOrPut("cat|$label") {
                 textMeasurer.measure(AnnotatedString(label), style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White))
             }

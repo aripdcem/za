@@ -64,6 +64,16 @@ android {
         compose = true
     }
 
+    // Play, AAB'yi dile göre böler ve cihaza yalnız kendi dilini indirir.
+    // Uygulama içi dil seçicisi bunu kaldırmadan çalışmaz: kullanıcı Almanca
+    // seçtiğinde values-de cihazda bulunmalı. 14 dilin tüm metni ~340 KB ve
+    // sıkışınca çok daha az — seçicinin çalışması bu bedeli hak ediyor.
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
+
     // Arayüz testleri JVM'de Robolectric ile koşar (emülatör gerekmez); kaynaklar dahil edilir.
     testOptions {
         unitTests {
