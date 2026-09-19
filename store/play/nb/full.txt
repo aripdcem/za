@@ -1,0 +1,22 @@
+ZA er en reklamefri spillplattform: 27 spill i én app. Ingen av dem viser reklame, ber om tillatelser eller samler inn data. Det finnes ikke engang internettillatelse; alt virker offline.
+
+LØFTET VÅRT
+• 0 reklame: ingen reklame-SDK
+• 0 sporere: ingen analyse- eller sporingsbibliotek
+• 0 tillatelser: appen ber ikke om én eneste
+• Rent spill: poeng og innstillinger blir på telefonen din
+
+SPILL
+Arkade: Blok (fallende klosser), Snake, Kuyu (ned i brønnen, brønnen for dagen), Geçit (kryss veien, dagens modus), Balkon (sikt fra balkongen: gresskarkjerner, vannballonger eller spytt), Viraj (pseudo-3D-racing, dagens bane), Filo (vertikalt romskytespill, dagens flåte), Raket (racketspill: mot datamaskinen, en venn eller veggen; dagens vegg), Tuşe (pianofliser: sju melodier i det fri; dagens stykke), Uçurtma (hold for å stige; tak, ledninger og rivaliserende drager; oppdrag og utstyr; dagens himmel), Dalgıç (redd dykkere med ubåten; oksygen, haier, miner, strømmer; dagens hav), Bostan (feltforsvar: brønner, spredere, fugleskremsler, bikuber, feller; hvert nivå genereres vinnbart; tre vanskegrader, dagens kjøkkenhage), Sincap (klatre i en platan: trykk til venstre eller høyre for å hoppe til neste gren; tørre grener, slanger, kråker og en katt som tar innpå; dagens tre), Çekirge (formasjonsskytespill: dra for å gå, trykk for å sprute, ett-skudds-regelen; høyballer, dronningen; dagens åker), Cici (Kapittel 1: I rommet — dra den hvite undulaten: honningpinner 7, frø 5, vann 2 poeng; romkatter og en sprettende rød ball; sitter hun stille, kjeder hun seg; dagens rom)
+Puslespill: 2048, Sudoku (tre nivåer, notater, entydig løsning), Minesveiper, Kakuro (tre størrelser, entydig løsning), Reyon (planogram-puslespill, regelsjekk og salgsoppstilling; dagens hylle)
+Ord: Beş Harf (dagens fembokstavsord), Kıskaç (alfabetisk tang), Türetme (ord av bokstaver), Dizgi (ordbrett som sendes rundt, 2-4 spillere) — disse fire spiller med tyrkiske ordlister, så teksten deres blir på tyrkisk eller engelsk
+Brettspill og tall: Tavla (backgammon: Klassisk, Tapa, Hapis; mot datamaskinen eller en venn), Vergici (Taxman), Toplam Kapma (Number Scrabble)
+
+FUNKSJONER
+• Daglige oppgaver: samme dag får alle den samme oppgaven, laget ut fra datoen og uten server
+• 14 språk: norsk, engelsk, tyrkisk, tysk, fransk, nederlandsk, spansk, portugisisk, italiensk, dansk, svensk, finsk, russisk og arabisk. Appen følger språket på telefonen, og du kan også velge ett i appen
+• Del resultatet: Del-knappen tegner et resultatkort og en kort tekst
+• Lyd og vibrasjon slås av med ett trykk; venstrehåndsmodus
+• Åpen kildekode (GPL-3.0): github.com/aripdcem/za
+
+Personvernerklæring: za.aripd.com/gizlilik.html

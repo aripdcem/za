@@ -1,0 +1,22 @@
+ZA är en reklamfri spelplattform: 27 spel i en app. Inget av dem visar reklam, ber om behörigheter eller samlar in data. Det finns inte ens internetbehörighet; allt fungerar offline.
+
+VÅRT LÖFTE
+• 0 reklam: inget reklam-SDK
+• 0 spårare: inget analys- eller spårningsbibliotek
+• 0 behörigheter: appen ber inte om en enda
+• Rent spel: poäng och inställningar stannar på din telefon
+
+SPEL
+Arkad: Blok (fallande block), Snake, Kuyu (ner i brunnen, dagens brunn), Geçit (korsa vägen, dagens läge), Balkon (sikta från balkongen: pumpafrön, vattenballonger eller spott), Viraj (pseudo-3D-racing, dagens bana), Filo (vertikalt rymdskyttespel, dagens flotta), Raket (racketspel: mot datorn, en vän eller väggen; dagens vägg), Tuşe (pianoplattor: sju melodier i det fria; dagens stycke), Uçurtma (håll för att stiga; tak, ledningar och rivaliserande drakar; uppdrag och utrustning; dagens himmel), Dalgıç (rädda dykare med ubåten; syre, hajar, minor, strömmar; dagens hav), Bostan (filförsvar: brunnar, spridare, fågelskrämmor, bikupor, fällor; varje nivå genereras vinnbar; tre svårighetsgrader, dagens köksträdgård), Sincap (klättra i en platan: tryck till vänster eller höger för att hoppa till nästa gren; torra grenar, ormar, kråkor och en katt som närmar sig; dagens träd), Çekirge (formationsskyttespel: dra för att gå, tryck för att spruta, ett-skotts-regeln; höbalar, drottningen; dagens fält), Cici (Kapitel 1: I rymden — dra den vita undulaten: honungspinnar 7, frön 5, vatten 2 poäng; rymdkatter och en studsande röd boll; sitter hon still blir hon uttråkad; dagens rymd)
+Pussel: 2048, Sudoku (tre nivåer, anteckningar, unik lösning), Minröjning, Kakuro (tre storlekar, unik lösning), Reyon (planogrampussel, regelkontroll och säljuppställning; dagens hylla)
+Ord: Beş Harf (dagens fembokstavsord), Kıskaç (alfabetisk tång), Türetme (ord av bokstäver), Dizgi (ordbräde som skickas runt, 2-4 spelare) — de fyra spelar med turkiska ordlistor, så deras text stannar på turkiska eller engelska
+Brädspel och tal: Tavla (backgammon: Klassisk, Tapa, Hapis; mot datorn eller en vän), Vergici (Taxman), Toplam Kapma (Number Scrabble)
+
+FUNKTIONER
+• Dagliga uppdrag: samma dag får alla samma uppdrag, skapat ur datumet och utan server
+• 14 språk: svenska, engelska, turkiska, tyska, franska, nederländska, spanska, portugisiska, italienska, danska, norska, finska, ryska och arabiska. Appen följer telefonens språk, och du kan också välja ett i appen
+• Dela ditt resultat: Dela-knappen ritar ett resultatkort och en kort text
+• Ljud och vibration stängs av med en tryckning; vänsterhandsläge
+• Öppen källkod (GPL-3.0): github.com/aripdcem/za
+
+Integritetspolicy: za.aripd.com/gizlilik.html

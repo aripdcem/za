@@ -1,0 +1,22 @@
+O ZA é uma plataforma de jogos sem anúncios: 27 jogos em um só app. Nenhum mostra anúncios, nenhum pede permissões, nenhum coleta dados. Não há nem a permissão de Internet; tudo funciona offline.
+
+NOSSA PROMESSA
+• 0 anúncios: nenhum SDK de publicidade
+• 0 rastreadores: nenhuma biblioteca de análise ou rastreamento
+• 0 permissões: o app não pede nenhuma
+• Jogo puro: as pontuações e os ajustes ficam no seu aparelho
+
+JOGOS
+Arcade: Blok (blocos que caem), Snake, Kuyu (descida ao poço, poço do dia), Geçit (travessia da estrada, modo do dia), Balkon (mirar da sacada: sementes de abóbora, bexigas d'água ou cusparada), Viraj (corrida pseudo-3D, pista do dia), Filo (jogo de tiro espacial vertical, frota do dia), Raket (jogo de raquete: contra o computador, um amigo ou a parede; parede do dia), Tuşe (teclas de piano: sete melodias de domínio público; peça do dia), Uçurtma (segure para subir; telhados, fios e pipas rivais; missões e equipamento; céu do dia), Dalgıç (resgate mergulhadores com o submarino; oxigênio, tubarões, minas, correntes; mar do dia), Bostan (defesa de faixas: poços, aspersores, espantalhos, colmeias, armadilhas; cada nível é gerado vencível; três dificuldades, horta do dia), Sincap (suba um plátano: toque à esquerda ou à direita para saltar ao galho seguinte; galhos secos, cobras, corvos e um gato que se aproxima; árvore do dia), Çekirge (jogo de tiro em formação: arraste para andar, toque para borrifar, regra de um só tiro; fardos de feno, a rainha; campo do dia), Cici (Capítulo 1: No espaço — arraste a periquita branca: palitos de mel 7, alpiste 5, água 2 pontos; gatos espaciais e uma bola vermelha que quica; se ficar parada, fica entediada; espaço do dia)
+Quebra-cabeça: 2048, Sudoku (três níveis, anotações, solução única), Campo Minado, Kakuro (três tamanhos, solução única), Reyon (quebra-cabeça de planograma, auditoria de conformidade e layout de vendas; prateleira do dia)
+Palavras: Beş Harf (palavra de cinco letras do dia), Kıskaç (pinça alfabética), Türetme (palavras a partir de letras), Dizgi (tabuleiro de palavras para passar, 2-4 jogadores) — estes quatro usam listas de palavras turcas, então o texto deles fica em turco ou em inglês
+Tabuleiro e números: Tavla (gamão: Clássico, Tapa, Hapis; contra o computador ou um amigo), Vergici (Taxman), Toplam Kapma (Number Scrabble)
+
+RECURSOS
+• Desafios diários: no mesmo dia todos recebem o mesmo desafio, gerado a partir da data e sem servidor
+• 14 idiomas: português, inglês, turco, alemão, francês, holandês, espanhol, italiano, dinamarquês, sueco, norueguês, finlandês, russo e árabe. O app segue o idioma do telefone e você também pode escolher um dentro do app
+• Compartilhe seu resultado: o botão Compartilhar desenha um cartão de resultado e um texto curto
+• Som e vibração desligam com um toque; modo para canhotos
+• Código aberto (GPL-3.0): github.com/aripdcem/za
+
+Política de privacidade: za.aripd.com/gizlilik.html

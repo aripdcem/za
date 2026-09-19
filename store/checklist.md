@@ -31,7 +31,8 @@ asistan (depo, metin, görsel üretimi).
 
 | | Madde | Sahip |
 | --- | --- | --- |
-| [x] | Başlık, kısa ve tam açıklama TR/EN: `store/play/tr`, `store/play/en` (sınırlar `tools/check_store.py` ile denetlenir) | A |
+| [x] | Başlık, kısa ve tam açıklama 14 dilde: `store/play/<dil>/` (sınırlar, dil kapsamı ve görünmez karakterler `tools/check_store.py` ile denetlenir, CI'da koşar) | A |
+| [ ] | Her dilin Play yerel ayarı Console'da açılmalı (eşleme: `store/README.md`); açılmayan dil İngilizce listeleme görür | C |
 | [x] | Sürüm notları her sürüm için: `store/play/release-notes/<sürüm>.txt` | A |
 | [ ] | Uygulama simgesi 512×512 PNG (32 bit) | A üretir |
 | [ ] | Öne çıkan görsel 1024×500 (PNG/JPG) | A üretir |
