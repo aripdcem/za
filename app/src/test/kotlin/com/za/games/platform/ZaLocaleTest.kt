@@ -59,12 +59,24 @@ class ZaLocaleTest {
     }
 
     @Test
-    fun unknownLanguagesFallBackToEnglishNotTurkish() {
-        // Düzeltilen hata: Türkçe res/values altındaydı, eşleşmeyen her dil
-        // (Almanca, İspanyolca, Arapça...) uygulamayı Türkçe görüyordu.
-        assertEquals("Zero ads. Pure play.", stringIn("de", R.string.hub_tagline))
-        assertEquals("Zero ads. Pure play.", stringIn("ja", R.string.hub_tagline))
+    fun unsupportedLanguagesFallBackToEnglishNotTurkish() {
+        // Düzeltilen hata: Türkçe res/values altındaydı, desteklenmeyen her dil
+        // uygulamayı Türkçe görüyordu. Japonca hiçbir zaman listeye girmeyeceği
+        // için yedeğin İngilizce olduğunu güvenle gösterir.
+        val english = stringIn("en", R.string.hub_tagline)
+        assertEquals("varsayılan res/values İngilizce olmalı", "Zero ads. Pure play.", english)
+        assertEquals("desteklenmeyen dil İngilizce\'ye düşmeli", english, stringIn("ja", R.string.hub_tagline))
         assertEquals("Sıfır reklam. Saf oyun.", stringIn("tr", R.string.hub_tagline))
+    }
+
+    @Test
+    fun everySupportedLanguageHasItsOwnHubTagline() {
+        // Her dil kendi metnini almalı; biri varsayılana düşüyorsa o dilin
+        // klasörü ya eksik ya yanlış adlandırılmış.
+        val english = stringIn("en", R.string.hub_tagline)
+        for (tag in ZaLocale.TAGS - setOf("en")) {
+            assertNotEquals("$tag kendi metnini almalı", english, stringIn(tag, R.string.hub_tagline))
+        }
     }
 
     @Test
@@ -87,13 +99,22 @@ class ZaLocaleTest {
     }
 
     @Test
-    fun normalizeReducesRegionsAndLegacyCodes() {
-        assertEquals("de", ZaLocale.normalize(Locale.forLanguageTag("de-DE")))
-        assertEquals("pt", ZaLocale.normalize(Locale.forLanguageTag("pt-BR")))
-        assertEquals("pt", ZaLocale.normalize(Locale.forLanguageTag("pt-PT")))
-        assertEquals("nb", ZaLocale.normalize(Locale.forLanguageTag("nb-NO")))
-        assertEquals("nb", ZaLocale.normalize(Locale("no", "NO")))
+    fun normalizeStripsRegionsForEverySupportedLanguage() {
+        // Desteklenen her dil için bölge eki düşer: de-DE → de, pt-BR → pt.
+        // Liste büyüdükçe bu test kendiliğinden yeni dilleri de kapsar.
+        for (tag in ZaLocale.TAGS) {
+            assertEquals("$tag-XX etiketi $tag\'e inmeli", tag, ZaLocale.normalize(Locale.forLanguageTag("$tag-XX")))
+        }
         assertEquals("tr", ZaLocale.normalize(Locale.forLanguageTag("tr-CY")))
+    }
+
+    @Test
+    fun normalizeMapsLegacyNorwegianAndRejectsUnsupported() {
+        // Locale("no") tarihsel olarak Norveççe'yi gösterir; kaynaklarımız nb altında.
+        val legacyNorwegian = Locale.Builder().setLanguage("no").setRegion("NO").build()
+        val expected = if ("nb" in ZaLocale.TAGS) "nb" else null
+        assertEquals(expected, ZaLocale.normalize(legacyNorwegian))
+        // Japonca desteklenmiyor ve desteklenmeyecek: null dönmeli.
         assertNull("desteklenmeyen dil null dönmeli", ZaLocale.normalize(Locale.forLanguageTag("ja")))
     }
 
