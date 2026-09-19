@@ -20,4 +20,8 @@
     <locale android:name="es" />
     <locale android:name="pt" />
     <locale android:name="it" />
+    <locale android:name="da" />
+    <locale android:name="sv" />
+    <locale android:name="nb" />
+    <locale android:name="fi" />
 </locale-config>
