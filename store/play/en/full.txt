@@ -14,6 +14,7 @@ Board and numbers: Tavla (backgammon: Classic, Tapa, Hapis; vs computer or a fri
 
 FEATURES
 • Daily puzzles: everyone gets the same puzzle on the same day, generated from the date with no server
+• 14 languages: English, Turkish, German, French, Dutch, Spanish, Portuguese, Italian, Danish, Swedish, Norwegian, Finnish, Russian and Arabic. The app follows your phone's language, and you can also pick one inside the app
 • Share your result: the Share button renders a result card and a short text
 • Turkish dictionaries built in; Turkish keyboard and alphabetical order
 • Sound and haptics toggle with one tap; left-hand mode

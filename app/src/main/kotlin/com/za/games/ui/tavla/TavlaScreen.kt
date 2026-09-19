@@ -66,6 +66,7 @@ import com.za.games.R
 import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
+import com.za.games.platform.appLocale
 import com.za.games.tavla.Move
 import com.za.games.tavla.Phase
 import com.za.games.tavla.TavlaLogic
@@ -334,7 +335,7 @@ private fun modeDescription(mode: TavlaMode): Int = when (mode) {
 @Composable
 private fun SectionLabel(text: String) {
     Text(
-        text = text.uppercase(),
+        text = text.uppercase(appLocale()),
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
         modifier = Modifier.padding(start = 4.dp, top = 4.dp),
@@ -656,7 +657,7 @@ private fun PlayerCard(
                         .background(if (light) P0Fill else P1Fill),
                 )
                 Text(
-                    text = name.uppercase(),
+                    text = name.uppercase(appLocale()),
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,

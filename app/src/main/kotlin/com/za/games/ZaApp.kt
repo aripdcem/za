@@ -19,9 +19,12 @@ import com.za.games.platform.LocalZaSound
 import com.za.games.platform.ScoreStore
 import com.za.games.platform.SettingsStore
 import com.za.games.platform.SoundPlayer
+import com.za.games.platform.ZaLocale
+import com.za.games.platform.appLocale
 import com.za.games.platform.gatedBy
 import com.za.games.ui.about.AboutScreen
 import com.za.games.ui.hub.HubScreen
+import com.za.games.ui.hub.LanguageScreen
 
 /**
  * Uygulama kökü: ana menü ile oyunlar arasında geçişi, rekor akışını ve
@@ -57,6 +60,12 @@ fun ZaApp() {
     var currentGameId by rememberSaveable { mutableStateOf<String?>(null) }
     val currentGame = GameRegistry.games.firstOrNull { it.id == currentGameId }
     var showAbout by rememberSaveable { mutableStateOf(false) }
+    var showLanguage by rememberSaveable { mutableStateOf(false) }
+
+    // Kullanıcının açık dil seçimi ve o an çizilen dil. Seçim uygulanınca
+    // etkinlik yeniden oluşur, ikisi de yeni değerle okunur.
+    val effectiveLanguage = ZaLocale.normalize(appLocale()) ?: "en"
+    val selectedLanguage = remember(effectiveLanguage) { ZaLocale.selected(context) }
 
     // Güncelleme algısı: ilk kurulumda sürüm sessizce kaydedilir; sonraki bir
     // güncellemede Yenilikler kartı çıkar ve bu sürümden sonra eklenen oyunlar
@@ -80,6 +89,16 @@ fun ZaApp() {
     CompositionLocalProvider(LocalZaSound provides soundPlayer, LocalZaHaptics provides gatedHaptics) {
         if (currentGame == null && showAbout) {
             AboutScreen(onExit = { showAbout = false })
+        } else if (currentGame == null && showLanguage) {
+            LanguageScreen(
+                selected = selectedLanguage,
+                effective = effectiveLanguage,
+                onPick = { tag ->
+                    showLanguage = false
+                    ZaLocale.choose(context, tag)
+                },
+                onExit = { showLanguage = false },
+            )
         } else if (currentGame == null) {
             HubScreen(
                 games = GameRegistry.games,
@@ -107,6 +126,8 @@ fun ZaApp() {
                     settings.hapticsEnabled = hapticsOn
                 },
                 onAbout = { showAbout = true },
+                languageCode = effectiveLanguage,
+                onLanguage = { showLanguage = true },
                 whatsNew = if (showWhatsNew) Changelog.latest else null,
                 onDismissWhatsNew = {
                     showWhatsNew = false

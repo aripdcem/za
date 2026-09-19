@@ -17,6 +17,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Çeviri denetimi: dil listeleri tutarlı mı, her dilde bütün metinler var
+      # mı, biçim belirteçleri uyuşuyor mu. Saniyeler sürer, Gradle'dan önce.
+      - name: Çok dilli metin denetimi
+        run: python3 tools/check_strings.py
+
+      # Mağaza metinleri: karakter sınırları, her dilin listelemesi var mı,
+      # görünmez karakter (yumuşak tire, BOM) kaçmış mı.
+      - name: Mağaza metinleri denetimi
+        run: python3 tools/check_store.py
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

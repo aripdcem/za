@@ -70,6 +70,7 @@ import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
 import com.za.games.platform.ShareContent
 import com.za.games.platform.SoundPlayer
+import com.za.games.platform.ZaLocale
 import com.za.games.tuse.Song
 import com.za.games.tuse.TuseEvent
 import com.za.games.tuse.TuseHud
@@ -80,7 +81,6 @@ import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.ShareButton
 import com.za.games.ui.common.modeShareLabel
-import java.util.Locale
 import kotlinx.coroutines.isActive
 
 private val BoardColor = Color(0xFFF7F3EA)
@@ -93,9 +93,9 @@ private val MissColor = Color(0xFFEF4444)
 private val BottomLine = Color(0x33000000)
 
 /** Süreyi "8,43 s" biçiminde yazar (yerel ondalık ayracıyla). */
-fun formatSeconds(ms: Long): String = String.format(Locale.getDefault(), "%.2f s", ms / 1000f)
+fun formatSeconds(ms: Long): String = ZaLocale.decimal(ms / 1000f, digits = 2) + " s"
 
-private fun formatRate(value: Float): String = String.format(Locale.getDefault(), "%.1f", value)
+private fun formatRate(value: Float): String = ZaLocale.decimal(value)
 
 @Composable
 fun songName(song: Song): String = stringResource(

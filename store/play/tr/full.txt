@@ -14,6 +14,7 @@ Masa ve sayı: Tavla (Klasik, Tapa, Hapis; bilgisayara ya da arkadaşına karş�
 
 ÖZELLİKLER
 • Günlük bulmacalar: Beş Harf, Kıskaç, Türetme, Kuyu, Geçit, Viraj, Filo, Reyon, Raket, Tuşe, Uçurtma, Dalgıç, Bostan, Sincap, Çekirge ve Cici'de herkes aynı gün aynı bulmacayı oynar; sunucu yok, tarihten üretilir
+• 14 dil: Türkçe, İngilizce, Almanca, Fransızca, Hollandaca, İspanyolca, Portekizce, İtalyanca, Danca, İsveççe, Norveççe, Fince, Rusça ve Arapça. Uygulama telefonun diline uyar, uygulama içinden de seçebilirsin
 • Sonucunu paylaş: bitiş kartındaki Paylaş, görsel bir sonuç kartı ve kısa bir metin üretir
 • Türkçe sözlükler gömülü; Türkçe klavye ve Türk alfabesi sıralaması
 • Ses ve titreşim tek dokunuşla kapanır; sol el desteği

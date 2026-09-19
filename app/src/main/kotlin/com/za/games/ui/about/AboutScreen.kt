@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import com.za.games.R
 import com.za.games.platform.Changelog
 import com.za.games.platform.ZaLinks
+import com.za.games.platform.appLocale
 import com.za.games.ui.common.GameTopBar
 
 /** Uygulamada kullanılan açık kaynak bileşen; metinler yerelleştirilir. */
@@ -149,7 +150,7 @@ fun AboutScreen(onExit: () -> Unit) {
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                     )
-                    note.notes().forEach { line ->
+                    note.notes(appLocale()).forEach { line ->
                         Text(
                             text = "• $line",
                             style = MaterialTheme.typography.bodySmall,

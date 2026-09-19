@@ -65,6 +65,7 @@ import com.za.games.platform.LocalZaHaptics
 import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
 import com.za.games.platform.ShareContent
+import com.za.games.platform.ZaLocale
 import com.za.games.reyon.DaySummary
 import com.za.games.reyon.OrderItem
 import com.za.games.reyon.ReyonLevel
@@ -75,7 +76,6 @@ import com.za.games.ui.common.OverlayCard
 import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.ShareButton
 import com.za.games.ui.common.modeShareLabel
-import java.util.Locale
 
 /** Sipariş modu: raf (stok düzeyleri), gün başlığı, ürün başına sipariş adımlayıcısı, gün kapanışı. */
 @Composable
@@ -552,7 +552,7 @@ private fun DaySummaryCard(state: ReyonOrderState, summary: DaySummary, onContin
     }
 }
 
-private fun turnoverText(x: Float): String = String.format(Locale.getDefault(), "%.1f", x)
+private fun turnoverText(x: Float): String = ZaLocale.decimal(x)
 
 @Composable
 private fun OrderMenuCard(

@@ -15,6 +15,7 @@ Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç 
 | 0 izin | `AndroidManifest.xml` tek bir `uses-permission` içermez |
 | 0 satın alma | Ödeme/abonelik kodu yok |
 | Saf oyun | Skorlar yalnızca cihazda saklanır |
+| 14 dil | Türkçe, İngilizce, Almanca, Fransızca, Hollandaca, İspanyolca, Portekizce, İtalyanca, Danca, İsveççe, Norveççe, Fince, Rusça, Arapça; telefonun diline uyar, ana menüden de seçilir (bkz. [Diller](#diller)) |
 | Gizlilik | Politika: [za.aripd.com/gizlilik.html](https://za.aripd.com/gizlilik.html); uygulama içi **Hakkında** ekranı sürümü, bağlantıları (site, kaynak, sorun bildirme) ve açık kaynak lisanslarını gösterir |
 
 ## Mimari
@@ -440,13 +441,44 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   minimax ile kusursuz ya da yüzde 35 rastgele hata yapan kolay seviyede; iki oyuncu aynı telefonda; başlayan her
   oyunda değişir. Oyun sonunda "Sır": sayılar Lo Shu sihirli karesine yerleşince oyunun üç taş olduğu görülür
 
+## Diller
+
+Uygulama 14 dilde: **Türkçe, İngilizce, Almanca, Fransızca, Hollandaca, İspanyolca, Portekizce, İtalyanca,
+Danca, İsveççe, Norveççe (bokmål), Fince, Rusça, Arapça** — her dilde 911 metin. Varsayılan İngilizcedir
+(`res/values`), çeviriler `res/values-<dil>` altındadır. Uygulama telefonun diline uyar; ana menüdeki dil
+düğmesi Android 13 ve üstünde sistem dil seçicisini (`LocaleManager`) kullanır, altında seçimi kendi
+ayarlarında saklayıp `attachBaseContext`'te uygular — appcompat bağımlılığı eklemeye gerek kalmadı.
+
+`ZaLocale` (`app/.../platform/ZaLocale.kt`) tek doğruluk kaynağıdır: desteklenen diller (`TAGS`), dillerin
+kendi dillerindeki adları, `Locale` → dil kodu indirgemesi (`nb`/`no`, bölge ekleri) ve yerel ayara uyan ama
+rakamları Latin bırakan sayı biçimlendirme burada. Rakamlar Latin kalır çünkü Arapça bir cihazda `%,d` yerel
+rakamlarla yazardı ve oyunların skor kartları karışırdı. Büyük harfe çevirme her yerde arayüzün diliyle yapılır:
+Türkçe kilitli bir `uppercase` "Continue" kelimesini "CONTİNUE" yapıyordu.
+
+**Kelime oyunları** (Beş Harf, Kıskaç, Türetme, Dizgi) Türkçe kelime listeleriyle oynanır. Metinleri ayrı bir
+dosyada (`strings_words.xml`) tutulur ve yalnız varsayılan (İngilizce) ile `values-tr` altında bulunur: telefon
+Türkçeyse oyun Türkçe, değilse İngilizce çalışır. Oyunlar bütün dillerde listede kalır; bir dile kelime listesi
+hazırlandığında o dilin `strings_words.xml`'i eklenir, kod değişmez.
+
+İki denetim betiği CI'da koşar:
+
+```bash
+python3 tools/check_strings.py   # dil listeleri tutarlı mı, her dilde bütün metinler var mı,
+                                 # biçim belirteçleri uyuşuyor mu, kaynakta olmayan R.string var mı
+python3 tools/check_store.py     # mağaza metinlerinin sınırları, dil kapsamı, görünmez karakterler
+```
+
+`ZaLocale.TAGS`, `res/xml/locales_config.xml`, `res/values-<dil>` klasörleri ve `store/play/<dil>` listelemeleri
+birbirinden ayrışırsa denetim hata verir: listede olup çevirisi olmayan bir dil, sistem dil seçicisinde görünüp
+kullanıcıya İngilizce açılırdı.
+
 ## Derleme
 
 Arayüz testleri JVM'de koşar, emülatör gerekmez: `./gradlew :app:testDebugUnitTest` (Robolectric + Compose test kuralı;
 ana menü, gezinme, Sudoku/Kakuro/Mayın Tarlası/Beş Harf etkileşimleri, Hakkında ve 19 oyun ekranının duman testi).
 CI her itmede motor testleriyle birlikte koşturur; sürüm iş akışı da bunlar geçmeden APK üretmez.
 
-Gereksinimler: JDK 17+, Android SDK (compileSdk 35). Android Studio ile açıp çalıştırabilir veya komut satırından derleyebilirsiniz:
+Gereksinimler: JDK 17+, Android SDK (compileSdk 36). Android Studio ile açıp çalıştırabilir veya komut satırından derleyebilirsiniz:
 
 ```bash
 ./gradlew :app:assembleDebug        # APK: app/build/outputs/apk/debug/
@@ -455,7 +487,7 @@ Gereksinimler: JDK 17+, Android SDK (compileSdk 35). Android Studio ile açıp �
 
 Motor testleri Android SDK gerektirmez. Sürüm `-PzaVersion=X.Y.Z` özelliğiyle geçilir; release iş akışı bunu etiketten türetir (`versionCode` = `major*10000 + minor*100 + patch`).
 
-- minSdk 26 (Android 8.0) · targetSdk 35
+- minSdk 26 (Android 8.0) · targetSdk 36
 - Kotlin 2.1 · Jetpack Compose (Material 3) · AGP 8.10
 
 ## Yayınlama
@@ -511,6 +543,8 @@ Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
 - [x] Yeni oyunlar: 2048 ✓, yılan ✓, sudoku ✓, mayın tarlası ✓, beş harf ✓, kıskaç ✓, türetme ✓, dizgi ✓, kuyu ✓, geçit ✓, tavla ✓, balkon ✓, kakuro ✓, vergici ✓, toplam kapma ✓
 - [x] Ses efektleri (kapatılabilir) ve satır temizleme animasyonları
 - [x] Sürümün etiketten türetilmesi, SHA256 sağlamaları ve kaynak arşivleri
+- [x] Çok dilli arayüz: 14 dil, uygulama içi dil seçicisi, mağaza listelemeleri
+- [ ] Kelime oyunları için Türkçe dışı kelime listeleri (Beş Harf, Kıskaç, Türetme, Dizgi)
 - [ ] Oyun içi istatistikler (toplam satır, en uzun oturum)
 - [ ] Uygulamada açık tema seçeneği (web sitesi sistem temasına uyar)
 - [ ] F-Droid / Play Store yayını
@@ -519,4 +553,4 @@ Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
 
 ### English summary
 
-**ZA** is an Android platform for truly ad-free games ("zero ad game play"): no ads, no trackers, no permissions (not even INTERNET), no purchases. It ships **Blok** (a falling-blocks puzzle: SRS-style wall kicks, 7-bag, hold, ghost piece, line-clear flash + sound), **2048** and **Snake**. Game rules live in deterministic, fully unit-tested pure Kotlin modules under `games/`; the Compose UI lives in `app`. Sound effects are tiny procedurally generated WAVs (`tools/gen_sfx.py`) and can be muted from the hub. Add a game by writing an engine module, a Compose screen, and one `GameEntry` in `GameRegistry`. Build with `./gradlew :app:assembleDebug`, test engines with `./gradlew :games:engineTests`. Licensed under GPL-3.0-or-later; the "ZA" name and logo are not part of the license.
+**ZA** is an Android platform for truly ad-free games ("zero ad game play"): no ads, no trackers, no permissions (not even INTERNET), no purchases. It ships 27 games — arcade, puzzle, word and board — in 14 languages, following the phone's language with an in-app picker. Game rules live in deterministic, fully unit-tested pure Kotlin modules under `games/`; the Compose UI lives in `app`. Sound effects are tiny procedurally generated WAVs (`tools/gen_sfx.py`) and can be muted from the hub. Add a game by writing an engine module, a Compose screen, and one `GameEntry` in `GameRegistry`. Build with `./gradlew :app:assembleDebug`, test engines with `./gradlew :games:engineTests`. Licensed under GPL-3.0-or-later; the "ZA" name and logo are not part of the license.

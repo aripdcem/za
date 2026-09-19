@@ -5,8 +5,10 @@ import android.content.Context
 /** Platform ayarları; yalnızca cihazda saklanır. */
 class SettingsStore(context: Context) {
 
-    private val prefs =
-        context.applicationContext.getSharedPreferences("za_settings", Context.MODE_PRIVATE)
+    // attachBaseContext sırasında (ZaLocale.wrap) uygulama bağlamı henüz
+    // kurulmamış olabilir; o durumda verilen bağlamla devam edilir.
+    private val prefs = (context.applicationContext ?: context)
+        .getSharedPreferences("za_settings", Context.MODE_PRIVATE)
 
     var soundEnabled: Boolean
         get() = prefs.getBoolean(KEY_SOUND, true)
@@ -28,6 +30,18 @@ class SettingsStore(context: Context) {
         }
 
     val hasLeftHanded: Boolean get() = prefs.contains(KEY_LEFT_HANDED)
+
+    /**
+     * Seçili dilin BCP-47 etiketi, ya da [ZaLocale.SYSTEM] (telefonun dili).
+     *
+     * Yalnızca Android 8-12'de kullanılır; 13+ sürümlerde doğru kaynak sistemin
+     * kendi uygulama-dili ayarıdır (bkz. [ZaLocale.selected]).
+     */
+    var language: String
+        get() = prefs.getString(KEY_LANGUAGE, ZaLocale.SYSTEM) ?: ZaLocale.SYSTEM
+        set(value) {
+            prefs.edit().putString(KEY_LANGUAGE, value).apply()
+        }
 
     /** Ana menüde seçili grup; null = tümü. */
     var hubCategory: GameCategory?
@@ -68,6 +82,7 @@ class SettingsStore(context: Context) {
         const val KEY_SOUND = "sound_enabled"
         const val KEY_HAPTICS = "haptics_enabled"
         const val KEY_LEFT_HANDED = "left_handed"
+        const val KEY_LANGUAGE = "language"
         const val KEY_HUB_CATEGORY = "hub_category"
         const val KEY_PLAYED_PREFIX = "played_"
         const val KEY_SEEN_VERSION = "seen_version"

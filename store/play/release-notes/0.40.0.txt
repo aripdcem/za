@@ -1,0 +1,56 @@
+<tr-TR>
+• Uygulama artık 14 dilde: Türkçe, İngilizce, Almanca, Fransızca, Hollandaca, İspanyolca, Portekizce, İtalyanca, Danca, İsveççe, Norveççe, Fince, Rusça ve Arapça. Telefonunuzun diline uyar, ana menüdeki dil düğmesinden de seçebilirsiniz.
+• Beş Harf, Kıskaç, Türetme ve Dizgi Türkçe kelime listeleriyle oynandığı için metinleri Türkçe ya da İngilizce kalıyor.
+</tr-TR>
+<en-US>
+• The app now speaks 14 languages: English, Turkish, German, French, Dutch, Spanish, Portuguese, Italian, Danish, Swedish, Norwegian, Finnish, Russian and Arabic. It follows your phone's language, and the language button in the hub lets you pick one.
+• Beş Harf, Kıskaç, Türetme and Dizgi play on Turkish word lists, so their text stays Turkish or English.
+</en-US>
+<de-DE>
+• Die App spricht jetzt 14 Sprachen: Deutsch, Englisch, Türkisch, Französisch, Niederländisch, Spanisch, Portugiesisch, Italienisch, Dänisch, Schwedisch, Norwegisch, Finnisch, Russisch und Arabisch. Sie folgt der Sprache deines Telefons, und mit der Sprachtaste im Hauptmenü kannst du selbst wählen.
+• Beş Harf, Kıskaç, Türetme und Dizgi spielen mit türkischen Wortlisten, ihre Texte bleiben daher türkisch oder englisch.
+</de-DE>
+<fr-FR>
+• L'appli parle maintenant 14 langues : français, anglais, turc, allemand, néerlandais, espagnol, portugais, italien, danois, suédois, norvégien, finnois, russe et arabe. Elle suit la langue du téléphone, et le bouton de langue du menu permet d'en choisir une.
+• Beş Harf, Kıskaç, Türetme et Dizgi utilisent des listes de mots turcs, leur texte reste donc en turc ou en anglais.
+</fr-FR>
+<nl-NL>
+• De app spreekt nu 14 talen: Nederlands, Engels, Turks, Duits, Frans, Spaans, Portugees, Italiaans, Deens, Zweeds, Noors, Fins, Russisch en Arabisch. Hij volgt de taal van je toestel, en met de taalknop in het hoofdmenu kies je er zelf een.
+• Beş Harf, Kıskaç, Türetme en Dizgi spelen met Turkse woordenlijsten, hun tekst blijft daarom Turks of Engels.
+</nl-NL>
+<es-ES>
+• La app ya habla 14 idiomas: español, inglés, turco, alemán, francés, neerlandés, portugués, italiano, danés, sueco, noruego, finés, ruso y árabe. Sigue el idioma del teléfono, y el botón de idioma del menú te deja elegir.
+• Beş Harf, Kıskaç, Türetme y Dizgi usan listas de palabras turcas, así que su texto queda en turco o en inglés.
+</es-ES>
+<pt-BR>
+• O app agora fala 14 idiomas: português, inglês, turco, alemão, francês, holandês, espanhol, italiano, dinamarquês, sueco, norueguês, finlandês, russo e árabe. Ele segue o idioma do telefone, e o botão de idioma no menu deixa você escolher.
+• Beş Harf, Kıskaç, Türetme e Dizgi usam listas de palavras turcas, então o texto deles fica em turco ou em inglês.
+</pt-BR>
+<it-IT>
+• L'app parla ora 14 lingue: italiano, inglese, turco, tedesco, francese, olandese, spagnolo, portoghese, danese, svedese, norvegese, finlandese, russo e arabo. Segue la lingua del telefono, e il pulsante della lingua nel menu ti lascia scegliere.
+• Beş Harf, Kıskaç, Türetme e Dizgi usano liste di parole turche, quindi il loro testo resta in turco o in inglese.
+</it-IT>
+<da-DK>
+• Appen taler nu 14 sprog: dansk, engelsk, tyrkisk, tysk, fransk, nederlandsk, spansk, portugisisk, italiensk, svensk, norsk, finsk, russisk og arabisk. Den følger telefonens sprog, og sprogknappen i menuen lader dig vælge selv.
+• Beş Harf, Kıskaç, Türetme og Dizgi spiller med tyrkiske ordlister, så deres tekst bliver på tyrkisk eller engelsk.
+</da-DK>
+<sv-SE>
+• Appen talar nu 14 språk: svenska, engelska, turkiska, tyska, franska, nederländska, spanska, portugisiska, italienska, danska, norska, finska, ryska och arabiska. Den följer telefonens språk, och språkknappen i menyn låter dig välja själv.
+• Beş Harf, Kıskaç, Türetme och Dizgi spelar med turkiska ordlistor, så deras text stannar på turkiska eller engelska.
+</sv-SE>
+<no-NO>
+• Appen snakker nå 14 språk: norsk, engelsk, tyrkisk, tysk, fransk, nederlandsk, spansk, portugisisk, italiensk, dansk, svensk, finsk, russisk og arabisk. Den følger språket på telefonen, og språkknappen i menyen lar deg velge selv.
+• Beş Harf, Kıskaç, Türetme og Dizgi spiller med tyrkiske ordlister, så teksten deres blir på tyrkisk eller engelsk.
+</no-NO>
+<fi-FI>
+• Sovellus puhuu nyt 14 kieltä: suomi, englanti, turkki, saksa, ranska, hollanti, espanja, portugali, italia, tanska, ruotsi, norja, venäjä ja arabia. Se seuraa puhelimen kieltä, ja valikon kielipainikkeesta voit valita itse.
+• Beş Harf, Kıskaç, Türetme ja Dizgi käyttävät turkkilaisia sanalistoja, joten niiden teksti pysyy turkkina tai englantina.
+</fi-FI>
+<ru-RU>
+• Приложение говорит на 14 языках: русский, английский, турецкий, немецкий, французский, нидерландский, испанский, португальский, итальянский, датский, шведский, норвежский, финский и арабский. Оно следует языку телефона, а кнопка языка в меню даёт выбрать самому.
+• Beş Harf, Kıskaç, Türetme и Dizgi играются на турецких словарях, поэтому их текст остаётся на турецком или английском.
+</ru-RU>
+<ar>
+• صار التطبيق يتكلّم 14 لغة: العربية والإنجليزية والتركية والألمانية والفرنسية والهولندية والإسبانية والبرتغالية والإيطالية والدنماركية والسويدية والنرويجية والفنلندية والروسية. يتبع لغة الهاتف، وزرّ اللغة في القائمة يتيح لك الاختيار.
+• تُلعب Beş Harf وKıskaç وTüretme وDizgi بقوائم كلمات تركية، لذلك يبقى نصّها بالتركية أو الإنجليزية.
+</ar>

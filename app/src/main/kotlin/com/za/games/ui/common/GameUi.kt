@@ -50,15 +50,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.za.games.R
 import com.za.games.platform.ShareContent
+import com.za.games.platform.ZaLocale
+import com.za.games.platform.appLocale
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import java.util.Locale
 
-fun formatScore(value: Long): String =
-    String.format(Locale.getDefault(), "%,d", value)
+fun formatScore(value: Long): String = ZaLocale.number(value)
 
+// Süre ayırıcısız; rakam Latin kalsın diye ROOT (bkz. ZaLocale.number).
 fun formatTime(totalSeconds: Int): String =
-    String.format(Locale.getDefault(), "%d:%02d", totalSeconds / 60, totalSeconds % 60)
+    String.format(Locale.ROOT, "%d:%02d", totalSeconds / 60, totalSeconds % 60)
 
 /** Oyun ekranlarının ortak üst çubuğu: geri, başlık, sağda oyuna özel aksiyon. */
 @Composable
@@ -80,7 +82,7 @@ fun GameTopBar(
             )
         }
         Text(
-            text = title.uppercase(Locale.getDefault()),
+            text = title.uppercase(appLocale()),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Black,
             letterSpacing = 3.sp,
@@ -108,7 +110,7 @@ fun ScoreCard(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = label.uppercase(Locale.getDefault()),
+                text = label.uppercase(appLocale()),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.75f),
             )

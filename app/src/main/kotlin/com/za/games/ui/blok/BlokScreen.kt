@@ -51,13 +51,13 @@ import com.za.games.platform.LocalZaSound
 import com.za.games.platform.Sfx
 import com.za.games.blok.BlokState
 import com.za.games.blok.BlokStatus
+import com.za.games.platform.appLocale
 import com.za.games.ui.common.GameOverOverlay
 import com.za.games.ui.common.GameTopBar
 import com.za.games.ui.common.PadButton
 import com.za.games.ui.common.PausedOverlay
 import com.za.games.ui.common.formatScore
 import com.za.games.platform.ShareContent
-import java.util.Locale
 
 @Composable
 fun BlokScreen(
@@ -257,7 +257,7 @@ private fun SidePanel(state: BlokState, highScore: Long, modifier: Modifier = Mo
 private fun PanelBox(label: String, content: @Composable () -> Unit) {
     Column {
         Text(
-            text = label.uppercase(Locale.getDefault()),
+            text = label.uppercase(appLocale()),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
         )
@@ -276,7 +276,7 @@ private fun PanelBox(label: String, content: @Composable () -> Unit) {
 private fun StatBlock(label: String, value: String, highlight: Boolean = false) {
     Column {
         Text(
-            text = label.uppercase(Locale.getDefault()),
+            text = label.uppercase(appLocale()),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
         )

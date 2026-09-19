@@ -1,0 +1,22 @@
+ZA est une plateforme de jeux sans publicité : 27 jeux dans une seule appli. Aucun n'affiche de publicité, aucun ne demande d'autorisation, aucun ne collecte de données. Il n'y a même pas l'autorisation Internet ; tout fonctionne hors ligne.
+
+NOTRE PROMESSE
+• 0 publicité : aucun SDK publicitaire
+• 0 traceur : aucune bibliothèque d'analyse ou de suivi
+• 0 autorisation : l'appli n'en demande aucune
+• Jeu pur : les scores et les réglages restent sur votre appareil
+
+JEUX
+Arcade : Blok (blocs qui tombent), Snake, Kuyu (descente dans le puits, puits du jour), Geçit (traversée de la route, mode du jour), Balkon (viser depuis le balcon : graines de courge, bombes à eau ou crachat), Viraj (course pseudo-3D, circuit du jour), Filo (shooter spatial vertical, flotte du jour), Raket (jeu de raquette : contre l'ordinateur, un ami ou le mur ; mur du jour), Tuşe (tuiles de piano : sept mélodies du domaine public ; morceau du jour), Uçurtma (maintenir pour monter ; toits, fils et cerfs-volants rivaux ; missions et équipement ; ciel du jour), Dalgıç (sauver des plongeurs en sous-marin ; oxygène, requins, mines, courants ; mer du jour), Bostan (défense de couloirs : puits, arroseurs, épouvantails, ruches, pièges ; chaque niveau est généré gagnable ; trois difficultés, potager du jour), Sincap (grimper un platane : touchez à gauche/droite pour sauter vers la branche suivante ; branches sèches, serpents, corbeaux et un chat qui se rapproche ; arbre du jour), Çekirge (shooter en formation : glissez pour marcher, touchez pour pulvériser, règle du tir unique ; bottes de foin, la reine ; champ du jour), Cici (Chapitre 1 : Dans l'espace — faites glisser la perruche blanche : bâtonnets de miel 7, graines 5, eau 2 points ; chats de l'espace et une balle rouge qui rebondit ; à rester immobile, elle s'ennuie ; espace du jour)
+Réflexion : 2048, Sudoku (trois niveaux, notes, solution unique), Démineur, Kakuro (trois tailles, solution unique), Reyon (casse-tête de planogramme, audit de conformité et agencement de vente ; rayon du jour)
+Mots : Beş Harf (mot de cinq lettres du jour), Kıskaç (étau alphabétique), Türetme (mots à partir de lettres), Dizgi (plateau de mots à se passer, 2-4 joueurs) — ces quatre jeux utilisent des listes de mots turcs, leur texte reste donc en turc ou en anglais
+Plateau et nombres : Tavla (backgammon : Classique, Tapa, Hapis ; contre l'ordinateur ou un ami), Vergici (Taxman), Toplam Kapma (Number Scrabble)
+
+FONCTIONS
+• Casse-tête du jour : le même jour, tout le monde reçoit le même casse-tête, généré depuis la date, sans serveur
+• 14 langues : français, anglais, turc, allemand, néerlandais, espagnol, portugais, italien, danois, suédois, norvégien, finnois, russe et arabe. L'appli suit la langue du téléphone, vous pouvez aussi la choisir dans l'appli
+• Partagez votre résultat : le bouton Partager dessine une carte de résultat et un court texte
+• Son et vibration coupés d'une touche ; mode gaucher
+• Open source (GPL-3.0) : github.com/aripdcem/za
+
+Politique de confidentialité : za.aripd.com/gizlilik.html

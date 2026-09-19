@@ -2,6 +2,14 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.40.0 (2026-09-19)
+- **Uygulama 14 dilde:** Türkçe, İngilizce, Almanca, Fransızca, Hollandaca, İspanyolca, Portekizce, İtalyanca, Danca, İsveççe, Norveççe (bokmål), Fince, Rusça ve Arapça — her dilde 911 metin. Uygulama telefonun diline uyar; ana menüdeki dil düğmesinden de seçilebilir (Android 13 ve üstünde sistem dil seçicisi, altında uygulama kendi ayarını saklar)
+- Varsayılan dil İngilizce oldu. Önceden Türkçe `values/` içindeydi, yani Play'de Türkiye dışındaki her telefon uygulamayı Türkçe açacaktı
+- Beş Harf, Kıskaç, Türetme ve Dizgi Türkçe kelime listeleriyle oynandığı için metinleri (`strings_words.xml`) çevrilmiyor: telefon Türkçeyse Türkçe, değilse İngilizce. Oyunlar bütün dillerde listede kalır, o dillerde kelime listeleri hazırlanınca çevrilecek
+- Sayı biçimleri yerel ayara uyar ama rakamlar Latin kalır (Arapça'da `1.234` yerine `١٢٣٤` çıkmaz); büyük harfe çevirme artık arayüzün diliyle yapılıyor — Türkçe kilitli `uppercase` "Continue" kelimesini "CONTİNUE" yapıyordu
+- Play listelemesi 14 dilde (`store/play/<dil>/`); dil kodu → Play yerel ayarı eşlemesi `store/README.md`'de
+- İki denetim betiği CI'a bağlandı: `tools/check_strings.py` (dil listeleri tutarlı mı, her dilde bütün metinler var mı, biçim belirteçleri uyuşuyor mu, listede olup çevirisi olmayan dil var mı) ve `tools/check_store.py` (mağaza metinlerinin sınırları, dil kapsamı, görünmez karakterler)
+
 ## 0.39.0 (2026-09-19)
 - Play yayını için yapı hazırlığı: sürüm iş akışı artık imzalı APK'nın yanında Play'e yüklenecek **AAB** de üretiyor; `targetSdk`/`compileSdk` 36 (Android 16); manifeste oyun kategorisi
 - Blok tamamen kendi adıyla: modül `games/blok`, paket `com.za.games.blok`, sınıflar ve metin kimlikleri `blok_*`. Eski kimlikle saklanan rekor ve "son oynananlar" kaydı bir kez taşınır

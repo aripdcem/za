@@ -84,6 +84,7 @@ import com.za.games.ui.common.ScoreCard
 import com.za.games.ui.common.ShareButton
 import com.za.games.ui.common.formatScore
 import com.za.games.ui.common.modeShareLabel
+import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.cos
@@ -224,7 +225,7 @@ fun BostanScreen(
     val fx = remember { BostanFx() }
     val fxTick = remember { mutableLongStateOf(0L) }
     val waveFmt = stringResource(R.string.bostan_wave_fmt)
-    fx.waveLabel = { String.format(waveFmt, it) }
+    fx.waveLabel = { String.format(Locale.ROOT, waveFmt, it) }
     fx.bigWaveLabel = stringResource(R.string.bostan_big_wave)
     fx.lifeLabel = stringResource(R.string.bostan_life_lost)
     fx.wonLabel = stringResource(R.string.bostan_won_title)
