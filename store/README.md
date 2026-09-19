@@ -9,6 +9,7 @@ Google Play listelemesi için metinler ve form cevapları. Kaynak dosyalar burad
 | `play/tr/full.txt`, `play/en/full.txt` | Tam açıklama | 4000 karakter |
 | `play/release-notes/<sürüm>.txt` | Sürüm notları (dil başına `<tr-TR>` / `<en-US>` blokları) | dil başına 500 karakter |
 | `data-safety.md` | Veri güvenliği formu cevapları | |
+| `icerik-derecelendirme.md` | IARC anketi cevapları, oyun oyun içerik dökümü, hedef kitle | |
 | `checklist.md` | Yayın öncesi kontrol listesi ve görsel gereksinimleri | |
 
 Sınırları `python3 tools/check_store.py` ile denetleyebilirsin.
