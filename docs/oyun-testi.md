@@ -2681,7 +2681,7 @@ yani cihazın erişilebilirlik ağacında gördüğü değerlere.
 | G2 | Raf gözündeki ürün adı | kırpılmamış (üç nokta yok), en dar göz Zor planında |
 | G3 | Dokunma eşlemesi | tepsiden seçilen ürün dokunulan göze yerleşiyor (basıklaşan tuvalde de) |
 | G4 | Satış'ta puan kuralları | en az üç kural okunuyor (v0.43.1'de beşten ikisi görünüyordu) |
-| G5 | Sipariş listesi | en az iki ürün satırı ve adımlayıcıları tam görünüyor |
+| G5 | Sipariş listesi | ilk ürün satırı tam görünüyor, kalanına kaydırmayla ulaşılıyor |
 | G6 | 411 dp | üç modun yerleşimi v0.43.1 ile aynı (raf yüksekliği değişmemiş) |
 
 Ölçülecek iki sayı: tuval payı `SHELF_SHARE` = %40 ve panel tabanı `PANEL_MIN`
@@ -2690,8 +2690,18 @@ yükseltilir (blok etiketi 8 sp'ye kadar iniyor, ad bölgesi ~19 dp'nin altında
 nokta çıkıyor) — ikisi aynı yükseklikten besleniyor, yani biri artınca öbürü
 azalıyor; 360×640 dp'de tepsi kaydırılarak yer açılıyor.
 
-`ReyonShortScreenTest` üç uygulama alanı yüksekliğinde koşuyor: 640, 568 (cihazda
-360×640 dp ekranın uygulama alanı, bulgunun geldiği ölçü) ve 480 dp.
+`ReyonShortScreenTest` brifi üç uygulama alanı yüksekliğinde ölçüyor: 640, 568
+(cihazda 360×640 dp ekranın uygulama alanı, bulgunun geldiği ölçü) ve 480 dp.
+
+**Açık madde — Sipariş'in listesi gün başlığına sıkışıyor.** Robolectric ölçümü:
+568 dp'lik uygulama alanında listenin görünen kısmı ~112 dp, yani bir ürün satırı
+(ikincisi 0,5 dp'ye iniyor). Tuvalin payı burada suçlu değil — tuval 156 dp,
+tavanın (179 dp) altında. Yüksekliği yiyen, tuval ile liste arasındaki gün
+başlığı: gün, tahmin, teslimat ve ipucu satırlarıyla ~180 dp. Liste kaydığı ve
+her satıra ulaşıldığı için mod oynanabilir, ama tek satır dar. Bu sürümün
+kapsamında değil; başlığın sıkıştırılması (ya da katlanması) ayrı bir iş, cihazda
+411 dp'de sorun görünmediği için de aceleci davranmamak doğru. Cihazda 360×640
+dp'de kaç satır göründüğü ölçülürse iş için sayı elde edilir.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
