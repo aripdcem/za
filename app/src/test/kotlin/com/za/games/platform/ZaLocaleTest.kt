@@ -1,5 +1,6 @@
 package com.za.games.platform
 
+import com.za.games.sozluk.WordLang
 import android.content.Context
 import android.content.res.Configuration
 import androidx.test.core.app.ApplicationProvider
@@ -80,13 +81,34 @@ class ZaLocaleTest {
     }
 
     @Test
-    fun wordGamesStayTurkishOrEnglish() {
+    fun wordGamesSpeakEveryLanguageWithAWordList() {
+        // Kelime oyunları kendi listeleriyle her dilde oynanıyor, bu yüzden
+        // metinleri de o dilde olmalı. Liste varken metin yoksa oyun açılır ama
+        // arayüzü İngilizce görünür; testin yakaladığı şey bu.
         val english = stringIn("en", R.string.besharf_hint)
-        assertNotEquals("Türkçe kendi metnini almalı", english, stringIn("tr", R.string.besharf_hint))
-        // strings_words.xml yalnız values/ ve values-tr/ altında; kalan her dil
-        // string başına İngilizce'ye düşer.
-        for (tag in ZaLocale.TAGS - setOf("tr")) {
-            assertEquals("$tag kelime oyunu metni İngilizce olmalı", english, stringIn(tag, R.string.besharf_hint))
+        for (lang in WordLang.entries) {
+            val text = stringIn(lang.tag, R.string.besharf_hint)
+            assertTrue("${lang.tag}: kelime oyunu metni boş", text.isNotBlank())
+            if (lang != WordLang.EN) {
+                assertNotEquals(
+                    "${lang.tag}: kelime oyunu metni İngilizce'ye düşmüş " +
+                        "(values-${lang.tag}/strings_words.xml eksik mi?)",
+                    english,
+                    text,
+                )
+            }
+        }
+    }
+
+    @Test
+    fun everyWordGameLanguageIsAlsoAnInterfaceLanguage() {
+        // Tersi de tutmalı: kelime listesi olan dilin arayüz çevirisi de olmalı,
+        // yoksa oyun o dilde oynanır ama uygulamanın kalanı İngilizce görünür.
+        for (lang in WordLang.entries) {
+            assertTrue(
+                "${lang.tag}: kelime listesi var ama arayüz dili listesinde yok",
+                lang.tag in ZaLocale.TAGS,
+            )
         }
     }
 
