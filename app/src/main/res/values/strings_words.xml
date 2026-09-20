@@ -2,17 +2,14 @@
 <!--
   Beş Harf, Kıskaç, Türetme ve Dizgi metinleri.
 
-  Bu dört oyun Türkçe kelime listeleriyle oynanır (games/besharf, games/kiskac,
-  games/turetme, games/dizgi altındaki sözlükler). Arayüzünü on iki dile
-  çevirmek oyunu oynanır kılmayacağı için metinleri yalnızca Türkçe ve
-  İngilizce tutuluyor: başka bir dile ayarlı telefonda Android bu anahtarları
-  string başına varsayılana, yani İngilizce'ye düşürür.
+  Bu dört oyun kendi kelime listeleriyle oynanır (games/besharf, games/kiskac,
+  games/turetme, games/dizgi altındaki dil klasörleri). Metinler ayrı dosyada
+  duruyor çünkü bir dilin kelime listesi ile o dilin arayüz çevirisi ayrı
+  zamanlarda hazır olabiliyor: liste yoksa oyun o dilde açılmaz, çeviri yoksa
+  Android anahtar başına varsayılana (İngilizce) düşer.
 
   tools:ignore="MissingTranslation" bu bilinçli boşluk için; strings.xml'de
   lint açık kalır ve gerçek çeviri eksiklerini yakalamaya devam eder.
-
-  Bir dil için kelime listesi hazırlandığında bu oyunların metinleri o dilin
-  values-<dil>/strings_words.xml dosyasına eklenir.
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Beş Harf -->
@@ -101,4 +98,10 @@
     <string name="dizgi_legend_dw">2K double word</string>
     <string name="dizgi_legend_tw">3K triple word</string>
     <string name="dizgi_board_desc">Dizgi board: %1$d tiles placed, %2$d pending</string>
+
+    <!-- Kelime dili seçimi -->
+    <string name="word_lang_title">Word language</string>
+    <string name="word_lang_follow">App language</string>
+    <string name="word_lang_button">Word language: %1$s</string>
+    <string name="word_lang_note">Each language has its own word list and its own daily puzzle. Turkish word games use Turkish letters and Turkish alphabetical order; the other languages use their own.</string>
 </resources>

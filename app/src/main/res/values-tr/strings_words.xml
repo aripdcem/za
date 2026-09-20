@@ -101,4 +101,10 @@
     <string name="dizgi_legend_dw">2K çift kelime</string>
     <string name="dizgi_legend_tw">3K üç kelime</string>
     <string name="dizgi_board_desc">Dizgi tahtası: %1$d taş yerleşik, %2$d taş bekliyor</string>
+
+    <!-- Kelime dili seçimi -->
+    <string name="word_lang_title">Kelime dili</string>
+    <string name="word_lang_follow">Uygulamanın dili</string>
+    <string name="word_lang_button">Kelime dili: %1$s</string>
+    <string name="word_lang_note">Her dilin kendi kelime listesi ve kendi günlük bulmacası var. Türkçe oynarken Türk alfabesi ve Türkçe sıralama geçerli; öteki diller kendi alfabesini kullanır.</string>
 </resources>

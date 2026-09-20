@@ -1,5 +1,10 @@
 package com.za.games.ui.besharf
 
+import androidx.compose.ui.platform.LocalContext
+import com.za.games.platform.WordLangs
+import androidx.compose.runtime.saveable.rememberSaveable
+import com.za.games.ui.common.WordLangScreen
+import com.za.games.ui.common.WordLangChip
 import com.za.games.ui.common.LocalWordLang
 import com.za.games.sozluk.WordLang
 import androidx.activity.compose.BackHandler
@@ -80,6 +85,23 @@ fun BesHarfScreen(
     onExit: () -> Unit,
     viewModel: BesHarfViewModel = viewModel(),
 ) {
+    // Kelime dili seçicisi tam ekran açılır: bu uygulamada diyalog yok,
+    // sistem çubukları da gizli. Seçim oyunu o dilde yeniden kurar.
+    var showWordLang by rememberSaveable { mutableStateOf(false) }
+    val wordLang by viewModel.wordLang.collectAsStateWithLifecycle()
+    if (showWordLang) {
+        WordLangScreen(
+            selected = WordLangs.chosen(LocalContext.current),
+            effective = wordLang,
+            onPick = { picked ->
+                showWordLang = false
+                viewModel.setWordLang(picked)
+            },
+            onExit = { showWordLang = false },
+        )
+        return
+    }
+
     val state by viewModel.state.collectAsStateWithLifecycle()
     val mode by viewModel.mode.collectAsStateWithLifecycle()
     val streak by viewModel.streak.collectAsStateWithLifecycle()
@@ -151,6 +173,8 @@ fun BesHarfScreen(
         }
 
         ModeChips(mode = mode, onSelect = viewModel::setMode)
+
+        WordLangChip(lang = wordLang) { showWordLang = true }
 
         Text(
             text = stringResource(R.string.besharf_hint),

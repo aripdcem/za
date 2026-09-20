@@ -1,5 +1,10 @@
 package com.za.games.ui.dizgi
 
+import androidx.compose.ui.platform.LocalContext
+import com.za.games.platform.WordLangs
+import androidx.compose.runtime.saveable.rememberSaveable
+import com.za.games.ui.common.WordLangScreen
+import com.za.games.ui.common.WordLangChip
 import com.za.games.ui.common.LocalWordLang
 import com.za.games.sozluk.WordLang
 import androidx.activity.compose.BackHandler
@@ -104,6 +109,23 @@ fun DizgiScreen(
     onExit: () -> Unit,
     viewModel: DizgiViewModel = viewModel(),
 ) {
+    // Kelime dili seçicisi tam ekran açılır: bu uygulamada diyalog yok,
+    // sistem çubukları da gizli. Seçim oyunu o dilde yeniden kurar.
+    var showWordLang by rememberSaveable { mutableStateOf(false) }
+    val wordLang by viewModel.wordLang.collectAsStateWithLifecycle()
+    if (showWordLang) {
+        WordLangScreen(
+            selected = WordLangs.chosen(LocalContext.current),
+            effective = wordLang,
+            onPick = { picked ->
+                showWordLang = false
+                viewModel.setWordLang(picked)
+            },
+            onExit = { showWordLang = false },
+        )
+        return
+    }
+
     val state by viewModel.state.collectAsStateWithLifecycle()
     val phase by viewModel.phase.collectAsStateWithLifecycle()
     val matchId by viewModel.matchId.collectAsStateWithLifecycle()
@@ -188,9 +210,14 @@ fun DizgiScreen(
             }
         }
 
+        // Dil yalnız kurulumda değişir: maç ortasında sözlük ve harf puanları
+        // değişirse tahtadaki kelimeler geçersizleşir.
+        if (phase == DizgiPhase.SETUP) {
+            WordLangChip(lang = wordLang) { showWordLang = true }
+        }
+
         when (phase) {
             DizgiPhase.SETUP -> SetupPane(onStart = viewModel::start)
-
             DizgiPhase.HANDOVER -> HandoverPane(
                 state = state,
                 onReady = viewModel::beginTurn,
