@@ -2,6 +2,14 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/aripd/zagames/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.43.4 (2026-09-20)
+- **Reyon · Satış: kırpılan puan kuralı dokununca açılıyor.** v0.43.3'ün iki satır sınırı 360×640 dp'de hedefini tutturdu — cihazda ölçüldü: üçüncü kuralın adı 0,3 → 17,7 dp, panel yine 140 dp, beş kuralın üçü okunuyor. Ama öngörülen bedel de ödendi: `Konum` kuralının gövdesi son parçasını, `★ yalnız göz hizasında ×4` kuralını, üç noktanın arkasında bırakıyordu
+- O çarpan uygulamada başka hiçbir yerde yazılı değil: kurulum kartının özeti kuralları sayıyor ama çarpan vermiyor ve ★ kuralını hiç anmıyor. Yani oyuncu kısa ekranda o kuralı hiçbir yerden öğrenemiyordu
+- Kural satırına dokunmak gövdeyi tam açıyor, ikinci dokunuş kapatıyor. Kapalı görünüm değişmedi, yani 140 dp'lik panel tabanında üçüncü kuralın adı yerinde kalıyor: düzeltme v0.43.3'ün kazandığını geri vermiyor, açılan satır panelin kendi kaydırmasına taşıyor
+- Ok yalnız gövdesi gerçekten kırpılan satırda görünüyor ve bunu yerleşimden okuyor (`onTextLayout` → `hasVisualOverflow`), tahminden değil: hangi kuralın kaç satır tuttuğu dile ve ekran genişliğine göre değişiyor. 411 dp'de beş gövde de iki satıra sığdığı için orada hiç ok görünmüyor
+- Böylece metni 14 dilde kısaltma kararına gerek kalmadı: çarpanların hepsi okunabilir ve hiçbir dilde metin değişmedi
+- Ölçüm araçları (`tools/cihaz_testi.py`) artık raporun ilk satırına kurulu yapının parmak izini basıyor: paket, sürüm adı ve kurulu `base.apk`'nin SHA256'sı. G4 ölçümü bir kez yanlış daldan kurulmuş bir yapıyla alınmış ve düzeltme işlemedi sanılmıştı; sürüm adı tek başına ayırt etmiyor, çünkü sürüm yükseltildikten sonra her dalın yapısı aynı adı taşıyor
+
 ## 0.43.3 (2026-09-20)
 - **Reyon · Satış: dar ekranda daha çok puan kuralı.** v0.43.2 cihazda ölçüldüğünde 360×640 dp'de beş puan kuralından ikisi görünüyordu (G4). Panel tabanını zaten tam alıyor (140 dp); yüksekliği yiyen, `Konum` kuralının üç satıra sarıp tek başına 76 dp tutan gövdesiydi — öbür dördünün gövdesi tek satır, 44 dp
 - Kural gövdesi iki satırla sınırlandı (`Konum` 76 → ~60 dp) ve satır arası dolgu 2 → 1 dp indi (beş kuralda 10 dp, hiçbir metni kırpmadan). Beklenen: başlık 20 + `Konum` 58 + `Tamamlayıcı` 42 = 120 dp, üçüncü kuralın adı 120–138 dp'ye düşüyor, 140 dp'lik tabanın içinde. **Payı 2 dp, cihazda ölçülecek**

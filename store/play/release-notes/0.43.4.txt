@@ -1,0 +1,42 @@
+<tr-TR>
+• Reyon · Satış: dar ekranda kırpılan puan kuralı açıklaması, satıra dokununca tam açılıyor; kırpılan satırın sağında küçük bir ok duruyor.
+</tr-TR>
+<en-US>
+• Reyon · Sales: a scoring rule whose description is cut off on a narrow screen now opens in full when you tap the row; a small arrow marks the rows that are cut off.
+</en-US>
+<de-DE>
+• Reyon · Verkauf: Eine Punkteregel, deren Beschreibung auf schmalen Bildschirmen abgeschnitten wird, öffnet sich beim Tippen auf die Zeile vollständig; ein kleiner Pfeil markiert die abgeschnittenen Zeilen.
+</de-DE>
+<fr-FR>
+• Reyon · Ventes : une règle de score dont la description est tronquée sur un écran étroit s'ouvre entièrement en touchant la ligne ; une petite flèche signale les lignes tronquées.
+</fr-FR>
+<nl-NL>
+• Reyon · Verkoop: een scoreregel waarvan de beschrijving op een smal scherm wordt afgekapt, opent volledig als je op de rij tikt; een klein pijltje markeert de afgekapte rijen.
+</nl-NL>
+<es-ES>
+• Reyon · Ventas: una regla de puntuación cuya descripción se corta en pantallas estrechas se abre completa al tocar la fila; una pequeña flecha señala las filas cortadas.
+</es-ES>
+<pt-BR>
+• Reyon · Vendas: uma regra de pontuação cuja descrição fica cortada em telas estreitas abre por completo ao tocar na linha; uma pequena seta marca as linhas cortadas.
+</pt-BR>
+<it-IT>
+• Reyon · Vendite: una regola di punteggio con la descrizione troncata su schermi stretti si apre per intero toccando la riga; una piccola freccia indica le righe troncate.
+</it-IT>
+<da-DK>
+• Reyon · Salg: en pointregel, hvis beskrivelse bliver afkortet på en smal skærm, åbnes helt, når du trykker på rækken; en lille pil markerer de afkortede rækker.
+</da-DK>
+<sv-SE>
+• Reyon · Försäljning: en poängregel vars beskrivning kapas på en smal skärm öppnas i sin helhet när du trycker på raden; en liten pil markerar de kapade raderna.
+</sv-SE>
+<no-NO>
+• Reyon · Salg: en poengregel med beskrivelse som blir avkortet på en smal skjerm, åpnes i sin helhet når du trykker på raden; en liten pil markerer de avkortede radene.
+</no-NO>
+<fi-FI>
+• Reyon · Myynti: pisteytyssääntö, jonka kuvaus katkeaa kapealla näytöllä, avautuu kokonaan riviä napauttamalla; pieni nuoli merkitsee katkaistut rivit.
+</fi-FI>
+<ru-RU>
+• Reyon · Продажи: правило начисления, описание которого обрезано на узком экране, раскрывается полностью по нажатию на строку; обрезанные строки отмечены маленькой стрелкой.
+</ru-RU>
+<ar>
+• Reyon · البيع: قاعدة النقاط التي يُقتطع شرحها في الشاشة الضيقة تنفتح كاملة عند لمس الصف؛ وسهم صغير يشير إلى الصفوف المقتطعة.
+</ar>

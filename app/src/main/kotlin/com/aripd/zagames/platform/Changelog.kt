@@ -52,6 +52,53 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.43.4", "2026-09-20",
+            tr = listOf(
+                "Reyon · Satış: dar ekranda kırpılan puan kuralı açıklaması, satıra dokununca tam açılıyor; kırpılan satırın sağında küçük bir ok duruyor",
+            ),
+            en = listOf(
+                "Reyon · Sales: a scoring rule whose description is cut off on a narrow screen now opens in full when you tap the row; a small arrow marks the rows that are cut off",
+            ),
+            others = mapOf(
+                "de" to listOf(
+                    "Reyon · Verkauf: Eine Punkteregel, deren Beschreibung auf schmalen Bildschirmen abgeschnitten wird, öffnet sich beim Tippen auf die Zeile vollständig; ein kleiner Pfeil markiert die abgeschnittenen Zeilen",
+                ),
+                "fr" to listOf(
+                    "Reyon · Ventes : une règle de score dont la description est tronquée sur un écran étroit s'ouvre entièrement en touchant la ligne ; une petite flèche signale les lignes tronquées",
+                ),
+                "nl" to listOf(
+                    "Reyon · Verkoop: een scoreregel waarvan de beschrijving op een smal scherm wordt afgekapt, opent volledig als je op de rij tikt; een klein pijltje markeert de afgekapte rijen",
+                ),
+                "es" to listOf(
+                    "Reyon · Ventas: una regla de puntuación cuya descripción se corta en pantallas estrechas se abre completa al tocar la fila; una pequeña flecha señala las filas cortadas",
+                ),
+                "pt" to listOf(
+                    "Reyon · Vendas: uma regra de pontuação cuja descrição fica cortada em telas estreitas abre por completo ao tocar na linha; uma pequena seta marca as linhas cortadas",
+                ),
+                "it" to listOf(
+                    "Reyon · Vendite: una regola di punteggio con la descrizione troncata su schermi stretti si apre per intero toccando la riga; una piccola freccia indica le righe troncate",
+                ),
+                "da" to listOf(
+                    "Reyon · Salg: en pointregel, hvis beskrivelse bliver afkortet på en smal skærm, åbnes helt, når du trykker på rækken; en lille pil markerer de afkortede rækker",
+                ),
+                "sv" to listOf(
+                    "Reyon · Försäljning: en poängregel vars beskrivning kapas på en smal skärm öppnas i sin helhet när du trycker på raden; en liten pil markerar de kapade raderna",
+                ),
+                "nb" to listOf(
+                    "Reyon · Salg: en poengregel med beskrivelse som blir avkortet på en smal skjerm, åpnes i sin helhet når du trykker på raden; en liten pil markerer de avkortede radene",
+                ),
+                "fi" to listOf(
+                    "Reyon · Myynti: pisteytyssääntö, jonka kuvaus katkeaa kapealla näytöllä, avautuu kokonaan riviä napauttamalla; pieni nuoli merkitsee katkaistut rivit",
+                ),
+                "ru" to listOf(
+                    "Reyon · Продажи: правило начисления, описание которого обрезано на узком экране, раскрывается полностью по нажатию на строку; обрезанные строки отмечены маленькой стрелкой",
+                ),
+                "ar" to listOf(
+                    "Reyon · البيع: قاعدة النقاط التي يُقتطع شرحها في الشاشة الضيقة تنفتح كاملة عند لمس الصف؛ وسهم صغير يشير إلى الصفوف المقتطعة",
+                ),
+            ),
+        ),
+        ReleaseNote(
             "0.43.3", "2026-09-20",
             tr = listOf(
                 "Reyon · Satış: dar ekranda daha çok puan kuralı görünsün diye kural açıklamaları iki satırla sınırlandı, satır araları daraldı",

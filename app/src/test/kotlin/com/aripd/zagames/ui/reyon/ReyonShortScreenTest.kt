@@ -201,6 +201,44 @@ class ReyonShortScreenTest {
     }
 
     /**
+     * Kırpılan kural gövdesi dokununca açılıyor.
+     *
+     * Kısa ekranda `Konum` kuralının gövdesi iki satır sınırına takılıp son
+     * parçasını ("★ yalnız göz hizasında ×4") üç noktanın arkasında bırakıyor;
+     * o çarpan uygulamada başka hiçbir yerde yazılı değil (cihazda ölçüldü,
+     * `docs/oyun-testi.md` G4 doğrulaması).
+     *
+     * Testin kanıtladığı: satır dokunmayı alıyor, açılan gövde kısalmıyor ve
+     * ikinci dokunuş kapatıyor; açılmış hâlde de panel garantisi (bkz.
+     * [assertPanelIsNotStarved]) duruyor. Kanıtlayamadığı: gövdenin gerçekten
+     * kırpıldığı — Robolectric'in yazı ölçüleri cihazınkinden farklı, kırpma
+     * kırpılmıyorsa iki ölçüm eşit çıkar ve test sessiz geçer. Kırpmanın kendisi
+     * cihazda ölçülüyor.
+     */
+    @Test
+    fun aClippedSalesRuleOpensOnTap() {
+        startRound(str(R.string.reyon_kind_sales), str(R.string.reyon_sales_start))
+        awaitNodes(trayPrefix)
+        val name = str(R.string.reyon_sales_rule_position)
+        val descHeight = { rule.onNodeWithText(str(R.string.reyon_sales_rule_position_desc)).getBoundsInRoot().height }
+        val collapsed = descHeight()
+        rule.onNodeWithText(name).performClick()
+        val opened = descHeight()
+        assertTrue("açılan gövde kısalamaz: $collapsed → $opened", opened >= collapsed - 1.dp)
+        // Açık satır paneli büyütüyor; garanti bozulmamalı — panel kendi içinde kayar.
+        assertPanelIsNotStarved(
+            "açık satış kuralı",
+            textBounds(
+                R.string.reyon_sales_rule_position,
+                R.string.reyon_sales_rule_complement,
+                R.string.reyon_sales_rule_conflict,
+            ),
+        )
+        rule.onNodeWithText(name).performClick()
+        assertTrue("ikinci dokunuş kapatmalı: $opened → ${descHeight()}", descHeight() <= collapsed + 1.dp)
+    }
+
+    /**
      * Sipariş'in listesi tuvale değil, üstündeki gün başlığına sıkışıyor: 360×640 dp'de
      * başlık ~180 dp alıyor ve listeye bir satır kalıyor. Tuval tavanı bunu çözmüyor —
      * ayrı bir konu, `docs/oyun-testi.md`'de açık madde. Burada aranan, listenin

@@ -100,6 +100,29 @@ doğrulayın**, ve bir bulguyu koda yazmadan önce bulgunun kendisini sınayın.
 `tools/coklu_dokunus.py` (uinput ile sanal dokunmatik; `input`/`sendevent`
 tek parmakla sınırlı).
 
+### Her ölçüm hangi yapıda alındığını yazar
+
+`cihaz_testi.py reyon` ve `... tarama` raporun ilk satırına kurulu yapının
+parmak izini basar:
+
+```
+Ölçülen yapı: com.aripd.zagames 0.43.3 sha256=00bfb833…
+```
+
+Özet, yayındaki APK'nin `SHA256SUMS.txt` içindeki değeriyle birebir aynı
+olmalı; `pm install` dosyayı olduğu gibi kopyaladığı için eşleşmezse ölçüm o
+yapıda alınmamıştır. Elle bakmak için:
+
+```bash
+adb shell sha256sum "$(adb shell pm path com.aripd.zagames | cut -d: -f2 | tr -d '\r')"
+```
+
+Sürüm adı tek başına yetmez: sürüm yükseltildikten sonra **her dalın** yapısı
+aynı adı taşır. v0.43.3'te G4 ölçümü yanlış daldan kurulmuş bir yapıyla
+alındı; sonuç düzeltmenin işe yaramadığını gösteriyordu, oysa düzeltme o
+yapıda yoktu. Parmak izi eşleşmiyorsa bulgu geçersizdir — önce doğru yapı
+kurulur, sonra ölçülür.
+
 ---
 
 ## A · Cihaz koşumu
@@ -2744,7 +2767,7 @@ geri kuruldu, ölçümden sonra v0.43.2'ye dönüldü).
 | G1 | Diziliş brif kural satırı | **✅ 32,5 dp** · 3 kural tam okunuyor, 4.'sü kırpık; kaydırma kalanları getiriyor |
 | G2 | Raf gözünde ürün adı | **✅ kırpılma yok** (Zor planı, 6 göz, göz 56 dp) |
 | G3 | Dokunma eşlemesi | **✅ 6/6** yerleştirme dokunulan göze düştü |
-| G4 | Satış'ta puan kuralları | **❌ 5 kuralın 2'si** okunuyor (411 dp'de beşi de) |
+| G4 | Satış'ta puan kuralları | **❌ 5 kuralın 2'si** okunuyor (411 dp'de beşi de) — v0.43.3'te üçe çıktı, aşağıdaki doğrulamaya bakın |
 | G5 | Sipariş listesi | **✅** ilk satır tam (108,5 dp), altısı da kaydırmayla geliyor |
 | G6 | 411 dp yerleşimi | **✅ v0.43.1 ile birebir aynı** |
 
@@ -2819,7 +2842,20 @@ gözden geçirilmeli.
 
 CI bunu doğrulayamaz: Robolectric'in yazı ölçüleri cihazınkinden farklı, zaten
 `ReyonShortScreenTest` h568'de üç kuralı görüp geçiyordu — bulguyu cihaz
-çıkardı. Yeniden ölçüm: `python3 tools/cihaz_testi.py reyon --apk <yeni apk>`.
+çıkardı. Ölçüm yayındaki yapıyla alınır:
+
+```bash
+python3 tools/cihaz_testi.py reyon --apk za-v0.43.3.apk
+```
+
+Raporun ilk satırındaki özet `00bfb83305ecd4e005c9c0abac9d2952059f5822b02e6b11e3800181d16415e7`
+olmalı (v0.43.3 `za-v0.43.3.apk` = `za.apk`). Yerel derlemeyle ölçülüyorsa özet
+elbette tutmaz; orada sağlama `Konum` gövdesinin iki satır (≈35 dp) olması.
+Bu tuzağa bir kez düşüldü: ilk ölçüm yanlış daldan kurulmuş bir yapıyla alındı
+ve düzeltme işlemedi sanıldı.
+
+Sonuç aşağıda: "v0.43.3 · G4 denemesinin doğrulaması" — deneme tuttu, 2 dp'lik
+pay cihazda da yetti.
 
 **G5 — Sipariş listesi.** İlk ürün satırı tam: **108,5 dp** (ad, stok, talep
 bandı, −/+ adımlayıcı, teslim notu). İkincisi 79 dp ile yarım görünüyor, yani
@@ -2848,6 +2884,123 @@ değişmiyor — tasarımın söylediği şey cihazda da böyle.
 > "Yenilikler" kartı hub'ı örtüyordu (`yenilik_kapat`); Reyon yarım turu sakladığı
 > için oyuna girince mod çipleri ekranda olmuyordu (`reyon_kurulum_karti`, "Başa
 > dön"e basar). Üçü de `tools/cihaz_testi.py` içinde.
+
+### v0.43.3 · G4 denemesinin doğrulaması · cihazda · 2026-09-21
+
+`maxLines = 2` + 1 dp satır arası denemesi cihazda ölçüldü: **hedef tuttu, ama
+payı gerçekten dar ve bedeli öngörüldüğü gibi ödendi.**
+
+Kurulum: `origin/main` (ceba53f) `./gradlew :app:assembleDebug` ile derlendi
+(`versionName=0.43.3`), SM-A515F'e `adb install -r`. Kısa ekran
+`wm size 1080x1920` + `wm density 480`, yani `reyon --ekran 360x640 --olcek 3.0`.
+Ölçeğin 3.0 olması gerekti: varsayılan `--olcek 2.0` (720×1280) üç türde de
+"Reyon açılamadı" verdi, sebebi bu koşumda saptanmadı.
+
+> Ölçümden önce derlemenin düzeltmeyi taşıdığı doğrulanmalı: `Konum` gövdesi iki
+> satırsa (35 dp) taşıyor, üç satırsa (53 dp) taşımıyor. Bu koşumun ilk denemesi
+> `main`'in eski bir kopyasından derlendiği için v0.43.2'yi "0.43.3" etiketiyle
+> ölçtü; sayılar v0.43.2'nin sayılarıydı.
+
+**G4 — 360×640 dp, panel 140,0 dp (başlığın tepesinden tepsi başlığına).**
+
+| Kural | Ad | Gövde |
+| --- | --- | --- |
+| Konum | 17,7 dp | **35,3 dp** (iki satır; v0.43.2'de 53 dp / üç satır) |
+| Tamamlayıcı | 17,7 dp | 17,7 dp |
+| Çakışma | **17,7 dp** (v0.43.2'de 0,3 dp) | 5,3 dp (kırpık şerit) |
+| Kategori bloğu | kaydırmayla 17,7 dp | — |
+| Marka bloğu | kaydırmayla 17,7 dp | — |
+
+Yani **üçüncü kuralın adı tabanın içine girdi** — planın hedefi buydu ve 2 dp'lik
+pay tuttu. Ama üçüncü kural yalnız adıyla duruyor, gövdesi 5,3 dp'lik bir şeride
+iniyor; "beş kuralın üçü okunuyor" derken okunanın ad olduğu, puanın ne kadar
+olduğu değil, akılda tutulmalı. Tek kaydırma (270 px) 3.–5. kuralları tam
+getiriyor.
+
+**Öngörülen bedel ödendi.** `Konum` gövdesi 360 dp'de üç noktayla kesiliyor;
+ekranda okunan son parça `… ★ yalnız göz hiz…`, yani kaybedilen tam olarak
+öngörülen kural: `★ yalnız göz hizasında ×4`. Oyuncu bu kuralı kısa ekranda
+panelden öğrenemez.
+
+**411 dp'de bedel yok.** Cihazın kendi ekranında gövde yine iki satır (35,8 dp)
+ama **tam**: `· ▼ ağır yalnız altta ×3 · ★ yalnız göz hizasında ×4` sonuna kadar
+okunuyor, üç nokta çıkmıyor. Beş kuralın adı da ağaçta: `Marka bloğu` bu turda
+12,6 dp ile yarım kaldı, ama panel tepsiyle aynı kalandan beslendiği ve tepsideki
+ürün sayısı tura göre değiştiği için tek koşumdan gerileme sonucu çıkarılmadı —
+tekrarı gerekiyor.
+
+**Aynı koşumda değişmeyenler** (360×640 dp, v0.43.2 → v0.43.3): Diziliş ve Satış
+rafı 167,3 dp, Sipariş rafı 156,3 dp, Diziliş brif satırları 32,3 · 32,3 · 32,3 ·
+17,3 dp. Düzeltme yüksekliği kuralın kendisinden çıkardığı için tuval, tepsi ve
+öbür iki modun yerleşimi kıpırdamadı — G1, G2, G3, G5, G6 yeniden açılmıyor.
+`logcat AndroidRuntime:E` boş; ekran ayarları `wm size reset` + `wm density reset`
+ile geri alındı.
+
+**Kesilme düzeltildi: kural satırı dokununca açılıyor.** Kalan tek açık, `Konum`
+gövdesinin kısa ekranda `★ yalnız göz hizasında ×4` kuralını üç noktanın arkasında
+bırakmasıydı; o çarpan uygulamada başka hiçbir yerde yazılı değil (kurulum kartının
+özeti kuralları sayıyor ama çarpan vermiyor ve ★ kuralını hiç anmıyor). Satıra
+dokunmak gövdeyi tam açıyor, ikinci dokunuş kapatıyor. Kapalı görünüm değişmediği
+için 140 dp'lik tabanda üçüncü kuralın adı yerinde kalıyor — yani bu düzeltme G4'ün
+kazandığını geri vermiyor; açılan satır panelin kendi kaydırmasına taşıyor.
+
+Gövdesi gerçekten kırpılan satırın sağında küçük bir ok duruyor. Ok yerleşimden
+okunuyor (`onTextLayout` → `hasVisualOverflow`), tahminden değil: hangi kuralın
+kaç satır tuttuğu dile ve ekran genişliğine göre değişiyor. 411 dp'de beş gövde de
+iki satıra sığdığı için orada hiç ok görünmüyor.
+
+Böylece metni 14 dilde kısaltma kararına gerek kalmadı: çarpanların hepsi
+okunabilir durumda ve hiçbir dilde metin değişmedi. İkisi de cihazda ölçüldü —
+aşağıdaki "Açılan kural satırı cihazda" bölümü: ok yalnız `Konum` satırında
+çıkıyor, dokunuş gövdeyi 31,0 → 48,7 dp'ye açıyor ve `★ yalnız göz hizasında ×4`
+sonuna kadar okunuyor.
+
+### v0.43.4 · Açılan kural satırı cihazda · 2026-09-21
+
+`Satış'ta kırpılan kural gövdesi dokununca açılıyor` (b5392be) SM-A515F'te
+ölçüldü. Belgenin sorduğu iki şeyin ikisi de **tuttu**.
+
+Ölçülen yapı `kurulu_yapi()` ile doğrulandı: cihazdaki `base.apk`
+`sha256=79cbcef9…`, yerel `app-debug.apk` ile birebir aynı. Kısa ekran yine
+`wm size 1080x1920` + `wm density 480` (360×640 dp).
+
+**1 — Ok görünüyor, yalnız gereken satırda.** 360 dp'de `Konum` satırının
+sağında, puanın solunda küçük bir `⌄` duruyor. `Tamamlayıcı` ve `Çakışma`
+satırlarında ok yok — ikisinin gövdesi de tek satır, yani taşmıyor.
+`onTextLayout` → `hasVisualOverflow` ölçütü cihazda beklendiği gibi çalışıyor.
+411 dp'de hiçbir satırda ok yok, çünkü orada beş gövde de iki satıra sığıyor.
+
+**2 — Dokununca son parça tam okunuyor.** Satıra dokunmak gövdeyi üç satıra
+açıyor ve kesilen kural sonuna kadar okunuyor: `… · ★ yalnız göz hizasında ×4`,
+üç nokta yok. Ok `⌃` olarak dönüyor, açık satır yuvarlatılmış açık zeminle
+vurgulanıyor. İkinci dokunuş kapatıyor.
+
+| Durum | `Konum` gövdesi | `Çakışma` adı | Ok |
+| --- | --- | --- | --- |
+| kapalı | 31,0 dp (iki satır, `★ yalnız …`) | 17,7 dp | `⌄` |
+| dokunuştan sonra | **48,7 dp (üç satır, tam)** | 5,3 dp | `⌃` |
+| ikinci dokunuş | 31,0 dp | 17,7 dp | `⌄` |
+
+Dokunma hedefi satırın tamamı; ölçümde `Konum` yazısının üstüne dokunuldu
+(121, 1109) ve satır açıldı.
+
+**G4'ün kazandığı geri verilmiyor.** Kapalı görünüm değişmedi: `Çakışma`nın adı
+140 dp'lik tabanın içinde, 17,7 dp. Satır açıkken üçüncü kuralın adı 5,3 dp'ye
+iniyor, yani açılan gövde panelin kendi kaydırmasına taşıyor — tasarımda yazdığı
+gibi. Kapatınca yerine dönüyor.
+
+**411 dp.** Gövde iki satır ve tam (32,0 dp), ok yok. Beş kuralın adı da ağaçta;
+`Marka bloğu` bu koşumda da 12,6 dp ile yarım kaldı — iki koşumun ikisinde de
+aynı sayı çıktığı için tura bağlı bir dalgalanma olmayabilir. Bu düzeltmeden
+gelmiyor (düzeltme yalnız yükseklik azaltıyor), ama 411 dp'de beşinci kuralın
+adının neden kırpıldığı ayrıca bakılmayı hak ediyor.
+
+**Açık madde — 411 dp'de `Marka bloğu`nun adı yarım.** İki koşumda da 12,6 dp.
+Uzun telefonda panele 240 dp düşüyor ve beş kural oraya rahat sığmalı, yani bu
+kısa ekran tavanlarından gelmiyor; Sipariş'in gün başlığı gibi ayrı bir yerleşim
+konusu. Kırpılan ad, kaydırmanın son satırı olduğu için gözden kaçabilir.
+
+`logcat AndroidRuntime:E` boş; ekran ayarları geri alındı.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

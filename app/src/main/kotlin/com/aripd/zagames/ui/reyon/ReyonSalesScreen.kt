@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,8 +25,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -34,7 +39,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
@@ -451,7 +458,15 @@ private fun RulesPanel(score: SalesScore, target: Int, modifier: Modifier = Modi
                 drawRect(fill, size = Size(size.width * fraction, size.height))
             }
         }
-        for (rule in SalesRule.entries) {
+        // Kısa ekranda iki satır sınırı Konum kuralının son parçasını ("★ yalnız göz
+        // hizasında ×4") üç noktanın arkasına atıyor; cihazda 360 dp'de ölçüldü.
+        // O çarpan başka hiçbir yerde yazılı değil: kurulum kartının özeti kuralları
+        // sayıyor ama çarpan vermiyor ve ★ kuralını hiç anmıyor. Satıra dokununca
+        // gövde tam açılıyor — kapalı görünüm değişmediği için 140 dp'lik tabanda
+        // üçüncü kuralın adı yerinde kalıyor, açılan satır panelin kendi kaydırmasına
+        // taşıyor. Metni 14 dilde kısaltmaya gerek kalmıyor, çarpanlar da duruyor.
+        var acilan by remember { mutableStateOf<SalesRule?>(null) }
+        for (rule in SalesRule.entries) key(rule) {
             val (name, desc) = when (rule) {
                 SalesRule.POSITION -> R.string.reyon_sales_rule_position to R.string.reyon_sales_rule_position_desc
                 SalesRule.COMPLEMENT -> R.string.reyon_sales_rule_complement to R.string.reyon_sales_rule_complement_desc
@@ -460,9 +475,21 @@ private fun RulesPanel(score: SalesScore, target: Int, modifier: Modifier = Modi
                 SalesRule.BRAND -> R.string.reyon_sales_rule_brand to R.string.reyon_sales_rule_brand_desc
             }
             val value = score.of(rule)
+            val acik = acilan == rule
+            // Ok yalnız gövdesi gerçekten kırpılan satırda çıkıyor: hangi kuralın
+            // kaç satır tuttuğu dile ve ekran genişliğine göre değişiyor, o yüzden
+            // tahmin edilmiyor, yerleşimden okunuyor. 411 dp'de beş gövde de iki
+            // satıra sığdığı için hiç ok görünmüyor.
+            var tasan by remember { mutableStateOf(false) }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(
+                        if (acik) MaterialTheme.colorScheme.primary.copy(alpha = 0.10f)
+                        else Color.Transparent,
+                    )
+                    .clickable { acilan = if (acik) null else rule }
                     // Satır arası 2 → 1 dp: beş kuralda 10 dp eder ve hiçbir metni
                     // kırpmadan kazanılır. Tek başına yetmez, iki satır sınırıyla
                     // birlikte üçüncü kuralın adını tabanın içine sokuyor.
@@ -481,8 +508,19 @@ private fun RulesPanel(score: SalesScore, target: Int, modifier: Modifier = Modi
                         text = stringResource(desc),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                        maxLines = 2,
+                        maxLines = if (acik) Int.MAX_VALUE else 2,
                         overflow = TextOverflow.Ellipsis,
+                        onTextLayout = { if (!acik) tasan = it.hasVisualOverflow },
+                    )
+                }
+                if (tasan || acik) {
+                    Icon(
+                        imageVector = if (acik) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                        // Süsleme: ekran okuyucu gövdenin tamamını kırpılmışken de
+                        // okuyor, satırın dokunma eylemini de kendisi duyuruyor.
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                        modifier = Modifier.size(16.dp),
                     )
                 }
                 Text(
