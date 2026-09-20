@@ -2673,7 +2673,17 @@ bozulmuyor. Uzun telefonda iki tavan da doğal yüksekliğin üstünde kaldığ�
 `ReyonShortScreenTest` üç modu 360×640 dp'de ölçüyor; kırpılmış kutulara bakıyor,
 yani cihazın erişilebilirlik ağacında gördüğü değerlere.
 
-**Cihazda ölçülecek** (360×640 dp, üç mod):
+**Cihazda ölçülecek** (360×640 dp, üç mod). Ölçüm tek komutla:
+
+```
+python3 tools/cihaz_testi.py reyon --apk za-v0.43.2.apk
+```
+
+Betik APK'yı kurar, ekranı 360×640 dp'ye alır (`wm size 720x1280` + `wm density
+320`), üç modu sırayla açar ve rafın, panelin, tepsinin kutularını dp olarak
+yazar; sonra ekranı sıfırlayıp aynı ölçümü cihazın kendi çözünürlüğünde yineler
+(G6). Panel satırlarının kaçının görünür olduğunu da sayar — kırpılan satır 0 dp
+gelir, cihazın erişilebilirlik ağacında göründüğü gibi.
 
 | # | Ne | Beklenen |
 | --- | --- | --- |
