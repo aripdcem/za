@@ -1,0 +1,56 @@
+<tr-TR>
+• Beş Harf, Kıskaç, Türetme ve Dizgi artık 14 dilde kendi sözlüğüyle oynanıyor: her dilin kendi klavyesi, kendi alfabe sırası ve kendi günlük bulmacası var.
+• Kelime dili arayüzün dilinden ayrı seçilebiliyor — uygulamayı Almanca kullanıp Beş Harf'i Türkçe oynayabilirsiniz.
+</tr-TR>
+<en-US>
+• Beş Harf, Kıskaç, Türetme and Dizgi now play in 14 languages with their own dictionaries: each language has its own keyboard, alphabetical order and daily puzzle.
+• The word language is picked separately from the app language — use the app in German and play Beş Harf in Turkish.
+</en-US>
+<de-DE>
+• Beş Harf, Kıskaç, Türetme und Dizgi spielen jetzt in 14 Sprachen mit eigenen Wörterbüchern: jede Sprache hat ihre Tastatur, ihre alphabetische Reihenfolge und ihr tägliches Rätsel.
+• Die Wortsprache wird getrennt von der App-Sprache gewählt — App auf Deutsch, Beş Harf auf Türkisch.
+</de-DE>
+<fr-FR>
+• Beş Harf, Kıskaç, Türetme et Dizgi se jouent maintenant en 14 langues avec leurs propres dictionnaires : chaque langue a son clavier, son ordre alphabétique et son énigme du jour.
+• La langue des mots se choisit séparément de celle de l'appli — l'appli en français et Beş Harf en turc.
+</fr-FR>
+<nl-NL>
+• Beş Harf, Kıskaç, Türetme en Dizgi spelen nu in 14 talen met hun eigen woordenboeken: elke taal heeft zijn toetsenbord, zijn alfabetische orde en zijn dagpuzzel.
+• De woordtaal kies je los van de taal van de app — de app in het Nederlands en Beş Harf in het Turks.
+</nl-NL>
+<es-ES>
+• Beş Harf, Kıskaç, Türetme y Dizgi ya se juegan en 14 idiomas con sus propios diccionarios: cada idioma tiene su teclado, su orden alfabético y su reto diario.
+• El idioma de las palabras se elige aparte del de la app — la app en español y Beş Harf en turco.
+</es-ES>
+<pt-BR>
+• Beş Harf, Kıskaç, Türetme e Dizgi agora são jogados em 14 idiomas com os seus próprios dicionários: cada idioma tem o seu teclado, a sua ordem alfabética e o seu desafio diário.
+• O idioma das palavras é escolhido separadamente do idioma do app — o app em português e Beş Harf em turco.
+</pt-BR>
+<it-IT>
+• Beş Harf, Kıskaç, Türetme e Dizgi si giocano ora in 14 lingue con i propri dizionari: ogni lingua ha la sua tastiera, il suo ordine alfabetico e la sua sfida del giorno.
+• La lingua delle parole si sceglie separatamente da quella dell'app — app in italiano e Beş Harf in turco.
+</it-IT>
+<da-DK>
+• Beş Harf, Kıskaç, Türetme og Dizgi spilles nu på 14 sprog med deres egne ordbøger: hvert sprog har sit tastatur, sin alfabetiske orden og sin daglige opgave.
+• Ordsproget vælges uafhængigt af appens sprog — appen på dansk og Beş Harf på tyrkisk.
+</da-DK>
+<sv-SE>
+• Beş Harf, Kıskaç, Türetme och Dizgi spelas nu på 14 språk med egna ordböcker: varje språk har sitt tangentbord, sin alfabetiska ordning och sin dagliga uppgift.
+• Ordspråket väljs separat från appens språk — appen på svenska och Beş Harf på turkiska.
+</sv-SE>
+<no-NO>
+• Beş Harf, Kıskaç, Türetme og Dizgi spilles nå på 14 språk med egne ordbøker: hvert språk har sitt tastatur, sin alfabetiske rekkefølge og sin daglige oppgave.
+• Ordspråket velges uavhengig av appens språk — appen på norsk og Beş Harf på tyrkisk.
+</no-NO>
+<fi-FI>
+• Beş Harf, Kıskaç, Türetme ja Dizgi pelataan nyt 14 kielellä omilla sanakirjoillaan: jokaisella kielellä on oma näppäimistö, oma aakkosjärjestys ja oma päivän pulma.
+• Sanojen kieli valitaan sovelluksen kielestä erikseen — sovellus suomeksi ja Beş Harf turkiksi.
+</fi-FI>
+<ru-RU>
+• Beş Harf, Kıskaç, Türetme и Dizgi теперь играются на 14 языках со своими словарями: у каждого языка своя клавиатура, свой алфавитный порядок и своя задача дня.
+• Язык слов выбирается отдельно от языка приложения — приложение по-русски, а Beş Harf по-турецки.
+</ru-RU>
+<ar>
+• صارت Beş Harf وKıskaç وTüretme وDizgi تُلعب بأربع عشرة لغة بقواميسها الخاصة: لكل لغة لوحة مفاتيحها وترتيبها الأبجدي ولغز يومها.
+• تُختار لغة الكلمات مستقلةً عن لغة التطبيق — التطبيق بالعربية وBeş Harf بالتركية.
+</ar>

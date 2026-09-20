@@ -28,7 +28,7 @@ Aşamalar farklı otomatikleşiyor; ayrımı bilerek koruyoruz:
 | **C** giriş kalibrasyonu | Sürüm öncesi, gerçek cihazda — gerçek dokunma ve ekran ölçeği gerekir |
 | **D** denge | **CI**: değişmez testleri `test` görevinde, ölçüm koşumları `probe` adımında |
 | **E** erişilebilirlik | Kontrast **CI**'da (`ThemeContrastTest`); etiketler sürüm öncesi cihazda |
-| **F** diller | Metin bütünlüğü ve dil listeleri **CI**'da (`tools/check_strings.py`, `ZaLocaleTest`); taşma, kırpma ve sağdan sola yerleşim sürüm öncesi cihazda |
+| **F** diller | Metin bütünlüğü, dil listeleri ve kelime listeleri **CI**'da (`tools/check_strings.py`, `tools/check_wordlists.py`, `ZaLocaleTest`, `WordLangTest`); taşma, kırpma, sağdan sola yerleşim ve klavye düzeni sürüm öncesi cihazda |
 
 CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 çürümesini engellemek**. Asıl koruma, ölçülen doğruların değişmez testine
@@ -304,9 +304,23 @@ Bakılacaklar:
 3. **Rakamlar.** Arapça cihazda skor, rekor, süre ve `×2.5` gibi çarpanlar Latin
    rakamla yazılmalı (`ZaLocale.number`/`decimal`). `١٢٣٤` görülürse bir çağrı
    atlanmış demektir.
-4. **Kelime oyunları.** Beş Harf, Kıskaç, Türetme ve Dizgi listede kalır ve telefon
-   Türkçe değilken **İngilizce** açılır (Türkçe değil): klavye Türk alfabesini,
-   kelimeler Türkçe sözlüğü kullanmaya devam eder.
+4. **Kelime oyunları.** Beş Harf, Kıskaç, Türetme ve Dizgi telefonun dilinde açılır
+   ve o dilin sözlüğüyle oynanır. Bakılacaklar:
+   * **Klavye o dilin düzeninde mi** — Almanca QWERTZ (ä ö ü tuşları var), Fransızca
+     AZERTY, Rusça ЙЦУКЕН, Arapça kendi düzeni. Alfabede olan bir harf klavyede
+     yoksa oyuncu o kelimeyi hiç yazamaz;
+   * **Kıskaç'ın "önce mi sonra mı" ipucu** o dilin alfabe sırasına uyuyor mu —
+     Almanca'da *ähnlich* < *backen*, İsveççe'de *zebra* < *ängel*, İspanyolca'da
+     *nube* < *ñandu*, Türkçe'de *ıslak* < *islak*;
+   * **Dizgi'nin tahtası** — premium kare kısaltmaları o dilde mi (İngilizce 2L/3W,
+     Türkçe 2H/3K, Almanca 2B/3W), taş puanları makul mü;
+   * **Kelime dili seçicisi** — kurulum kartındaki dil düğmesinden başka bir dil
+     seç; oyun o dilde yeniden kurulmalı, klavye değişmeli, seçim uygulamayı
+     kapatıp açınca korunmalı. Günlük bulmaca her dilde ayrı ilerler: Almanca
+     oynadığın tahminler Türkçe tahtaya geri oynanmamalı;
+   * **Oyunun harfleri** — tahtaya ve klavyeye yazılan harfler oyunun diliyle
+     büyütülür: İngilizce oynarken "i" -> "I", Türkçe oynarken "i" -> "İ" ve
+     "ı" -> "I".
 5. **Büyük harf.** Üst çubuk ve skor kartı başlıkları arayüzün diliyle büyütülür;
    İngilizce arayüzde "CONTINUE" yazmalı, "CONTİNUE" değil.
 6. **Dil seçimi kalıcı.** Dili değiştir, uygulamayı tamamen kapat, yeniden aç:

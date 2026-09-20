@@ -9,14 +9,14 @@ OUR PROMISE
 GAMES
 Arcade: Blok (falling blocks), Snake, Kuyu (descend the well, daily well), Geçit (road crossing, daily mode), Balkon (aim from the balcony: pumpkin seeds, water balloons or spit), Viraj (pseudo-3D racing, daily track), Filo (vertical space shooter, daily fleet), Raket (paddle game: vs the computer, a friend or the wall; daily wall), Tuşe (piano tiles: seven public-domain melodies; daily piece), Uçurtma (hold to climb; rooftops, wires and rival kites; missions and gear; daily sky), Dalgıç (rescue divers by submarine; oxygen, sharks, mines, currents; daily sea), Bostan (lane defense: wells, sprinklers, scarecrows, hives, traps; every level generated winnable; three difficulties, daily garden), Sincap (climb a plane tree: tap left/right to jump to the next branch; dry branches, snakes, crows and a cat gaining on you; daily tree), Çekirge (formation shooter: drag to walk, tap to spray, one-shot rule; hay bales, the queen; daily field), Cici (Chapter 1: In Space — drag the white budgie: honey sticks 7, seed 5, water 2 points; space cats and a bouncing red ball; sit still and she gets bored; daily space)
 Puzzle: 2048, Sudoku (three levels, notes, unique solution), Minesweeper, Kakuro (three sizes, unique solution), Reyon (planogram puzzle, compliance audit and sales layout; daily shelf)
-Word (Turkish): Beş Harf (daily five-letter word), Kıskaç (alphabetical squeeze), Türetme (words from letters), Dizgi (pass-and-play word board, 2-4 players)
+Word: Beş Harf (daily five-letter word), Kıskaç (alphabetical squeeze), Türetme (words from letters), Dizgi (pass-and-play word board, 2-4 players)
 Board and numbers: Tavla (backgammon: Classic, Tapa, Hapis; vs computer or a friend), Vergici (Taxman), Toplam Kapma (Number Scrabble)
 
 FEATURES
 • Daily puzzles: everyone gets the same puzzle on the same day, generated from the date with no server
 • 14 languages: English, Turkish, German, French, Dutch, Spanish, Portuguese, Italian, Danish, Swedish, Norwegian, Finnish, Russian and Arabic. The app follows your phone's language, and you can also pick one inside the app
 • Share your result: the Share button renders a result card and a short text
-• Turkish dictionaries built in; Turkish keyboard and alphabetical order
+• Dictionaries built in for all 14 languages; each with its own keyboard and alphabetical order
 • Sound and haptics toggle with one tap; left-hand mode
 • Open source (GPL-3.0): github.com/aripdcem/za
 
