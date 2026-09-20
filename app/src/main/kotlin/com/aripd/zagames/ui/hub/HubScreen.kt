@@ -267,12 +267,16 @@ private fun HubHeader(
 ) {
     Column(modifier = Modifier.padding(bottom = 8.dp)) {
         Row(verticalAlignment = Alignment.Top) {
+            // Başlık dört düğmeyle aynı satırı paylaşıyor: "ZA Games" displayLarge
+            // ile o boşluğa sığmaz. headlineLarge tek satırda duruyor, yazı ölçeği
+            // büyütülünce ikiye bölünüyor — kırpılmıyor.
             Text(
                 text = stringResource(R.string.hub_title),
-                style = MaterialTheme.typography.displayLarge,
+                style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Black,
                 color = MaterialTheme.colorScheme.primary,
-                letterSpacing = 4.sp,
+                letterSpacing = 2.sp,
+                maxLines = 2,
                 modifier = Modifier.weight(1f),
             )
             val soundToggleDescription = stringResource(

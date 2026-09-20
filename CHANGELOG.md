@@ -2,8 +2,13 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/aripd/zagames/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.43.0 (2026-09-20)
+- Uygulama her yerde **ZA Games** adıyla anılıyor: ana menünün başlığı ve paylaşım kartının rozeti kısa "ZA" yazıyordu. Başlık 14 dilde tam adı söylüyor; rozet artık harf değil, uygulama simgesindeki tetromino "Z" işaretini taşıyor (yanında zaten uygulamanın adı yazılı)
+- Ana menü başlığının yazı boyu küçüldü: "ZA Games" dört düğmeyle aynı satırda `displayLarge` ile sığmıyordu. Yazı ölçeği büyütülünce başlık iki satıra bölünüyor, kırpılmıyor
+- Eski kimlikten gelen kayıtları taşıyan iki göç adımı kaldırıldı. Yeni paket her kurulumda boş başladığı için bu kod artık hiçbir şey yapmıyordu; kayıtlar sıfırdan oluşuyor
+
 ## 0.42.0 (2026-09-20)
-- **Paket adı `com.za.games`'ten `com.aripd.zagames`'e taşındı.** Eski ad sahibi olunmayan bir alanı (`za.com`) ima ediyordu; yenisi `aripd.com` ile tutarlı ve lansman adını taşıyor. Play'e ilk yüklemeden önce yapılması gereken tek seferlik değişiklik: yayınlanmış bir paket adı bir daha asla değiştirilemez
+- **Paket adı `com.aripd.zagames` oldu.** Önceki ad sahibi olunmayan bir alanı ima ediyordu; yenisi `aripd.com` ile tutarlı ve lansman adını taşıyor. Play'e ilk yüklemeden önce yapılması gereken tek seferlik değişiklik: yayınlanmış bir paket adı bir daha asla değiştirilemez
 - Android için bu **yeni bir uygulama** demek. Yandan kurulumda eski sürüm telefonda kalır; rekorlar, ayarlar ve günlük ilerleme yeni kuruluma geçmez. Kaldırmak isteyen eskisini elle siler
 - Değişen tek şey kimlik: 296 Kotlin dosyasının paket satırı, dizin ağaçları, `applicationId`, `namespace` ve paylaşım sağlayıcısının yetkisi (`${applicationId}.share` olduğu için kendiliğinden). Oyunların kuralları, kayıt anahtarları ve metinler değişmedi
 
@@ -32,7 +37,7 @@ Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/aripd/zagames/
 
 ## 0.39.0 (2026-09-19)
 - Play yayını için yapı hazırlığı: sürüm iş akışı artık imzalı APK'nın yanında Play'e yüklenecek **AAB** de üretiyor; `targetSdk`/`compileSdk` 36 (Android 16); manifeste oyun kategorisi
-- Blok tamamen kendi adıyla: modül `games/blok`, paket `com.za.games.blok`, sınıflar ve metin kimlikleri `blok_*`. Eski kimlikle saklanan rekor ve "son oynananlar" kaydı bir kez taşınır
+- Blok tamamen kendi adıyla: modül `games/blok`, paketi, sınıfları ve metin kimlikleri `blok_*`. Eski kimlikle saklanan rekor ve "son oynananlar" kaydı bir kez taşınır
 - Sürüm kapısı bayatlamıyor: motor testleri artık tek `:games:engineTests` göreviyle koşuyor, liste `games/` altından türetiliyor. Önceki hâlinde sürüm iş akışı 26 motorun 18'ini koşuyordu
 
 ## 0.38.0 (2026-09-13)
