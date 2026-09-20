@@ -1,0 +1,56 @@
+<tr-TR>
+• Reyon kısa telefonlarda oynanabilir oldu: 360×640 dp ekranda raf tuvali bütün yüksekliği yutuyor, Diziliş'in planogram brifi hiç çizilmiyordu. brif olmadan bulmaca çözülemez.
+• Aynı tavan Satış'ın puan kurallarına ve Sipariş'in listesine de kondu; sığmayan tepsi kendi içinde kayıyor.
+</tr-TR>
+<en-US>
+• Reyon is playable on short phones again: on a 360×640 dp screen the shelf canvas ate the whole height and Arrange's planogram brief was never drawn. the puzzle cannot be solved without it.
+• The same ceiling now applies to the scoring rules in Sales and the list in Ordering; a tray that no longer fits scrolls inside itself.
+</en-US>
+<de-DE>
+• Reyon ist auf kurzen Telefonen wieder spielbar: auf einem Bildschirm mit 360×640 dp nahm das Regal die ganze Höhe ein, und das Planogramm-Briefing von Bestücken wurde nie gezeichnet. ohne das Briefing ist das Rätsel nicht lösbar.
+• Die gleiche Obergrenze gilt jetzt für die Punkteregeln von Verkauf und die Liste von Bestellen; ein Tablett, das nicht mehr passt, scrollt in sich.
+</de-DE>
+<fr-FR>
+• Reyon est de nouveau jouable sur les téléphones courts : sur un écran de 360×640 dp le rayon prenait toute la hauteur et le briefing planogramme de Ranger n'était jamais dessiné. sans lui, l'énigme est insoluble.
+• Le même plafond s'applique aux règles de score de Ventes et à la liste de Commander ; un plateau qui ne tient plus défile à l'intérieur.
+</fr-FR>
+<nl-NL>
+• Reyon is weer speelbaar op korte telefoons: op een scherm van 360×640 dp nam het schap de hele hoogte in en werd de planogrambriefing van Vullen nooit getekend. zonder briefing is de puzzel niet op te lossen.
+• Hetzelfde plafond geldt nu voor de scoreregels van Verkoop en de lijst van Bestellen; een blad dat niet meer past, schuift in zichzelf.
+</nl-NL>
+<es-ES>
+• Reyon vuelve a ser jugable en teléfonos cortos: en una pantalla de 360×640 dp el estante ocupaba toda la altura y el briefing de planograma de Colocar no se dibujaba. sin él no se puede resolver el puzle.
+• El mismo techo se aplica a las reglas de puntuación de Ventas y a la lista de Pedidos; una bandeja que ya no cabe se desplaza por dentro.
+</es-ES>
+<pt-BR>
+• Reyon voltou a ser jogável em telefones curtos: numa tela de 360×640 dp a prateleira ocupava toda a altura e o briefing de planograma de Arrumar nunca era desenhado. sem ele o quebra-cabeça não tem solução.
+• O mesmo teto vale para as regras de pontuação de Vendas e a lista de Pedidos; uma bandeja que não cabe mais rola por dentro.
+</pt-BR>
+<it-IT>
+• Reyon è di nuovo giocabile sui telefoni corti: su uno schermo da 360×640 dp lo scaffale occupava tutta l'altezza e il briefing planogramma di Sistemare non veniva mai disegnato. senza il briefing il rompicapo non si risolve.
+• Lo stesso tetto vale per le regole di punteggio di Vendite e per la lista di Ordini; un vassoio che non ci sta più scorre al suo interno.
+</it-IT>
+<da-DK>
+• Reyon kan spilles på korte telefoner igen: på en skærm på 360×640 dp tog hylden hele højden, og planogram-briefingen i Stil op blev aldrig tegnet. uden briefingen kan opgaven ikke løses.
+• Samme loft gælder nu pointreglerne i Salg og listen i Bestilling; en bakke, der ikke længere kan være der, ruller indvendigt.
+</da-DK>
+<sv-SE>
+• Reyon går att spela på korta telefoner igen: på en skärm på 360×640 dp tog hyllan hela höjden och planogrambriefingen i Ställ upp ritades aldrig. utan briefingen går pusslet inte att lösa.
+• Samma tak gäller nu poängreglerna i Försäljning och listan i Beställning; en bricka som inte längre får plats rullar inuti sig.
+</sv-SE>
+<no-NO>
+• Reyon kan spilles på korte telefoner igjen: på en skjerm på 360×640 dp tok hyllen hele høyden, og planogram-briefen i Still opp ble aldri tegnet. uten briefen kan ikke oppgaven løses.
+• Samme tak gjelder nå poengreglene i Salg og listen i Bestilling; et brett som ikke lenger får plass, ruller inni seg.
+</no-NO>
+<fi-FI>
+• Reyon on taas pelattavissa lyhyillä puhelimilla: 360×640 dp:n näytöllä hylly vei koko korkeuden eikä Järjestä-tilan planogrammiohjeistusta piirretty koskaan. ilman ohjeistusta pulmaa ei voi ratkaista.
+• Sama katto koskee nyt Myynnin pisteytyssääntöjä ja Tilauksen listaa; tarjotin, joka ei enää mahdu, vierii sisällään.
+</fi-FI>
+<ru-RU>
+• Reyon снова играется на коротких экранах: при 360×640 dp полка занимала всю высоту, и планограммный бриф «Раскладки» вообще не рисовался. без брифа головоломку не решить.
+• Тот же предел теперь у правил начисления в «Продажах» и списка в «Заказах»; лоток, который больше не влезает, прокручивается внутри себя.
+</ru-RU>
+<ar>
+• عاد Reyon قابلاً للعب على الشاشات القصيرة: عند 360×640 dp كان الرف يأكل الطول كله ولا يُرسم موجز المخطط في «الترتيب» أبداً. ولا تُحلّ الأحجية بدون الموجز.
+• السقف نفسه صار على قواعد النقاط في «البيع» وعلى قائمة «الطلبيات»؛ والصينية التي لم تعد تتسع تتمرّر داخل نفسها.
+</ar>

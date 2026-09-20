@@ -6,11 +6,11 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -55,6 +55,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -168,7 +169,7 @@ internal fun ReyonOrderContent(
             )
         }
 
-        Box(
+        BoxWithConstraints(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
@@ -176,8 +177,9 @@ internal fun ReyonOrderContent(
             contentAlignment = Alignment.Center,
         ) {
             if (st != null) {
+                val shelfH = shelfHeight(maxWidth, maxHeight, st.order.cols / (st.order.rows * 0.62f))
                 Column(modifier = Modifier.fillMaxSize()) {
-                    OrderShelfCanvas(state = st, version = version)
+                    OrderShelfCanvas(state = st, version = version, height = shelfH)
                     DayHeader(state = st, version = version, hinted = hinted, noHint = noHint)
                     OrderList(
                         state = st,
@@ -268,7 +270,7 @@ internal fun ReyonOrderContent(
 
 /** Plan rafı; her blokta stok doluluğu (boş kısım karartılır) ve stok/kapasite rozeti. */
 @Composable
-private fun OrderShelfCanvas(state: ReyonOrderState, version: Int) {
+private fun OrderShelfCanvas(state: ReyonOrderState, version: Int, height: Dp) {
     val order = state.order
     val res = LocalContext.current.resources
     val textMeasurer = rememberTextMeasurer()
@@ -278,7 +280,7 @@ private fun OrderShelfCanvas(state: ReyonOrderState, version: Int) {
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(order.cols / (order.rows * 0.62f))
+            .height(height)
             .clip(RoundedCornerShape(12.dp))
             .background(ReyonPalette.BoardBg)
             .semantics { contentDescription = desc },

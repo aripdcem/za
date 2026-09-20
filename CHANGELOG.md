@@ -2,6 +2,12 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/aripd/zagames/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.43.2 (2026-09-20)
+- **Reyon kısa telefonlarda oynanabilir oldu.** 360×640 dp bir ekranda raf tuvali oyun alanının tamamını yiyordu: Diziliş'in planogram brifine ~0 kalıyor, kural satırları 13 dp'ye iniyor, ikinci kuralın erişilebilirlik kutusu sıfır oluyordu. Brif olmadan bulmaca çözülemediği için mod o ekranda oynanamaz durumdaydı (v0.43.1 cihaz koşumunun açık kalan bulgusu)
+- Sebep: tuval yalnız genişlikten ölçülüyordu (en boy oranı yüksekliği belirliyor) ve sütunda ağırlıksız olduğu için yüksekliği önce o alıyordu; altındaki panel artandan besleniyordu. Artık tuval oyun alanının en çok %34'ünü, tepsi en çok %40'ını alıyor, kalanı panelin. Uzun telefonda iki tavan da doğal yüksekliğin üstünde kaldığı için yerleşim aynen sürüyor
+- Aynı iskeleti paylaşan Satış (puan kuralları) ve Sipariş (sipariş listesi) de tavana bağlandı; sığmayan tepsi kendi içinde kayıyor. Brif satırlarının erişilebilirlik metni de tepsideki gibi bölüm adıyla başlıyor
+- Yeni `ReyonShortScreenTest` 360×640 dp'de üç modun da panelini ölçüyor: kırpılmış kutulara bakıyor, yani cihazın erişilebilirlik ağacında gördüğü değerlere
+
 ## 0.43.1 (2026-09-20)
 - **İletişim adresi: `zagames@aripd.com`.** Hakkında ekranına "Bize yaz" satırı eklendi (14 dilde); dokununca telefonun e-posta uygulaması adres dolu açılır. Uygulama yine ağa çıkmaz, mektubu kullanıcının kendi uygulaması gönderir
 - Aynı adres gizlilik sayfasının iletişim bölümünde de var: Play, gizlilik politikasında iletişim bilgisi arar ve orada yalnızca GitHub bağlantısı duruyordu

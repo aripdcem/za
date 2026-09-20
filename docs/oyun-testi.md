@@ -2641,6 +2641,49 @@ gösteriyor: "Minesweeper" tam okunuyor, kesik yok.
 > (85–110 px). Brif olmadan Diziliş çözülemediği için 360×640 dp'de mod
 > oynanamaz durumda.
 
+### v0.43.2 · Reyon kısa ekran yerleşimi · 2026-09-20
+
+v0.43.1'in açık kalan bulgusu kapatıldı: 360×640 dp'de Diziliş'in planogram
+brifi çizilmiyordu.
+
+**Sebep.** Üç tür (Diziliş, Satış, Sipariş) aynı iskelete oturuyor: üstte raf
+tuvali, altında kaydırılabilir panel, en altta tepsi. Tuval `fillMaxWidth()` +
+`aspectRatio()` ile ölçülüyordu, yani yüksekliğini genişlik belirliyordu; sütunda
+ağırlıksız olduğu için de yüksekliği önce o alıyordu. Panel `weight(1f, fill =
+false)` ile artandan besleniyor. 360 dp genişlikte tuval 175–210 dp, tepsi 12
+ürünle 270 dp ediyor; oyun alanı ~448 dp olduğu için panele ~26 dp kalıyordu —
+ölçülen 13 dp'lik kural satırı ve sıfır erişilebilirlik kutusu bu.
+
+**Düzeltme.** Oyun alanı `BoxWithConstraints`'e alındı; tuval en çok alanın
+%34'ünü, tepsi en çok %40'ını alıyor (`ReyonLayout.kt`). Kalan panelin: kısa
+ekranda en az ~117 dp, yani başlık + üç kural. Tavan **en boy oranı
+değiştirilerek** uygulandı, çünkü genişlik `fillMaxWidth()` ile sabitken
+`heightIn(max = …)` ile `aspectRatio(…)` birlikte çalışmıyor — oran hiçbir boyutu
+kısıtı sağlayacak şekilde bulamayınca kısıtı yok sayıp yine genişlikten
+hesaplıyor (ilk denemede tavan bu yüzden hiç bağlamadı). Tuval tam genişlikte
+kalıyor, kısa ekranda gözler basıklaşıyor; çizim de dokunma da tuvalin ölçülen
+boyutundan türediği için (`ShelfGeom(size.width, size.height, …)`) eşleme
+bozulmuyor. Uzun telefonda iki tavan da doğal yüksekliğin üstünde kaldığı için
+411 dp'de yerleşim aynen sürüyor.
+
+`ReyonShortScreenTest` üç modu 360×640 dp'de ölçüyor; kırpılmış kutulara bakıyor,
+yani cihazın erişilebilirlik ağacında gördüğü değerlere.
+
+**Cihazda ölçülecek** (360×640 dp, üç mod):
+
+| # | Ne | Beklenen |
+| --- | --- | --- |
+| G1 | Diziliş'te brif kural satırı | ≥ 20 dp, en az üç kural okunuyor; kaydırma kalan kuralları getiriyor |
+| G2 | Raf gözündeki ürün adı | kırpılmamış (üç nokta yok), en dar göz Zor planında |
+| G3 | Dokunma eşlemesi | tepsiden seçilen ürün dokunulan göze yerleşiyor (basıklaşan tuvalde de) |
+| G4 | Satış'ta puan kuralları | en az üç kural okunuyor |
+| G5 | Sipariş listesi | en az iki ürün satırı ve adımlayıcıları tam görünüyor |
+| G6 | 411 dp | üç modun yerleşimi v0.43.1 ile aynı (raf yüksekliği değişmemiş) |
+
+Ölçülecek katsayı ikisi: tuval payı %34 ve tepsi payı %40. G1 tutmazsa tuval
+payı düşürülür; G2 kırpılma gösterirse pay yükseltilir (blok etiketi 8 sp'ye
+kadar iniyor, ad bölgesi ~19 dp'nin altında üç nokta çıkıyor).
+
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
 Bu belgenin ilk hâlinde "uygulama geneli kare hızı sorunu" diye bir açık konu
