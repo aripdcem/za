@@ -1,6 +1,7 @@
 package com.aripd.zagames.ui.reyon
 
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 
 /**
  * Reyon ekranlarının kısa telefon yerleşimi.
@@ -15,20 +16,23 @@ import androidx.compose.ui.unit.Dp
  * erişilebilirlik kutusu sıfır) ve brif olmadan bulmaca çözülemediği için mod
  * o ekranda oynanamaz durumdaydı.
  *
- * Kural: tuval oyun alanının en çok [SHELF_SHARE], tepsi en çok [TRAY_SHARE]
- * payını alır; kalanı panelindir. İki tavan da uzun telefonda doğal
- * yüksekliklerin üstünde kaldığı için orada yerleşim aynen sürer; yalnız kısa
- * ekranda devreye girip panele en az üç satırlık yer bırakır.
+ * Kural: tuval oyun alanının en çok [SHELF_SHARE] payını alır, tepsi de panele
+ * [PANEL_MIN] kalacak kadar. İki tavan da uzun telefonda doğal yüksekliklerin
+ * üstünde kaldığı için orada yerleşim aynen sürer; yalnız kısa ekranda devreye
+ * girer.
+ *
+ * İki tavan da `BoxWithConstraints`'in içinde, ama `Column`'un dışında
+ * hesaplanmalı: `ColumnScope` da `@LayoutScopeMarker` taşıdığı için sütunun
+ * içinde `BoxWithConstraintsScope` örtülüyor ve maxWidth/maxHeight örtük
+ * alıcıyla okunamıyor (derleme hatası).
  */
 internal const val SHELF_SHARE = 0.34f
 
-/** Tepsinin oyun alanından alabileceği en büyük pay; taşan tepsi kendi içinde kayar. */
-internal const val TRAY_SHARE = 0.40f
+/** Panele bırakılan taban: başlık + üç kural satırı. */
+internal val PANEL_MIN = 120.dp
 
-// İki pay da `BoxWithConstraints`'in içinde, ama `Column`'un dışında hesaplanmalı:
-// `ColumnScope` da `@LayoutScopeMarker` taşıdığı için sütunun içinde
-// `BoxWithConstraintsScope` örtülüyor ve maxWidth/maxHeight örtük alıcıyla
-// okunamıyor (derleme hatası).
+/** Tepsinin tabanı; bundan aşağısında ürün seçmek zorlaşır. */
+private val TRAY_MIN = 96.dp
 
 /**
  * Raf tuvalinin yüksekliği: en boy oranının istediği kadar, ama oyun alanının
@@ -44,3 +48,11 @@ internal const val TRAY_SHARE = 0.40f
  */
 internal fun shelfHeight(width: Dp, available: Dp, ratio: Float): Dp =
     minOf(width / ratio, available * SHELF_SHARE)
+
+/**
+ * Tepsinin tavanı: rafın altında panele [PANEL_MIN] kalacak kadar; taşan tepsi
+ * kendi içinde kayar. Uzun telefonda doğal yükseklik bu tavanın altında kaldığı
+ * için bağlamaz.
+ */
+internal fun trayHeight(available: Dp, shelf: Dp): Dp =
+    (available - shelf - PANEL_MIN).coerceAtLeast(TRAY_MIN)

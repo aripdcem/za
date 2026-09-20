@@ -176,7 +176,7 @@ internal fun ReyonSalesContent(
             if (st != null && score != null) {
                 val showTarget = result != null && review == SalesReview.TARGET
                 val shelfH = shelfHeight(maxWidth, maxHeight, st.sales.cols / (st.sales.rows * 0.78f))
-                val trayH = maxHeight * TRAY_SHARE
+                val trayH = trayHeight(maxHeight, shelfH)
                 Column(modifier = Modifier.fillMaxSize()) {
                     SalesCanvas(
                         state = st,

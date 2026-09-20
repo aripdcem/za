@@ -4,7 +4,7 @@ Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/aripd/zagames/
 
 ## 0.43.2 (2026-09-20)
 - **Reyon kısa telefonlarda oynanabilir oldu.** 360×640 dp bir ekranda raf tuvali oyun alanının tamamını yiyordu: Diziliş'in planogram brifine ~0 kalıyor, kural satırları 13 dp'ye iniyor, ikinci kuralın erişilebilirlik kutusu sıfır oluyordu. Brif olmadan bulmaca çözülemediği için mod o ekranda oynanamaz durumdaydı (v0.43.1 cihaz koşumunun açık kalan bulgusu)
-- Sebep: tuval yalnız genişlikten ölçülüyordu (en boy oranı yüksekliği belirliyor) ve sütunda ağırlıksız olduğu için yüksekliği önce o alıyordu; altındaki panel artandan besleniyordu. Artık tuval oyun alanının en çok %34'ünü, tepsi en çok %40'ını alıyor, kalanı panelin. Uzun telefonda iki tavan da doğal yüksekliğin üstünde kaldığı için yerleşim aynen sürüyor
+- Sebep: tuval yalnız genişlikten ölçülüyordu (en boy oranı yüksekliği belirliyor) ve sütunda ağırlıksız olduğu için yüksekliği önce o alıyordu; altındaki panel artandan besleniyordu. Artık tuval oyun alanının en çok %34'ünü alıyor, tepsi de panele en az 120 dp kalacak kadar; kalanı panelin. Uzun telefonda iki tavan da doğal yüksekliğin üstünde kaldığı için yerleşim aynen sürüyor
 - Aynı iskeleti paylaşan Satış (puan kuralları) ve Sipariş (sipariş listesi) de tavana bağlandı; sığmayan tepsi kendi içinde kayıyor. Brif satırlarının erişilebilirlik metni de tepsideki gibi bölüm adıyla başlıyor
 - Yeni `ReyonShortScreenTest` 360×640 dp'de üç modun da panelini ölçüyor: kırpılmış kutulara bakıyor, yani cihazın erişilebilirlik ağacında gördüğü değerlere
 

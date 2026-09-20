@@ -239,7 +239,7 @@ private fun ReyonPuzzleContent(
                 val hinted = (lastHint as? ReyonHint.Place)?.product ?: -1
                 val wrongHint = (lastHint as? ReyonHint.Wrong)?.product ?: -1
                 val shelfH = shelfHeight(maxWidth, maxHeight, st.puzzle.cols / (st.puzzle.rows * 0.78f))
-                val trayH = maxHeight * TRAY_SHARE
+                val trayH = trayHeight(maxHeight, shelfH)
                 Column(modifier = Modifier.fillMaxSize()) {
                     ShelfCanvas(
                         state = st,

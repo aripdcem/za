@@ -39,9 +39,14 @@ import org.robolectric.annotation.Config
  * Ölçüm kırpılmış kutulara bakıyor (`getBoundsInRoot`), yani cihazın
  * erişilebilirlik ağacında gördüğü değerlere: panelin ilk satırları gerçekten
  * çizilmiş, okunur yükseklikte ve ekranın içinde olmalı.
+ *
+ * Yükseklik doğrudan uygulama alanı: Robolectric sistem çubuğu koymadığı için
+ * `h640dp` 640 dp'lik bir uygulama alanı demek. Cihazda 360×640 dp bir ekranın
+ * uygulama alanı ~568 dp (durum çubuğu 24 + gezinme 48), yani bulgunun geldiği
+ * ölçü `h568dp`. `h480dp` daha da darı: tavanlar orada da tutmalı.
  */
 @RunWith(AndroidJUnit4::class)
-@Config(qualifiers = "+w360dp-h640dp-xhdpi")
+@Config(qualifiers = "+w360dp-h568dp-xhdpi")
 class ReyonShortScreenTest {
 
     @get:Rule
@@ -96,8 +101,20 @@ class ReyonShortScreenTest {
         }
     }
 
+    /** Cihazın bulguyu verdiği ölçü: 360×640 dp ekranın uygulama alanı. */
     @Test
-    fun theBriefIsDrawnOnAShortPhone() {
+    fun theBriefIsDrawnInADeviceSizedAppArea() = assertTheBriefIsDrawn()
+
+    @Test
+    @Config(qualifiers = "+w360dp-h640dp-xhdpi")
+    fun theBriefIsDrawnOnAShortPhone() = assertTheBriefIsDrawn()
+
+    /** Daha da darı: tavanlar burada da panele yer bırakmalı. */
+    @Test
+    @Config(qualifiers = "+w360dp-h480dp-xhdpi")
+    fun theBriefIsDrawnOnAVeryShortPhone() = assertTheBriefIsDrawn()
+
+    private fun assertTheBriefIsDrawn() {
         startRound(str(R.string.reyon_kind_puzzle), str(R.string.reyon_start))
         val briefPrefix = str(R.string.reyon_brief_label) + ":"
         awaitNodes(briefPrefix)

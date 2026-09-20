@@ -2655,8 +2655,8 @@ false)` ile artandan besleniyor. 360 dp genişlikte tuval 175–210 dp, tepsi 12
 ölçülen 13 dp'lik kural satırı ve sıfır erişilebilirlik kutusu bu.
 
 **Düzeltme.** Oyun alanı `BoxWithConstraints`'e alındı; tuval en çok alanın
-%34'ünü, tepsi en çok %40'ını alıyor (`ReyonLayout.kt`). Kalan panelin: kısa
-ekranda en az ~117 dp, yani başlık + üç kural. Tavan **en boy oranı
+%34'ünü alıyor, tepsi de panele en az `PANEL_MIN` = 120 dp kalacak kadar
+(`ReyonLayout.kt`). Panelin tabanı böylece başlık + üç kural. Tavan **en boy oranı
 değiştirilerek** uygulandı, çünkü genişlik `fillMaxWidth()` ile sabitken
 `heightIn(max = …)` ile `aspectRatio(…)` birlikte çalışmıyor — oran hiçbir boyutu
 kısıtı sağlayacak şekilde bulamayınca kısıtı yok sayıp yine genişlikten
@@ -2680,9 +2680,14 @@ yani cihazın erişilebilirlik ağacında gördüğü değerlere.
 | G5 | Sipariş listesi | en az iki ürün satırı ve adımlayıcıları tam görünüyor |
 | G6 | 411 dp | üç modun yerleşimi v0.43.1 ile aynı (raf yüksekliği değişmemiş) |
 
-Ölçülecek katsayı ikisi: tuval payı %34 ve tepsi payı %40. G1 tutmazsa tuval
-payı düşürülür; G2 kırpılma gösterirse pay yükseltilir (blok etiketi 8 sp'ye
-kadar iniyor, ad bölgesi ~19 dp'nin altında üç nokta çıkıyor).
+Ölçülecek iki sayı: tuval payı `SHELF_SHARE` = %34 ve panel tabanı `PANEL_MIN`
+= 120 dp. G1 tutmazsa taban yükseltilir; G2 kırpılma gösterirse tuval payı
+yükseltilir (blok etiketi 8 sp'ye kadar iniyor, ad bölgesi ~19 dp'nin altında üç
+nokta çıkıyor) — ikisi aynı yükseklikten besleniyor, yani biri artınca öbürü
+azalıyor; 360×640 dp'de tepsi kaydırılarak yer açılıyor.
+
+`ReyonShortScreenTest` üç uygulama alanı yüksekliğinde koşuyor: 640, 568 (cihazda
+360×640 dp ekranın uygulama alanı, bulgunun geldiği ölçü) ve 480 dp.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
