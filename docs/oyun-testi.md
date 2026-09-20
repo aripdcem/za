@@ -2950,11 +2950,12 @@ kaç satır tuttuğu dile ve ekran genişliğine göre değişiyor. 411 dp'de be
 iki satıra sığdığı için orada hiç ok görünmüyor.
 
 Böylece metni 14 dilde kısaltma kararına gerek kalmadı: çarpanların hepsi
-okunabilir durumda ve hiçbir dilde metin değişmedi. Cihazda bakılacak: 360 dp'de
-`Konum` satırında ok görünüyor mu, dokununca gövdenin son parçası (`★ yalnız göz
-hizasında ×4`) tam okunuyor mu.
+okunabilir durumda ve hiçbir dilde metin değişmedi. İkisi de cihazda ölçüldü —
+aşağıdaki "Açılan kural satırı cihazda" bölümü: ok yalnız `Konum` satırında
+çıkıyor, dokunuş gövdeyi 31,0 → 48,7 dp'ye açıyor ve `★ yalnız göz hizasında ×4`
+sonuna kadar okunuyor.
 
-### v0.43.3 · Açılan kural satırı cihazda · 2026-09-21
+### v0.43.4 · Açılan kural satırı cihazda · 2026-09-21
 
 `Satış'ta kırpılan kural gövdesi dokununca açılıyor` (b5392be) SM-A515F'te
 ölçüldü. Belgenin sorduğu iki şeyin ikisi de **tuttu**.
@@ -2993,6 +2994,11 @@ gibi. Kapatınca yerine dönüyor.
 aynı sayı çıktığı için tura bağlı bir dalgalanma olmayabilir. Bu düzeltmeden
 gelmiyor (düzeltme yalnız yükseklik azaltıyor), ama 411 dp'de beşinci kuralın
 adının neden kırpıldığı ayrıca bakılmayı hak ediyor.
+
+**Açık madde — 411 dp'de `Marka bloğu`nun adı yarım.** İki koşumda da 12,6 dp.
+Uzun telefonda panele 240 dp düşüyor ve beş kural oraya rahat sığmalı, yani bu
+kısa ekran tavanlarından gelmiyor; Sipariş'in gün başlığı gibi ayrı bir yerleşim
+konusu. Kırpılan ad, kaydırmanın son satırı olduğu için gözden kaçabilir.
 
 `logcat AndroidRuntime:E` boş; ekran ayarları geri alındı.
 
