@@ -389,6 +389,7 @@
     <string name="about_source">Lähdekoodi</string>
     <string name="about_report">Ilmoita ongelmasta</string>
     <string name="about_privacy">Tietosuojakäytäntö</string>
+    <string name="about_contact">Kirjoita meille</string>
     <string name="about_open_failed">Linkkiä ei voitu avata: laitteessa ei ole selainta</string>
     <string name="about_licenses">Avoimen lähdekoodin lisenssit</string>
     <string name="about_licenses_intro">ZA käyttää alla olevia avoimen lähdekoodin osia; napauta jotakin avataksesi sen lähteen.</string>

@@ -14,8 +14,8 @@ asistan (depo, metin, görsel üretimi).
 | [ ] | Uygulama oluştur: ad `ZA Games: Sıfır Reklam`, varsayılan dil Türkçe, tür Oyun, ücretsiz | C |
 | [x] | Paket adı `com.aripd.zagames` | A |
 | [ ] | **Play App Signing** açık; yükleme anahtarı = sürüm iş akışındaki release anahtarı | C |
-| [ ] | İletişim e-postası seçimi: `za-games@aripd.com` (öneri) ya da `dev@aripd.com`. Listelemede herkese görünür | C |
-| [ ] | Seçilen adres uygulama içine de eklenecek mi? Hakkında ekranında bugün GitHub "Sorun bildir" var, e-posta yok | C karar, A uygular |
+| [x] | İletişim e-postası: `zagames@aripd.com`. Listelemede herkese görünür | C |
+| [x] | Adres uygulama içinde de var: Hakkında → "Bize yaz" (`zagames@aripd.com`); gizlilik sayfasının iletişim bölümünde de | A |
 
 ## 2. Uygulama içi zorunluluklar (eskiden "satışa hazır" listesinin 1. maddesi)
 

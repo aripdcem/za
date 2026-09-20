@@ -389,6 +389,7 @@
     <string name="about_source">Källkod</string>
     <string name="about_report">Rapportera ett problem</string>
     <string name="about_privacy">Integritetspolicy</string>
+    <string name="about_contact">Skriv till oss</string>
     <string name="about_open_failed">Det gick inte att öppna länken: det finns ingen webbläsare på enheten</string>
     <string name="about_licenses">Öppen källkod-licenser</string>
     <string name="about_licenses_intro">ZA använder komponenterna med öppen källkod nedan; tryck på en av dem för att öppna källan.</string>

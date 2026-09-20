@@ -389,6 +389,7 @@
     <string name="about_source">Kildekode</string>
     <string name="about_report">Meld et problem</string>
     <string name="about_privacy">Privatlivspolitik</string>
+    <string name="about_contact">Skriv til os</string>
     <string name="about_open_failed">Kunne ikke åbne linket: der er ingen browser på denne enhed</string>
     <string name="about_licenses">Open source-licenser</string>
     <string name="about_licenses_intro">ZA bruger de open source-komponenter, der står nedenfor; tryk på en af dem for at åbne kilden.</string>

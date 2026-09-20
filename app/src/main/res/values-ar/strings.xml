@@ -389,6 +389,7 @@
     <string name="about_source">الشيفرة المصدرية</string>
     <string name="about_report">أبلغ عن مشكلة</string>
     <string name="about_privacy">سياسة الخصوصية</string>
+    <string name="about_contact">راسلنا</string>
     <string name="about_open_failed">لم يتمكّن من فتح الرابط: لا يوجد متصفّح على هذا الجهاز</string>
     <string name="about_licenses">تراخيص المصادر المفتوحة</string>
     <string name="about_licenses_intro">يستخدم ZA المكوّنات مفتوحة المصدر التالية؛ المس أحدها لفتح مصدره.</string>

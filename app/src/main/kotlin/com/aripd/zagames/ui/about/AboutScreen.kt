@@ -114,6 +114,7 @@ fun AboutScreen(onExit: () -> Unit) {
                 LinkButton(stringResource(R.string.about_source), ZaLinks.SOURCE)
                 LinkButton(stringResource(R.string.about_report), ZaLinks.REPORT)
                 LinkButton(stringResource(R.string.about_privacy), ZaLinks.PRIVACY)
+                MailButton(stringResource(R.string.about_contact), ZaLinks.CONTACT)
             }
 
             item { SectionTitle(stringResource(R.string.about_licenses)) }
@@ -215,8 +216,19 @@ private fun Chip(label: String) {
 @Composable
 private fun LinkButton(label: String, url: String) {
     val context = LocalContext.current
+    ActionButton(label, url.removePrefix("https://")) { ZaLinks.open(context, url) }
+}
+
+@Composable
+private fun MailButton(label: String, address: String) {
+    val context = LocalContext.current
+    ActionButton(label, address) { ZaLinks.email(context, address) }
+}
+
+@Composable
+private fun ActionButton(label: String, detail: String, onClick: () -> Unit) {
     OutlinedButton(
-        onClick = { ZaLinks.open(context, url) },
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 3.dp),
@@ -224,7 +236,7 @@ private fun LinkButton(label: String, url: String) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(label)
             Text(
-                text = url.removePrefix("https://"),
+                text = detail,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
             )

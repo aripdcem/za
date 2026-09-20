@@ -389,6 +389,7 @@
     <string name="about_source">Codice sorgente</string>
     <string name="about_report">Segnala un problema</string>
     <string name="about_privacy">Informativa sulla privacy</string>
+    <string name="about_contact">Scrivici</string>
     <string name="about_open_failed">Impossibile aprire il link: nessun browser su questo dispositivo</string>
     <string name="about_licenses">Licenze open source</string>
     <string name="about_licenses_intro">ZA usa i componenti open source qui sotto; toccane uno per aprirne la fonte.</string>

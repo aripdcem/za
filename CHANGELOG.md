@@ -2,6 +2,11 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/aripd/zagames/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.43.1 (2026-09-20)
+- **İletişim adresi: `zagames@aripd.com`.** Hakkında ekranına "Bize yaz" satırı eklendi (14 dilde); dokununca telefonun e-posta uygulaması adres dolu açılır. Uygulama yine ağa çıkmaz, mektubu kullanıcının kendi uygulaması gönderir
+- Aynı adres gizlilik sayfasının iletişim bölümünde de var: Play, gizlilik politikasında iletişim bilgisi arar ve orada yalnızca GitHub bağlantısı duruyordu
+- Web sitesi de markayı tam adıyla söylüyor; ana sayfanın açıklaması hâlâ "Türkçe kelime oyunları" diyordu, v0.41.0'dan beri 14 dilde
+
 ## 0.43.0 (2026-09-20)
 - Uygulama her yerde **ZA Games** adıyla anılıyor: ana menünün başlığı ve paylaşım kartının rozeti kısa "ZA" yazıyordu. Başlık 14 dilde tam adı söylüyor; rozet artık harf değil, uygulama simgesindeki tetromino "Z" işaretini taşıyor (yanında zaten uygulamanın adı yazılı)
 - Ana menü başlığının yazı boyu küçüldü: "ZA Games" dört düğmeyle aynı satırda `displayLarge` ile sığmıyordu. Yazı ölçeği büyütülünce başlık iki satıra bölünüyor, kırpılmıyor

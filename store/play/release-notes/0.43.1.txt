@@ -1,0 +1,42 @@
+<tr-TR>
+• Hakkında ekranına iletişim adresi eklendi: zagames@aripd.com. Dokununca telefonun e-posta uygulaması açılır.
+</tr-TR>
+<en-US>
+• The About screen now has a contact address: zagames@aripd.com. Tapping it opens your e-mail app.
+</en-US>
+<de-DE>
+• Der Info-Bildschirm hat jetzt eine Kontaktadresse: zagames@aripd.com. Ein Tipp öffnet deine E-Mail-App.
+</de-DE>
+<fr-FR>
+• L'écran À propos a maintenant une adresse de contact : zagames@aripd.com. Une touche ouvre votre appli e-mail.
+</fr-FR>
+<nl-NL>
+• Het scherm Over heeft nu een contactadres: zagames@aripd.com. Een tik opent je e-mailapp.
+</nl-NL>
+<es-ES>
+• La pantalla Acerca de ahora tiene una dirección de contacto: zagames@aripd.com. Al tocarla se abre tu app de correo.
+</es-ES>
+<pt-BR>
+• A tela Sobre agora tem um endereço de contato: zagames@aripd.com. Ao tocar, seu app de e-mail abre.
+</pt-BR>
+<it-IT>
+• La schermata Informazioni ora ha un indirizzo di contatto: zagames@aripd.com. Toccandolo si apre la tua app di posta.
+</it-IT>
+<da-DK>
+• Skærmen Om har nu en kontaktadresse: zagames@aripd.com. Et tryk åbner din e-mail-app.
+</da-DK>
+<sv-SE>
+• Skärmen Om har nu en kontaktadress: zagames@aripd.com. En tryckning öppnar din e-postapp.
+</sv-SE>
+<no-NO>
+• Om-skjermen har nå en kontaktadresse: zagames@aripd.com. Et trykk åpner e-postappen din.
+</no-NO>
+<fi-FI>
+• Tietoja-näytössä on nyt yhteysosoite: zagames@aripd.com. Napautus avaa sähköpostisovelluksesi.
+</fi-FI>
+<ru-RU>
+• На экране «О приложении» появился адрес для связи: zagames@aripd.com. Нажатие открывает почтовое приложение.
+</ru-RU>
+<ar>
+• صارت شاشة «حول» تحمل عنوان تواصل: zagames@aripd.com. النقر عليه يفتح تطبيق بريدك.
+</ar>

@@ -52,6 +52,53 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.43.1", "2026-09-20",
+            tr = listOf(
+                "Hakkında ekranına iletişim adresi eklendi: zagames@aripd.com. Dokununca telefonun e-posta uygulaması açılır",
+            ),
+            en = listOf(
+                "The About screen now has a contact address: zagames@aripd.com. Tapping it opens your e-mail app",
+            ),
+            others = mapOf(
+                "de" to listOf(
+                    "Der Info-Bildschirm hat jetzt eine Kontaktadresse: zagames@aripd.com. Ein Tipp öffnet deine E-Mail-App",
+                ),
+                "fr" to listOf(
+                    "L'écran À propos a maintenant une adresse de contact : zagames@aripd.com. Une touche ouvre votre appli e-mail",
+                ),
+                "nl" to listOf(
+                    "Het scherm Over heeft nu een contactadres: zagames@aripd.com. Een tik opent je e-mailapp",
+                ),
+                "es" to listOf(
+                    "La pantalla Acerca de ahora tiene una dirección de contacto: zagames@aripd.com. Al tocarla se abre tu app de correo",
+                ),
+                "pt" to listOf(
+                    "A tela Sobre agora tem um endereço de contato: zagames@aripd.com. Ao tocar, seu app de e-mail abre",
+                ),
+                "it" to listOf(
+                    "La schermata Informazioni ora ha un indirizzo di contatto: zagames@aripd.com. Toccandolo si apre la tua app di posta",
+                ),
+                "da" to listOf(
+                    "Skærmen Om har nu en kontaktadresse: zagames@aripd.com. Et tryk åbner din e-mail-app",
+                ),
+                "sv" to listOf(
+                    "Skärmen Om har nu en kontaktadress: zagames@aripd.com. En tryckning öppnar din e-postapp",
+                ),
+                "nb" to listOf(
+                    "Om-skjermen har nå en kontaktadresse: zagames@aripd.com. Et trykk åpner e-postappen din",
+                ),
+                "fi" to listOf(
+                    "Tietoja-näytössä on nyt yhteysosoite: zagames@aripd.com. Napautus avaa sähköpostisovelluksesi",
+                ),
+                "ru" to listOf(
+                    "На экране «О приложении» появился адрес для связи: zagames@aripd.com. Нажатие открывает почтовое приложение",
+                ),
+                "ar" to listOf(
+                    "صارت شاشة «حول» تحمل عنوان تواصل: zagames@aripd.com. النقر عليه يفتح تطبيق بريدك",
+                ),
+            ),
+        ),
+        ReleaseNote(
             "0.43.0", "2026-09-20",
             tr = listOf(
                 "Uygulama her yerde ZA Games adıyla anılıyor: ana menünün başlığı ve paylaşım kartının rozeti kısa \"ZA\" yazıyordu",
