@@ -2767,7 +2767,7 @@ geri kuruldu, ölçümden sonra v0.43.2'ye dönüldü).
 | G1 | Diziliş brif kural satırı | **✅ 32,5 dp** · 3 kural tam okunuyor, 4.'sü kırpık; kaydırma kalanları getiriyor |
 | G2 | Raf gözünde ürün adı | **✅ kırpılma yok** (Zor planı, 6 göz, göz 56 dp) |
 | G3 | Dokunma eşlemesi | **✅ 6/6** yerleştirme dokunulan göze düştü |
-| G4 | Satış'ta puan kuralları | **❌ 5 kuralın 2'si** okunuyor (411 dp'de beşi de) |
+| G4 | Satış'ta puan kuralları | **❌ 5 kuralın 2'si** okunuyor (411 dp'de beşi de) — v0.43.3'te üçe çıktı, aşağıdaki doğrulamaya bakın |
 | G5 | Sipariş listesi | **✅** ilk satır tam (108,5 dp), altısı da kaydırmayla geliyor |
 | G6 | 411 dp yerleşimi | **✅ v0.43.1 ile birebir aynı** |
 
@@ -2936,10 +2936,23 @@ rafı 167,3 dp, Sipariş rafı 156,3 dp, Diziliş brif satırları 32,3 · 32,3 
 `logcat AndroidRuntime:E` boş; ekran ayarları `wm size reset` + `wm density reset`
 ile geri alındı.
 
-**Karar bekleyen tek şey** `Konum` gövdesinin kısa ekranda kesilmesi. Belgede
-zaten yazılı: kayıpsız yol gövdeyi kısaltmak, ama oradaki her kelime bir puanlama
-kuralı taşıyor ve 14 dilde kısaltmak anlamı bozabilir. Ölçüm bunu çözmez, metin
-kararı ister.
+**Kesilme düzeltildi: kural satırı dokununca açılıyor.** Kalan tek açık, `Konum`
+gövdesinin kısa ekranda `★ yalnız göz hizasında ×4` kuralını üç noktanın arkasında
+bırakmasıydı; o çarpan uygulamada başka hiçbir yerde yazılı değil (kurulum kartının
+özeti kuralları sayıyor ama çarpan vermiyor ve ★ kuralını hiç anmıyor). Satıra
+dokunmak gövdeyi tam açıyor, ikinci dokunuş kapatıyor. Kapalı görünüm değişmediği
+için 140 dp'lik tabanda üçüncü kuralın adı yerinde kalıyor — yani bu düzeltme G4'ün
+kazandığını geri vermiyor; açılan satır panelin kendi kaydırmasına taşıyor.
+
+Gövdesi gerçekten kırpılan satırın sağında küçük bir ok duruyor. Ok yerleşimden
+okunuyor (`onTextLayout` → `hasVisualOverflow`), tahminden değil: hangi kuralın
+kaç satır tuttuğu dile ve ekran genişliğine göre değişiyor. 411 dp'de beş gövde de
+iki satıra sığdığı için orada hiç ok görünmüyor.
+
+Böylece metni 14 dilde kısaltma kararına gerek kalmadı: çarpanların hepsi
+okunabilir durumda ve hiçbir dilde metin değişmedi. Cihazda bakılacak: 360 dp'de
+`Konum` satırında ok görünüyor mu, dokununca gövdenin son parçası (`★ yalnız göz
+hizasında ×4`) tam okunuyor mu.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

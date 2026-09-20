@@ -278,8 +278,11 @@ def oyunu_ac(ad: str) -> bool:
     sonra üst çubuk doğrulanır, yanlışsa geri dönülüp sonraki aday denenir.
     """
     hedef = tr_kucuk(ad)
+    gorulen: set[str] = set()
     for _ in range(14):
-        for _aday in [o for o in arayuz() if tr_kucuk(o["t"]) == hedef]:
+        ekrandakiler = arayuz()
+        gorulen.update(o["t"] for o in ekrandakiler if o["t"])
+        for _aday in [o for o in ekrandakiler if tr_kucuk(o["t"]) == hedef]:
             taze = arayuz()
             eslesen = [o for o in taze if tr_kucuk(o["t"]) == hedef]
             if not eslesen:
@@ -293,6 +296,12 @@ def oyunu_ac(ad: str) -> bool:
             kabuk("input keyevent KEYCODE_BACK")
             time.sleep(1.2)
         kaydir()
+    # Neden bulunamadığını sonraki koşumda tahmin etmemek için görülenler yazılır:
+    # liste hiç kaymıyorsa ilk oyunlar tekrarlanır, ad listede görünüp de
+    # açılmıyorsa sorun dokunmada. 360×640 dp'de ölçek 2.0 ile üç türde de
+    # "açılamadı" alındı ve sebep bu bilgi olmadığı için saptanamadı.
+    print(f"    '{ad}' 14 kaydırmada bulunamadı; görülen etiketler: "
+          f"{', '.join(sorted(gorulen)[:14]) or '(hiç)'}")
     return False
 
 
