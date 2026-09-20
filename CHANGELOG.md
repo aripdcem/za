@@ -2,6 +2,11 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.41.1 (2026-09-20)
+- **Reyon:** çözülmüş bir tura geri dönünce (menüden ya da mod çipinden) kutlama yeniden çalıyor ve "çözülen bulmaca" rekoru her girişte 1 artıyordu. Dört Reyon ekranında da sayaç artık mevcut durumdan başlıyor
+- Kıskaç ipucundaki yüzde işareti `%%0` görünüyordu: metin argümansız okunuyor, o yüzden ne `String.format` ne aapt2 ikili işareti tekleştiriyor. Hakkında'daki lisans notunun tırnakları da kayıptı — aapt2 kaçışsız çift tırnağı tırnak aç/kapa sayıp atıyor
+- İki hata sınıfı da denetime bağlandı: `tools/check_strings.py` kaçışsız çift tırnağı ve argümansız okunan metindeki `%%`'yi hata sayıyor; yeni `StringResourceTest` aapt2'nin gerçekten ne ürettiğini okuyor
+
 ## 0.41.0 (2026-09-20)
 - **Kelime oyunları 14 dilde:** Beş Harf, Kıskaç, Türetme ve Dizgi artık her dilde kendi sözlüğüyle oynanıyor. Önceden İngilizce telefonda arayüz İngilizceydi ama kelimeler Türkçe geliyordu, yani oyun oynanamıyordu
 - **Kelime dili seçicisi:** arayüzün dilinden ayrı. Almanya'daki bir oyuncu uygulamayı Almanca kullanıp Beş Harf'i Türkçe oynayabilir; seçim dört oyunun kurulum kartında ve kalıcı. Seçim yoksa arayüzün diline uyulur, o dilin listesi yoksa İngilizceye düşülür

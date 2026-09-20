@@ -52,6 +52,67 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.41.1", "2026-09-20",
+            tr = listOf(
+                "Reyon: çözülmüş bir tura geri dönünce kutlama yeniden çalıyor ve rekor her girişte 1 artıyordu; artık bir kez sayılıyor",
+                "Kıskaç ipucundaki yüzde işareti ve Hakkında'daki lisans notunun tırnakları düzeltildi",
+            ),
+            en = listOf(
+                "Reyon: returning to a solved round replayed the celebration and counted the record again; now it counts once",
+                "Fixed the percent sign in the Kıskaç hint and the quotation marks in the licence note under About",
+            ),
+            others = mapOf(
+                "de" to listOf(
+                    "Reyon: Die Rückkehr zu einer gelösten Runde ließ den Jubel erneut laufen und zählte den Rekord wieder mit; jetzt zählt sie einmal",
+                    "Das Prozentzeichen im Kıskaç-Hinweis und die Anführungszeichen im Lizenzhinweis unter Über sind korrigiert",
+                ),
+                "fr" to listOf(
+                    "Reyon : revenir sur une partie résolue rejouait la célébration et recomptait le record ; elle ne compte plus qu'une fois",
+                    "Le signe pourcentage dans l'indice de Kıskaç et les guillemets de la note de licence dans À propos sont corrigés",
+                ),
+                "nl" to listOf(
+                    "Reyon: terugkeren naar een opgeloste ronde speelde de felicitatie opnieuw en telde het record dubbel; nu telt die één keer",
+                    "Het procentteken in de Kıskaç-hint en de aanhalingstekens in de licentienotitie bij Over zijn hersteld",
+                ),
+                "es" to listOf(
+                    "Reyon: volver a una partida resuelta repetía la celebración y contaba el récord otra vez; ahora cuenta una sola vez",
+                    "Corregidos el signo de porcentaje en la pista de Kıskaç y las comillas de la nota de licencia en Acerca de",
+                ),
+                "pt" to listOf(
+                    "Reyon: voltar a uma rodada resolvida repetia a comemoração e contava o recorde de novo; agora conta uma vez",
+                    "Corrigidos o sinal de porcentagem na dica de Kıskaç e as aspas da nota de licença em Sobre",
+                ),
+                "it" to listOf(
+                    "Reyon: tornare su una partita risolta ripeteva la festa e contava di nuovo il record; ora conta una volta sola",
+                    "Corretti il segno di percentuale nel suggerimento di Kıskaç e le virgolette della nota di licenza in Informazioni",
+                ),
+                "da" to listOf(
+                    "Reyon: at vende tilbage til en løst runde gentog fejringen og talte rekorden igen; nu tælles den én gang",
+                    "Procenttegnet i Kıskaç-hintet og citationstegnene i licensnoten under Om er rettet",
+                ),
+                "sv" to listOf(
+                    "Reyon: att gå tillbaka till en löst runda spelade om hyllningen och räknade rekordet igen; nu räknas den en gång",
+                    "Procenttecknet i Kıskaç-ledtråden och citattecknen i licensnoten under Om är rättade",
+                ),
+                "nb" to listOf(
+                    "Reyon: å gå tilbake til en løst runde spilte feiringen om igjen og telte rekorden på nytt; nå telles den én gang",
+                    "Prosenttegnet i Kıskaç-hintet og anførselstegnene i lisensnotatet under Om er rettet",
+                ),
+                "fi" to listOf(
+                    "Reyon: ratkaistuun kierrokseen palaaminen toisti juhlinnan ja laski ennätyksen uudelleen; nyt se lasketaan kerran",
+                    "Kıskaçin vihjeen prosenttimerkki ja Tietoja-näytön lisenssihuomion lainausmerkit korjattiin",
+                ),
+                "ru" to listOf(
+                    "Reyon: возврат к решённому раунду заново проигрывал поздравление и снова считал рекорд; теперь он считается один раз",
+                    "Исправлены знак процента в подсказке Kıskaç и кавычки в заметке о лицензии в разделе «О приложении»",
+                ),
+                "ar" to listOf(
+                    "Reyon: العودة إلى دور محلول كانت تعيد الاحتفال وتحسب الرقم القياسي مرة أخرى؛ الآن يُحسب مرة واحدة",
+                    "صُحّحت علامة النسبة في تلميح Kıskaç وعلامات التنصيص في ملاحظة الترخيص داخل «حول»",
+                ),
+            ),
+        ),
+        ReleaseNote(
             "0.41.0", "2026-09-20",
             tr = listOf(
                 "Beş Harf, Kıskaç, Türetme ve Dizgi artık 14 dilde kendi sözlüğüyle oynanıyor; her dilin kendi klavyesi, kendi alfabe sırası ve kendi günlük bulmacası var",
