@@ -473,7 +473,7 @@ vardır, yazım sözlüğü doğruluğu verir ama yaygınlığı bilmez. Özel a
 özel adlar yalnız büyük harfle yazılıdır. Uzun listeler **ön-kodlu** yazılır (her satır önceki kelimeyle paylaşılan
 ön ekin uzunluğu + kalanı), bu 14 dilin listesini 4,6 MB yerine 3,0 MB'a indirir.
 
-İki denetim betiği CI'da koşar:
+Üç denetim betiği CI'da koşar:
 
 ```bash
 python3 tools/check_strings.py    # dil listeleri tutarlı mı, her dilde bütün metinler var mı,
@@ -482,6 +482,9 @@ python3 tools/check_store.py      # mağaza metinlerinin sınırları, dil kapsa
 python3 tools/check_wordlists.py  # dil tablosunun iki kopyası ayrışmış mı, listeler doğru alfabede
                                   # ve doğru sırada mı, Dizgi'nin torbası 98 taş mı
 ```
+
+Mağaza görselleri (`store/graphics/`) `python3 tools/gen_store_graphics.py` ile uygulamanın kendi simgesinden
+türetilir; simgenin rengi ve blok düzeni değişirse görseller yeniden üretilir.
 
 `ZaLocale.TAGS`, `res/xml/locales_config.xml`, `res/values-<dil>` klasörleri ve `store/play/<dil>` listelemeleri
 birbirinden ayrışırsa denetim hata verir: listede olup çevirisi olmayan bir dil, sistem dil seçicisinde görünüp

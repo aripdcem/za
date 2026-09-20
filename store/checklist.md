@@ -1,6 +1,6 @@
 # Yayın öncesi kontrol listesi (Google Play)
 
-Durum: **2026-09-19**, sürüm 0.39.0. İşaret kutusu `[x]` = bitti, `[ ]` = açık.
+Durum: **2026-09-20**, sürüm 0.41.1. İşaret kutusu `[x]` = bitti, `[ ]` = açık.
 Sahip kolonu kimin yapacağını söyler: **C** = Cem (hesap, cihaz, karar), **A** =
 asistan (depo, metin, görsel üretimi).
 
@@ -34,8 +34,8 @@ asistan (depo, metin, görsel üretimi).
 | [x] | Başlık, kısa ve tam açıklama 14 dilde: `store/play/<dil>/` (sınırlar, dil kapsamı ve görünmez karakterler `tools/check_store.py` ile denetlenir, CI'da koşar) | A |
 | [ ] | Her dilin Play yerel ayarı Console'da açılmalı (eşleme: `store/README.md`); açılmayan dil İngilizce listeleme görür | C |
 | [x] | Sürüm notları her sürüm için: `store/play/release-notes/<sürüm>.txt` | A |
-| [ ] | Uygulama simgesi 512×512 PNG (32 bit) | A üretir |
-| [ ] | Öne çıkan görsel 1024×500 (PNG/JPG) | A üretir |
+| [x] | Uygulama simgesi 512×512 PNG (32 bit): `store/graphics/icon-512.png` | A |
+| [x] | Öne çıkan görsel 1024×500: `store/graphics/feature-1024.png` (metinsiz, 14 dilde geçerli) | A |
 | [ ] | Telefon ekran görüntüleri: en az 2, en çok 8; 9:16; kısa kenar ≥ 320 px, uzun kenar ≤ 3840 px | A çekim listesi + betik, C cihazda çeker |
 | [ ] | İsteğe bağlı: 7" ve 10" tablet ekran görüntüleri (bkz. Android 16 dikey kilit nüansı, madde 5) | C |
 | [ ] | Kategori: Oyunlar > Bulmaca; etiketler: kelime, sudoku, tavla, çevrimdışı | C |
