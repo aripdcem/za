@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Beş Harf, Kıskaç, Türetme ve Dizgi metinleri.
+
+  Bu dört oyun kendi kelime listeleriyle oynanır (games/besharf, games/kiskac,
+  games/turetme, games/dizgi altındaki dil klasörleri). Metinler ayrı dosyada
+  duruyor çünkü bir dilin kelime listesi ile o dilin arayüz çevirisi ayrı
+  zamanlarda hazır olabiliyor: liste yoksa oyun o dilde açılmaz, çeviri yoksa
+  Android anahtar başına varsayılana (İngilizce) düşer.
+
+  tools:ignore="MissingTranslation" bu bilinçli boşluk için; strings.xml'de
+  lint açık kalır ve gerçek çeviri eksiklerini yakalamaya devam eder.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <!-- Beş Harf -->
+    <string name="game_besharf">Beş Harf</string>
+    <string name="game_besharf_tagline">Gjett ordet: en daglig oppgave + fritt spill</string>
+    <string name="not_in_list">Står ikke på ordlisten</string>
+    <string name="too_short">Skriv 5 bokstaver</string>
+    <string name="streak_label">Rekke</string>
+    <string name="answer_was">Svar: %1$s</string>
+    <string name="new_word">Nytt ord</string>
+    <string name="guesses_fmt">Løst på %1$d/%2$d</string>
+    <string name="lost_title">Ikke denne gangen 😔</string>
+    <string name="tomorrow_new_word">I morgen kommer et nytt ord!</string>
+    <string name="show_board">Se brettet</string>
+    <string name="key_enter">ENTER</string>
+    <string name="besharf_hint">🟩 riktig plass  🟨 med i ordet  ⬛ ikke med</string>
+
+    <!-- Kıskaç -->
+    <string name="game_kiskac">Kıskaç</string>
+    <string name="game_kiskac_tagline">Alfabetisk tang: klem ordet mellom to grenser</string>
+    <string name="kiskac_lower_label">Det skjulte ordet kommer etter</string>
+    <string name="kiskac_upper_label">Det skjulte ordet kommer før</string>
+    <string name="kiskac_attempts_fmt">Forsøk: %1$d/%2$d</string>
+    <string name="kiskac_hint">Hvert forsøk sier før eller etter; i lett modus vises avstanden i prosent</string>
+    <string name="kiskac_after_fmt">%1$d%% unna</string>
+    <string name="kiskac_before_fmt">%1$d%% unna</string>
+    <string name="kiskac_easy_mode">Lett modus</string>
+    <string name="kiskac_easy_mode_desc">Viser avstanden i prosent til hver grense</string>
+    <string name="already_tried">Den har du prøvd</string>
+
+    <!-- Türetme -->
+    <string name="game_turetme">Türetme</string>
+    <string name="game_turetme_tagline">Bygg ord av bokstavene — finner du alle?</string>
+    <string name="turetme_hint">Bygg ord på 3 bokstaver og mer; grunnordet gir bonus</string>
+    <string name="found_label">Funnet</string>
+    <string name="already_found">Den har du funnet</string>
+    <string name="shuffle_letters">Bland bokstavene</string>
+    <string name="turetme_completed">Du fant alle! 🎉</string>
+    <string name="turetme_empty">Trykk på bokstavene for å bygge et ord, og trykk ENTER</string>
+    <string name="turetme_give_up">Gi opp</string>
+    <string name="turetme_give_up_confirm">Gi opp?</string>
+    <string name="turetme_give_up_detail">Runden slutter, og ordene du ikke fant blir vist.</string>
+    <string name="turetme_give_up_yes">Gi opp og vis</string>
+    <string name="turetme_revealed">Ord du ikke fant har ramme</string>
+
+    <!-- Dizgi -->
+    <string name="game_dizgi">Dizgi</string>
+    <string name="game_dizgi_tagline">Ordbrett som sendes rundt: legg bokstaver, kryss ord, få poeng</string>
+    <string name="dizgi_players_title">Hvor mange spillere?</string>
+    <string name="dizgi_players_hint">Man spiller etter tur på samme telefon; bare den som spiller ser brikkene sine</string>
+    <string name="dizgi_start">Start</string>
+    <string name="dizgi_player_n">Spiller %1$d</string>
+    <string name="dizgi_turn_of">Tur: %1$s</string>
+    <string name="dizgi_handover">Send telefonen videre; bare den neste ser brikkene</string>
+    <string name="dizgi_ready">Jeg er klar</string>
+    <string name="dizgi_bag_count">Pose: %1$d</string>
+    <string name="dizgi_confirm_move">Legg</string>
+    <string name="dizgi_recall">Ta tilbake</string>
+    <string name="dizgi_pass">Meld pass</string>
+    <string name="dizgi_exchange">Bytt</string>
+    <string name="dizgi_exchange_n">Bytt (%1$d)</string>
+    <string name="dizgi_cancel">Avbryt</string>
+    <string name="dizgi_joker_pick">Hvilken bokstav skal jokeren være?</string>
+    <string name="dizgi_move_pass">%1$s meldte pass</string>
+    <string name="dizgi_move_exchange">%1$s byttet brikker</string>
+    <string name="dizgi_move_words">%1$s: %2$s (+%3$d)</string>
+    <string name="dizgi_bingo">Bingo! +50</string>
+    <string name="dizgi_inv_empty">Legg først brikker på brettet</string>
+    <string name="dizgi_inv_line">Brikkene må ligge i én rad eller kolonne</string>
+    <string name="dizgi_inv_gap">Ordet kan ikke ha hull</string>
+    <string name="dizgi_inv_connect">Nye brikker må berøre de gamle</string>
+    <string name="dizgi_inv_center">Det første ordet må gå over midtstjernen</string>
+    <string name="dizgi_inv_short">Bygg et ord på minst to bokstaver</string>
+    <string name="dizgi_inv_word">Står ikke i ordboken: %1$s</string>
+    <string name="dizgi_inv_exchange">Bytte krever minst 7 brikker i posen</string>
+    <string name="dizgi_exchange_hint">Trykk på brikkene som skal byttes (%1$d valgt), og trykk Bytt</string>
+    <string name="dizgi_pass_confirm">Melde pass?</string>
+    <string name="dizgi_pass_detail">Turen går videre. Melder alle pass to ganger på rad, er spillet slutt.</string>
+    <string name="dizgi_new_confirm">Starte et nytt spill?</string>
+    <string name="dizgi_new_detail">Spillet som er i gang blir forkastet.</string>
+    <string name="dizgi_finished">Spillet er slutt</string>
+    <string name="dizgi_winner">Vinner: %1$s</string>
+    <string name="dizgi_draw">Uavgjort!</string>
+    <!-- Tahtadaki premium kare kısaltmaları -->
+    <string name="dizgi_sq_dl">2B</string>
+    <string name="dizgi_sq_tl">3B</string>
+    <string name="dizgi_sq_dw">2O</string>
+    <string name="dizgi_sq_tw">3O</string>
+    <string name="dizgi_legend_dl">2B dobbel bokstav</string>
+    <string name="dizgi_legend_tl">3B trippel bokstav</string>
+    <string name="dizgi_legend_dw">2O dobbelt ord</string>
+    <string name="dizgi_legend_tw">3O trippelt ord</string>
+    <string name="dizgi_board_desc">Dizgi-brett: %1$d brikker lagt, %2$d venter</string>
+
+    <!-- Kelime dili seçimi -->
+    <string name="word_lang_title">Ordspråk</string>
+    <string name="word_lang_follow">Appens språk</string>
+    <string name="word_lang_button">Ordspråk: %1$s</string>
+    <string name="word_lang_note">Hvert språk har sin egen ordliste og sin egen daglige oppgave. Tastatur og alfabetisk rekkefølge følger språket du velger.</string>
+</resources>

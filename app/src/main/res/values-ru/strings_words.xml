@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Beş Harf, Kıskaç, Türetme ve Dizgi metinleri.
+
+  Bu dört oyun kendi kelime listeleriyle oynanır (games/besharf, games/kiskac,
+  games/turetme, games/dizgi altındaki dil klasörleri). Metinler ayrı dosyada
+  duruyor çünkü bir dilin kelime listesi ile o dilin arayüz çevirisi ayrı
+  zamanlarda hazır olabiliyor: liste yoksa oyun o dilde açılmaz, çeviri yoksa
+  Android anahtar başına varsayılana (İngilizce) düşer.
+
+  tools:ignore="MissingTranslation" bu bilinçli boşluk için; strings.xml'de
+  lint açık kalır ve gerçek çeviri eksiklerini yakalamaya devam eder.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <!-- Beş Harf -->
+    <string name="game_besharf">Beş Harf</string>
+    <string name="game_besharf_tagline">Угадайте слово: задача дня + свободный режим</string>
+    <string name="not_in_list">Нет в списке слов</string>
+    <string name="too_short">Введите 5 букв</string>
+    <string name="streak_label">Серия</string>
+    <string name="answer_was">Ответ: %1$s</string>
+    <string name="new_word">Новое слово</string>
+    <string name="guesses_fmt">Решено за %1$d/%2$d</string>
+    <string name="lost_title">Не в этот раз 😔</string>
+    <string name="tomorrow_new_word">Завтра будет новое слово!</string>
+    <string name="show_board">Показать поле</string>
+    <string name="key_enter">ВВОД</string>
+    <string name="besharf_hint">🟩 на месте  🟨 есть в слове  ⬛ нет в слове</string>
+
+    <!-- Kıskaç -->
+    <string name="game_kiskac">Kıskaç</string>
+    <string name="game_kiskac_tagline">Алфавитные тиски: зажмите слово между двумя границами</string>
+    <string name="kiskac_lower_label">Загаданное слово идёт после</string>
+    <string name="kiskac_upper_label">Загаданное слово идёт до</string>
+    <string name="kiskac_attempts_fmt">Попытки: %1$d/%2$d</string>
+    <string name="kiskac_hint">Каждая попытка говорит до или после; в простом режиме видна дистанция в процентах</string>
+    <string name="kiskac_after_fmt">%1$d%% до цели</string>
+    <string name="kiskac_before_fmt">%1$d%% до цели</string>
+    <string name="kiskac_easy_mode">Простой режим</string>
+    <string name="kiskac_easy_mode_desc">Показывает дистанцию в процентах до каждой границы</string>
+    <string name="already_tried">Это вы уже пробовали</string>
+
+    <!-- Türetme -->
+    <string name="game_turetme">Türetme</string>
+    <string name="game_turetme_tagline">Составляйте слова из букв — найдёте все?</string>
+    <string name="turetme_hint">Составляйте слова от 3 букв; за слово-основу дают бонус</string>
+    <string name="found_label">Найдено</string>
+    <string name="already_found">Это вы уже нашли</string>
+    <string name="shuffle_letters">Перемешать буквы</string>
+    <string name="turetme_completed">Вы нашли все! 🎉</string>
+    <string name="turetme_empty">Нажимайте буквы, чтобы составить слово, затем ВВОД</string>
+    <string name="turetme_give_up">Сдаться</string>
+    <string name="turetme_give_up_confirm">Сдаться?</string>
+    <string name="turetme_give_up_detail">Раунд закончится, и пропущенные слова откроются.</string>
+    <string name="turetme_give_up_yes">Сдаться и открыть</string>
+    <string name="turetme_revealed">Пропущенные слова показаны в рамке</string>
+
+    <!-- Dizgi -->
+    <string name="game_dizgi">Dizgi</string>
+    <string name="game_dizgi_tagline">Словесное поле по кругу: выкладывайте буквы, пересекайте слова, набирайте очки</string>
+    <string name="dizgi_players_title">Сколько игроков?</string>
+    <string name="dizgi_players_hint">Играют по очереди на одном телефоне; свои плитки видит только тот, чей ход</string>
+    <string name="dizgi_start">Начать</string>
+    <string name="dizgi_player_n">Игрок %1$d</string>
+    <string name="dizgi_turn_of">Ход: %1$s</string>
+    <string name="dizgi_handover">Передайте телефон; плитки увидит только следующий</string>
+    <string name="dizgi_ready">Я готов</string>
+    <string name="dizgi_bag_count">Мешок: %1$d</string>
+    <string name="dizgi_confirm_move">Сыграть</string>
+    <string name="dizgi_recall">Забрать</string>
+    <string name="dizgi_pass">Пропустить</string>
+    <string name="dizgi_exchange">Обменять</string>
+    <string name="dizgi_exchange_n">Обменять (%1$d)</string>
+    <string name="dizgi_cancel">Отмена</string>
+    <string name="dizgi_joker_pick">Какой буквой будет джокер?</string>
+    <string name="dizgi_move_pass">%1$s пропустил ход</string>
+    <string name="dizgi_move_exchange">%1$s обменял плитки</string>
+    <string name="dizgi_move_words">%1$s: %2$s (+%3$d)</string>
+    <string name="dizgi_bingo">Бинго! +50</string>
+    <string name="dizgi_inv_empty">Сначала выложите плитки на поле</string>
+    <string name="dizgi_inv_line">Плитки должны лежать в одной строке или столбце</string>
+    <string name="dizgi_inv_gap">В слове не может быть пропусков</string>
+    <string name="dizgi_inv_connect">Новые плитки должны касаться уже выложенных</string>
+    <string name="dizgi_inv_center">Первое слово должно пройти через центральную звезду</string>
+    <string name="dizgi_inv_short">Составьте слово хотя бы из двух букв</string>
+    <string name="dizgi_inv_word">Нет в словаре: %1$s</string>
+    <string name="dizgi_inv_exchange">Для обмена нужно не меньше 7 плиток в мешке</string>
+    <string name="dizgi_exchange_hint">Нажмите плитки для обмена (%1$d выбрано), затем Обменять</string>
+    <string name="dizgi_pass_confirm">Пропустить свой ход?</string>
+    <string name="dizgi_pass_detail">Ход перейдёт дальше. Если все пропустят дважды подряд, игра закончится.</string>
+    <string name="dizgi_new_confirm">Начать новую игру?</string>
+    <string name="dizgi_new_detail">Текущая игра будет сброшена.</string>
+    <string name="dizgi_finished">Игра окончена</string>
+    <string name="dizgi_winner">Победитель: %1$s</string>
+    <string name="dizgi_draw">Ничья!</string>
+    <!-- Tahtadaki premium kare kısaltmaları -->
+    <string name="dizgi_sq_dl">2Б</string>
+    <string name="dizgi_sq_tl">3Б</string>
+    <string name="dizgi_sq_dw">2С</string>
+    <string name="dizgi_sq_tw">3С</string>
+    <string name="dizgi_legend_dl">2Б двойная буква</string>
+    <string name="dizgi_legend_tl">3Б тройная буква</string>
+    <string name="dizgi_legend_dw">2С двойное слово</string>
+    <string name="dizgi_legend_tw">3С тройное слово</string>
+    <string name="dizgi_board_desc">Поле Dizgi: %1$d плиток выложено, %2$d ожидает</string>
+
+    <!-- Kelime dili seçimi -->
+    <string name="word_lang_title">Язык слов</string>
+    <string name="word_lang_follow">Язык приложения</string>
+    <string name="word_lang_button">Язык слов: %1$s</string>
+    <string name="word_lang_note">У каждого языка свой список слов и своя задача дня. Клавиатура и алфавитный порядок следуют выбранному языку.</string>
+</resources>

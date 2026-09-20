@@ -4,8 +4,8 @@
 Düzen:
   res/values/strings.xml            varsayılan (İngilizce) — tüm anahtarlar
   res/values-<dil>/strings.xml      çeviri; eksik anahtar bırakamaz
-  res/values/strings_words.xml      dört kelime oyunu (yalnız varsayılan + tr)
-  res/values-tr/strings_words.xml
+  res/values/strings_words.xml      dört kelime oyunu (kelime listesi olan her dil)
+  res/values-<dil>/strings_words.xml
 
 Denetimler:
   1. ZaLocale.TAGS, locales_config.xml ve values-* klasörleri birbirini tutar:
@@ -15,7 +15,7 @@ Denetimler:
   3. Çeviride fazladan anahtar yok
   4. Aynı dilde yinelenen anahtar yok
   5. Biçim belirteçleri (%1$s, %d) çeviride birebir aynı; kaçırılmamış % yok
-  6. strings_words.xml yalnız izinli dillerde ve anahtar kümeleri eşit
+  6. strings_words.xml kelime listesi olan her dilde, anahtar kümeleri eşit
   7. Kotlin'deki her R.string.X bir kaynakta var
   8. Kullanılmayan kaynak anahtarı uyarı verir
 """
@@ -29,7 +29,11 @@ LOCALES_CONFIG = 'app/src/main/res/xml/locales_config.xml'
 ZA_LOCALE = 'app/src/main/kotlin/com/za/games/platform/ZaLocale.kt'
 DEFAULT_LOCALE = 'en'  # res/values içeriğinin dili
 KOTLIN_ROOTS = ['app/src/main/kotlin', 'app/src/test/kotlin']
-WORDS_LOCALES = {'', 'tr'}  # strings_words.xml yalnız varsayılan (en) ve tr
+def word_langs():
+    """WordLang tablosundaki diller: kelime listesi olan her dil."""
+    src = open('games/sozluk/src/main/kotlin/com/za/games/sozluk/WordLang.kt',
+               encoding='utf-8').read()
+    return set(re.findall(r'tag = "([a-z]+)"', src))
 STRING_RE = re.compile(r'<string name="([^"]+)"[^>]*>(.*?)</string>', re.S)
 FMT_RE = re.compile(r'%(?:\d+\$)?[-#+ 0,(]*\d*(?:\.\d+)?[a-zA-Z]|%%')
 
@@ -140,20 +144,26 @@ def main():
         sys.exit(f'{RES}/values/strings.xml yok — varsayılan dil eksik')
     base_words = files.get(('', 'strings_words.xml'), {})
 
-    # 5. strings_words yalnız izinli dillerde, anahtarları eşit
-    for (loc, name) in files:
-        if name != 'strings_words.xml':
-            continue
-        if loc not in WORDS_LOCALES:
-            err(f'values-{loc}/strings_words.xml: kelime oyunları yalnız '
-                f'{sorted(WORDS_LOCALES) } dillerinde çevrilir')
-        elif loc:
-            missing = set(base_words) - set(files[(loc, name)])
-            extra = set(files[(loc, name)]) - set(base_words)
-            for k in sorted(missing):
-                err(f'values-{loc}/strings_words.xml: eksik "{k}"')
-            for k in sorted(extra):
-                err(f'values-{loc}/strings_words.xml: fazladan "{k}"')
+    # 5. strings_words: kelime listesi olan her dilde var ve anahtarları eşit.
+    #
+    # Kelime oyunları artık kendi listeleriyle 14 dilde oynanıyor. Bir dilin
+    # listesi varken metni yoksa oyun o dilde açılır ama arayüzü İngilizce
+    # görünür — çeviri unutulduğunda kimse fark etmez, o yüzden hata sayılır.
+    # Tersi de hata: metni olup listesi olmayan dil oynanamaz.
+    langs = word_langs()
+    translated = {loc for (loc, name) in files if name == 'strings_words.xml' and loc}
+    for loc in sorted(langs - translated - {DEFAULT_LOCALE}):
+        err(f'values-{loc}: kelime listesi var, strings_words.xml yok '
+            f'(oyun {loc} açılır, metni İngilizce görünür)')
+    for loc in sorted(translated - langs):
+        err(f'values-{loc}/strings_words.xml var, {loc} için kelime listesi yok')
+    for loc in sorted(translated & langs):
+        missing = set(base_words) - set(files[(loc, 'strings_words.xml')])
+        extra = set(files[(loc, 'strings_words.xml')]) - set(base_words)
+        for k in sorted(missing):
+            err(f'values-{loc}/strings_words.xml: eksik "{k}"')
+        for k in sorted(extra):
+            err(f'values-{loc}/strings_words.xml: fazladan "{k}"')
 
     # Aynı anahtar iki dosyada olmasın
     for k in sorted(set(base) & set(base_words)):

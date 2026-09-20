@@ -14,7 +14,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Beş Harf -->
     <string name="game_besharf">Beş Harf</string>
-    <string name="game_besharf_tagline">Turkish word guessing: daily puzzle + free play</string>
+    <string name="game_besharf_tagline">Word guessing: a daily puzzle + free play</string>
     <string name="not_in_list">Not in the word list</string>
     <string name="too_short">Enter 5 letters</string>
     <string name="streak_label">Streak</string>
@@ -29,7 +29,7 @@
 
     <!-- Kıskaç -->
     <string name="game_kiskac">Kıskaç</string>
-    <string name="game_kiskac_tagline">Alphabetical squeeze: trap the Turkish word between two bounds</string>
+    <string name="game_kiskac_tagline">Alphabetical squeeze: trap the word between two bounds</string>
     <string name="kiskac_lower_label">The hidden word comes after</string>
     <string name="kiskac_upper_label">The hidden word comes before</string>
     <string name="kiskac_attempts_fmt">Guesses: %1$d/%2$d</string>
@@ -42,7 +42,7 @@
 
     <!-- Türetme -->
     <string name="game_turetme">Türetme</string>
-    <string name="game_turetme_tagline">Build Turkish words from the letters — can you find them all?</string>
+    <string name="game_turetme_tagline">Build words from the letters — can you find them all?</string>
     <string name="turetme_hint">Make words of 3+ letters; the base word earns a bonus</string>
     <string name="found_label">Found</string>
     <string name="already_found">Already found that one</string>
@@ -57,7 +57,7 @@
 
     <!-- Dizgi -->
     <string name="game_dizgi">Dizgi</string>
-    <string name="game_dizgi_tagline">Pass-and-play Turkish word board: lay letters, cross words, score</string>
+    <string name="game_dizgi_tagline">Pass-and-play word board: lay letters, cross words, score</string>
     <string name="dizgi_players_title">How many players?</string>
     <string name="dizgi_players_hint">Played in turns on the same phone; only the current player sees their tiles. The first word must cross the center star.</string>
     <string name="dizgi_start">Start</string>
@@ -93,15 +93,20 @@
     <string name="dizgi_finished">Game over</string>
     <string name="dizgi_winner">Winner: %1$s</string>
     <string name="dizgi_draw">It\'s a draw!</string>
-    <string name="dizgi_legend_dl">2H double letter</string>
-    <string name="dizgi_legend_tl">3H triple letter</string>
-    <string name="dizgi_legend_dw">2K double word</string>
-    <string name="dizgi_legend_tw">3K triple word</string>
+    <!-- Tahtadaki premium kare kısaltmaları -->
+    <string name="dizgi_sq_dl">2L</string>
+    <string name="dizgi_sq_tl">3L</string>
+    <string name="dizgi_sq_dw">2W</string>
+    <string name="dizgi_sq_tw">3W</string>
+    <string name="dizgi_legend_dl">2L double letter</string>
+    <string name="dizgi_legend_tl">3L triple letter</string>
+    <string name="dizgi_legend_dw">2W double word</string>
+    <string name="dizgi_legend_tw">3W triple word</string>
     <string name="dizgi_board_desc">Dizgi board: %1$d tiles placed, %2$d pending</string>
 
     <!-- Kelime dili seçimi -->
     <string name="word_lang_title">Word language</string>
     <string name="word_lang_follow">App language</string>
     <string name="word_lang_button">Word language: %1$s</string>
-    <string name="word_lang_note">Each language has its own word list and its own daily puzzle. Turkish word games use Turkish letters and Turkish alphabetical order; the other languages use their own.</string>
+    <string name="word_lang_note">Each language has its own word list and its own daily puzzle. The keyboard and the alphabetical order follow the language you pick.</string>
 </resources>

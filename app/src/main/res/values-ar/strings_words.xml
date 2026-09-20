@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Beş Harf, Kıskaç, Türetme ve Dizgi metinleri.
+
+  Bu dört oyun kendi kelime listeleriyle oynanır (games/besharf, games/kiskac,
+  games/turetme, games/dizgi altındaki dil klasörleri). Metinler ayrı dosyada
+  duruyor çünkü bir dilin kelime listesi ile o dilin arayüz çevirisi ayrı
+  zamanlarda hazır olabiliyor: liste yoksa oyun o dilde açılmaz, çeviri yoksa
+  Android anahtar başına varsayılana (İngilizce) düşer.
+
+  tools:ignore="MissingTranslation" bu bilinçli boşluk için; strings.xml'de
+  lint açık kalır ve gerçek çeviri eksiklerini yakalamaya devam eder.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <!-- Beş Harf -->
+    <string name="game_besharf">Beş Harf</string>
+    <string name="game_besharf_tagline">خمّن الكلمة: لغز يومي + نمط حر</string>
+    <string name="not_in_list">ليست في قائمة الكلمات</string>
+    <string name="too_short">اكتب 5 أحرف</string>
+    <string name="streak_label">التتابع</string>
+    <string name="answer_was">الجواب: %1$s</string>
+    <string name="new_word">كلمة جديدة</string>
+    <string name="guesses_fmt">حُلّت في %1$d/%2$d</string>
+    <string name="lost_title">ليست هذه المرة 😔</string>
+    <string name="tomorrow_new_word">غداً كلمة جديدة!</string>
+    <string name="show_board">اعرض اللوح</string>
+    <string name="key_enter">إدخال</string>
+    <string name="besharf_hint">🟩 الموضع صحيح  🟨 في الكلمة  ⬛ ليست في الكلمة</string>
+
+    <!-- Kıskaç -->
+    <string name="game_kiskac">Kıskaç</string>
+    <string name="game_kiskac_tagline">الكمّاشة الأبجدية: احصر الكلمة بين حدّين</string>
+    <string name="kiskac_lower_label">الكلمة المخفية تأتي بعد</string>
+    <string name="kiskac_upper_label">الكلمة المخفية تأتي قبل</string>
+    <string name="kiskac_attempts_fmt">المحاولات: %1$d/%2$d</string>
+    <string name="kiskac_hint">كل محاولة تقول قبل أو بعد؛ في النمط السهل تظهر المسافة بالنسبة المئوية</string>
+    <string name="kiskac_after_fmt">على بعد %1$d%%</string>
+    <string name="kiskac_before_fmt">على بعد %1$d%%</string>
+    <string name="kiskac_easy_mode">النمط السهل</string>
+    <string name="kiskac_easy_mode_desc">يعرض المسافة بالنسبة المئوية إلى كل حدّ</string>
+    <string name="already_tried">جرّبتها من قبل</string>
+
+    <!-- Türetme -->
+    <string name="game_turetme">Türetme</string>
+    <string name="game_turetme_tagline">ألّف كلمات من الأحرف — هل تجدها كلها؟</string>
+    <string name="turetme_hint">ألّف كلمات من ثلاثة أحرف وأكثر؛ الكلمة الأصل تمنح مكافأة</string>
+    <string name="found_label">المكتشَفة</string>
+    <string name="already_found">وجدتها من قبل</string>
+    <string name="shuffle_letters">اخلط الأحرف</string>
+    <string name="turetme_completed">وجدتها كلها! 🎉</string>
+    <string name="turetme_empty">انقر الأحرف لتألّف كلمة ثم اضغط إدخال</string>
+    <string name="turetme_give_up">استسلام</string>
+    <string name="turetme_give_up_confirm">أتستسلم؟</string>
+    <string name="turetme_give_up_detail">تنتهي الجولة وتُكشف الكلمات الفائتة.</string>
+    <string name="turetme_give_up_yes">استسلم واكشف</string>
+    <string name="turetme_revealed">الكلمات الفائتة محاطة بإطار</string>
+
+    <!-- Dizgi -->
+    <string name="game_dizgi">Dizgi</string>
+    <string name="game_dizgi_tagline">لوح كلمات يتناقله اللاعبون: ضع الأحرف، اعقد الكلمات، اجمع النقاط</string>
+    <string name="dizgi_players_title">كم لاعباً؟</string>
+    <string name="dizgi_players_hint">يُلعب بالتناوب على الهاتف نفسه؛ لا يرى أحجاره إلا من عليه الدور</string>
+    <string name="dizgi_start">ابدأ</string>
+    <string name="dizgi_player_n">اللاعب %1$d</string>
+    <string name="dizgi_turn_of">الدور: %1$s</string>
+    <string name="dizgi_handover">مرّر الهاتف؛ لا يرى الأحجار إلا التالي</string>
+    <string name="dizgi_ready">أنا مستعدّ</string>
+    <string name="dizgi_bag_count">الكيس: %1$d</string>
+    <string name="dizgi_confirm_move">العب</string>
+    <string name="dizgi_recall">استرجع</string>
+    <string name="dizgi_pass">مرّر</string>
+    <string name="dizgi_exchange">بدّل</string>
+    <string name="dizgi_exchange_n">بدّل (%1$d)</string>
+    <string name="dizgi_cancel">إلغاء</string>
+    <string name="dizgi_joker_pick">أي حرف يكون الجوكر؟</string>
+    <string name="dizgi_move_pass">مرّر %1$s</string>
+    <string name="dizgi_move_exchange">بدّل %1$s أحجاراً</string>
+    <string name="dizgi_move_words">%1$s: %2$s (+%3$d)</string>
+    <string name="dizgi_bingo">بينغو! +50</string>
+    <string name="dizgi_inv_empty">ضع الأحجار على اللوح أولاً</string>
+    <string name="dizgi_inv_line">يجب أن تكون الأحجار في صف واحد أو عمود واحد</string>
+    <string name="dizgi_inv_gap">لا يمكن أن تكون في الكلمة فراغات</string>
+    <string name="dizgi_inv_connect">يجب أن تلامس الأحجار الجديدة الموجودة</string>
+    <string name="dizgi_inv_center">يجب أن تمرّ الكلمة الأولى على النجمة الوسطى</string>
+    <string name="dizgi_inv_short">ألّف كلمة من حرفين على الأقل</string>
+    <string name="dizgi_inv_word">ليست في القاموس: %1$s</string>
+    <string name="dizgi_inv_exchange">التبديل يحتاج 7 أحجار على الأقل في الكيس</string>
+    <string name="dizgi_exchange_hint">انقر الأحجار المراد تبديلها (%1$d مختارة) ثم اضغط بدّل</string>
+    <string name="dizgi_pass_confirm">أتمرّر دورك؟</string>
+    <string name="dizgi_pass_detail">ينتقل الدور. إن مرّر الجميع مرتين متتاليتين انتهت اللعبة.</string>
+    <string name="dizgi_new_confirm">أتبدأ لعبة جديدة؟</string>
+    <string name="dizgi_new_detail">ستُلغى اللعبة الحالية.</string>
+    <string name="dizgi_finished">انتهت اللعبة</string>
+    <string name="dizgi_winner">الفائز: %1$s</string>
+    <string name="dizgi_draw">تعادل!</string>
+    <!-- Tahtadaki premium kare kısaltmaları -->
+    <string name="dizgi_sq_dl">2ح</string>
+    <string name="dizgi_sq_tl">3ح</string>
+    <string name="dizgi_sq_dw">2ك</string>
+    <string name="dizgi_sq_tw">3ك</string>
+    <string name="dizgi_legend_dl">2ح حرف مضاعف</string>
+    <string name="dizgi_legend_tl">3ح حرف ثلاثي</string>
+    <string name="dizgi_legend_dw">2ك كلمة مضاعفة</string>
+    <string name="dizgi_legend_tw">3ك كلمة ثلاثية</string>
+    <string name="dizgi_board_desc">لوح Dizgi: %1$d حجراً موضوعاً، %2$d معلّقاً</string>
+
+    <!-- Kelime dili seçimi -->
+    <string name="word_lang_title">لغة الكلمات</string>
+    <string name="word_lang_follow">لغة التطبيق</string>
+    <string name="word_lang_button">لغة الكلمات: %1$s</string>
+    <string name="word_lang_note">لكل لغة قائمة كلماتها ولغز يومها. لوحة المفاتيح والترتيب الأبجدي يتبعان اللغة التي تختارها.</string>
+</resources>

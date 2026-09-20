@@ -696,6 +696,13 @@ private fun DizgiBoardCanvas(
     onCellTap: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // Premium kare kısaltmaları: Canvas içinde stringResource çağrılamaz.
+    val squareLabels = listOf(
+        stringResource(R.string.dizgi_sq_dl),
+        stringResource(R.string.dizgi_sq_tl),
+        stringResource(R.string.dizgi_sq_dw),
+        stringResource(R.string.dizgi_sq_tw),
+    )
     val lang = LocalWordLang.current
     val textMeasurer = rememberTextMeasurer()
     val layoutCache = remember { mutableMapOf<String, TextLayoutResult>() }
@@ -790,11 +797,14 @@ private fun DizgiBoardCanvas(
                     cornerRadius = corner,
                 )
                 // Premium kareler etiketli: yeni oyuncu mekaniği tahtadan okuyabilir.
+                // Kısaltmalar dile göre değişir ("2H" Türkçe "2 Harf", "2L" İngilizce
+                // "double letter"); Canvas içinde kaynak okunamadığı için yukarıda
+                // çözülüp buraya geçirilir.
                 val label = when (DizgiBoard.premium(index)) {
-                    Premium.DL -> "2H"
-                    Premium.TL -> "3H"
-                    Premium.DW -> "2K"
-                    Premium.TW -> "3K"
+                    Premium.DL -> squareLabels[0]
+                    Premium.TL -> squareLabels[1]
+                    Premium.DW -> squareLabels[2]
+                    Premium.TW -> squareLabels[3]
                     Premium.NONE -> null
                 }
                 if (index == DizgiBoard.CENTER) {
@@ -865,7 +875,7 @@ private fun RackRow(
                         )
                         if (!tile.isJoker) {
                             Text(
-                                text = "${tile.points}",
+                                text = "${DizgiLetters.of(lang).pointsOf(tile.letter)}",
                                 fontSize = 9.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = TileInk.copy(alpha = 0.65f),

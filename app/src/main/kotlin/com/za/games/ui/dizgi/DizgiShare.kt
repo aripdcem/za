@@ -47,7 +47,7 @@ internal fun dizgiPainter(state: DizgiState): (Canvas, RectF) -> Unit = { canvas
                 if (tile.isJoker) jokerInk else ink,
             )
             if (!tile.isJoker) {
-                canvas.drawText(tile.points.toString(), box.right - cell * 0.06f, box.bottom - cell * 0.08f, points)
+                canvas.drawText(state.pointsOf(tile).toString(), box.right - cell * 0.06f, box.bottom - cell * 0.08f, points)
             }
         } else {
             val premium = DizgiBoard.premium(index)

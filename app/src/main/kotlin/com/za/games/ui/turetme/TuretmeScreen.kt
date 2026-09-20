@@ -103,8 +103,10 @@ fun TuretmeScreen(
     }
 
     val state by viewModel.state.collectAsStateWithLifecycle()
-    // Motorun dili tek doğru kaynak: dil seçici oyunu yeniden kurunca buradan gelir.
-    val lang = state.lang
+    // Türetme'nin durumu dil taşımıyor: oyun tabanın harfleriyle oynanır, ayrı
+    // bir alfabeye ya da sıralamaya ihtiyacı yok. Büyük harfe çevirme için dil
+    // ViewModel'den gelir.
+    val lang = wordLang
     val mode by viewModel.mode.collectAsStateWithLifecycle()
     val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current

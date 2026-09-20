@@ -30,7 +30,7 @@ class TuretmeViewModel(application: Application) : AndroidViewModel(application)
     private val _wordLang = MutableStateFlow(WordLangs.current(application))
     val wordLang: StateFlow<WordLang> = _wordLang.asStateFlow()
 
-    private var words = words.of(_wordLang.value)
+    private var words = TuretmeWords.of(_wordLang.value)
 
     /** Seçim: null = arayüzün dilini izle. Dil değişince tur baştan kurulur. */
     fun setWordLang(lang: WordLang?) {
@@ -38,7 +38,7 @@ class TuretmeViewModel(application: Application) : AndroidViewModel(application)
         val next = WordLangs.current(getApplication())
         if (next == _wordLang.value) return
         _wordLang.value = next
-        words = words.of(next)
+        words = TuretmeWords.of(next)
         viewModelScope.launch {
             val fresh = withContext(Dispatchers.Default) {
                 if (_mode.value == TuretmeMode.DAILY) restoredDaily()

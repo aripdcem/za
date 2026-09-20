@@ -1,23 +1,24 @@
 package com.za.games.ui.dizgi
 
-import com.za.games.sozluk.WordLang
-import com.za.games.platform.WordLangs
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.za.games.dizgi.DizgiState
 import com.za.games.dizgi.DizgiStatus
 import com.za.games.dizgi.DizgiWords
+import com.za.games.platform.WordLangs
+import com.za.games.sozluk.WordLang
+import kotlin.random.Random
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 /** Ekran evresi: kurulum → (el değişimi ⇄ oyun) → bitiş oyun içinde gösterilir. */
 enum class DizgiPhase { SETUP, HANDOVER, PLAY }
 
-class DizgiViewModel : ViewModel() {
+class DizgiViewModel(application: Application) : AndroidViewModel(application) {
 
     /**
      * Oyunun kelime dili. Varsayılan arayüzün dilidir; oyuncular kurulum

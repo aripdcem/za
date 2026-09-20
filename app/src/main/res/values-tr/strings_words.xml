@@ -17,7 +17,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Beş Harf -->
     <string name="game_besharf">Beş Harf</string>
-    <string name="game_besharf_tagline">Türkçe kelime tahmini: günlük bulmaca + serbest mod</string>
+    <string name="game_besharf_tagline">Kelime tahmini: günlük bulmaca + serbest mod</string>
     <string name="not_in_list">Listede yok</string>
     <string name="too_short">5 harf gir</string>
     <string name="streak_label">Seri</string>
@@ -32,7 +32,7 @@
 
     <!-- Kıskaç -->
     <string name="game_kiskac">Kıskaç</string>
-    <string name="game_kiskac_tagline">Alfabetik kıskaç: kelimeyi iki sınır arasında sıkıştır</string>
+    <string name="game_kiskac_tagline">Alfabetik daraltma: kelimeyi iki sınır arasına sıkıştır</string>
     <string name="kiskac_lower_label">Gizli kelime bundan sonra</string>
     <string name="kiskac_upper_label">Gizli kelime bundan önce</string>
     <string name="kiskac_attempts_fmt">Tahmin: %1$d/%2$d</string>
@@ -45,8 +45,8 @@
 
     <!-- Türetme -->
     <string name="game_turetme">Türetme</string>
-    <string name="game_turetme_tagline">Harflerden kelime türet — hepsini bulabilecek misin?</string>
-    <string name="turetme_hint">En az 3 harfli kelimeler kur; taban kelime bonus verir</string>
+    <string name="game_turetme_tagline">Harflerden kelime türet — hepsini bulabilir misin?</string>
+    <string name="turetme_hint">3+ harfli kelimeler kur; taban kelime ekstra puan</string>
     <string name="found_label">Bulunan</string>
     <string name="already_found">Bunu zaten buldun</string>
     <string name="shuffle_letters">Harfleri karıştır</string>
@@ -60,7 +60,7 @@
 
     <!-- Dizgi -->
     <string name="game_dizgi">Dizgi</string>
-    <string name="game_dizgi_tagline">Elden ele kelime tahtası: harfleri diz, kesiştir, puanla</string>
+    <string name="game_dizgi_tagline">Elden ele kelime tahtası: harfleri diz, kelimeleri kesiştir, puan al</string>
     <string name="dizgi_players_title">Kaç oyuncu?</string>
     <string name="dizgi_players_hint">Aynı telefonda sırayla oynanır; sıra sendeyken taşlarını yalnız sen görürsün. İlk kelime ortadaki yıldızdan geçer.</string>
     <string name="dizgi_start">Başla</string>
@@ -96,6 +96,11 @@
     <string name="dizgi_finished">Oyun bitti</string>
     <string name="dizgi_winner">Kazanan: %1$s</string>
     <string name="dizgi_draw">Berabere!</string>
+    <!-- Tahtadaki premium kare kısaltmaları -->
+    <string name="dizgi_sq_dl">2H</string>
+    <string name="dizgi_sq_tl">3H</string>
+    <string name="dizgi_sq_dw">2K</string>
+    <string name="dizgi_sq_tw">3K</string>
     <string name="dizgi_legend_dl">2H çift harf</string>
     <string name="dizgi_legend_tl">3H üç harf</string>
     <string name="dizgi_legend_dw">2K çift kelime</string>
@@ -106,5 +111,5 @@
     <string name="word_lang_title">Kelime dili</string>
     <string name="word_lang_follow">Uygulamanın dili</string>
     <string name="word_lang_button">Kelime dili: %1$s</string>
-    <string name="word_lang_note">Her dilin kendi kelime listesi ve kendi günlük bulmacası var. Türkçe oynarken Türk alfabesi ve Türkçe sıralama geçerli; öteki diller kendi alfabesini kullanır.</string>
+    <string name="word_lang_note">Her dilin kendi kelime listesi ve kendi günlük bulmacası var. Klavye ve alfabe sırası seçtiğin dile uyar.</string>
 </resources>
