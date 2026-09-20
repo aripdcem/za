@@ -488,6 +488,7 @@ kalıcılığı doğru; dört bulgu çıktı (kelime dili değişince klavye yen
 Arapça'da `%d` metinleri Hint-Arap rakamı basıyor, Dizgi'nin prim gözü lejantı
 Türkçe dışında taşıyor, Blok'un yön tuş sırası sağdan sola aynalanıyor).
 Dökümü [v0.43.0 · diller ve tur sayacı](#v0430--diller-ve-tur-sayacı--cihazda--2026-09-20) bölümünde.
+**Hepsi v0.43.1'de cihazda kapandı**, [doğrulama](#v0431--beş-düzeltmenin-doğrulaması--cihazda--2026-09-20).
 
 19 oyunun tamamı açıldı, oynandı ve **hiçbirinde çökme yok** (`logcat` temiz).
 Sürekli çizen altı oyunun tamamı 60 kare/s tutuyor; kaçan vsync 0–3 (≈%0,4).
@@ -2566,6 +2567,141 @@ olmadan Diziliş çözülemez; 360×640 dp bir telefonda mod oynanamaz durumda.
 > dokunuşu 60–120 ms olduğu için bunun oyuncuyu etkileyip etkilemediği bu
 > koşumda saptanamadı — ölçüm altı farklı süreyle denendi, parçanın düşmesi
 > ölçümü bozdu.
+
+### v0.43.1 · beş düzeltmenin doğrulaması · cihazda · 2026-09-20
+
+`za-v0.43.1.apk` v0.43.0'ın üzerine kuruldu (imza aynı, kayıtlar korundu).
+v0.43.0 koşumunun beş bulgusu da cihazda kapandı; `logcat AndroidRuntime:E`
+boş kaldı.
+
+| # | Bulgu | v0.43.0 | v0.43.1 |
+| --- | --- | --- | --- |
+| F1 | Kelime dili değişince klavye | eski dilde kalıyor, ancak yeniden açılışta düzeliyor | **anında değişiyor** |
+| F2 | Arapça'da sayı taşıyan metinler | `٩×١٢`, `١ نقطة`, `المستوى ١` | **Latin rakam**, 17 oyunda tarandı |
+| F3 | Dizgi'nin prim gözü lejantı | Almanca 3/4, Fince 2/4 madde; tahta 267 / 178 dp | **4/4 madde iki satırda**, tahta 391 dp |
+| F4 | Uzun düğme etiketleri | hapın dışına taşıyor | **hapın içinde**, iki satır |
+| F6 | Arapça yön tuşları | `⇓ ▶ ▼ ◀` (sol tuşu sağ uçta) | **`◀ ▼ ▶ ⇓`** |
+| F5 | Son oynananlarda uzun ad | "Mineswe" (üç noktasız kesik) | **iki satır**, "Minesweeper" tam |
+
+**F1 — klavye artık seçimi anında izliyor.** Arayüz Almanca, Beş Harf açık:
+
+| Seçim | Klavye (dokunma sonrası ilk okuma) | Tahta |
+| --- | --- | --- |
+| Deutsch | `Q W E R T Z … Ü / A S D F G H J K L Ö Ä` — Ğ Ş İ Ç yok | BLUME |
+| Türkçe | `E R T Y U I O P Ğ Ü / … Ş İ / Z C V B N M Ö Ç` — Q W X yok | KALEM |
+
+Uygulama kapatılmadı, ekran terk edilmedi; iki yönde de tek dokunuşla geçti.
+Günlük tahtaların dile göre ayrı ilerlemesi de korunuyor: Almanca tahtadaki
+BLUME ile Türkçe tahtadaki KALEM yerlerinde duruyor.
+
+**F2 — Arapça'da rakamlar Latin.** Tek tek bakılan yerler: Mayın zorluk kartı
+(`9×12 · 14 لغماً`), Sudoku zorluk kartı (`يبدأ بـ 40 تلميحات`) ve göz metni
+(`الصف 1، العمود 2: 7`), Tavla maç çipleri (`1 / 3 / 5 نقطة`) ve pul sayacı
+(`167 نقطة مسار · 0 خارجاً`), Blok (`المستوى 1، 0 صفاً`) ve Yılan
+(`الطول 3`) tuval metinleri. Ardından Arapça'da **17 oyun** otomatik tarandı
+(ana menüden girilip bütün metin ve erişilebilirlik düğümleri Hint-Arap
+rakamına karşı süzüldü): tek bulgu yok. Ana menü sayaçları ve sürüm satırı da
+Latin.
+
+**F3 — Dizgi'nin lejantı sarıyor, tahta küçülmüyor.** Mavi prim gözlerinin
+uçtan uca ölçümünden (15 göz):
+
+| Dil | Lejant | Tahta | Göz |
+| --- | --- | --- | --- |
+| Almanca | 4/4, iki satır (`2B · 3B` / `2W · 3W`) | 1026 px = **391 dp** | 26,1 dp |
+| Fince | 4/4, iki satır (`2K · 3K` / `2S · 3S`) | 1026 px = **391 dp** | 26,1 dp |
+| (v0.43.0 Almanca) | 3/4 | 700 px = 267 dp | 17,8 dp |
+| (v0.43.0 Fince) | 2/4 | 468 px = 178 dp | 11,9 dp |
+
+Türkçe tahta zaten 391 dp'ydi; üç dil artık aynı ölçüde.
+
+**F4 — etiketler hapın içinde.** Dizgi (Almanca, 411 dp): `Zurücknehmen` ve
+`Tauschen` iki satıra kırılıyor ama ikisi de hapın içinde ve ortalı; v0.43.0'da
+ikinci satır kutunun altından taşıyordu. Reyon (Almanca): 411 dp'de
+`Rückgängig` iki satır, `Ins Tablett` tek satır; 360 dp'de ikisi de iki satır —
+hepsi kutunun içinde. Fince'de düğmeler zaten tek satır (`Peru`, `Passaa`,
+`Vaihda`, `Lado`).
+
+**F6 — Arapça'da yön tuşları soldan sağa.** Tuş sırası artık Türkçe'deki gibi
+`◀ ▼ ▶ ⇓`. Yalnız görüntü değil, davranış da ölçüldü (parçanın yatay ağırlık
+merkezi, 700 ms basılı tutma):
+
+- en soldaki `◀`: 651 px → 435 px (**sola**)
+- soldan üçüncü `▶`: 687 px → 975 px (**sağa**)
+
+Yani tuval aynalanmıyor, tuş sırası da artık aynalanmıyor: sol kenara gitmek
+için ekranın sol ucundaki tuşa basılıyor.
+
+**F5 — son oynananlar kutusu.** 360 dp Almanca arayüzde kutu iki satır
+gösteriyor: "Minesweeper" tam okunuyor, kesik yok.
+
+> **Açık kalan (bu sürümün kapsamında değildi):** 360×640 dp'de Reyon'un
+> planogram brifi hâlâ çizilmiyor — kural satırı 26 px (≈13 dp), ikinci kuralın
+> erişilebilirlik kutusu sıfır, kaydırma açmıyor. 411 dp'de kurallar tam
+> (85–110 px). Brif olmadan Diziliş çözülemediği için 360×640 dp'de mod
+> oynanamaz durumda.
+
+### v0.43.2 · Reyon kısa ekran yerleşimi · 2026-09-20
+
+v0.43.1'in açık kalan bulgusu kapatıldı: 360×640 dp'de Diziliş'in planogram
+brifi çizilmiyordu.
+
+**Sebep.** Üç tür (Diziliş, Satış, Sipariş) aynı iskelete oturuyor: üstte raf
+tuvali, altında kaydırılabilir panel, en altta tepsi. Tuval `fillMaxWidth()` +
+`aspectRatio()` ile ölçülüyordu, yani yüksekliğini genişlik belirliyordu; sütunda
+ağırlıksız olduğu için de yüksekliği önce o alıyordu. Panel `weight(1f, fill =
+false)` ile artandan besleniyor. 360 dp genişlikte tuval 175–210 dp, tepsi 12
+ürünle 270 dp ediyor; oyun alanı ~448 dp olduğu için panele ~26 dp kalıyordu —
+ölçülen 13 dp'lik kural satırı ve sıfır erişilebilirlik kutusu bu.
+
+**Düzeltme.** Oyun alanı `BoxWithConstraints`'e alındı; tuval en çok alanın
+`SHELF_SHARE` = %40'ını alıyor. Kalan yükseklik panel ile tepsi arasında
+bölünüyor: tepsi, panele `PANEL_MIN` = 140 dp bırakacak kadar yer alıyor
+(`ReyonLayout.kt`), taşan kısmı kendi içinde kayıyor. "Kalan" tahmin edilmiyor,
+ölçülüyor — panel ile tepsi kendi `BoxWithConstraints`'inin içinde durduğu için
+aradaki ipucu/döküm satırı hesaba kendiliğinden giriyor. Panelin tabanı böylece
+başlık + üç satır. Tavan **en boy oranı
+değiştirilerek** uygulandı, çünkü genişlik `fillMaxWidth()` ile sabitken
+`heightIn(max = …)` ile `aspectRatio(…)` birlikte çalışmıyor — oran hiçbir boyutu
+kısıtı sağlayacak şekilde bulamayınca kısıtı yok sayıp yine genişlikten
+hesaplıyor (ilk denemede tavan bu yüzden hiç bağlamadı). Tuval tam genişlikte
+kalıyor, kısa ekranda gözler basıklaşıyor; çizim de dokunma da tuvalin ölçülen
+boyutundan türediği için (`ShelfGeom(size.width, size.height, …)`) eşleme
+bozulmuyor. Uzun telefonda iki tavan da doğal yüksekliğin üstünde kaldığı için
+411 dp'de yerleşim aynen sürüyor.
+
+`ReyonShortScreenTest` üç modu 360×640 dp'de ölçüyor; kırpılmış kutulara bakıyor,
+yani cihazın erişilebilirlik ağacında gördüğü değerlere.
+
+**Cihazda ölçülecek** (360×640 dp, üç mod):
+
+| # | Ne | Beklenen |
+| --- | --- | --- |
+| G1 | Diziliş'te brif kural satırı | ≥ 20 dp, en az üç kural okunuyor; kaydırma kalan kuralları getiriyor |
+| G2 | Raf gözündeki ürün adı | kırpılmamış (üç nokta yok), en dar göz Zor planında |
+| G3 | Dokunma eşlemesi | tepsiden seçilen ürün dokunulan göze yerleşiyor (basıklaşan tuvalde de) |
+| G4 | Satış'ta puan kuralları | en az üç kural okunuyor (v0.43.1'de beşten ikisi görünüyordu) |
+| G5 | Sipariş listesi | ilk ürün satırı tam görünüyor, kalanına kaydırmayla ulaşılıyor |
+| G6 | 411 dp | üç modun yerleşimi v0.43.1 ile aynı (raf yüksekliği değişmemiş) |
+
+Ölçülecek iki sayı: tuval payı `SHELF_SHARE` = %40 ve panel tabanı `PANEL_MIN`
+= 140 dp. G1 tutmazsa taban yükseltilir; G2 kırpılma gösterirse tuval payı
+yükseltilir (blok etiketi 8 sp'ye kadar iniyor, ad bölgesi ~19 dp'nin altında üç
+nokta çıkıyor) — ikisi aynı yükseklikten besleniyor, yani biri artınca öbürü
+azalıyor; 360×640 dp'de tepsi kaydırılarak yer açılıyor.
+
+`ReyonShortScreenTest` brifi üç uygulama alanı yüksekliğinde ölçüyor: 640, 568
+(cihazda 360×640 dp ekranın uygulama alanı, bulgunun geldiği ölçü) ve 480 dp.
+
+**Açık madde — Sipariş'in listesi gün başlığına sıkışıyor.** Robolectric ölçümü:
+568 dp'lik uygulama alanında listenin görünen kısmı ~112 dp, yani bir ürün satırı
+(ikincisi 0,5 dp'ye iniyor). Tuvalin payı burada suçlu değil — tuval 156 dp,
+tavanın (179 dp) altında. Yüksekliği yiyen, tuval ile liste arasındaki gün
+başlığı: gün, tahmin, teslimat ve ipucu satırlarıyla ~180 dp. Liste kaydığı ve
+her satıra ulaşıldığı için mod oynanabilir, ama tek satır dar. Bu sürümün
+kapsamında değil; başlığın sıkıştırılması (ya da katlanması) ayrı bir iş, cihazda
+411 dp'de sorun görünmediği için de aceleci davranmamak doğru. Cihazda 360×640
+dp'de kaç satır göründüğü ölçülürse iş için sayı elde edilir.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

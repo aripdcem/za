@@ -14,10 +14,10 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
@@ -56,6 +56,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -220,7 +221,7 @@ private fun ReyonPuzzleContent(
             )
         }
 
-        Box(
+        BoxWithConstraints(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
@@ -237,10 +238,12 @@ private fun ReyonPuzzleContent(
                 }
                 val hinted = (lastHint as? ReyonHint.Place)?.product ?: -1
                 val wrongHint = (lastHint as? ReyonHint.Wrong)?.product ?: -1
+                val shelfH = shelfHeight(maxWidth, maxHeight, st.puzzle.cols / (st.puzzle.rows * 0.78f))
                 Column(modifier = Modifier.fillMaxSize()) {
                     ShelfCanvas(
                         state = st,
                         version = version,
+                        height = shelfH,
                         selected = selected,
                         highlighted = highlighted,
                         violated = violated,
@@ -265,24 +268,32 @@ private fun ReyonPuzzleContent(
                         },
                     )
                     HintLine(state = st, hint = lastHint)
-                    Brief(
-                        state = st,
-                        version = version,
-                        highlightClue = highlightClue,
-                        onToggle = viewModel::toggleHighlight,
-                        modifier = Modifier.weight(1f, fill = false),
-                    )
-                    Tray(
-                        state = st,
-                        version = version,
-                        selected = selected,
-                        highlighted = highlighted,
-                        wrongHint = wrongHint,
-                        onSelect = { id ->
-                            viewModel.select(id)
-                            haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        },
-                    )
+                    // Brif ile tepsi kalan yüksekliği paylaşıyor; "kalan" burada
+                    // ölçülüyor, böylece ipucu satırı da hesaba giriyor.
+                    BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                        val trayH = trayHeight(maxHeight)
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            Brief(
+                                state = st,
+                                version = version,
+                                highlightClue = highlightClue,
+                                onToggle = viewModel::toggleHighlight,
+                                modifier = Modifier.weight(1f, fill = false),
+                            )
+                            Tray(
+                                state = st,
+                                version = version,
+                                selected = selected,
+                                highlighted = highlighted,
+                                wrongHint = wrongHint,
+                                onSelect = { id ->
+                                    viewModel.select(id)
+                                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                },
+                                modifier = Modifier.heightIn(max = trayH),
+                            )
+                        }
+                    }
                 }
             }
             when {
@@ -342,6 +353,7 @@ private fun ReyonPuzzleContent(
 private fun ShelfCanvas(
     state: ReyonState,
     version: Int,
+    height: Dp,
     selected: Int,
     highlighted: Set<Int>,
     violated: Set<Int>,
@@ -363,7 +375,7 @@ private fun ShelfCanvas(
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(cols / (rows * 0.78f))
+            .height(height)
             .clip(RoundedCornerShape(12.dp))
             .background(ReyonPalette.BoardBg)
             .semantics { contentDescription = desc }
@@ -415,6 +427,7 @@ private fun Brief(
     val res = LocalContext.current.resources
     @Suppress("UNUSED_VARIABLE")
     val tick = version
+    val briefLabel = stringResource(R.string.reyon_brief_label)
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -422,7 +435,7 @@ private fun Brief(
             .verticalScroll(rememberScrollState()),
     ) {
         Text(
-            text = stringResource(R.string.reyon_brief_label),
+            text = briefLabel,
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
@@ -443,7 +456,7 @@ private fun Brief(
                     .background(if (index == highlightClue) MaterialTheme.colorScheme.primary.copy(alpha = 0.18f) else Color.Transparent)
                     .clickable { onToggle(index) }
                     .padding(horizontal = 6.dp, vertical = 3.dp)
-                    .semantics { contentDescription = "$glyph $text" },
+                    .semantics { contentDescription = "$briefLabel: $glyph $text" },
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(text = glyph, color = color, fontWeight = FontWeight.Bold, modifier = Modifier.width(18.dp))
@@ -489,13 +502,14 @@ private fun Tray(
     highlighted: Set<Int>,
     wrongHint: Int,
     onSelect: (Int) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val res = LocalContext.current.resources
     @Suppress("UNUSED_VARIABLE")
     val tick = version
     val trayLabel = stringResource(R.string.reyon_tray_label)
     val pending = state.puzzle.products.filter { !state.isPlaced(it.id) }
-    Column(modifier = Modifier.fillMaxWidth().padding(top = 6.dp)) {
+    Column(modifier = modifier.fillMaxWidth().padding(top = 6.dp).verticalScroll(rememberScrollState())) {
         Text(
             text = if (pending.isEmpty()) stringResource(R.string.reyon_tray_empty) else trayLabel,
             style = MaterialTheme.typography.labelSmall,

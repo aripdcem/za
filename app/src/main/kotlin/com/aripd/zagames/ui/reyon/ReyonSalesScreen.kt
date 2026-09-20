@@ -7,15 +7,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
@@ -52,6 +53,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -164,7 +166,7 @@ internal fun ReyonSalesContent(
             )
         }
 
-        Box(
+        BoxWithConstraints(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
@@ -173,11 +175,13 @@ internal fun ReyonSalesContent(
         ) {
             if (st != null && score != null) {
                 val showTarget = result != null && review == SalesReview.TARGET
+                val shelfH = shelfHeight(maxWidth, maxHeight, st.sales.cols / (st.sales.rows * 0.78f))
                 Column(modifier = Modifier.fillMaxSize()) {
                     SalesCanvas(
                         state = st,
                         score = score,
                         version = version,
+                        height = shelfH,
                         selected = selected,
                         showTarget = showTarget,
                         onTap = { row, col ->
@@ -204,11 +208,23 @@ internal fun ReyonSalesContent(
                     } else {
                         BreakdownLine(state = st, score = score, selected = selected)
                     }
-                    RulesPanel(score = score, target = st.sales.target, modifier = Modifier.weight(1f, fill = false))
-                    if (!st.finished) {
-                        SalesTray(state = st, version = version, selected = selected) { id ->
-                            viewModel.select(id)
-                            haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    // Kural paneli ile tepsi kalan yüksekliği paylaşıyor; "kalan"
+                    // burada ölçülüyor, böylece üstteki döküm satırı da hesaba giriyor.
+                    BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                        val trayH = trayHeight(maxHeight)
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            RulesPanel(score = score, target = st.sales.target, modifier = Modifier.weight(1f, fill = false))
+                            if (!st.finished) {
+                                SalesTray(
+                                    state = st,
+                                    version = version,
+                                    selected = selected,
+                                    modifier = Modifier.heightIn(max = trayH),
+                                ) { id ->
+                                    viewModel.select(id)
+                                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                }
+                            }
                         }
                     }
                 }
@@ -284,6 +300,7 @@ private fun SalesCanvas(
     state: ReyonSalesState,
     score: SalesScore,
     version: Int,
+    height: Dp,
     selected: Int,
     showTarget: Boolean,
     onTap: (Int, Int) -> Unit,
@@ -304,7 +321,7 @@ private fun SalesCanvas(
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(cols / (rows * 0.78f))
+            .height(height)
             .clip(RoundedCornerShape(12.dp))
             .background(ReyonPalette.BoardBg)
             .semantics { contentDescription = desc }
@@ -472,13 +489,19 @@ private fun RulesPanel(score: SalesScore, target: Int, modifier: Modifier = Modi
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun SalesTray(state: ReyonSalesState, version: Int, selected: Int, onSelect: (Int) -> Unit) {
+private fun SalesTray(
+    state: ReyonSalesState,
+    version: Int,
+    selected: Int,
+    modifier: Modifier = Modifier,
+    onSelect: (Int) -> Unit,
+) {
     val res = LocalContext.current.resources
     @Suppress("UNUSED_VARIABLE")
     val tick = version
     val trayLabel = stringResource(R.string.reyon_tray_label)
     val pending = state.sales.products.filter { !state.isPlaced(it.id) }
-    Column(modifier = Modifier.fillMaxWidth().padding(top = 6.dp)) {
+    Column(modifier = modifier.fillMaxWidth().padding(top = 6.dp).verticalScroll(rememberScrollState())) {
         Text(
             text = if (pending.isEmpty()) stringResource(R.string.reyon_tray_empty) else trayLabel,
             style = MaterialTheme.typography.labelSmall,
