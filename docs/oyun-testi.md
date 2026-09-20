@@ -119,6 +119,11 @@ Kontrol listesi:
 - [ ] Duraklat/devam, geri tuşu, arka plana alıp geri dönme çalışıyor
 - [ ] `logcat` boş (istisna yok)
 - [ ] Günlük mod deneme hakkı doğru azalıyor
+- [ ] **Bitmiş tura geri dönüş bir daha sayılmıyor:** turu bitir, menüye dön,
+      aynı oyuna yeniden gir. Kutlama sesi/titreşimi tekrar çalmamalı ve
+      "çözülen/kazanılan" rekoru artmamalı. Rekoru tur sayısı olan her oyunda
+      geçerli (Reyon'un dört modu, Sudoku, Kakuro, Mayın); v0.41.1'e dek
+      Reyon'da her girişte rekor 1 artıyordu
 
 > Ölçüm yaparken **Serbest** modu kullanın: günlük modun günde üç deneme hakkı
 > vardır ve ölçüm koşumları hakları tüketir.
