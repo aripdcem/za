@@ -5,6 +5,7 @@ import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -37,8 +38,15 @@ import org.robolectric.annotation.Config
  * olmadan bulmaca çözülemez, yani mod o ekranda oynanamaz durumdaydı.
  *
  * Ölçüm kırpılmış kutulara bakıyor (`getBoundsInRoot`), yani cihazın
- * erişilebilirlik ağacında gördüğü değerlere: panelin ilk satırları gerçekten
- * çizilmiş, okunur yükseklikte ve ekranın içinde olmalı.
+ * erişilebilirlik ağacında gördüğü değerlere.
+ *
+ * Yerleşimin garantisi panelin **yüksekliği**: ya tabanını ([PANEL_MIN], yani
+ * başlık + üç satır) almış olur, ya da içeriği tabandan kısa olduğu için kendi
+ * boyunda durup hiçbir satırı kırpmaz. Panele kaç kural sığdığı buna değil,
+ * üretilen ipucu metninin kaç satıra sardığına bağlı; bulmaca her koşumda
+ * yeniden üretildiği için satır saymak kararsız olur (bir koşumda tam bu yüzden
+ * kırıldı). Kısa ekranda kaç kural okunduğu cihazda ölçülüyor
+ * (`docs/oyun-testi.md`, G1).
  *
  * Yükseklik doğrudan uygulama alanı: Robolectric sistem çubuğu koymadığı için
  * `h640dp` 640 dp'lik bir uygulama alanı demek. Cihazda 360×640 dp bir ekranın
@@ -63,6 +71,14 @@ class ReyonShortScreenTest {
 
     private val trayPrefix: String get() = str(R.string.reyon_tray_label) + ":"
 
+    /**
+     * Tabanda kabul edilen pay. Taban sütunda iki iç içe ölçüm geçişinden geçiyor
+     * (oyun alanı → panel+tepsi kutusu) ve px/dp yuvarlaması birkaç dp yiyor:
+     * Satış'ta 140 dp hedefiyle 138 dp ölçüldü. Pay o yuvarlama için, açlık için
+     * değil — bozuk hâlde panel 26 dp'ydi.
+     */
+    private val PANEL_SLACK = 4.dp
+
     private fun startRound(kindLabel: String, startLabel: String) {
         rule.setZaContent { game("reyon").screen(0L, {}, {}) }
         rule.reyonOpenMenu()
@@ -86,6 +102,34 @@ class ReyonShortScreenTest {
     /** Verilen metinlerin kutuları; kaydırma görünümünde dışarıda kalan satır sıfır yükseklikte ölçülür. */
     private fun textBounds(vararg texts: Int): List<DpRect> = texts.map { id ->
         rule.onAllNodesWithText(str(id))[0].getBoundsInRoot()
+    }
+
+    /**
+     * Yerleşim garantisi: panel açlıktan ölmüyor.
+     *
+     * Payı [PANEL_MIN], ama panel ile tepsi aynı kalandan besleniyor ve tepsinin de
+     * bir tabanı var ([TRAY_MIN]) — kalan ikisine birden yetmezse panele düşen
+     * `kalan - TRAY_MIN` oluyor. Beklenen taban o yüzden ikisinin küçüğü. Panel
+     * `weight(1f, fill = false)` ile durduğu için içeriğinden de büyümüyor: içerik
+     * tabandan kısaysa panel kendi boyunda kalır, o durumda da kırpılan satır
+     * olmaz. Bozuk hâlde hiçbiri yoktu: kalan 448 dp iken panel 26 dp'ydi ve
+     * satırlar kırpılıyordu.
+     */
+    private fun assertPanelIsNotStarved(label: String, rows: List<DpRect>) {
+        val root = rule.onRoot().getBoundsInRoot()
+        val panel = rule.onNodeWithTag(REYON_PANEL_TAG).getBoundsInRoot()
+        val tray = rule.onNodeWithTag(REYON_TRAY_TAG).getBoundsInRoot()
+        assertTrue("$label: panel ekranın içinde olmalı: $panel / $root", panel.bottom <= root.bottom + 1.dp)
+        // Panel ile tepsi kutuyu tepeden aşağı paylaşıyor, yani kalan ikisinin toplamı.
+        val rest = panel.height + tray.height
+        val floor = minOf(PANEL_MIN, rest - TRAY_MIN)
+        val clipped = rows.count { it.height <= 0.dp }
+        assertTrue(
+            "$label: panel ya en az ${floor - PANEL_SLACK} olmalı ya da hiçbir satırı kırpmamalı; " +
+                "ölçülen panel ${panel.height}, tepsi ${tray.height}, kalan $rest, " +
+                "kırpılan $clipped/${rows.size} satır",
+            panel.height >= floor - PANEL_SLACK || clipped == 0,
+        )
     }
 
     /** Panelin en az [least] satırı [min] yüksekliğinde çizilmiş ve ekranın içinde olmalı. */
@@ -119,11 +163,11 @@ class ReyonShortScreenTest {
         val briefPrefix = str(R.string.reyon_brief_label) + ":"
         awaitNodes(briefPrefix)
         val brief = describedBounds(briefPrefix)
-        // Kolay bulmacanın brifi 3-6 kural (ortalama 3,7); kaç kural varsa ilk üçü
-        // okunmalı. Kural satırı bir satırlık bodySmall metni + 3 dp dolgu, yani
-        // en az 20 dp; bozukken 13 dp ölçülmüştü.
+        assertPanelIsNotStarved("brif", brief)
+        // Kural satırı bir satırlık bodySmall metni + 3 dp dolgu, yani en az 20 dp;
+        // bozukken 13 dp ölçülmüştü.
         assertTrue("brif boş olmamalı", brief.isNotEmpty())
-        assertRowsAreReadable("brif", brief, least = minOf(3, brief.size), min = 20.dp)
+        assertRowsAreReadable("brif", brief, least = 1, min = 20.dp)
         val root = rule.onRoot().getBoundsInRoot()
         val shelfPrefix = str(R.string.reyon_board_desc_fmt, 0, 0, 0).substringBefore(' ')
         val shelf = rule.onNode(hasContentDescription(shelfPrefix, substring = true)).getBoundsInRoot()
@@ -150,6 +194,7 @@ class ReyonShortScreenTest {
         )
         // Kural adı tek satırlık labelMedium; puan kuralları görünmezse oyuncu neyi
         // topladığını bilmiyor.
+        assertPanelIsNotStarved("satış kuralı", rules)
         assertRowsAreReadable("satış kuralı", rules, least = 3, min = 14.dp)
         val tray = describedBounds(trayPrefix).filter { it.height >= 20.dp }
         assertTrue("tepside okunur ürün olmalı", tray.isNotEmpty())
@@ -166,6 +211,8 @@ class ReyonShortScreenTest {
         startRound(str(R.string.reyon_kind_order), str(R.string.reyon_order_start))
         val morePrefix = str(R.string.reyon_order_more) + ":"
         awaitNodes(morePrefix)
+        // PANEL_MIN garantisi burada aranmıyor: garantiyi tepsi yer vererek
+        // sağlıyor, Sipariş'te ise tepsi yok. Liste gün başlığına sıkışıyor.
         // Adımlayıcı 44×32 dp (`StepButton`).
         assertRowsAreReadable("sipariş satırı", describedBounds(morePrefix), least = 1, min = 30.dp)
         val steppers = rule.onAllNodes(hasContentDescription(morePrefix, substring = true))

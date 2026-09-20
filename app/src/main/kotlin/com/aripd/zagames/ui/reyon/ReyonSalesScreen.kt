@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -213,13 +214,13 @@ internal fun ReyonSalesContent(
                     BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
                         val trayH = trayHeight(maxHeight)
                         Column(modifier = Modifier.fillMaxSize()) {
-                            RulesPanel(score = score, target = st.sales.target, modifier = Modifier.weight(1f, fill = false))
+                            RulesPanel(score = score, target = st.sales.target, modifier = Modifier.weight(1f, fill = false).testTag(REYON_PANEL_TAG))
                             if (!st.finished) {
                                 SalesTray(
                                     state = st,
                                     version = version,
                                     selected = selected,
-                                    modifier = Modifier.heightIn(max = trayH),
+                                    modifier = Modifier.heightIn(max = trayH).testTag(REYON_TRAY_TAG),
                                 ) { id ->
                                     viewModel.select(id)
                                     haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)

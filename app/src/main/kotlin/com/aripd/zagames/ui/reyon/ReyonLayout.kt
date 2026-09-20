@@ -30,6 +30,13 @@ import androidx.compose.ui.unit.dp
  * Uzun telefonda iki tavan da doğal yüksekliklerin üstünde kaldığı için orada
  * yerleşim aynen sürüyor.
  *
+ * Tek istisna, kalanın iki tabana birden yetmediği çok kısa ekran: orada tepsi
+ * kendi tabanını ([TRAY_MIN]) korur ve panele kalan ne varsa o düşer. Ölçülen
+ * örnek: 480 dp'lik uygulama alanında kalan 177,5 dp, tepsi 72 dp, panel 105,5
+ * dp — dört kuraldan üçü görünüyor, dördüncüsü kaydırmayla geliyor. İki taban
+ * aynı yükseklikten beslendiği için biri artınca öbürü azalıyor; ürün
+ * seçilemeyen bir tepsi de bulmacayı çözülemez yapardı.
+ *
  * Tavanlar `BoxWithConstraints`'in içinde, ama `Column`'un dışında hesaplanmalı:
  * `ColumnScope` da `@LayoutScopeMarker` taşıdığı için sütunun içinde
  * `BoxWithConstraintsScope` örtülüyor ve maxWidth/maxHeight örtük alıcıyla
@@ -40,8 +47,14 @@ internal const val SHELF_SHARE = 0.40f
 /** Panele bırakılan taban: başlık + üç satır. */
 internal val PANEL_MIN = 140.dp
 
-/** Tepsinin tabanı: başlık + bir sıra ürün. Panel ile tepsi aynı yükseklikten beslendiği için gerekli. */
-private val TRAY_MIN = 72.dp
+/** Tepsinin tabanı: başlık + bir sıra ürün. Ürün seçilemezse bulmaca çözülemez. */
+internal val TRAY_MIN = 72.dp
+
+/** Panelin ölçüm etiketi; yerleşim garantisi testte bundan okunuyor. */
+const val REYON_PANEL_TAG = "reyon_panel"
+
+/** Tepsinin ölçüm etiketi; panelin payı tepsinin tabanına bağlı olduğu için gerekli. */
+const val REYON_TRAY_TAG = "reyon_tray"
 
 /**
  * Raf tuvalinin yüksekliği: en boy oranının istediği kadar, ama oyun alanının
