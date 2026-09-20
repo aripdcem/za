@@ -58,6 +58,8 @@ import java.util.Locale
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 
 fun formatScore(value: Long): String = ZaLocale.number(value)
 
@@ -132,6 +134,26 @@ fun ScoreCard(
 }
 
 /**
+ * Eylem düğmesinin etiketi: kutunun içinde kalır.
+ *
+ * Uzun çeviriler yan yana üç düğmeye sığmıyor: Almanca "Rückgängig" ve
+ * "Ins Tablett", 360 dp'de Türkçe "Tepsiye al" ikiye kırılıp hapın dışına
+ * taşıyordu (v0.43.0 cihaz koşumu, F4). İki satıra izin verilir, sığmazsa
+ * üç nokta konur; satır aralığı dar tutulur ki düğme fazla uzamasın.
+ */
+@Composable
+fun ActionLabel(text: String) {
+    Text(
+        text = text,
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis,
+        textAlign = TextAlign.Center,
+        lineHeight = 16.sp,
+        style = MaterialTheme.typography.labelLarge,
+    )
+}
+
+/**
  * Yön tuşlarının satırı; sağdan sola dillerde aynalanmaz.
  *
  * Tuvaller her dilde aynı yönde çiziliyor — oyun alanı yazı yönüne bakmaz.
@@ -194,10 +216,20 @@ fun PadButton(
         },
         interactionSource = interactionSource,
     ) {
-        Box(contentAlignment = Alignment.Center) {
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(horizontal = 6.dp)) {
+            // Tuşun yüksekliği çağıran tarafından sabitleniyor (çoğu yerde
+            // 52 dp). Uzun çeviriler tek satıra sığmayınca metin harf harf
+            // sekiz satıra iniyor ve hapın dışına taşıyordu — Almanca
+            // "Zurücknehmen", dar ekranda Türkçe "Tepsiye al" (v0.43.0 cihaz
+            // koşumu, F4). İki satır sınırı ve dar satır aralığı kutunun
+            // içinde tutuyor; yine sığmazsa üç nokta koyuyor.
             Text(
                 text = label,
                 fontSize = fontSize,
+                lineHeight = fontSize * 1.1f,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center,
                 color = if (accent) {
                     MaterialTheme.colorScheme.primary
                 } else {

@@ -70,6 +70,7 @@ import com.aripd.zagames.reyon.ReyonHint
 import com.aripd.zagames.reyon.ReyonLevel
 import com.aripd.zagames.reyon.ReyonState
 import com.aripd.zagames.reyon.Rules
+import com.aripd.zagames.ui.common.ActionLabel
 import com.aripd.zagames.ui.common.GameTopBar
 import com.aripd.zagames.ui.common.OverlayCard
 import com.aripd.zagames.ui.common.ScoreCard
@@ -562,13 +563,13 @@ private fun Controls(canUndo: Boolean, canRemove: Boolean, onUndo: () -> Unit, o
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         OutlinedButton(onClick = onUndo, enabled = canUndo, modifier = Modifier.weight(1f)) {
-            Text(stringResource(R.string.undo))
+            ActionLabel(stringResource(R.string.undo))
         }
         OutlinedButton(onClick = onRemove, enabled = canRemove, modifier = Modifier.weight(1f)) {
-            Text(stringResource(R.string.reyon_remove))
+            ActionLabel(stringResource(R.string.reyon_remove))
         }
         Button(onClick = onHint, modifier = Modifier.weight(1f)) {
-            Text(stringResource(R.string.reyon_hint))
+            ActionLabel(stringResource(R.string.reyon_hint))
         }
     }
 }

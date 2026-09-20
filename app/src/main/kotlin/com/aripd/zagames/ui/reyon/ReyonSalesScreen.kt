@@ -65,6 +65,7 @@ import com.aripd.zagames.reyon.ReyonLevel
 import com.aripd.zagames.reyon.ReyonSalesState
 import com.aripd.zagames.reyon.SalesRule
 import com.aripd.zagames.reyon.SalesScore
+import com.aripd.zagames.ui.common.ActionLabel
 import com.aripd.zagames.ui.common.GameTopBar
 import com.aripd.zagames.ui.common.OverlayCard
 import com.aripd.zagames.ui.common.ScoreCard
@@ -255,14 +256,14 @@ internal fun ReyonSalesContent(
                     enabled = st.canUndo,
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text(stringResource(R.string.undo))
+                    ActionLabel(stringResource(R.string.undo))
                 }
                 OutlinedButton(
                     onClick = { if (viewModel.removeSelected()) haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove) },
                     enabled = selected >= 0 && st.isPlaced(selected),
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text(stringResource(R.string.reyon_remove))
+                    ActionLabel(stringResource(R.string.reyon_remove))
                 }
                 Button(
                     onClick = {
@@ -271,7 +272,7 @@ internal fun ReyonSalesContent(
                     enabled = st.isComplete,
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text(stringResource(R.string.reyon_sales_finish))
+                    ActionLabel(stringResource(R.string.reyon_sales_finish))
                 }
             }
         }

@@ -87,6 +87,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import com.aripd.zagames.platform.zaString
+import androidx.compose.ui.text.style.TextOverflow
 
 /**
  * Harfleri oyunun kendi diliyle büyütür. Sabit bir yerel ayar kullanılamaz:
@@ -654,10 +655,20 @@ private fun PlayPane(
 
 // --- Tahta ---
 
-/** Premium kare lejantı: renk -> kat anlamı. */
+/**
+ * Premium kare lejantı: renk -> kat anlamı.
+ *
+ * Tek satıra sığdırmaya çalışmak Türkçe dışında kırılıyordu: Almanca'da
+ * "2W doppeltes Wort" harf harf sekiz satıra iniyor, dördüncü madde hiç
+ * çizilmiyordu; Fince'de iki madde kayboluyordu. Lejant uzayınca tahtaya
+ * kalan yükseklik daralıyor ve göz 26 dp'den 12 dp'ye düşüyordu — taş
+ * etiketi okunmaz, parmak hedefi kalmaz (v0.43.0 cihaz koşumu, F3).
+ * Maddeler artık kendi genişliklerini alıp alt satıra sarıyor.
+ */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PremiumLegend() {
-    Row(
+    FlowRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 2.dp),
@@ -686,6 +697,8 @@ private fun LegendItem(color: Color, label: String) {
             text = label,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }
