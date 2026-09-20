@@ -45,7 +45,7 @@ class DizgiStateTest {
         val bag = letters.bag()
         assertEquals(100, bag.size)
         assertEquals(2, bag.count { it.isJoker })
-        assertTrue(bag.filterNot { it.isJoker }.all { it.points >= 1 })
+        assertTrue(bag.filterNot { it.isJoker }.all { letters.pointsOf(it.letter) >= 1 })
 
         val a = DizgiState.new(WordLang.TR, 2, seed = 9L)
         val b = DizgiState.new(WordLang.TR, 2, seed = 9L)
