@@ -5,6 +5,10 @@ import android.content.Context
 /**
  * Beş Harf kalıcı durumu: günün tahminleri (aynı gün geri gelince tahta
  * kaldığı yerden kurulur) ve kazanma serisi. Yalnızca cihazda tutulur.
+ *
+ * Günlük kayıt dile bağlıdır: her dilin günün kelimesi başkadır, bu yüzden
+ * Almanca oynanmış tahminler Türkçe tahtaya geri oynatılamaz. Kayıt dilin
+ * etiketiyle saklanır ve dil değişince o günün ilerlemesi ayrı tutulur.
  */
 class BesHarfStore(context: Context) {
 
@@ -17,24 +21,23 @@ class BesHarfStore(context: Context) {
             prefs.edit().putInt(KEY_STREAK, value).apply()
         }
 
-    val dailyDay: Long
-        get() = prefs.getLong(KEY_DAILY_DAY, Long.MIN_VALUE)
+    fun dailyDay(lang: String): Long = prefs.getLong(KEY_DAILY_DAY + lang, Long.MIN_VALUE)
 
-    val dailyGuesses: List<String>
-        get() = prefs.getString(KEY_DAILY_GUESSES, "")!!
+    fun dailyGuesses(lang: String): List<String> =
+        prefs.getString(KEY_DAILY_GUESSES + lang, "")!!
             .split(',')
             .filter { it.isNotBlank() }
 
-    fun saveDaily(epochDay: Long, guesses: List<String>) {
+    fun saveDaily(lang: String, epochDay: Long, guesses: List<String>) {
         prefs.edit()
-            .putLong(KEY_DAILY_DAY, epochDay)
-            .putString(KEY_DAILY_GUESSES, guesses.joinToString(","))
+            .putLong(KEY_DAILY_DAY + lang, epochDay)
+            .putString(KEY_DAILY_GUESSES + lang, guesses.joinToString(","))
             .apply()
     }
 
     private companion object {
         const val KEY_STREAK = "streak"
-        const val KEY_DAILY_DAY = "daily_day"
-        const val KEY_DAILY_GUESSES = "daily_guesses"
+        const val KEY_DAILY_DAY = "daily_day_"
+        const val KEY_DAILY_GUESSES = "daily_guesses_"
     }
 }

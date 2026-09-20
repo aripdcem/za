@@ -1,5 +1,6 @@
 package com.za.games.kiskac
 
+import com.za.games.sozluk.WordLang
 import com.za.games.besharf.BesHarfWords
 import org.junit.Test
 
@@ -19,8 +20,10 @@ import org.junit.Test
  */
 class KiskacBalanceProbe {
 
-    private val cevaplar = BesHarfWords.answers.sortedWith(TurkishOrder::compare)
-    private val tahminler = BesHarfWords.allowed.sortedWith(TurkishOrder::compare)
+    private val words = BesHarfWords.of(WordLang.TR)
+
+    private val cevaplar = words.answers.sortedWith(WordLang.TR::compare)
+    private val tahminler = words.allowed.sortedWith(WordLang.TR::compare)
 
     /**
      * Kusursuz ikili arama: kalan aralığın ortasındaki kelimeyi tahmin eder.
@@ -33,7 +36,7 @@ class KiskacBalanceProbe {
         while (alt <= ust) {
             tahmin++
             val orta = (alt + ust) / 2
-            val cmp = TurkishOrder.compare(cevap, uzay[orta])
+            val cmp = WordLang.TR.compare(cevap, uzay[orta])
             when {
                 cmp == 0 -> return tahmin
                 cmp > 0 -> alt = orta + 1
@@ -77,7 +80,7 @@ class KiskacBalanceProbe {
         val gorulen = HashSet<String>()
         var tekrar = 0
         for (gun in 0L until cevaplar.size.toLong()) {
-            val s = KiskacState.daily(BesHarfWords.answers, gun)
+            val s = KiskacState.daily(WordLang.TR, words.answers, gun)
             if (!gorulen.add(s.answer)) tekrar++
         }
         println("havuz: ${cevaplar.size} kelime")

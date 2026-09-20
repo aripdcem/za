@@ -1,5 +1,7 @@
 package com.za.games.ui.turetme
 
+import com.za.games.ui.common.LocalWordLang
+import com.za.games.sozluk.WordLang
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -61,11 +63,13 @@ import com.za.games.ui.common.modeShareLabel
 import kotlinx.coroutines.delay
 import java.util.Locale
 
-private val TrLocale: Locale = Locale.forLanguageTag("tr")
+/**
+ * Harfleri oyunun kendi diliyle büyütür. Sabit bir yerel ayar kullanılamaz:
+ * Türkçe'de "i" -> "İ" ve "ı" -> "I" doğruyken Almanca'da "i" -> "I" olmalı.
+ */
+private fun Char.upper(lang: WordLang): String = toString().uppercase(Locale.forLanguageTag(lang.tag))
 
-private fun Char.upperTr(): String = toString().uppercase(TrLocale)
-
-private fun String.upperTr(): String = uppercase(TrLocale)
+private fun String.upper(lang: WordLang): String = uppercase(Locale.forLanguageTag(lang.tag))
 
 private val AccentPurple = Color(0xFFA78BFA)
 
@@ -77,6 +81,8 @@ fun TuretmeScreen(
     viewModel: TuretmeViewModel = viewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    // Motorun dili tek doğru kaynak: dil seçici oyunu yeniden kurunca buradan gelir.
+    val lang = state.lang
     val mode by viewModel.mode.collectAsStateWithLifecycle()
     val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current
@@ -241,7 +247,7 @@ fun TuretmeScreen(
 
         // Seçilen harflerin oluşturduğu kelime adayı.
         Text(
-            text = if (state.current.isEmpty()) " " else state.current.upperTr(),
+            text = if (state.current.isEmpty()) " " else state.current.upper(lang),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Black,
             letterSpacing = 5.sp,
@@ -368,6 +374,7 @@ private fun ModeChip(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun FoundWords(state: TuretmeState) {
+    val lang = LocalWordLang.current
     // Pes edildiyse tüm hedefler listelenir: bulunanlar dolu,
     // bulunamayanlar çerçeveli/soluk çiplerle.
     val revealed = state.status == TuretmeStatus.GIVEN_UP
@@ -405,7 +412,7 @@ private fun FoundWords(state: TuretmeState) {
                     },
                 ) {
                     Text(
-                        text = word.upperTr(),
+                        text = word.upper(lang),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold,
                         color = when {
@@ -463,6 +470,7 @@ private fun LetterRow(
     enabled: Boolean,
     onPick: (Int) -> Unit,
 ) {
+    val lang = LocalWordLang.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -485,7 +493,7 @@ private fun LetterRow(
             ) {
                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                     Text(
-                        text = letter.upperTr(),
+                        text = letter.upper(lang),
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Black,
                         color = if (used) {

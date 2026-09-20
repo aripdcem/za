@@ -18,6 +18,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(project(":games:sozluk"))
     testImplementation(libs.junit)
 }
 

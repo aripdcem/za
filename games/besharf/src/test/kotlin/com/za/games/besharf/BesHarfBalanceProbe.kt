@@ -1,5 +1,6 @@
 package com.za.games.besharf
 
+import com.za.games.sozluk.WordLang
 import org.junit.Test
 
 /**
@@ -13,7 +14,9 @@ import org.junit.Test
  */
 class BesHarfBalanceProbe {
 
-    private val cevaplar = BesHarfWords.answers
+    private val words = BesHarfWords.of(WordLang.TR)
+
+    private val cevaplar = words.answers
 
     /** Geri bildirim oyunun kendi kuralıyla üretilir (yinelenen harf dahil). */
     private fun geri(cevap: String, tahmin: String): List<LetterMark> =
@@ -98,10 +101,10 @@ class BesHarfBalanceProbe {
     fun answerPoolSanity() {
         println("\n=== CEVAP HAVUZU SAĞLAMLIĞI ===")
         val uzunlukHatasi = cevaplar.filter { it.length != BesHarfState.WORD_LENGTH }
-        val izinsiz = cevaplar.filterNot { BesHarfWords.isAllowed(it) }
+        val izinsiz = cevaplar.filterNot { words.isAllowed(it) }
         val tekrar = cevaplar.groupingBy { it }.eachCount().filterValues { it > 1 }
         println("cevap sayısı: ${cevaplar.size}")
-        println("geçerli tahmin kümesi: ${BesHarfWords.allowed.size}")
+        println("geçerli tahmin kümesi: ${words.allowed.size}")
         println("yanlış uzunlukta cevap: ${uzunlukHatasi.size}")
         println("tahmin olarak kabul edilmeyen cevap: ${izinsiz.size}")
         println("havuzda tekrar eden cevap: ${tekrar.size}")

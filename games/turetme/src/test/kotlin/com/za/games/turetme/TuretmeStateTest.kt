@@ -1,11 +1,14 @@
 package com.za.games.turetme
 
+import com.za.games.sozluk.WordLang
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class TuretmeStateTest {
+
+    private val words = TuretmeWords.of(WordLang.TR)
 
     private val tinyValid = listOf("kal", "kel", "elma", "kale", "mele", "kalem", "masal", "lam")
 
@@ -168,15 +171,15 @@ class TuretmeStateTest {
 
     @Test
     fun `bundled lists are well formed and bases keep their guarantees`() {
-        assertTrue(TuretmeWords.valid.size > 10_000)
-        assertTrue(TuretmeWords.bases.size >= 1000)
-        assertTrue(TuretmeWords.bases.all { it.length in 6..7 })
-        assertTrue(TuretmeWords.bases.all { it in TuretmeWords.valid })
+        assertTrue(words.valid.size > 10_000)
+        assertTrue(words.bases.size >= 1000)
+        assertTrue(words.bases.all { it.length in 6..7 })
+        assertTrue(words.bases.all { it in words.valid })
         // Şapkalı kaynak yazımları düzleştirilmiş olmalı (belâ -> bela).
-        assertTrue(listOf("bela", "kağıt", "hikaye").all { it in TuretmeWords.valid })
+        assertTrue(listOf("bela", "kağıt", "hikaye").all { it in words.valid })
 
-        for (base in listOf(TuretmeWords.bases.first(), TuretmeWords.bases.last())) {
-            val count = TuretmeState.targetsFor(base, TuretmeWords.valid).size
+        for (base in listOf(words.bases.first(), words.bases.last())) {
+            val count = TuretmeState.targetsFor(base, words.valid).size
             // Üretici tabanları şapkasız listeye göre 15-60 alt kelimeyle seçer;
             // düzleştirilmiş sözlükle sayı biraz artabilir (en fazla ~66).
             assertTrue("$base: $count", count in 15..70)
@@ -191,8 +194,8 @@ class TuretmeStateTest {
      */
     @Test
     fun `every base yields enough targets`() {
-        val tabanlar = TuretmeWords.bases.filterIndexed { i, _ -> i % 6 == 0 }
-        val gecerli = TuretmeWords.valid
+        val tabanlar = words.bases.filterIndexed { i, _ -> i % 6 == 0 }
+        val gecerli = words.valid
         for (taban in tabanlar) {
             val hedefler = TuretmeState.targetsFor(taban, gecerli)
             assertTrue("$taban yalnızca ${hedefler.size} hedef veriyor", hedefler.size >= 8)

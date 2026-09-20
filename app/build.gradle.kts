@@ -100,6 +100,7 @@ dependencies {
     implementation(project(":games:snake"))
     implementation(project(":games:sudoku"))
     implementation(project(":games:mines"))
+    implementation(project(":games:sozluk"))
     implementation(project(":games:besharf"))
     implementation(project(":games:kiskac"))
     implementation(project(":games:turetme"))

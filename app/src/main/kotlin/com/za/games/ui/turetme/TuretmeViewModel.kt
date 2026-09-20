@@ -1,5 +1,7 @@
 package com.za.games.ui.turetme
 
+import com.za.games.sozluk.WordLang
+import com.za.games.platform.WordLangs
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,6 +23,31 @@ class TuretmeViewModel(application: Application) : AndroidViewModel(application)
 
     private val store = TuretmeStore(application)
 
+    /**
+     * Oyunun kelime dili. Varsayılan arayüzün dilidir; oyuncu kurulum kartından
+     * başka bir dil seçebilir ve seçim kalıcıdır (bkz. [WordLangs]).
+     */
+    private val _wordLang = MutableStateFlow(WordLangs.current(application))
+    val wordLang: StateFlow<WordLang> = _wordLang.asStateFlow()
+
+    private var words = words.of(_wordLang.value)
+
+    /** Seçim: null = arayüzün dilini izle. Dil değişince tur baştan kurulur. */
+    fun setWordLang(lang: WordLang?) {
+        WordLangs.choose(getApplication(), lang)
+        val next = WordLangs.current(getApplication())
+        if (next == _wordLang.value) return
+        _wordLang.value = next
+        words = words.of(next)
+        viewModelScope.launch {
+            val fresh = withContext(Dispatchers.Default) {
+                if (_mode.value == TuretmeMode.DAILY) restoredDaily()
+                else TuretmeState.free(words.bases, words.valid, Random.nextLong())
+            }
+            _state.value = fresh
+        }
+    }
+
     private val _mode = MutableStateFlow(TuretmeMode.DAILY)
     val mode: StateFlow<TuretmeMode> = _mode.asStateFlow()
 
@@ -32,12 +59,12 @@ class TuretmeViewModel(application: Application) : AndroidViewModel(application)
     /** Günün turu; aynı gün içinde bulunmuş kelimeler (ve pes) geri oynatılır. */
     private fun restoredDaily(): TuretmeState {
         val day = todayEpoch()
-        var state = TuretmeState.daily(TuretmeWords.bases, TuretmeWords.valid, day)
-        if (store.dailyDay == day) {
-            for (word in store.dailyFound) {
+        var state = TuretmeState.daily(words.bases, words.valid, day)
+        if (store.dailyDay(_wordLang.value.tag) == day) {
+            for (word in store.dailyFound(_wordLang.value.tag)) {
                 state = state.restoreFound(word)
             }
-            if (store.dailyGivenUp) {
+            if (store.dailyGivenUp(_wordLang.value.tag)) {
                 state = state.giveUp()
             }
         }
@@ -61,7 +88,7 @@ class TuretmeViewModel(application: Application) : AndroidViewModel(application)
             val fresh = withContext(Dispatchers.Default) {
                 when (mode) {
                     TuretmeMode.DAILY -> restoredDaily()
-                    TuretmeMode.FREE -> TuretmeState.free(TuretmeWords.bases, TuretmeWords.valid)
+                    TuretmeMode.FREE -> TuretmeState.free(words.bases, words.valid)
                 }
             }
             // Hesap sürerken mod yeniden değiştiyse bu sonuç bayattır.
@@ -85,7 +112,7 @@ class TuretmeViewModel(application: Application) : AndroidViewModel(application)
 
         val day = after.dailyDay
         if (_mode.value == TuretmeMode.DAILY && day != null && day == todayEpoch()) {
-            store.saveDaily(day, after.found)
+            store.saveDaily(_wordLang.value.tag, day, after.found)
         }
     }
 
@@ -98,7 +125,7 @@ class TuretmeViewModel(application: Application) : AndroidViewModel(application)
 
         val day = after.dailyDay
         if (_mode.value == TuretmeMode.DAILY && day != null && day == todayEpoch()) {
-            store.saveDaily(day, after.found, givenUp = true)
+            store.saveDaily(_wordLang.value.tag, day, after.found, givenUp = true)
         }
     }
 
@@ -107,7 +134,7 @@ class TuretmeViewModel(application: Application) : AndroidViewModel(application)
         if (_mode.value != TuretmeMode.FREE) return
         viewModelScope.launch {
             _state.value = withContext(Dispatchers.Default) {
-                TuretmeState.free(TuretmeWords.bases, TuretmeWords.valid)
+                TuretmeState.free(words.bases, words.valid)
             }
         }
     }

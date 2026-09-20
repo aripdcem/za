@@ -1,22 +1,28 @@
 package com.za.games.turetme
 
-/**
- * Gömülü kelime listeleri. tools/gen_turetme.py ile Zemberek (Apache-2.0)
- * kök sözlüğünden ve FrequencyWords (CC-BY-SA-4.0) sıklık verisinden
- * türetilir; tamamen çevrimdışıdır.
- */
-object TuretmeWords {
+import com.za.games.sozluk.WordFile
+import com.za.games.sozluk.WordLang
 
-    /** 3-7 harfli geçerli kökler (alt kelime doğrulaması). */
-    val valid: Set<String> by lazy { load("valid.txt").toHashSet() }
+/**
+ * Gömülü kelime listeleri, dil başına bir küme (tools/gen_wordlists.py üretir;
+ * kaynaklar ve lisansları tools/SOURCES.md'de). Tamamen çevrimdışıdır.
+ */
+class TuretmeWords private constructor(val lang: WordLang) {
+
+    /** 3-7 harfli geçerli kelimeler (alt kelime doğrulaması). */
+    val valid: Set<String> by lazy {
+        WordFile.read(javaClass, "/turetme/${lang.tag}/valid.txt").toHashSet()
+    }
 
     /** 6-7 harfli taban kelimeler; her biri en az 15 alt kelime garantili. */
-    val bases: List<String> by lazy { load("bases.txt") }
+    val bases: List<String> by lazy {
+        WordFile.readPlain(javaClass, "/turetme/${lang.tag}/bases.txt")
+    }
 
-    private fun load(name: String): List<String> =
-        requireNotNull(TuretmeWords::class.java.getResourceAsStream("/turetme/$name")) {
-            "Kelime listesi bulunamadı: $name"
-        }.bufferedReader(Charsets.UTF_8).useLines { lines ->
-            lines.map { it.trim() }.filter { it.isNotEmpty() }.toList()
-        }
+    companion object {
+        private val cache = HashMap<WordLang, TuretmeWords>()
+
+        @Synchronized
+        fun of(lang: WordLang): TuretmeWords = cache.getOrPut(lang) { TuretmeWords(lang) }
+    }
 }

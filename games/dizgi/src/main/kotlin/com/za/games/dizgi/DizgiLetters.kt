@@ -1,52 +1,31 @@
 package com.za.games.dizgi
 
-/**
- * Dizgi harf seti: torbadaki adetler ve harf puanları.
- *
- * Tablo tools/gen_dizgi.py ile sözlük derleminin ağırlıklı harf
- * sıklığından türetilmiş ve burada dondurulmuştur (sık harf = çok taş,
- * az puan). Resmî Scrabble dağılımı değildir; Dizgi'ye özgüdür.
- */
-object DizgiLetters {
+import com.za.games.sozluk.WordFile
+import com.za.games.sozluk.WordLang
 
-    const val JOKER = '*'
-    const val JOKER_COUNT = 2
+/**
+ * Dizgi harf seti: torbadaki adetler ve harf puanları, dil başına.
+ *
+ * Tablolar tools/gen_wordlists.py ile o dilin sözlük derleminin ağırlıklı harf
+ * sıklığından türetilir (sık harf = çok taş, az puan) ve kaynak dosyasında
+ * dondurulur: kelime listeleri yenilense de oyunun dengesi kaymaz. Resmî
+ * Scrabble dağılımı değildir; Dizgi'ye özgüdür.
+ *
+ * Dosya biçimi, satır başına "harf adet puan".
+ */
+class DizgiLetters private constructor(val lang: WordLang) {
 
     private data class Kind(val count: Int, val points: Int)
 
-    private val kinds: Map<Char, Kind> = mapOf(
-        'a' to Kind(11, 1),
-        'b' to Kind(5, 3),
-        'c' to Kind(1, 6),
-        'ç' to Kind(2, 4),
-        'd' to Kind(4, 3),
-        'e' to Kind(11, 1),
-        'f' to Kind(1, 7),
-        'g' to Kind(1, 5),
-        'ğ' to Kind(1, 6),
-        'h' to Kind(2, 4),
-        'ı' to Kind(2, 4),
-        'i' to Kind(9, 2),
-        'j' to Kind(1, 10),
-        'k' to Kind(5, 2),
-        'l' to Kind(4, 3),
-        'm' to Kind(4, 3),
-        'n' to Kind(6, 2),
-        'o' to Kind(2, 4),
-        'ö' to Kind(1, 6),
-        'p' to Kind(1, 6),
-        'r' to Kind(6, 2),
-        's' to Kind(3, 4),
-        'ş' to Kind(1, 5),
-        't' to Kind(3, 3),
-        'u' to Kind(2, 4),
-        'ü' to Kind(2, 5),
-        'v' to Kind(2, 5),
-        'y' to Kind(3, 3),
-        'z' to Kind(2, 5),
-    )
+    private val kinds: Map<Char, Kind> by lazy {
+        WordFile.readPlain(javaClass, "/dizgi/${lang.tag}/letters.txt")
+            .associate { line ->
+                val (letter, count, points) = line.split(" ")
+                letter.single() to Kind(count.toInt(), points.toInt())
+            }
+    }
 
-    val letters: List<Char> = kinds.keys.toList()
+    val letters: List<Char> get() = kinds.keys.toList()
 
     fun isLetter(c: Char): Boolean = c in kinds
 
@@ -58,5 +37,15 @@ object DizgiLetters {
             repeat(kind.count) { add(DizgiTile(letter)) }
         }
         repeat(JOKER_COUNT) { add(DizgiTile(JOKER, isJoker = true)) }
+    }
+
+    companion object {
+        const val JOKER = '*'
+        const val JOKER_COUNT = 2
+
+        private val cache = HashMap<WordLang, DizgiLetters>()
+
+        @Synchronized
+        fun of(lang: WordLang): DizgiLetters = cache.getOrPut(lang) { DizgiLetters(lang) }
     }
 }

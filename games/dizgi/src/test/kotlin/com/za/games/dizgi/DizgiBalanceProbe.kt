@@ -1,5 +1,6 @@
 package com.za.games.dizgi
 
+import com.za.games.sozluk.WordLang
 import org.junit.Test
 import kotlin.random.Random
 
@@ -13,13 +14,16 @@ import kotlin.random.Random
  */
 class DizgiBalanceProbe {
 
-    private val sozluk = DizgiWords.valid
+    private val letters = DizgiLetters.of(WordLang.TR)
+    private val words = DizgiWords.of(WordLang.TR)
+
+    private val sozluk = words.valid
     private val sesliler = setOf('a', 'e', 'ı', 'i', 'o', 'ö', 'u', 'ü')
 
     @Test
     fun bagComposition() {
         println("\n=== TORBA BİLEŞİMİ ===")
-        val torba = DizgiLetters.bag()
+        val torba = letters.bag()
         val harfler = torba.map { it.letter }
         val joker = harfler.count { it == DizgiLetters.JOKER }
         val sesliSayisi = harfler.count { it in sesliler }
@@ -56,7 +60,7 @@ class DizgiBalanceProbe {
         println("rastgele çekilen ${DizgiState.RACK_SIZE} taşla en az bir kelime kurulabiliyor mu?")
         println("(tahtaya bağlanma aranmadan, yalnızca eldeki harflerle)")
         println()
-        val torba = DizgiLetters.bag()
+        val torba = letters.bag()
         var oynanabilir = 0
         var toplamSecenek = 0
         val n = 400

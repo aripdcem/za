@@ -1,5 +1,6 @@
 package com.za.games.kiskac
 
+import com.za.games.sozluk.WordLang
 import com.za.games.besharf.BesHarfWords
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
@@ -8,6 +9,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class KiskacStateTest {
+
+    private val words = BesHarfWords.of(WordLang.TR)
 
     private val acceptAll: (String) -> Boolean = { true }
 
@@ -22,24 +25,24 @@ class KiskacStateTest {
     @Test
     fun `turkish collation orders the 29 letters correctly`() {
         // Unicode sırasının yanlış yapacağı çiftler:
-        assertTrue(TurkishOrder.compare("aaaca", "aaaça") < 0)
-        assertTrue(TurkishOrder.compare("aaaga", "aaağa") < 0)
-        assertTrue(TurkishOrder.compare("aaaha", "aaaıa") < 0)
-        assertTrue(TurkishOrder.compare("aaaıa", "aaaia") < 0)
-        assertTrue(TurkishOrder.compare("aaaoa", "aaaöa") < 0)
-        assertTrue(TurkishOrder.compare("aaasa", "aaaşa") < 0)
-        assertTrue(TurkishOrder.compare("aaaua", "aaaüa") < 0)
-        assertTrue(TurkishOrder.compare("aaaza", "aaaaa") > 0)
-        assertEquals(0, TurkishOrder.compare("kalem", "kalem"))
-        assertEquals(28, TurkishOrder.rankOf('z'))
-        assertEquals(29, TurkishOrder.LETTERS.length)
+        assertTrue(WordLang.TR.compare("aaaca", "aaaça") < 0)
+        assertTrue(WordLang.TR.compare("aaaga", "aaağa") < 0)
+        assertTrue(WordLang.TR.compare("aaaha", "aaaıa") < 0)
+        assertTrue(WordLang.TR.compare("aaaıa", "aaaia") < 0)
+        assertTrue(WordLang.TR.compare("aaaoa", "aaaöa") < 0)
+        assertTrue(WordLang.TR.compare("aaasa", "aaaşa") < 0)
+        assertTrue(WordLang.TR.compare("aaaua", "aaaüa") < 0)
+        assertTrue(WordLang.TR.compare("aaaza", "aaaaa") > 0)
+        assertEquals(0, WordLang.TR.compare("kalem", "kalem"))
+        assertEquals(28, WordLang.TR.rankOf('z'))
+        assertEquals(29, WordLang.TR.letters.length)
     }
 
     // --- Geri bildirim ve sınırlar ---
 
     @Test
     fun `guesses report whether the hidden word comes after and bounds narrow`() {
-        var state = KiskacState(answer = "kalem")
+        var state = KiskacState(answer = "kalem", lang = WordLang.TR)
         state = guessed(state, "cacık")
         assertTrue(state.guesses.last().hiddenIsAfter) // kalem, cacık'tan sonra
         state = guessed(state, "yazma")
@@ -54,7 +57,7 @@ class KiskacStateTest {
 
     @Test
     fun `guessing the answer wins`() {
-        val state = guessed(KiskacState(answer = "kalem"), "kalem")
+        val state = guessed(KiskacState(answer = "kalem", lang = WordLang.TR), "kalem")
         assertEquals(KiskacStatus.WON, state.status)
         assertEquals("", state.current)
         assertEquals(state, state.type('a')) // bitince giriş işlemez
@@ -62,7 +65,7 @@ class KiskacStateTest {
 
     @Test
     fun `using every guess loses the game`() {
-        var state = KiskacState(answer = "kalem")
+        var state = KiskacState(answer = "kalem", lang = WordLang.TR)
         // Hepsi farklı, hepsi yanlış: hak sayısı kadar tahmin (sabitten türetilir).
         val harfler = "abcdfghjlmnprs"
         val words = (0 until KiskacState.MAX_GUESSES).map { harfler[it].toString().repeat(5) }
@@ -76,15 +79,15 @@ class KiskacStateTest {
 
     @Test
     fun `short unlisted and repeated words are invalid and consume no guess`() {
-        var state = typed(KiskacState(answer = "kalem"), "ka").submit(acceptAll)
+        var state = typed(KiskacState(answer = "kalem", lang = WordLang.TR), "ka").submit(acceptAll)
         assertEquals(1, state.invalidEvents)
         assertEquals(KiskacInvalid.NOT_IN_LIST, state.lastInvalid)
         assertTrue(state.guesses.isEmpty())
 
-        state = typed(KiskacState(answer = "kalem"), "zzzzz").submit { false }
+        state = typed(KiskacState(answer = "kalem", lang = WordLang.TR), "zzzzz").submit { false }
         assertEquals(KiskacInvalid.NOT_IN_LIST, state.lastInvalid)
 
-        state = guessed(KiskacState(answer = "kalem"), "elmas")
+        state = guessed(KiskacState(answer = "kalem", lang = WordLang.TR), "elmas")
         state = typed(state, "elmas").submit(acceptAll)
         assertEquals(KiskacInvalid.ALREADY_TRIED, state.lastInvalid)
         assertEquals(1, state.guesses.size)
@@ -92,7 +95,7 @@ class KiskacStateTest {
 
     @Test
     fun `typing respects the turkish alphabet and length limit`() {
-        var state = typed(KiskacState(answer = "kalem"), "çğıöş")
+        var state = typed(KiskacState(answer = "kalem", lang = WordLang.TR), "çğıöş")
         assertEquals("çğıöş", state.current)
         assertEquals(state, state.type('x'))
         assertEquals(state, state.type('a')) // dolu
@@ -103,7 +106,7 @@ class KiskacStateTest {
 
     @Test
     fun `possible first letters shrink with the bounds`() {
-        var state = KiskacState(answer = "kalem")
+        var state = KiskacState(answer = "kalem", lang = WordLang.TR)
         assertEquals(29, state.possibleFirstLetters().size)
 
         state = guessed(state, "elmas") // alt sınır e...
@@ -123,18 +126,18 @@ class KiskacStateTest {
     fun `daily puzzles are deterministic per day and differ between days`() {
         val answers = listOf("araba", "bebek", "cadde", "kalem", "masal", "yazma")
         assertEquals(
-            KiskacState.daily(answers, 20_000L).answer,
-            KiskacState.daily(answers, 20_000L).answer,
+            KiskacState.daily(WordLang.TR, answers, 20_000L).answer,
+            KiskacState.daily(WordLang.TR, answers, 20_000L).answer,
         )
-        assertEquals(20_000L, KiskacState.daily(answers, 20_000L).dailyDay)
+        assertEquals(20_000L, KiskacState.daily(WordLang.TR, answers, 20_000L).dailyDay)
         assertNotEquals(
-            KiskacState.daily(answers, 20_000L).answer,
-            KiskacState.daily(answers, 20_001L).answer,
+            KiskacState.daily(WordLang.TR, answers, 20_000L).answer,
+            KiskacState.daily(WordLang.TR, answers, 20_001L).answer,
         )
-        assertNull(KiskacState.free(answers, 7L).dailyDay)
+        assertNull(KiskacState.free(WordLang.TR, answers, 7L).dailyDay)
         assertEquals(
-            KiskacState.free(answers, 7L).answer,
-            KiskacState.free(answers, 7L).answer,
+            KiskacState.free(WordLang.TR, answers, 7L).answer,
+            KiskacState.free(WordLang.TR, answers, 7L).answer,
         )
     }
 
@@ -144,7 +147,7 @@ class KiskacStateTest {
 
     @Test
     fun `distance uses list ends when there are no bounds`() {
-        val d = KiskacState(answer = "çamur").distance(sorted)
+        val d = KiskacState(answer = "çamur", lang = WordLang.TR).distance(sorted)
         assertEquals(2, d.answerIndex)
         assertEquals(-1, d.lowerIndex)
         assertEquals(6, d.upperIndex)
@@ -155,7 +158,7 @@ class KiskacStateTest {
 
     @Test
     fun `distance narrows with bounds`() {
-        var state = KiskacState(answer = "çamur")
+        var state = KiskacState(answer = "çamur", lang = WordLang.TR)
         state = guessed(state, "abaca")
         var d = state.distance(sorted)
         assertEquals(0, d.lowerIndex)
@@ -179,11 +182,11 @@ class KiskacStateTest {
 
     @Test
     fun `index search finds words and insertion points in turkish order`() {
-        assertEquals(2, TurkishOrder.indexOf(sorted, "çamur"))
-        assertEquals(0, TurkishOrder.indexOf(sorted, "aaaaa"))
-        assertEquals(6, TurkishOrder.indexOf(sorted, "zzzzz"))
-        assertEquals(2, TurkishOrder.indexOf(sorted, "cccca")) // c < ç
-        assertTrue(TurkishOrder.compare("abcde", "abxde") < 0) // tablo dışı harf çökmez
+        assertEquals(2, WordLang.TR.indexOf(sorted, "çamur"))
+        assertEquals(0, WordLang.TR.indexOf(sorted, "aaaaa"))
+        assertEquals(6, WordLang.TR.indexOf(sorted, "zzzzz"))
+        assertEquals(2, WordLang.TR.indexOf(sorted, "cccca")) // c < ç
+        assertTrue(WordLang.TR.compare("abcde", "abxde") < 0) // tablo dışı harf çökmez
     }
 
     /**
@@ -195,7 +198,7 @@ class KiskacStateTest {
      */
     @Test
     fun `guess budget covers binary search over the guessable list`() {
-        val uzay = BesHarfWords.allowed.size
+        val uzay = words.allowed.size
         val gereken = kotlin.math.ceil(kotlin.math.ln(uzay + 1.0) / kotlin.math.ln(2.0)).toInt()
         assertTrue(
             "arama uzayı $uzay kelime → $gereken tahmin gerekiyor, hak ${KiskacState.MAX_GUESSES}",

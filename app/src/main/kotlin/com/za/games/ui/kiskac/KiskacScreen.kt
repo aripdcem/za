@@ -1,5 +1,7 @@
 package com.za.games.ui.kiskac
 
+import com.za.games.ui.common.LocalWordLang
+import com.za.games.sozluk.WordLang
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -61,13 +63,13 @@ import java.util.Locale
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
 
-private val TrLocale: Locale = Locale.forLanguageTag("tr")
+/**
+ * Harfleri oyunun kendi diliyle büyütür. Sabit bir yerel ayar kullanılamaz:
+ * Türkçe'de "i" -> "İ" ve "ı" -> "I" doğruyken Almanca'da "i" -> "I" olmalı.
+ */
+private fun Char.upper(lang: WordLang): String = toString().uppercase(Locale.forLanguageTag(lang.tag))
 
-private fun Char.upperTr(): String = toString().uppercase(TrLocale)
-
-private fun String.upperTr(): String = uppercase(TrLocale)
-
-private val KEY_ROWS = listOf("ertyuıopğü", "asdfghjklşi", "zcvbnmöç")
+private fun String.upper(lang: WordLang): String = uppercase(Locale.forLanguageTag(lang.tag))
 
 private val AccentPink = Color(0xFFF472B6)
 private val OnFilledDark = Color(0xFF06121D)
@@ -367,6 +369,7 @@ private fun BoundCard(
     hint: String? = null,
     hintFirst: Boolean = false,
 ) {
+    val lang = LocalWordLang.current
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         if (hintFirst) HintLine(hint)
         Text(
@@ -384,7 +387,7 @@ private fun BoundCard(
             },
         ) {
             Text(
-                text = (word ?: placeholder).upperTr(),
+                text = (word ?: placeholder).upper(lang),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Black,
                 letterSpacing = 6.sp,
@@ -413,6 +416,7 @@ private fun HintLine(hint: String?) {
 
 @Composable
 private fun InputTile(letter: Char?) {
+    val lang = LocalWordLang.current
     val borderColor = if (letter != null) {
         Color.White.copy(alpha = 0.45f)
     } else {
@@ -427,7 +431,7 @@ private fun InputTile(letter: Char?) {
     ) {
         if (letter != null) {
             Text(
-                text = letter.upperTr(),
+                text = letter.upper(lang),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Black,
                 color = MaterialTheme.colorScheme.onBackground,
@@ -444,6 +448,7 @@ private fun KiskacKeyboard(
     onEnter: () -> Unit,
     onErase: () -> Unit,
 ) {
+    val lang = LocalWordLang.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -451,18 +456,18 @@ private fun KiskacKeyboard(
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            KEY_ROWS[0].forEach { letter ->
+            lang.keyRows[0].forEach { letter ->
                 KeyButton(
-                    label = letter.upperTr(),
+                    label = letter.upper(lang),
                     faded = typingFirstLetter && letter !in possibleFirst,
                     modifier = Modifier.weight(1f),
                 ) { onKey(letter) }
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            KEY_ROWS[1].forEach { letter ->
+            lang.keyRows[1].forEach { letter ->
                 KeyButton(
-                    label = letter.upperTr(),
+                    label = letter.upper(lang),
                     faded = typingFirstLetter && letter !in possibleFirst,
                     modifier = Modifier.weight(1f),
                 ) { onKey(letter) }
@@ -476,9 +481,9 @@ private fun KiskacKeyboard(
                 accent = true,
                 onClick = onEnter,
             )
-            KEY_ROWS[2].forEach { letter ->
+            lang.keyRows[2].forEach { letter ->
                 KeyButton(
-                    label = letter.upperTr(),
+                    label = letter.upper(lang),
                     faded = typingFirstLetter && letter !in possibleFirst,
                     modifier = Modifier.weight(1f),
                 ) { onKey(letter) }
@@ -546,6 +551,7 @@ private fun ResultOverlay(
     onDismiss: () -> Unit,
     onExit: () -> Unit,
 ) {
+    val lang = LocalWordLang.current
     OverlayCard {
         Text(
             text = stringResource(
@@ -566,7 +572,7 @@ private fun ResultOverlay(
             )
         } else {
             Text(
-                text = stringResource(R.string.answer_was, state.answer.upperTr()),
+                text = stringResource(R.string.answer_was, state.answer.upper(lang)),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
             )

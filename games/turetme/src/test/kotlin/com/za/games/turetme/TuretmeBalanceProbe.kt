@@ -1,5 +1,6 @@
 package com.za.games.turetme
 
+import com.za.games.sozluk.WordLang
 import org.junit.Test
 
 /**
@@ -13,8 +14,10 @@ import org.junit.Test
  */
 class TuretmeBalanceProbe {
 
-    private val tabanlar = TuretmeWords.bases
-    private val gecerli = TuretmeWords.valid
+    private val words = TuretmeWords.of(WordLang.TR)
+
+    private val tabanlar = words.bases
+    private val gecerli = words.valid
 
     @Test
     fun targetCounts() {

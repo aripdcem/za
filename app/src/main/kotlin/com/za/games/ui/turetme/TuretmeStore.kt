@@ -11,28 +11,25 @@ class TuretmeStore(context: Context) {
     private val prefs =
         context.applicationContext.getSharedPreferences("za_turetme", Context.MODE_PRIVATE)
 
-    val dailyDay: Long
-        get() = prefs.getLong(KEY_DAILY_DAY, Long.MIN_VALUE)
+    fun dailyDay(lang: String): Long = prefs.getLong(KEY_DAILY_DAY + lang, Long.MIN_VALUE)
 
-    val dailyFound: List<String>
-        get() = prefs.getString(KEY_DAILY_FOUND, "")!!
+    fun dailyFound(lang: String): List<String> = prefs.getString(KEY_DAILY_FOUND + lang, "")!!
             .split(',')
             .filter { it.isNotBlank() }
 
-    val dailyGivenUp: Boolean
-        get() = prefs.getBoolean(KEY_DAILY_GIVEN_UP, false)
+    fun dailyGivenUp(lang: String): Boolean = prefs.getBoolean(KEY_DAILY_GIVEN_UP + lang, false)
 
-    fun saveDaily(epochDay: Long, found: Collection<String>, givenUp: Boolean = false) {
+    fun saveDaily(lang: String, epochDay: Long, found: Collection<String>, givenUp: Boolean = false) {
         prefs.edit()
-            .putLong(KEY_DAILY_DAY, epochDay)
-            .putString(KEY_DAILY_FOUND, found.joinToString(","))
-            .putBoolean(KEY_DAILY_GIVEN_UP, givenUp)
+            .putLong(KEY_DAILY_DAY + lang, epochDay)
+            .putString(KEY_DAILY_FOUND + lang, found.joinToString(","))
+            .putBoolean(KEY_DAILY_GIVEN_UP + lang, givenUp)
             .apply()
     }
 
     private companion object {
-        const val KEY_DAILY_DAY = "daily_day"
-        const val KEY_DAILY_FOUND = "daily_found"
-        const val KEY_DAILY_GIVEN_UP = "daily_given_up"
+        const val KEY_DAILY_DAY = "daily_day_"
+        const val KEY_DAILY_FOUND = "daily_found_"
+        const val KEY_DAILY_GIVEN_UP = "daily_given_up_"
     }
 }

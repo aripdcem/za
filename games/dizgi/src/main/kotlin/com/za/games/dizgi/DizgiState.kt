@@ -1,5 +1,7 @@
 package com.za.games.dizgi
 
+import com.za.games.sozluk.WordLang
+
 import kotlin.random.Random
 
 enum class DizgiStatus { RUNNING, FINISHED }
@@ -11,11 +13,14 @@ enum class DizgiInvalid {
 
 enum class DizgiMoveKind { PLACE, PASS, EXCHANGE }
 
-/** Tahtadaki ya da eldeki bir taş. Joker yerleştirilince seçilen harfi taşır, 0 puandır. */
-data class DizgiTile(val letter: Char, val isJoker: Boolean = false) {
-    val points: Int
-        get() = if (isJoker) 0 else DizgiLetters.pointsOf(letter)
-}
+/**
+ * Tahtadaki ya da eldeki bir taş. Joker yerleştirilince seçilen harfi taşır ve
+ * 0 puandır.
+ *
+ * Puan taşın kendisinde değil oyunda durur ([DizgiState.pointsOf]): aynı harf
+ * dilden dile başka puan eder, taş hangi dilde oynandığını bilmez.
+ */
+data class DizgiTile(val letter: Char, val isJoker: Boolean = false)
 
 data class DizgiPlayer(val rack: List<DizgiTile>, val score: Int = 0)
 
@@ -42,6 +47,8 @@ data class DizgiMove(
  * aynı tohum ve hamle dizisi aynı sonucu üretir.
  */
 data class DizgiState(
+    /** Oyunun kelime dili: sözlüğü, harf puanlarını ve torbayı belirler. */
+    val lang: WordLang,
     val players: List<DizgiPlayer>,
     val bag: List<DizgiTile>,
     val seed: Long,
@@ -61,6 +68,11 @@ data class DizgiState(
     val invalidWords: List<String> = emptyList(),
 ) {
 
+    private val letters: DizgiLetters get() = DizgiLetters.of(lang)
+
+    /** Taşın bu dildeki puanı; joker her dilde 0. */
+    fun pointsOf(tile: DizgiTile): Int = if (tile.isJoker) 0 else letters.pointsOf(tile.letter)
+
     /** Eldeki taşlardan bu turda tahtaya konmamış olanların indeksleri. */
     val availableRack: List<Int>
         get() = players[current].rack.indices.filter { it !in pendingRack.values }
@@ -76,7 +88,7 @@ data class DizgiState(
         if (rackIndex !in rack.indices || rackIndex in pendingRack.values) return this
         val tile = rack[rackIndex]
         val letter = if (tile.isJoker) {
-            jokerAs?.takeIf { DizgiLetters.isLetter(it) } ?: return this
+            jokerAs?.takeIf { letters.isLetter(it) } ?: return this
         } else {
             tile.letter
         }
@@ -147,7 +159,7 @@ data class DizgiState(
         var finalGained = gained
         if (newRack.isEmpty() && newBag.isEmpty()) {
             // Elini bitiren, kalanların taş puanlarını alır; onlar kendi taşlarını düşer.
-            val remaining = newPlayers.map { p -> p.rack.sumOf { it.points } }
+            val remaining = newPlayers.map { p -> p.rack.sumOf { pointsOf(it) } }
             finalGained += remaining.sum()
             newPlayers = newPlayers.mapIndexed { i, p ->
                 if (i == current) p.copy(score = p.score + remaining.sum())
@@ -207,7 +219,7 @@ data class DizgiState(
         val turns = scorelessTurns + 1
         val ending = turns >= 2 * players.size
         val newPlayers = if (ending) {
-            base.players.map { p -> p.copy(score = p.score - p.rack.sumOf { it.points }) }
+            base.players.map { p -> p.copy(score = p.score - p.rack.sumOf { pointsOf(it) }) }
         } else {
             base.players
         }
@@ -281,7 +293,7 @@ data class DizgiState(
         var wordMultiplier = 1
         for (cell in span) {
             val tile = occupied(cell)!!
-            var letterPoints = tile.points
+            var letterPoints = pointsOf(tile)
             if (cell in pending) {
                 when (DizgiBoard.premium(cell)) {
                     Premium.DL -> letterPoints *= 2
@@ -323,16 +335,16 @@ data class DizgiState(
         const val MIN_PLAYERS = 2
         const val MAX_PLAYERS = 4
 
-        fun new(playerCount: Int, seed: Long): DizgiState {
+        fun new(lang: WordLang, playerCount: Int, seed: Long): DizgiState {
             require(playerCount in MIN_PLAYERS..MAX_PLAYERS) { "oyuncu: $playerCount" }
             val rng = Random(seed)
-            var bag = DizgiLetters.bag().shuffled(rng)
+            var bag = DizgiLetters.of(lang).bag().shuffled(rng)
             val players = List(playerCount) {
                 val rack = bag.takeLast(RACK_SIZE)
                 bag = bag.dropLast(RACK_SIZE)
                 DizgiPlayer(rack)
             }
-            return DizgiState(players = players, bag = bag, seed = rng.nextLong())
+            return DizgiState(lang = lang, players = players, bag = bag, seed = rng.nextLong())
         }
     }
 }

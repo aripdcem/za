@@ -1,24 +1,38 @@
 package com.za.games.besharf
 
+import com.za.games.sozluk.WordFile
+import com.za.games.sozluk.WordLang
+
 /**
- * Gömülü kelime listeleri. Kaynak dosyalar tools/gen_words.py ile
- * Zemberek (Apache-2.0) ve FrequencyWords (CC-BY-SA-4.0) verisinden
- * türetilir; tamamen çevrimdışıdır.
+ * Gömülü kelime listeleri, dil başına bir küme.
+ *
+ * Listeler tools/gen_wordlists.py ile yazım sözlüklerinden ve FrequencyWords
+ * sıklık verisinden türetilir (kaynaklar ve lisansları tools/SOURCES.md'de);
+ * tamamen çevrimdışıdır. Kıskaç da bu listeleri kullanır.
+ *
+ * Bir dilin listeleri ilk istendiğinde okunur ve bellekte tutulur: oyuncu dil
+ * değiştirip geri döndüğünde dosya yeniden ayrıştırılmaz.
  */
-object BesHarfWords {
+class BesHarfWords private constructor(val lang: WordLang) {
 
     /** Cevap havuzu: yaygın, elden geçirilmiş 5 harfli kelimeler. */
-    val answers: List<String> by lazy { load("answers.txt") }
+    val answers: List<String> by lazy {
+        WordFile.readPlain(javaClass, "/besharf/${lang.tag}/answers.txt")
+    }
 
-    /** Geçerli tahminler: cevaplar dahil geniş küme. */
-    val allowed: Set<String> by lazy { (load("allowed.txt") + answers).toHashSet() }
+    /** Geçerli tahminler: cevaplar dahil geniş küme, dilin sözlük sırasında. */
+    val allowed: List<String> by lazy {
+        WordFile.read(javaClass, "/besharf/${lang.tag}/allowed.txt")
+    }
 
-    fun isAllowed(word: String): Boolean = word in allowed
+    private val allowedSet: Set<String> by lazy { (allowed + answers).toHashSet() }
 
-    private fun load(name: String): List<String> =
-        requireNotNull(BesHarfWords::class.java.getResourceAsStream("/besharf/$name")) {
-            "Kelime listesi bulunamadı: $name"
-        }.bufferedReader(Charsets.UTF_8).useLines { lines ->
-            lines.map { it.trim() }.filter { it.isNotEmpty() }.toList()
-        }
+    fun isAllowed(word: String): Boolean = word in allowedSet
+
+    companion object {
+        private val cache = HashMap<WordLang, BesHarfWords>()
+
+        @Synchronized
+        fun of(lang: WordLang): BesHarfWords = cache.getOrPut(lang) { BesHarfWords(lang) }
+    }
 }

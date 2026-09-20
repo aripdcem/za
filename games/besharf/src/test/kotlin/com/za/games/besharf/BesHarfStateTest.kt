@@ -1,5 +1,6 @@
 package com.za.games.besharf
 
+import com.za.games.sozluk.WordLang
 import com.za.games.besharf.LetterMark.ABSENT
 import com.za.games.besharf.LetterMark.CORRECT
 import com.za.games.besharf.LetterMark.PRESENT
@@ -11,6 +12,8 @@ import org.junit.Test
 
 class BesHarfStateTest {
 
+    private val words = BesHarfWords.of(WordLang.TR)
+
     private val acceptAll: (String) -> Boolean = { true }
 
     private fun typed(state: BesHarfState, word: String): BesHarfState =
@@ -21,7 +24,7 @@ class BesHarfStateTest {
     @Test
     fun `exact guess marks everything correct and wins`() {
         assertEquals(List(5) { CORRECT }, BesHarfState.mark("kalem", "kalem"))
-        val state = typed(BesHarfState(answer = "kalem"), "kalem").submit(acceptAll)
+        val state = typed(BesHarfState(answer = "kalem", lang = WordLang.TR), "kalem").submit(acceptAll)
         assertEquals(BesHarfStatus.WON, state.status)
         assertEquals("", state.current)
     }
@@ -62,30 +65,30 @@ class BesHarfStateTest {
 
     @Test
     fun `typing respects length limit and the turkish alphabet`() {
-        var state = typed(BesHarfState(answer = "kalem"), "çğıöş")
+        var state = typed(BesHarfState(answer = "kalem", lang = WordLang.TR), "çğıöş")
         assertEquals("çğıöş", state.current)
         assertEquals(state, state.type('a')) // 5 harf dolu
         state = state.erase().type('q').type('w').type('x').type('1')
         assertEquals("çğıö", state.current) // alfabe dışı karakterler yok sayılır
-        assertEquals("", BesHarfState(answer = "kalem").erase().current)
+        assertEquals("", BesHarfState(answer = "kalem", lang = WordLang.TR).erase().current)
     }
 
     @Test
     fun `submitting a short or unlisted word counts as invalid`() {
-        val state = typed(BesHarfState(answer = "kalem"), "kal")
+        val state = typed(BesHarfState(answer = "kalem", lang = WordLang.TR), "kal")
         val short = state.submit(acceptAll)
         assertEquals(1, short.invalidEvents)
         assertTrue(short.guesses.isEmpty())
         assertEquals("kal", short.current) // yazılan korunur
 
-        val unlisted = typed(BesHarfState(answer = "kalem"), "zzzzz").submit { false }
+        val unlisted = typed(BesHarfState(answer = "kalem", lang = WordLang.TR), "zzzzz").submit { false }
         assertEquals(1, unlisted.invalidEvents)
         assertTrue(unlisted.guesses.isEmpty())
     }
 
     @Test
     fun `six wrong guesses lose the game and further input is ignored`() {
-        var state = BesHarfState(answer = "kalem")
+        var state = BesHarfState(answer = "kalem", lang = WordLang.TR)
         repeat(6) { state = typed(state, "sazan").submit(acceptAll) }
         assertEquals(BesHarfStatus.LOST, state.status)
         assertEquals(6, state.guesses.size)
@@ -95,7 +98,7 @@ class BesHarfStateTest {
 
     @Test
     fun `key marks keep the best information per letter`() {
-        var state = typed(BesHarfState(answer = "kalem"), "elmas").submit(acceptAll)
+        var state = typed(BesHarfState(answer = "kalem", lang = WordLang.TR), "elmas").submit(acceptAll)
         assertEquals(PRESENT, state.keyMarks()['e'])
         state = typed(state, "kelam").submit(acceptAll)
         assertEquals(CORRECT, state.keyMarks()['k'])
@@ -107,39 +110,39 @@ class BesHarfStateTest {
 
     @Test
     fun `daily puzzles are deterministic per day and differ between days`() {
-        val answers = BesHarfWords.answers
+        val answers = words.answers
         assertEquals(
-            BesHarfState.daily(answers, 20_000L).answer,
-            BesHarfState.daily(answers, 20_000L).answer,
+            BesHarfState.daily(WordLang.TR, answers, 20_000L).answer,
+            BesHarfState.daily(WordLang.TR, answers, 20_000L).answer,
         )
         assertNotEquals(
-            BesHarfState.daily(answers, 20_000L).answer,
-            BesHarfState.daily(answers, 20_001L).answer,
+            BesHarfState.daily(WordLang.TR, answers, 20_000L).answer,
+            BesHarfState.daily(WordLang.TR, answers, 20_001L).answer,
         )
-        assertEquals(20_000L, BesHarfState.daily(answers, 20_000L).dailyDay)
+        assertEquals(20_000L, BesHarfState.daily(WordLang.TR, answers, 20_000L).dailyDay)
     }
 
     @Test
     fun `free games are deterministic per seed`() {
-        val answers = BesHarfWords.answers
+        val answers = words.answers
         assertEquals(
-            BesHarfState.free(answers, 7L).answer,
-            BesHarfState.free(answers, 7L).answer,
+            BesHarfState.free(WordLang.TR, answers, 7L).answer,
+            BesHarfState.free(WordLang.TR, answers, 7L).answer,
         )
-        assertTrue(BesHarfState.free(answers, 7L).dailyDay == null)
+        assertTrue(BesHarfState.free(WordLang.TR, answers, 7L).dailyDay == null)
     }
 
     // --- Kelime listeleri ---
 
     @Test
     fun `word lists are loaded and well formed`() {
-        val alphabet = BesHarfState.ALPHABET
-        assertTrue(BesHarfWords.answers.size > 1000)
-        assertTrue(BesHarfWords.allowed.size > BesHarfWords.answers.size)
-        assertTrue(BesHarfWords.answers.all { it.length == 5 && it.all { c -> c in alphabet } })
-        assertTrue(BesHarfWords.answers.all { BesHarfWords.isAllowed(it) })
-        assertFalse(BesHarfWords.isAllowed("qqqqq"))
-        assertEquals(BesHarfWords.answers.size, BesHarfWords.answers.toSet().size)
+        val alphabet = WordLang.TR.alphabet
+        assertTrue(words.answers.size > 1000)
+        assertTrue(words.allowed.size > words.answers.size)
+        assertTrue(words.answers.all { it.length == 5 && it.all { c -> c in alphabet } })
+        assertTrue(words.answers.all { words.isAllowed(it) })
+        assertFalse(words.isAllowed("qqqqq"))
+        assertEquals(words.answers.size, words.answers.toSet().size)
     }
 
     /**
@@ -150,7 +153,7 @@ class BesHarfStateTest {
      */
     @Test
     fun `every sampled answer is solvable within the guess limit`() {
-        val cevaplar = BesHarfWords.answers
+        val cevaplar = words.answers
         val ornek = cevaplar.filterIndexed { i, _ -> i % 40 == 0 }
         val acilis = cevaplar.first()
         for (cevap in ornek) {

@@ -1,5 +1,6 @@
 package com.za.games.dizgi
 
+import com.za.games.sozluk.WordLang
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
@@ -7,6 +8,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class DizgiStateTest {
+
+    private val letters = DizgiLetters.of(WordLang.TR)
+    private val words = DizgiWords.of(WordLang.TR)
 
     private fun cell(row: Int, col: Int) = row * DizgiBoard.SIZE + col
 
@@ -19,6 +23,7 @@ class DizgiStateTest {
         bag: String = "",
         board: Map<Int, DizgiTile> = emptyMap(),
     ) = DizgiState(
+        lang = WordLang.TR,
         players = listOf(DizgiPlayer(tiles(rack0)), DizgiPlayer(tiles(rack1))),
         bag = tiles(bag),
         seed = 42L,
@@ -37,19 +42,19 @@ class DizgiStateTest {
 
     @Test
     fun `bag holds 100 tiles with 2 jokers and dealing is deterministic`() {
-        val bag = DizgiLetters.bag()
+        val bag = letters.bag()
         assertEquals(100, bag.size)
         assertEquals(2, bag.count { it.isJoker })
         assertTrue(bag.filterNot { it.isJoker }.all { it.points >= 1 })
 
-        val a = DizgiState.new(2, seed = 9L)
-        val b = DizgiState.new(2, seed = 9L)
+        val a = DizgiState.new(WordLang.TR, 2, seed = 9L)
+        val b = DizgiState.new(WordLang.TR, 2, seed = 9L)
         assertEquals(a, b)
-        assertNotEquals(a.players, DizgiState.new(2, seed = 10L).players)
+        assertNotEquals(a.players, DizgiState.new(WordLang.TR, 2, seed = 10L).players)
         assertTrue(a.players.all { it.rack.size == DizgiState.RACK_SIZE })
         assertEquals(86, a.bag.size)
 
-        assertEquals(DizgiState.MAX_PLAYERS, DizgiState.new(4, 1L).players.size)
+        assertEquals(DizgiState.MAX_PLAYERS, DizgiState.new(WordLang.TR, 4, 1L).players.size)
     }
 
     @Test
@@ -254,10 +259,10 @@ class DizgiStateTest {
 
     @Test
     fun `bundled list is broad and well formed`() {
-        val valid = DizgiWords.valid
+        val valid = words.valid
         assertTrue(valid.size > 20_000)
         assertTrue(valid.all { it.length in 2..15 })
-        assertTrue(valid.all { w -> w.all { DizgiLetters.isLetter(it) } })
+        assertTrue(valid.all { w -> w.all { letters.isLetter(it) } })
         // Şapkalı kaynak girdileri düzleştirilmiş olmalı (belâ -> bela, kâğıt -> kağıt).
         for (w in listOf("ev", "at", "su", "kalem", "kitap", "deniz", "bela", "kağıt", "hikaye")) {
             assertTrue(w, w in valid)
@@ -271,8 +276,8 @@ class DizgiStateTest {
      */
     @Test
     fun `most random racks can form a word`() {
-        val torba = DizgiLetters.bag()
-        val sozluk = DizgiWords.valid
+        val torba = letters.bag()
+        val sozluk = words.valid
         val rng = kotlin.random.Random(11)
         var oynanabilir = 0
         val deneme = 60

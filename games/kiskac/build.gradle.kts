@@ -18,6 +18,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(project(":games:sozluk"))
     testImplementation(libs.junit)
     // Ölçüm koşumu, oyunun arayüzde kullandığı kelime listelerini okur.
     testImplementation(project(":games:besharf"))
