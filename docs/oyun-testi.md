@@ -2798,6 +2798,29 @@ kural 148 dp'ye sığar). Karar tabanı yükseltmekse maliyeti raftan çıkar: 4
 daha panel demek, raf 167 → ~123 dp demek. 411 dp'de panel 240 dp ve **beş
 kural da görünüyor**, yani sorun yalnız kısa ekranda.
 
+**G4 denemesi (cihazda yeniden ölçülecek).** Tabanı yükseltmek yolu kapalı:
+44 dp daha panel, Satış rafını 167 → ~123 dp'ye indirir; 4 satırlık rafta göz
+~30 dp, ad bölgesi ~12 dp kalır ve blok etiketi (8 sp'de ~19 dp ister) üç
+noktaya düşer — G2'yi kırar. O yüzden yükseklik kuralın kendisinden çıkarıldı:
+
+- Kural gövdesi **iki satırla sınırlandı** (`maxLines = 2`). Yalnız `Konum`'u
+  etkiliyor, öbür dördünün gövdesi zaten tek satır. Satır 76 → ~60 dp.
+- Satır arası dolgu **2 → 1 dp**: beş kuralda 10 dp, hiçbir metni kırpmadan.
+
+Ölçülen yüksekliklerle beklenen: başlık 20 + `Konum` 58 + `Tamamlayıcı` 42 =
+120 dp, üçüncü kuralın adı 120–138 dp'ye düşüyor, yani 140 dp'lik tabanın
+içinde — **payı 2 dp**. Dar; cihaz doğrulamadan "tuttu" denmemeli.
+
+İki şey de kayıpsız değil: `Konum`'un üçüncü satırı (`▼ ağır yalnız altta ×3 ·
+★ yalnız göz hizasında ×4`) 360 dp'de üç noktayla kesilecek. Kayıpsız yol o
+gövdeyi kısaltmak, ama oradaki her kelime puanlama kuralı taşıyor ("ağır",
+"yalnız") ve 14 dilde kısaltmak anlamı bozabilir — metin kısaltılacaksa
+gözden geçirilmeli.
+
+CI bunu doğrulayamaz: Robolectric'in yazı ölçüleri cihazınkinden farklı, zaten
+`ReyonShortScreenTest` h568'de üç kuralı görüp geçiyordu — bulguyu cihaz
+çıkardı. Yeniden ölçüm: `python3 tools/cihaz_testi.py reyon --apk <yeni apk>`.
+
 **G5 — Sipariş listesi.** İlk ürün satırı tam: **108,5 dp** (ad, stok, talep
 bandı, −/+ adımlayıcı, teslim notu). İkincisi 79 dp ile yarım görünüyor, yani
 listede her zaman "devamı var" işareti duruyor. Kaydırmayla altı ürünün altısı
