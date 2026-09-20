@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Beş Harf, Kıskaç, Türetme ve Dizgi metinleri.
+
+  Bu dört oyun kendi kelime listeleriyle oynanır (games/besharf, games/kiskac,
+  games/turetme, games/dizgi altındaki dil klasörleri). Metinler ayrı dosyada
+  duruyor çünkü bir dilin kelime listesi ile o dilin arayüz çevirisi ayrı
+  zamanlarda hazır olabiliyor: liste yoksa oyun o dilde açılmaz, çeviri yoksa
+  Android anahtar başına varsayılana (İngilizce) düşer.
+
+  tools:ignore="MissingTranslation" bu bilinçli boşluk için; strings.xml'de
+  lint açık kalır ve gerçek çeviri eksiklerini yakalamaya devam eder.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <!-- Beş Harf -->
+    <string name="game_besharf">Beş Harf</string>
+    <string name="game_besharf_tagline">Arvaa sana: päivän pulma + vapaa peli</string>
+    <string name="not_in_list">Ei ole sanalistalla</string>
+    <string name="too_short">Kirjoita 5 kirjainta</string>
+    <string name="streak_label">Putki</string>
+    <string name="answer_was">Vastaus: %1$s</string>
+    <string name="new_word">Uusi sana</string>
+    <string name="guesses_fmt">Ratkaistu %1$d/%2$d</string>
+    <string name="lost_title">Ei tällä kertaa 😔</string>
+    <string name="tomorrow_new_word">Huomenna uusi sana!</string>
+    <string name="show_board">Näytä ruudukko</string>
+    <string name="key_enter">ENTER</string>
+    <string name="besharf_hint">🟩 oikea paikka  🟨 sanassa  ⬛ ei sanassa</string>
+
+    <!-- Kıskaç -->
+    <string name="game_kiskac">Kıskaç</string>
+    <string name="game_kiskac_tagline">Aakkosellinen pihti: purista sana kahden rajan väliin</string>
+    <string name="kiskac_lower_label">Haettu sana tulee jälkeen</string>
+    <string name="kiskac_upper_label">Haettu sana tulee ennen</string>
+    <string name="kiskac_attempts_fmt">Yritykset: %1$d/%2$d</string>
+    <string name="kiskac_hint">Joka yritys kertoo ennen vai jälkeen; helpossa tilassa näkyy etäisyys prosentteina</string>
+    <string name="kiskac_after_fmt">%1$d%% päässä</string>
+    <string name="kiskac_before_fmt">%1$d%% päässä</string>
+    <string name="kiskac_easy_mode">Helppo tila</string>
+    <string name="kiskac_easy_mode_desc">Näyttää etäisyyden prosentteina kumpaankin rajaan</string>
+    <string name="already_tried">Tämä on jo yritetty</string>
+
+    <!-- Türetme -->
+    <string name="game_turetme">Türetme</string>
+    <string name="game_turetme_tagline">Muodosta sanoja kirjaimista — löydätkö kaikki?</string>
+    <string name="turetme_hint">Muodosta vähintään 3-kirjaimisia sanoja; kantasanasta saa bonuksen</string>
+    <string name="found_label">Löydetty</string>
+    <string name="already_found">Tämä on jo löytynyt</string>
+    <string name="shuffle_letters">Sekoita kirjaimet</string>
+    <string name="turetme_completed">Löysit kaikki! 🎉</string>
+    <string name="turetme_empty">Napauta kirjaimia ja paina ENTER</string>
+    <string name="turetme_give_up">Luovuta</string>
+    <string name="turetme_give_up_confirm">Luovutetaanko?</string>
+    <string name="turetme_give_up_detail">Kierros päättyy ja puuttuvat sanat näytetään.</string>
+    <string name="turetme_give_up_yes">Luovuta ja näytä</string>
+    <string name="turetme_revealed">Puuttuvat sanat on kehystetty</string>
+
+    <!-- Dizgi -->
+    <string name="game_dizgi">Dizgi</string>
+    <string name="game_dizgi_tagline">Kierrätettävä sanalauta: lado kirjaimia, risteytä sanoja, kerää pisteitä</string>
+    <string name="dizgi_players_title">Montako pelaajaa?</string>
+    <string name="dizgi_players_hint">Pelataan vuorotellen samalla puhelimella; vain vuorossa oleva näkee omat laattansa</string>
+    <string name="dizgi_start">Aloita</string>
+    <string name="dizgi_player_n">Pelaaja %1$d</string>
+    <string name="dizgi_turn_of">Vuoro: %1$s</string>
+    <string name="dizgi_handover">Anna puhelin eteenpäin; vain seuraava näkee laatat</string>
+    <string name="dizgi_ready">Olen valmis</string>
+    <string name="dizgi_bag_count">Pussi: %1$d</string>
+    <string name="dizgi_confirm_move">Lado</string>
+    <string name="dizgi_recall">Peru</string>
+    <string name="dizgi_pass">Passaa</string>
+    <string name="dizgi_exchange">Vaihda</string>
+    <string name="dizgi_exchange_n">Vaihda (%1$d)</string>
+    <string name="dizgi_cancel">Peruuta</string>
+    <string name="dizgi_joker_pick">Mikä kirjain jokeri on?</string>
+    <string name="dizgi_move_pass">%1$s passasi</string>
+    <string name="dizgi_move_exchange">%1$s vaihtoi laattoja</string>
+    <string name="dizgi_move_words">%1$s: %2$s (+%3$d)</string>
+    <string name="dizgi_bingo">Bingo! +50</string>
+    <string name="dizgi_inv_empty">Lado ensin laattoja laudalle</string>
+    <string name="dizgi_inv_line">Laattojen pitää olla yhdellä rivillä tai sarakkeella</string>
+    <string name="dizgi_inv_gap">Sanassa ei voi olla aukkoja</string>
+    <string name="dizgi_inv_connect">Uusien laattojen pitää koskettaa vanhoja</string>
+    <string name="dizgi_inv_center">Ensimmäisen sanan pitää kulkea keskitähden kautta</string>
+    <string name="dizgi_inv_short">Muodosta vähintään kaksikirjaiminen sana</string>
+    <string name="dizgi_inv_word">Ei ole sanakirjassa: %1$s</string>
+    <string name="dizgi_inv_exchange">Vaihtoon tarvitaan vähintään 7 laattaa pussissa</string>
+    <string name="dizgi_exchange_hint">Napauta vaihdettavat laatat (%1$d valittu) ja paina Vaihda</string>
+    <string name="dizgi_pass_confirm">Passataanko vuoro?</string>
+    <string name="dizgi_pass_detail">Vuoro siirtyy. Jos kaikki passaavat kaksi kertaa putkeen, peli päättyy.</string>
+    <string name="dizgi_new_confirm">Aloitetaanko uusi peli?</string>
+    <string name="dizgi_new_detail">Käynnissä oleva peli hylätään.</string>
+    <string name="dizgi_finished">Peli päättyi</string>
+    <string name="dizgi_winner">Voittaja: %1$s</string>
+    <string name="dizgi_draw">Tasapeli!</string>
+    <!-- Tahtadaki premium kare kısaltmaları -->
+    <string name="dizgi_sq_dl">2K</string>
+    <string name="dizgi_sq_tl">3K</string>
+    <string name="dizgi_sq_dw">2S</string>
+    <string name="dizgi_sq_tw">3S</string>
+    <string name="dizgi_legend_dl">2K kaksinkertainen kirjain</string>
+    <string name="dizgi_legend_tl">3K kolminkertainen kirjain</string>
+    <string name="dizgi_legend_dw">2S kaksinkertainen sana</string>
+    <string name="dizgi_legend_tw">3S kolminkertainen sana</string>
+    <string name="dizgi_board_desc">Dizgi-lauta: %1$d laattaa ladottu, %2$d odottaa</string>
+
+    <!-- Kelime dili seçimi -->
+    <string name="word_lang_title">Sanojen kieli</string>
+    <string name="word_lang_follow">Sovelluksen kieli</string>
+    <string name="word_lang_button">Sanojen kieli: %1$s</string>
+    <string name="word_lang_note">Jokaisella kielellä on oma sanalistansa ja oma päivän pulmansa. Näppäimistö ja aakkosjärjestys seuraavat valittua kieltä.</string>
+</resources>

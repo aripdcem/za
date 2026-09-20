@@ -9,14 +9,14 @@ SÖZÜMÜZ
 OYUNLAR
 Arcade: Blok (düşen bloklar), Yılan, Kuyu (kuyuya düşüş, günlük kuyu), Geçit (karşıya geçiş, günlük mod), Balkon (balkondan nişan: kabak çekirdeği, su balonu ya da tükürük), Viraj (sözde-3D yarış, günlük pist), Filo (dikey uzay savaşı, günlük filo), Raket (raket oyunu: bilgisayara, arkadaşına ya da duvara karşı; günlük duvar), Tuşe (piyano karoları: yedi telifsiz ezgi; günlük parça), Uçurtma (basılı tut yüksel; çatılar, teller ve rakip uçurtmalar; görevler ve ekipman; günlük gökyüzü), Dalgıç (denizaltıyla dalgıç kurtarma; oksijen, köpekbalıkları, mayınlar, akıntı; günlük deniz), Bostan (şerit savunması: kuyu, fıskiye, korkuluk, kovan, tuzak; her seviye kazanılabilir üretilir; üç zorluk, günlük bostan), Sincap (çınarda dikey tırmanış: sola/sağa dokun, üst dala atla; kuru dal, yılan, karga ve hızlanan kedi; günlük çınar), Çekirge (formasyon ateşi: sürükle yürü, dokun fıskırt, tek fıskırtma kuralı; balyalar, kraliçe; günlük tarla), Cici (Bölüm 1: Uzayda — beyaz muhabbet kuşunu sürükle: ballı yem 7, yem 5, su 2 puan; uzay kedileri ve seken kırmızı top; kıpırdamazsa sıkılır; günlük uzay)
 Bulmaca: 2048, Sudoku (üç zorluk, notlar, tek çözüm garantisi), Mayın Tarlası, Kakuro (üç boy, tek çözüm garantisi), Reyon (planogram bulmacası, uyum denetimi ve satış dizilişi; günlük raf)
-Kelime: Beş Harf (Türkçe kelime tahmini, günlük kelime), Kıskaç (alfabetik daraltma), Türetme (harflerden kelime türetme), Dizgi (elden ele kelime tahtası, 2-4 oyuncu)
+Kelime: Beş Harf (kelime tahmini, günlük kelime), Kıskaç (alfabetik daraltma), Türetme (harflerden kelime türetme), Dizgi (elden ele kelime tahtası, 2-4 oyuncu) — dördü de 14 dilde, her dilin kendi sözlüğü ve günlük bulmacasıyla
 Masa ve sayı: Tavla (Klasik, Tapa, Hapis; bilgisayara ya da arkadaşına karşı), Vergici, Toplam Kapma
 
 ÖZELLİKLER
 • Günlük bulmacalar: Beş Harf, Kıskaç, Türetme, Kuyu, Geçit, Viraj, Filo, Reyon, Raket, Tuşe, Uçurtma, Dalgıç, Bostan, Sincap, Çekirge ve Cici'de herkes aynı gün aynı bulmacayı oynar; sunucu yok, tarihten üretilir
 • 14 dil: Türkçe, İngilizce, Almanca, Fransızca, Hollandaca, İspanyolca, Portekizce, İtalyanca, Danca, İsveççe, Norveççe, Fince, Rusça ve Arapça. Uygulama telefonun diline uyar, uygulama içinden de seçebilirsin
 • Sonucunu paylaş: bitiş kartındaki Paylaş, görsel bir sonuç kartı ve kısa bir metin üretir
-• Türkçe sözlükler gömülü; Türkçe klavye ve Türk alfabesi sıralaması
+• 14 dilin sözlüğü gömülü; her dilin kendi klavyesi ve alfabe sıralaması
 • Ses ve titreşim tek dokunuşla kapanır; sol el desteği
 • Açık kaynak (GPL-3.0): github.com/aripdcem/za
 

@@ -43,6 +43,19 @@ class SettingsStore(context: Context) {
             prefs.edit().putString(KEY_LANGUAGE, value).apply()
         }
 
+    /**
+     * Kelime oyunlarının dili (WordLang etiketi), ya da boş: arayüzün dilini izle.
+     *
+     * Arayüz dilinden ayrı tutulur, çünkü ikisi aynı olmak zorunda değil:
+     * Almanya'daki bir oyuncu uygulamayı Almanca kullanıp Beş Harf'i Türkçe
+     * oynayabilir. Arayüz dilinin kelime listesi yoksa oyun İngilizceye düşer.
+     */
+    var wordLanguage: String
+        get() = prefs.getString(KEY_WORD_LANGUAGE, "") ?: ""
+        set(value) {
+            prefs.edit().putString(KEY_WORD_LANGUAGE, value).apply()
+        }
+
     /** Ana menüde seçili grup; null = tümü. */
     var hubCategory: GameCategory?
         get() = prefs.getString(KEY_HUB_CATEGORY, null)
@@ -83,6 +96,7 @@ class SettingsStore(context: Context) {
         const val KEY_HAPTICS = "haptics_enabled"
         const val KEY_LEFT_HANDED = "left_handed"
         const val KEY_LANGUAGE = "language"
+        const val KEY_WORD_LANGUAGE = "word_language"
         const val KEY_HUB_CATEGORY = "hub_category"
         const val KEY_PLAYED_PREFIX = "played_"
         const val KEY_SEEN_VERSION = "seen_version"

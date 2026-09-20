@@ -1,5 +1,12 @@
 package com.za.games.ui.turetme
 
+import androidx.compose.ui.platform.LocalContext
+import com.za.games.platform.WordLangs
+import androidx.compose.runtime.saveable.rememberSaveable
+import com.za.games.ui.common.WordLangScreen
+import com.za.games.ui.common.WordLangChip
+import com.za.games.ui.common.LocalWordLang
+import com.za.games.sozluk.WordLang
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -61,11 +68,13 @@ import com.za.games.ui.common.modeShareLabel
 import kotlinx.coroutines.delay
 import java.util.Locale
 
-private val TrLocale: Locale = Locale.forLanguageTag("tr")
+/**
+ * Harfleri oyunun kendi diliyle büyütür. Sabit bir yerel ayar kullanılamaz:
+ * Türkçe'de "i" -> "İ" ve "ı" -> "I" doğruyken Almanca'da "i" -> "I" olmalı.
+ */
+private fun Char.upper(lang: WordLang): String = toString().uppercase(Locale.forLanguageTag(lang.tag))
 
-private fun Char.upperTr(): String = toString().uppercase(TrLocale)
-
-private fun String.upperTr(): String = uppercase(TrLocale)
+private fun String.upper(lang: WordLang): String = uppercase(Locale.forLanguageTag(lang.tag))
 
 private val AccentPurple = Color(0xFFA78BFA)
 
@@ -76,7 +85,28 @@ fun TuretmeScreen(
     onExit: () -> Unit,
     viewModel: TuretmeViewModel = viewModel(),
 ) {
+    // Kelime dili seçicisi tam ekran açılır: bu uygulamada diyalog yok,
+    // sistem çubukları da gizli. Seçim oyunu o dilde yeniden kurar.
+    var showWordLang by rememberSaveable { mutableStateOf(false) }
+    val wordLang by viewModel.wordLang.collectAsStateWithLifecycle()
+    if (showWordLang) {
+        WordLangScreen(
+            selected = WordLangs.chosen(LocalContext.current),
+            effective = wordLang,
+            onPick = { picked ->
+                showWordLang = false
+                viewModel.setWordLang(picked)
+            },
+            onExit = { showWordLang = false },
+        )
+        return
+    }
+
     val state by viewModel.state.collectAsStateWithLifecycle()
+    // Türetme'nin durumu dil taşımıyor: oyun tabanın harfleriyle oynanır, ayrı
+    // bir alfabeye ya da sıralamaya ihtiyacı yok. Büyük harfe çevirme için dil
+    // ViewModel'den gelir.
+    val lang = wordLang
     val mode by viewModel.mode.collectAsStateWithLifecycle()
     val haptics = LocalZaHaptics.current
     val sound = LocalZaSound.current
@@ -150,6 +180,8 @@ fun TuretmeScreen(
         }
 
         ModeChips(mode = mode, onSelect = viewModel::setMode)
+
+        WordLangChip(lang = wordLang) { showWordLang = true }
 
         Text(
             text = stringResource(
@@ -241,7 +273,7 @@ fun TuretmeScreen(
 
         // Seçilen harflerin oluşturduğu kelime adayı.
         Text(
-            text = if (state.current.isEmpty()) " " else state.current.upperTr(),
+            text = if (state.current.isEmpty()) " " else state.current.upper(lang),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Black,
             letterSpacing = 5.sp,
@@ -368,6 +400,7 @@ private fun ModeChip(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun FoundWords(state: TuretmeState) {
+    val lang = LocalWordLang.current
     // Pes edildiyse tüm hedefler listelenir: bulunanlar dolu,
     // bulunamayanlar çerçeveli/soluk çiplerle.
     val revealed = state.status == TuretmeStatus.GIVEN_UP
@@ -405,7 +438,7 @@ private fun FoundWords(state: TuretmeState) {
                     },
                 ) {
                     Text(
-                        text = word.upperTr(),
+                        text = word.upper(lang),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold,
                         color = when {
@@ -463,6 +496,7 @@ private fun LetterRow(
     enabled: Boolean,
     onPick: (Int) -> Unit,
 ) {
+    val lang = LocalWordLang.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -485,7 +519,7 @@ private fun LetterRow(
             ) {
                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                     Text(
-                        text = letter.upperTr(),
+                        text = letter.upper(lang),
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Black,
                         color = if (used) {

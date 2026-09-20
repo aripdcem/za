@@ -2,6 +2,16 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.41.0 (2026-09-20)
+- **Kelime oyunları 14 dilde:** Beş Harf, Kıskaç, Türetme ve Dizgi artık her dilde kendi sözlüğüyle oynanıyor. Önceden İngilizce telefonda arayüz İngilizceydi ama kelimeler Türkçe geliyordu, yani oyun oynanamıyordu
+- **Kelime dili seçicisi:** arayüzün dilinden ayrı. Almanya'daki bir oyuncu uygulamayı Almanca kullanıp Beş Harf'i Türkçe oynayabilir; seçim dört oyunun kurulum kartında ve kalıcı. Seçim yoksa arayüzün diline uyulur, o dilin listesi yoksa İngilizceye düşülür
+- Her dilin **kendi klavyesi** (QWERTZ, AZERTY, ЙЦУКЕН, Arapça, 29 tuşlu Türkçe), **kendi sözlük sırası** (Almanca'da ä a ile aynı yere, İsveççe'de ä z'den sonra, İspanyolca'da ñ n ile o arasına) ve **kendi günlük bulmacası**
+- Dizgi'nin harf puanları ve torba dağılımı her dil için o dilin derleminden türetildi; İngilizce tablo gerçek Scrabble'a çok yakın çıktı (e = 9 taş / 1 puan, q = 1 taş / 9 puan)
+- Türkçe listeler birebir korundu: günün kelimesi dizisi kaymadı. Bir yan bulgu düzeltildi — listeler Unicode sırasındaydı, Türk alfabesi sırasında değil; Kıskaç'ın "önce mi sonra mı" ipucu bundan etkileniyordu
+- Büyük harfe çevirme oyunun diliyle yapılıyor. Sabit Türkçe yerel ayar Almanca'da "i"yi "İ" yapıyordu; tahtadaki `2H`/`3K` kısaltmaları da koda gömülüydü, artık dile göre (`2L`/`3W`, `2B`/`3W`…)
+- APK 2,9 MB'dan 5,7 MB'a çıktı: 14 dilin sözlükleri. Listeler ön-kodlu yazılıyor (her satır önceki kelimeyle paylaşılan ön ekin uzunluğu + kalanı), bu 1,7 MB kazandırıyor
+- Yeni denetim `tools/check_wordlists.py` CI'da: dil tablosunun iki kopyası (üretim betiği ve oyun kodu) ayrışırsa, bir kelime alfabe dışı harf içerirse, liste yanlış sırada olursa ya da Dizgi'nin torbası 98 taş olmazsa sürüm çıkmaz
+
 ## 0.40.0 (2026-09-19)
 - **Uygulama 14 dilde:** Türkçe, İngilizce, Almanca, Fransızca, Hollandaca, İspanyolca, Portekizce, İtalyanca, Danca, İsveççe, Norveççe (bokmål), Fince, Rusça ve Arapça — her dilde 911 metin. Uygulama telefonun diline uyar; ana menüdeki dil düğmesinden de seçilebilir (Android 13 ve üstünde sistem dil seçicisi, altında uygulama kendi ayarını saklar)
 - Varsayılan dil İngilizce oldu. Önceden Türkçe `values/` içindeydi, yani Play'de Türkiye dışındaki her telefon uygulamayı Türkçe açacaktı

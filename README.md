@@ -15,7 +15,7 @@ Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç 
 | 0 izin | `AndroidManifest.xml` tek bir `uses-permission` içermez |
 | 0 satın alma | Ödeme/abonelik kodu yok |
 | Saf oyun | Skorlar yalnızca cihazda saklanır |
-| 14 dil | Türkçe, İngilizce, Almanca, Fransızca, Hollandaca, İspanyolca, Portekizce, İtalyanca, Danca, İsveççe, Norveççe, Fince, Rusça, Arapça; telefonun diline uyar, ana menüden de seçilir (bkz. [Diller](#diller)) |
+| 14 dil | Türkçe, İngilizce, Almanca, Fransızca, Hollandaca, İspanyolca, Portekizce, İtalyanca, Danca, İsveççe, Norveççe, Fince, Rusça, Arapça — arayüz **ve** kelime oyunlarının sözlükleri; telefonun diline uyar, ayrıca elle seçilir (bkz. [Diller](#diller)) |
 | Gizlilik | Politika: [za.aripd.com/gizlilik.html](https://za.aripd.com/gizlilik.html); uygulama içi **Hakkında** ekranı sürümü, bağlantıları (site, kaynak, sorun bildirme) ve açık kaynak lisanslarını gösterir |
 
 ## Mimari
@@ -455,17 +455,32 @@ rakamları Latin bırakan sayı biçimlendirme burada. Rakamlar Latin kalır ç�
 rakamlarla yazardı ve oyunların skor kartları karışırdı. Büyük harfe çevirme her yerde arayüzün diliyle yapılır:
 Türkçe kilitli bir `uppercase` "Continue" kelimesini "CONTİNUE" yapıyordu.
 
-**Kelime oyunları** (Beş Harf, Kıskaç, Türetme, Dizgi) Türkçe kelime listeleriyle oynanır. Metinleri ayrı bir
-dosyada (`strings_words.xml`) tutulur ve yalnız varsayılan (İngilizce) ile `values-tr` altında bulunur: telefon
-Türkçeyse oyun Türkçe, değilse İngilizce çalışır. Oyunlar bütün dillerde listede kalır; bir dile kelime listesi
-hazırlandığında o dilin `strings_words.xml`'i eklenir, kod değişmez.
+**Kelime oyunları** (Beş Harf, Kıskaç, Türetme, Dizgi) 14 dilde kendi sözlüğüyle oynanır. Her dilin kendi
+klavyesi (QWERTZ, AZERTY, ЙЦУКЕН, Arapça, 29 tuşlu Türkçe), kendi sözlük sırası ve kendi günlük bulmacası vardır;
+Dizgi'nin harf puanları ve torba dağılımı da dil başına o dilin derleminden türetilir. Kelime dili arayüzün
+dilinden **ayrı** seçilebilir (`WordLangs`, oyunların kurulum kartındaki dil düğmesi): Almanya'daki bir oyuncu
+uygulamayı Almanca kullanıp Beş Harf'i Türkçe oynayabilir. Seçim yoksa arayüzün diline uyulur, o dilin listesi
+yoksa İngilizceye düşülür.
+
+`WordLang` (`games/sozluk`) dört oyunun paylaştığı tek kaynaktır: alfabe, sözlük sırası, klavye. Sıralama Unicode
+sırası değildir — Almanca'da ä a ile aynı yere, İsveççe'de ä z'den sonra, İspanyolca'da ñ n ile o arasına,
+Türkçe'de ı i'den önce girer. Kıskaç'ın "önce mi sonra mı" ipucu buna dayanır ve listeler diskte zaten bu sırada
+durur.
+
+Listeler `tools/gen_wordlists.py` ile üretilir; kaynakları ve lisansları [`tools/SOURCES.md`](tools/SOURCES.md)'de.
+İki kaynak kesiştirilir: sıklık listesi hangi kelimenin bilindiğini söyler ama içinde yazım hatası ve özel ad
+vardır, yazım sözlüğü doğruluğu verir ama yaygınlığı bilmez. Özel adlar şu kuralla elenir: yazım sözlüklerinde
+özel adlar yalnız büyük harfle yazılıdır. Uzun listeler **ön-kodlu** yazılır (her satır önceki kelimeyle paylaşılan
+ön ekin uzunluğu + kalanı), bu 14 dilin listesini 4,6 MB yerine 3,0 MB'a indirir.
 
 İki denetim betiği CI'da koşar:
 
 ```bash
-python3 tools/check_strings.py   # dil listeleri tutarlı mı, her dilde bütün metinler var mı,
-                                 # biçim belirteçleri uyuşuyor mu, kaynakta olmayan R.string var mı
-python3 tools/check_store.py     # mağaza metinlerinin sınırları, dil kapsamı, görünmez karakterler
+python3 tools/check_strings.py    # dil listeleri tutarlı mı, her dilde bütün metinler var mı,
+                                  # biçim belirteçleri uyuşuyor mu, kaynakta olmayan R.string var mı
+python3 tools/check_store.py      # mağaza metinlerinin sınırları, dil kapsamı, görünmez karakterler
+python3 tools/check_wordlists.py  # dil tablosunun iki kopyası ayrışmış mı, listeler doğru alfabede
+                                  # ve doğru sırada mı, Dizgi'nin torbası 98 taş mı
 ```
 
 `ZaLocale.TAGS`, `res/xml/locales_config.xml`, `res/values-<dil>` klasörleri ve `store/play/<dil>` listelemeleri
@@ -544,7 +559,7 @@ Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
 - [x] Ses efektleri (kapatılabilir) ve satır temizleme animasyonları
 - [x] Sürümün etiketten türetilmesi, SHA256 sağlamaları ve kaynak arşivleri
 - [x] Çok dilli arayüz: 14 dil, uygulama içi dil seçicisi, mağaza listelemeleri
-- [ ] Kelime oyunları için Türkçe dışı kelime listeleri (Beş Harf, Kıskaç, Türetme, Dizgi)
+- [x] Kelime oyunları için 14 dilde kelime listesi (Beş Harf, Kıskaç, Türetme, Dizgi)
 - [ ] Oyun içi istatistikler (toplam satır, en uzun oturum)
 - [ ] Uygulamada açık tema seçeneği (web sitesi sistem temasına uyar)
 - [ ] F-Droid / Play Store yayını

@@ -1,5 +1,12 @@
 package com.za.games.ui.besharf
 
+import androidx.compose.ui.platform.LocalContext
+import com.za.games.platform.WordLangs
+import androidx.compose.runtime.saveable.rememberSaveable
+import com.za.games.ui.common.WordLangScreen
+import com.za.games.ui.common.WordLangChip
+import com.za.games.ui.common.LocalWordLang
+import com.za.games.sozluk.WordLang
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -58,13 +65,13 @@ import com.za.games.ui.common.modeShareLabel
 import kotlinx.coroutines.delay
 import java.util.Locale
 
-private val TrLocale: Locale = Locale.forLanguageTag("tr")
+/**
+ * Harfleri oyunun kendi diliyle büyütür. Sabit bir yerel ayar kullanılamaz:
+ * Türkçe'de "i" -> "İ" ve "ı" -> "I" doğruyken Almanca'da "i" -> "I" olmalı.
+ */
+private fun Char.upper(lang: WordLang): String = toString().uppercase(Locale.forLanguageTag(lang.tag))
 
-private fun Char.upperTr(): String = toString().uppercase(TrLocale)
-
-private fun String.upperTr(): String = uppercase(TrLocale)
-
-private val KEY_ROWS = listOf("ertyuıopğü", "asdfghjklşi", "zcvbnmöç")
+private fun String.upper(lang: WordLang): String = uppercase(Locale.forLanguageTag(lang.tag))
 
 private val CorrectColor = Color(0xFF4ADE80)
 private val PresentColor = Color(0xFFFACC15)
@@ -78,6 +85,23 @@ fun BesHarfScreen(
     onExit: () -> Unit,
     viewModel: BesHarfViewModel = viewModel(),
 ) {
+    // Kelime dili seçicisi tam ekran açılır: bu uygulamada diyalog yok,
+    // sistem çubukları da gizli. Seçim oyunu o dilde yeniden kurar.
+    var showWordLang by rememberSaveable { mutableStateOf(false) }
+    val wordLang by viewModel.wordLang.collectAsStateWithLifecycle()
+    if (showWordLang) {
+        WordLangScreen(
+            selected = WordLangs.chosen(LocalContext.current),
+            effective = wordLang,
+            onPick = { picked ->
+                showWordLang = false
+                viewModel.setWordLang(picked)
+            },
+            onExit = { showWordLang = false },
+        )
+        return
+    }
+
     val state by viewModel.state.collectAsStateWithLifecycle()
     val mode by viewModel.mode.collectAsStateWithLifecycle()
     val streak by viewModel.streak.collectAsStateWithLifecycle()
@@ -149,6 +173,8 @@ fun BesHarfScreen(
         }
 
         ModeChips(mode = mode, onSelect = viewModel::setMode)
+
+        WordLangChip(lang = wordLang) { showWordLang = true }
 
         Text(
             text = stringResource(R.string.besharf_hint),
@@ -279,6 +305,7 @@ private fun GuessGrid(state: BesHarfState) {
 
 @Composable
 private fun Tile(letter: Char?, mark: LetterMark?, active: Boolean = false) {
+    val lang = LocalWordLang.current
     val background = when (mark) {
         LetterMark.CORRECT -> CorrectColor
         LetterMark.PRESENT -> PresentColor
@@ -300,7 +327,7 @@ private fun Tile(letter: Char?, mark: LetterMark?, active: Boolean = false) {
     ) {
         if (letter != null) {
             Text(
-                text = letter.upperTr(),
+                text = letter.upper(lang),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Black,
                 color = when (mark) {
@@ -320,6 +347,7 @@ private fun BesHarfKeyboard(
     onEnter: () -> Unit,
     onErase: () -> Unit,
 ) {
+    val lang = LocalWordLang.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -329,18 +357,18 @@ private fun BesHarfKeyboard(
         // Aralar dar tutulur: 29 harfli Türkçe klavyede her piksel tuş
         // genişliğine gider (en yoğun satır 11 tuş barındırıyor).
         Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-            KEY_ROWS[0].forEach { letter ->
+            lang.keyRows[0].forEach { letter ->
                 KeyButton(
-                    label = letter.upperTr(),
+                    label = letter.upper(lang),
                     mark = keyMarks[letter],
                     modifier = Modifier.weight(1f),
                 ) { onKey(letter) }
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-            KEY_ROWS[1].forEach { letter ->
+            lang.keyRows[1].forEach { letter ->
                 KeyButton(
-                    label = letter.upperTr(),
+                    label = letter.upper(lang),
                     mark = keyMarks[letter],
                     modifier = Modifier.weight(1f),
                 ) { onKey(letter) }
@@ -354,9 +382,9 @@ private fun BesHarfKeyboard(
                 accent = true,
                 onClick = onEnter,
             )
-            KEY_ROWS[2].forEach { letter ->
+            lang.keyRows[2].forEach { letter ->
                 KeyButton(
-                    label = letter.upperTr(),
+                    label = letter.upper(lang),
                     mark = keyMarks[letter],
                     modifier = Modifier.weight(1f),
                 ) { onKey(letter) }
@@ -429,6 +457,7 @@ private fun ResultOverlay(
     onDismiss: () -> Unit,
     onExit: () -> Unit,
 ) {
+    val lang = LocalWordLang.current
     OverlayCard {
         Text(
             text = stringResource(
@@ -449,7 +478,7 @@ private fun ResultOverlay(
             )
         } else {
             Text(
-                text = stringResource(R.string.answer_was, state.answer.upperTr()),
+                text = stringResource(R.string.answer_was, state.answer.upper(lang)),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
             )

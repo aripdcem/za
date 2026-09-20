@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Beş Harf, Kıskaç, Türetme ve Dizgi metinleri.
+
+  Bu dört oyun kendi kelime listeleriyle oynanır (games/besharf, games/kiskac,
+  games/turetme, games/dizgi altındaki dil klasörleri). Metinler ayrı dosyada
+  duruyor çünkü bir dilin kelime listesi ile o dilin arayüz çevirisi ayrı
+  zamanlarda hazır olabiliyor: liste yoksa oyun o dilde açılmaz, çeviri yoksa
+  Android anahtar başına varsayılana (İngilizce) düşer.
+
+  tools:ignore="MissingTranslation" bu bilinçli boşluk için; strings.xml'de
+  lint açık kalır ve gerçek çeviri eksiklerini yakalamaya devam eder.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <!-- Beş Harf -->
+    <string name="game_besharf">Beş Harf</string>
+    <string name="game_besharf_tagline">Raad het woord: een dagpuzzel + vrij spel</string>
+    <string name="not_in_list">Staat niet in de woordenlijst</string>
+    <string name="too_short">Voer 5 letters in</string>
+    <string name="streak_label">Reeks</string>
+    <string name="answer_was">Antwoord: %1$s</string>
+    <string name="new_word">Nieuw woord</string>
+    <string name="guesses_fmt">Opgelost in %1$d/%2$d</string>
+    <string name="lost_title">Deze keer niet 😔</string>
+    <string name="tomorrow_new_word">Morgen een nieuw woord!</string>
+    <string name="show_board">Bekijk het bord</string>
+    <string name="key_enter">ENTER</string>
+    <string name="besharf_hint">🟩 juiste plek  🟨 in het woord  ⬛ zit er niet in</string>
+
+    <!-- Kıskaç -->
+    <string name="game_kiskac">Kıskaç</string>
+    <string name="game_kiskac_tagline">Alfabetische klem: zet het woord tussen twee grenzen</string>
+    <string name="kiskac_lower_label">Het verborgen woord komt na</string>
+    <string name="kiskac_upper_label">Het verborgen woord komt voor</string>
+    <string name="kiskac_attempts_fmt">Pogingen: %1$d/%2$d</string>
+    <string name="kiskac_hint">Elke poging zegt ervoor of erna; in de makkelijke stand zie je de afstand in procenten</string>
+    <string name="kiskac_after_fmt">%1$d%% eraf</string>
+    <string name="kiskac_before_fmt">%1$d%% eraf</string>
+    <string name="kiskac_easy_mode">Makkelijke stand</string>
+    <string name="kiskac_easy_mode_desc">Toont de afstand in procenten tot elke grens</string>
+    <string name="already_tried">Die heb je al geprobeerd</string>
+
+    <!-- Türetme -->
+    <string name="game_turetme">Türetme</string>
+    <string name="game_turetme_tagline">Maak woorden van de letters — vind je ze allemaal?</string>
+    <string name="turetme_hint">Maak woorden van 3 letters of meer; het basiswoord geeft een bonus</string>
+    <string name="found_label">Gevonden</string>
+    <string name="already_found">Die heb je al gevonden</string>
+    <string name="shuffle_letters">Letters mengen</string>
+    <string name="turetme_completed">Je hebt ze allemaal! 🎉</string>
+    <string name="turetme_empty">Tik letters aan om een woord te maken en druk op ENTER</string>
+    <string name="turetme_give_up">Opgeven</string>
+    <string name="turetme_give_up_confirm">Opgeven?</string>
+    <string name="turetme_give_up_detail">De ronde stopt en de gemiste woorden worden getoond.</string>
+    <string name="turetme_give_up_yes">Opgeven en tonen</string>
+    <string name="turetme_revealed">Gemiste woorden staan omlijnd</string>
+
+    <!-- Dizgi -->
+    <string name="game_dizgi">Dizgi</string>
+    <string name="game_dizgi_tagline">Woordbord om door te geven: leg letters, kruis woorden, scoor</string>
+    <string name="dizgi_players_title">Hoeveel spelers?</string>
+    <string name="dizgi_players_hint">Om de beurt op hetzelfde toestel; alleen wie aan zet is ziet zijn stenen</string>
+    <string name="dizgi_start">Beginnen</string>
+    <string name="dizgi_player_n">Speler %1$d</string>
+    <string name="dizgi_turn_of">Aan zet: %1$s</string>
+    <string name="dizgi_handover">Geef het toestel door; alleen de volgende ziet de stenen</string>
+    <string name="dizgi_ready">Ik ben klaar</string>
+    <string name="dizgi_bag_count">Zak: %1$d</string>
+    <string name="dizgi_confirm_move">Leggen</string>
+    <string name="dizgi_recall">Terugnemen</string>
+    <string name="dizgi_pass">Passen</string>
+    <string name="dizgi_exchange">Ruilen</string>
+    <string name="dizgi_exchange_n">Ruilen (%1$d)</string>
+    <string name="dizgi_cancel">Annuleren</string>
+    <string name="dizgi_joker_pick">Welke letter wordt de joker?</string>
+    <string name="dizgi_move_pass">%1$s heeft gepast</string>
+    <string name="dizgi_move_exchange">%1$s heeft stenen geruild</string>
+    <string name="dizgi_move_words">%1$s: %2$s (+%3$d)</string>
+    <string name="dizgi_bingo">Bingo! +50</string>
+    <string name="dizgi_inv_empty">Leg eerst stenen op het bord</string>
+    <string name="dizgi_inv_line">De stenen moeten op één rij of kolom liggen</string>
+    <string name="dizgi_inv_gap">Het woord mag geen gaten hebben</string>
+    <string name="dizgi_inv_connect">Nieuwe stenen moeten de bestaande raken</string>
+    <string name="dizgi_inv_center">Het eerste woord moet over de middenstar lopen</string>
+    <string name="dizgi_inv_short">Maak een woord van minstens twee letters</string>
+    <string name="dizgi_inv_word">Staat niet in het woordenboek: %1$s</string>
+    <string name="dizgi_inv_exchange">Ruilen kan pas met minstens 7 stenen in de zak</string>
+    <string name="dizgi_exchange_hint">Tik de stenen aan om te ruilen (%1$d gekozen) en druk op Ruilen</string>
+    <string name="dizgi_pass_confirm">Je zet passen?</string>
+    <string name="dizgi_pass_detail">De zet gaat door. Past iedereen twee keer op rij, dan stopt het spel.</string>
+    <string name="dizgi_new_confirm">Een nieuw spel beginnen?</string>
+    <string name="dizgi_new_detail">Het huidige spel gaat verloren.</string>
+    <string name="dizgi_finished">Spel voorbij</string>
+    <string name="dizgi_winner">Winnaar: %1$s</string>
+    <string name="dizgi_draw">Gelijkspel!</string>
+    <!-- Tahtadaki premium kare kısaltmaları -->
+    <string name="dizgi_sq_dl">2L</string>
+    <string name="dizgi_sq_tl">3L</string>
+    <string name="dizgi_sq_dw">2W</string>
+    <string name="dizgi_sq_tw">3W</string>
+    <string name="dizgi_legend_dl">2L dubbele letter</string>
+    <string name="dizgi_legend_tl">3L drievoudige letter</string>
+    <string name="dizgi_legend_dw">2W dubbel woord</string>
+    <string name="dizgi_legend_tw">3W drievoudig woord</string>
+    <string name="dizgi_board_desc">Dizgi-bord: %1$d stenen gelegd, %2$d in afwachting</string>
+
+    <!-- Kelime dili seçimi -->
+    <string name="word_lang_title">Woordtaal</string>
+    <string name="word_lang_follow">Taal van de app</string>
+    <string name="word_lang_button">Woordtaal: %1$s</string>
+    <string name="word_lang_note">Elke taal heeft zijn eigen woordenlijst en zijn eigen dagpuzzel. Toetsenbord en alfabetische orde volgen de taal die je kiest.</string>
+</resources>

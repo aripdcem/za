@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Beş Harf, Kıskaç, Türetme ve Dizgi metinleri.
+
+  Bu dört oyun kendi kelime listeleriyle oynanır (games/besharf, games/kiskac,
+  games/turetme, games/dizgi altındaki dil klasörleri). Metinler ayrı dosyada
+  duruyor çünkü bir dilin kelime listesi ile o dilin arayüz çevirisi ayrı
+  zamanlarda hazır olabiliyor: liste yoksa oyun o dilde açılmaz, çeviri yoksa
+  Android anahtar başına varsayılana (İngilizce) düşer.
+
+  tools:ignore="MissingTranslation" bu bilinçli boşluk için; strings.xml'de
+  lint açık kalır ve gerçek çeviri eksiklerini yakalamaya devam eder.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <!-- Beş Harf -->
+    <string name="game_besharf">Beş Harf</string>
+    <string name="game_besharf_tagline">Devinez le mot : une énigme du jour + le mode libre</string>
+    <string name="not_in_list">Absent de la liste de mots</string>
+    <string name="too_short">Entrez 5 lettres</string>
+    <string name="streak_label">Série</string>
+    <string name="answer_was">Réponse : %1$s</string>
+    <string name="new_word">Nouveau mot</string>
+    <string name="guesses_fmt">Résolu en %1$d/%2$d</string>
+    <string name="lost_title">Pas cette fois 😔</string>
+    <string name="tomorrow_new_word">Un nouveau mot demain !</string>
+    <string name="show_board">Voir la grille</string>
+    <string name="key_enter">ENTRÉE</string>
+    <string name="besharf_hint">🟩 bonne place  🟨 dans le mot  ⬛ absent</string>
+
+    <!-- Kıskaç -->
+    <string name="game_kiskac">Kıskaç</string>
+    <string name="game_kiskac_tagline">Étau alphabétique : coincez le mot entre deux bornes</string>
+    <string name="kiskac_lower_label">Le mot caché vient après</string>
+    <string name="kiskac_upper_label">Le mot caché vient avant</string>
+    <string name="kiskac_attempts_fmt">Essais : %1$d/%2$d</string>
+    <string name="kiskac_hint">Chaque essai dit avant ou après ; le mode facile affiche l\'écart en pourcentage</string>
+    <string name="kiskac_after_fmt">à %1$d%%</string>
+    <string name="kiskac_before_fmt">à %1$d%%</string>
+    <string name="kiskac_easy_mode">Mode facile</string>
+    <string name="kiskac_easy_mode_desc">Affiche l\'écart en pourcentage vers chaque borne</string>
+    <string name="already_tried">Déjà essayé</string>
+
+    <!-- Türetme -->
+    <string name="game_turetme">Türetme</string>
+    <string name="game_turetme_tagline">Formez des mots avec les lettres — les trouverez-vous tous ?</string>
+    <string name="turetme_hint">Formez des mots de 3 lettres ou plus ; le mot de base donne un bonus</string>
+    <string name="found_label">Trouvés</string>
+    <string name="already_found">Déjà trouvé</string>
+    <string name="shuffle_letters">Mélanger les lettres</string>
+    <string name="turetme_completed">Vous avez tout trouvé ! 🎉</string>
+    <string name="turetme_empty">Touchez les lettres pour former un mot, puis ENTRÉE</string>
+    <string name="turetme_give_up">Abandonner</string>
+    <string name="turetme_give_up_confirm">Abandonner ?</string>
+    <string name="turetme_give_up_detail">La manche se termine et les mots manqués sont révélés.</string>
+    <string name="turetme_give_up_yes">Abandonner et révéler</string>
+    <string name="turetme_revealed">Les mots manqués sont encadrés</string>
+
+    <!-- Dizgi -->
+    <string name="game_dizgi">Dizgi</string>
+    <string name="game_dizgi_tagline">Plateau de mots à se passer : posez des lettres, croisez des mots, marquez</string>
+    <string name="dizgi_players_title">Combien de joueurs ?</string>
+    <string name="dizgi_players_hint">On joue à tour de rôle sur le même téléphone ; seul le joueur actif voit ses jetons</string>
+    <string name="dizgi_start">Commencer</string>
+    <string name="dizgi_player_n">Joueur %1$d</string>
+    <string name="dizgi_turn_of">Au tour de : %1$s</string>
+    <string name="dizgi_handover">Passez le téléphone ; seul le suivant verra les jetons</string>
+    <string name="dizgi_ready">Je suis prêt</string>
+    <string name="dizgi_bag_count">Sac : %1$d</string>
+    <string name="dizgi_confirm_move">Jouer</string>
+    <string name="dizgi_recall">Reprendre</string>
+    <string name="dizgi_pass">Passer</string>
+    <string name="dizgi_exchange">Échanger</string>
+    <string name="dizgi_exchange_n">Échanger (%1$d)</string>
+    <string name="dizgi_cancel">Annuler</string>
+    <string name="dizgi_joker_pick">Quelle lettre doit être le joker ?</string>
+    <string name="dizgi_move_pass">%1$s a passé</string>
+    <string name="dizgi_move_exchange">%1$s a échangé des jetons</string>
+    <string name="dizgi_move_words">%1$s : %2$s (+%3$d)</string>
+    <string name="dizgi_bingo">Bingo ! +50</string>
+    <string name="dizgi_inv_empty">Posez d\'abord des jetons sur le plateau</string>
+    <string name="dizgi_inv_line">Les jetons doivent être sur une seule ligne ou colonne</string>
+    <string name="dizgi_inv_gap">Le mot ne peut pas avoir de trous</string>
+    <string name="dizgi_inv_connect">Les nouveaux jetons doivent toucher les anciens</string>
+    <string name="dizgi_inv_center">Le premier mot doit passer par l\'étoile centrale</string>
+    <string name="dizgi_inv_short">Formez un mot de deux lettres au moins</string>
+    <string name="dizgi_inv_word">Absent du dictionnaire : %1$s</string>
+    <string name="dizgi_inv_exchange">Il faut au moins 7 jetons dans le sac pour échanger</string>
+    <string name="dizgi_exchange_hint">Touchez les jetons à échanger (%1$d choisis), puis Échanger</string>
+    <string name="dizgi_pass_confirm">Passer votre tour ?</string>
+    <string name="dizgi_pass_detail">Le tour passe au suivant. Si tout le monde passe deux fois de suite, la partie s\'arrête.</string>
+    <string name="dizgi_new_confirm">Commencer une nouvelle partie ?</string>
+    <string name="dizgi_new_detail">La partie en cours sera abandonnée.</string>
+    <string name="dizgi_finished">Partie terminée</string>
+    <string name="dizgi_winner">Gagnant : %1$s</string>
+    <string name="dizgi_draw">Match nul !</string>
+    <!-- Tahtadaki premium kare kısaltmaları -->
+    <string name="dizgi_sq_dl">2L</string>
+    <string name="dizgi_sq_tl">3L</string>
+    <string name="dizgi_sq_dw">2M</string>
+    <string name="dizgi_sq_tw">3M</string>
+    <string name="dizgi_legend_dl">2L lettre double</string>
+    <string name="dizgi_legend_tl">3L lettre triple</string>
+    <string name="dizgi_legend_dw">2M mot double</string>
+    <string name="dizgi_legend_tw">3M mot triple</string>
+    <string name="dizgi_board_desc">Plateau Dizgi : %1$d jetons posés, %2$d en attente</string>
+
+    <!-- Kelime dili seçimi -->
+    <string name="word_lang_title">Langue des mots</string>
+    <string name="word_lang_follow">Langue de l\'appli</string>
+    <string name="word_lang_button">Langue des mots : %1$s</string>
+    <string name="word_lang_note">Chaque langue a sa propre liste de mots et sa propre énigme du jour. Le clavier et l\'ordre alphabétique suivent la langue choisie.</string>
+</resources>

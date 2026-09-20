@@ -1,5 +1,6 @@
 package com.za.games.besharf
 
+import com.za.games.sozluk.WordLang
 import kotlin.random.Random
 
 enum class LetterMark { CORRECT, PRESENT, ABSENT }
@@ -16,6 +17,8 @@ enum class BesHarfStatus { RUNNING, WON, LOST }
  */
 data class BesHarfState(
     val answer: String,
+    /** Oyunun kelime dili: kabul edilen harfleri ve klavyeyi belirler. */
+    val lang: WordLang,
     val guesses: List<String> = emptyList(),
     val marks: List<List<LetterMark>> = emptyList(),
     val current: String = "",
@@ -29,7 +32,7 @@ data class BesHarfState(
     fun type(letter: Char): BesHarfState = when {
         status != BesHarfStatus.RUNNING -> this
         current.length >= WORD_LENGTH -> this
-        letter !in ALPHABET -> this
+        letter !in lang.alphabet -> this
         else -> copy(current = current + letter)
     }
 
@@ -74,9 +77,6 @@ data class BesHarfState(
         const val MAX_GUESSES = 6
         private const val DAILY_SEED = 0x5A_BE5_4A2FL
 
-        /** Türk alfabesinin 29 harfi. */
-        val ALPHABET: Set<Char> = "abcçdefgğhıijklmnoöprsştuüvyz".toSet()
-
         fun mark(answer: String, guess: String): List<LetterMark> {
             require(answer.length == WORD_LENGTH && guess.length == WORD_LENGTH)
             val result = arrayOfNulls<LetterMark>(WORD_LENGTH)
@@ -110,7 +110,7 @@ data class BesHarfState(
          * aynı Kotlin sürümü içinde tekrarlanabilirlik garantiler; bu sayede
          * günün kelimesi uygulama güncellemeleriyle değişmez.
          */
-        fun daily(answers: List<String>, epochDay: Long): BesHarfState {
+        fun daily(lang: WordLang, answers: List<String>, epochDay: Long): BesHarfState {
             val n = answers.size
             val order = IntArray(n) { it }
             var s = DAILY_SEED
@@ -122,10 +122,10 @@ data class BesHarfState(
                 order[j] = tmp
             }
             val pos = (((epochDay % n) + n) % n).toInt()
-            return BesHarfState(answer = answers[order[pos]], dailyDay = epochDay)
+            return BesHarfState(answer = answers[order[pos]], lang = lang, dailyDay = epochDay)
         }
 
-        fun free(answers: List<String>, seed: Long = Random.nextLong()): BesHarfState =
-            BesHarfState(answer = answers[Random(seed).nextInt(answers.size)])
+        fun free(lang: WordLang, answers: List<String>, seed: Long = Random.nextLong()): BesHarfState =
+            BesHarfState(answer = answers[Random(seed).nextInt(answers.size)], lang = lang)
     }
 }

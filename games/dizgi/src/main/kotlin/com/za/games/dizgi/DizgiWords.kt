@@ -1,12 +1,19 @@
 package com.za.games.dizgi
 
-/** Gömülü sözlük: 2-15 harfli geçerli kökler (tools/gen_dizgi.py üretir). */
-object DizgiWords {
+import com.za.games.sozluk.WordFile
+import com.za.games.sozluk.WordLang
+
+/** Gömülü sözlük: 2-15 harfli geçerli kelimeler (tools/gen_wordlists.py üretir). */
+class DizgiWords private constructor(val lang: WordLang) {
 
     val valid: Set<String> by lazy {
-        DizgiWords::class.java.getResourceAsStream("/dizgi/valid.txt")!!
-            .bufferedReader(Charsets.UTF_8)
-            .readLines()
-            .filterTo(HashSet()) { it.isNotBlank() }
+        WordFile.read(javaClass, "/dizgi/${lang.tag}/valid.txt").toHashSet()
+    }
+
+    companion object {
+        private val cache = HashMap<WordLang, DizgiWords>()
+
+        @Synchronized
+        fun of(lang: WordLang): DizgiWords = cache.getOrPut(lang) { DizgiWords(lang) }
     }
 }

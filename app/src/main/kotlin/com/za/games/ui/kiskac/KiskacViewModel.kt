@@ -1,12 +1,13 @@
 package com.za.games.ui.kiskac
 
+import com.za.games.sozluk.WordLang
+import com.za.games.platform.WordLangs
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.za.games.besharf.BesHarfWords
 import com.za.games.kiskac.KiskacState
 import com.za.games.kiskac.KiskacStatus
-import com.za.games.kiskac.TurkishOrder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,6 +22,27 @@ enum class KiskacMode { DAILY, FREE }
 class KiskacViewModel(application: Application) : AndroidViewModel(application) {
 
     private val store = KiskacStore(application)
+
+    /**
+     * Oyunun kelime dili. Varsayılan arayüzün dilidir; oyuncu kurulum kartından
+     * başka bir dil seçebilir ve seçim kalıcıdır (bkz. [WordLangs]).
+     */
+    private val _wordLang = MutableStateFlow(WordLangs.current(application))
+    val wordLang: StateFlow<WordLang> = _wordLang.asStateFlow()
+
+    /** Seçili dilin listeleri; dil değişince yeniden okunur (önbellekli). */
+    private var words = BesHarfWords.of(_wordLang.value)
+
+    /** Seçim: null = arayüzün dilini izle. Dil değişince oyun baştan kurulur. */
+    fun setWordLang(lang: WordLang?) {
+        WordLangs.choose(getApplication(), lang)
+        val next = WordLangs.current(getApplication())
+        if (next == _wordLang.value) return
+        _wordLang.value = next
+        words = BesHarfWords.of(next)
+        restart()
+        sortWords()
+    }
 
     private val _mode = MutableStateFlow(KiskacMode.DAILY)
     val mode: StateFlow<KiskacMode> = _mode.asStateFlow()
@@ -44,8 +66,21 @@ class KiskacViewModel(application: Application) : AndroidViewModel(application) 
     val sortedWords: StateFlow<List<String>> = _sortedWords.asStateFlow()
 
     init {
+        sortWords()
+    }
+
+    /**
+     * Uzaklık ipucunun ikili araması için liste dilin sözlük sırasında olmalı.
+     * Dosya zaten o sırada yazılıyor, yine de burada doğrulanıp kullanılır:
+     * okuma ve ilk dizim arka planda, ana iş parçacığı tıkanmasın diye.
+     */
+    private fun sortWords() {
+        val lang = _wordLang.value
+        val source = words
+        _sortedWords.value = emptyList()
         viewModelScope.launch(Dispatchers.Default) {
-            _sortedWords.value = BesHarfWords.allowed.sortedWith(TurkishOrder::compare)
+            val sorted = source.allowed
+            if (_wordLang.value == lang) _sortedWords.value = sorted
         }
     }
 
@@ -54,9 +89,9 @@ class KiskacViewModel(application: Application) : AndroidViewModel(application) 
     /** Günün bulmacası; aynı gün içinde kaydedilmiş tahminler geri oynatılır. */
     private fun restoredDaily(): KiskacState {
         val day = todayEpoch()
-        var state = KiskacState.daily(BesHarfWords.answers, day)
-        if (store.dailyDay == day) {
-            for (guess in store.dailyGuesses) {
+        var state = KiskacState.daily(_wordLang.value, words.answers, day)
+        if (store.dailyDay(_wordLang.value.tag) == day) {
+            for (guess in store.dailyGuesses(_wordLang.value.tag)) {
                 state = state.copy(current = guess).submit { true }
             }
         }
@@ -75,7 +110,7 @@ class KiskacViewModel(application: Application) : AndroidViewModel(application) 
         _mode.value = mode
         _state.value = when (mode) {
             KiskacMode.DAILY -> restoredDaily()
-            KiskacMode.FREE -> KiskacState.free(BesHarfWords.answers)
+            KiskacMode.FREE -> KiskacState.free(_wordLang.value, words.answers)
         }
     }
 
@@ -85,13 +120,13 @@ class KiskacViewModel(application: Application) : AndroidViewModel(application) 
 
     fun submit() {
         val before = _state.value
-        val after = before.submit(BesHarfWords::isAllowed)
+        val after = before.submit(words::isAllowed)
         _state.value = after
         if (after.guesses.size == before.guesses.size) return // geçersiz gönderim
 
         val day = after.dailyDay
         if (_mode.value == KiskacMode.DAILY && day != null && day == todayEpoch()) {
-            store.saveDaily(day, after.guesses.map { it.word })
+            store.saveDaily(_wordLang.value.tag, day, after.guesses.map { it.word })
         }
         if (before.status == KiskacStatus.RUNNING) {
             when (after.status) {
@@ -108,10 +143,18 @@ class KiskacViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+    /** Dil değişince açık tahta o dilde yeniden kurulur. */
+    private fun restart() {
+        _state.value = when (_mode.value) {
+            KiskacMode.DAILY -> restoredDaily()
+            KiskacMode.FREE -> KiskacState.free(_wordLang.value, words.answers)
+        }
+    }
+
     /** Serbest modda yeni kelime. */
     fun newFreeGame() {
         if (_mode.value == KiskacMode.FREE) {
-            _state.value = KiskacState.free(BesHarfWords.answers)
+            _state.value = KiskacState.free(_wordLang.value, words.answers)
         }
     }
 }

@@ -10,7 +10,8 @@ import com.za.games.platform.ShareDraw
 import com.za.games.platform.drawCentered
 import java.util.Locale
 
-private val ShareTrLocale: Locale = Locale.forLanguageTag("tr")
+/** Paylaşım kartındaki harfler oyunun diliyle büyütülür (Türkçe i/ı ayrımı). */
+private fun shareLocale(state: DizgiState): Locale = Locale.forLanguageTag(state.lang.tag)
 
 /** Paylaşım kartı ressamı: bitmiş tahta, premium kareler ve taşlar. */
 internal fun dizgiPainter(state: DizgiState): (Canvas, RectF) -> Unit = { canvas, rect ->
@@ -40,13 +41,13 @@ internal fun dizgiPainter(state: DizgiState): (Canvas, RectF) -> Unit = { canvas
         if (tile != null) {
             canvas.drawRoundRect(box, corner, corner, face)
             canvas.drawCentered(
-                tile.letter.toString().uppercase(ShareTrLocale),
+                tile.letter.toString().uppercase(shareLocale(state)),
                 box.centerX() - cell * 0.04f,
                 box.centerY(),
                 if (tile.isJoker) jokerInk else ink,
             )
             if (!tile.isJoker) {
-                canvas.drawText(tile.points.toString(), box.right - cell * 0.06f, box.bottom - cell * 0.08f, points)
+                canvas.drawText(state.pointsOf(tile).toString(), box.right - cell * 0.06f, box.bottom - cell * 0.08f, points)
             }
         } else {
             val premium = DizgiBoard.premium(index)

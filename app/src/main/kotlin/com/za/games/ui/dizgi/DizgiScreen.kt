@@ -1,5 +1,12 @@
 package com.za.games.ui.dizgi
 
+import androidx.compose.ui.platform.LocalContext
+import com.za.games.platform.WordLangs
+import androidx.compose.runtime.saveable.rememberSaveable
+import com.za.games.ui.common.WordLangScreen
+import com.za.games.ui.common.WordLangChip
+import com.za.games.ui.common.LocalWordLang
+import com.za.games.sozluk.WordLang
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -80,9 +87,13 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 
-private val TrLocale: Locale = Locale.forLanguageTag("tr")
+/**
+ * Harfleri oyunun kendi diliyle büyütür. Sabit bir yerel ayar kullanılamaz:
+ * Türkçe'de "i" -> "İ" ve "ı" -> "I" doğruyken Almanca'da "i" -> "I" olmalı.
+ */
+private fun Char.upper(lang: WordLang): String = toString().uppercase(Locale.forLanguageTag(lang.tag))
 
-private fun String.upperTr(): String = uppercase(TrLocale)
+private fun String.upper(lang: WordLang): String = uppercase(Locale.forLanguageTag(lang.tag))
 
 private val AccentOrange = Color(0xFFFB923C)
 private val TileFace = Color(0xFFEADFC8)
@@ -98,6 +109,23 @@ fun DizgiScreen(
     onExit: () -> Unit,
     viewModel: DizgiViewModel = viewModel(),
 ) {
+    // Kelime dili seçicisi tam ekran açılır: bu uygulamada diyalog yok,
+    // sistem çubukları da gizli. Seçim oyunu o dilde yeniden kurar.
+    var showWordLang by rememberSaveable { mutableStateOf(false) }
+    val wordLang by viewModel.wordLang.collectAsStateWithLifecycle()
+    if (showWordLang) {
+        WordLangScreen(
+            selected = WordLangs.chosen(LocalContext.current),
+            effective = wordLang,
+            onPick = { picked ->
+                showWordLang = false
+                viewModel.setWordLang(picked)
+            },
+            onExit = { showWordLang = false },
+        )
+        return
+    }
+
     val state by viewModel.state.collectAsStateWithLifecycle()
     val phase by viewModel.phase.collectAsStateWithLifecycle()
     val matchId by viewModel.matchId.collectAsStateWithLifecycle()
@@ -182,9 +210,14 @@ fun DizgiScreen(
             }
         }
 
+        // Dil yalnız kurulumda değişir: maç ortasında sözlük ve harf puanları
+        // değişirse tahtadaki kelimeler geçersizleşir.
+        if (phase == DizgiPhase.SETUP) {
+            WordLangChip(lang = wordLang) { showWordLang = true }
+        }
+
         when (phase) {
             DizgiPhase.SETUP -> SetupPane(onStart = viewModel::start)
-
             DizgiPhase.HANDOVER -> HandoverPane(
                 state = state,
                 onReady = viewModel::beginTurn,
@@ -412,6 +445,7 @@ private fun HandoverPane(state: DizgiState, onReady: () -> Unit) {
 
 @Composable
 private fun LastMoveText(state: DizgiState) {
+    val lang = LocalWordLang.current
     val move = state.lastMove ?: return
     val name = stringResource(R.string.dizgi_player_n, move.player + 1)
     val text = when (move.kind) {
@@ -420,7 +454,7 @@ private fun LastMoveText(state: DizgiState) {
         DizgiMoveKind.PLACE -> stringResource(
             R.string.dizgi_move_words,
             name,
-            move.words.joinToString(", ") { it.upperTr() },
+            move.words.joinToString(", ") { it.upper(lang) },
             move.gained,
         ) + if (move.bingo) "  ·  " + stringResource(R.string.dizgi_bingo) else ""
     }
@@ -455,6 +489,7 @@ private fun PlayPane(
     onShowBoard: () -> Unit,
     onExit: () -> Unit,
 ) {
+    val lang = LocalWordLang.current
     Column(Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier
@@ -517,7 +552,7 @@ private fun PlayPane(
                     DizgiInvalid.SHORT_WORD -> stringResource(R.string.dizgi_inv_short)
                     DizgiInvalid.INVALID_WORD -> stringResource(
                         R.string.dizgi_inv_word,
-                        words.joinToString(", ") { it.upperTr() },
+                        words.joinToString(", ") { it.upper(lang) },
                     )
                     DizgiInvalid.EXCHANGE_UNAVAILABLE -> stringResource(R.string.dizgi_inv_exchange)
                 }
@@ -661,6 +696,14 @@ private fun DizgiBoardCanvas(
     onCellTap: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // Premium kare kısaltmaları: Canvas içinde stringResource çağrılamaz.
+    val squareLabels = listOf(
+        stringResource(R.string.dizgi_sq_dl),
+        stringResource(R.string.dizgi_sq_tl),
+        stringResource(R.string.dizgi_sq_dw),
+        stringResource(R.string.dizgi_sq_tw),
+    )
+    val lang = LocalWordLang.current
     val textMeasurer = rememberTextMeasurer()
     val layoutCache = remember { mutableMapOf<String, TextLayoutResult>() }
     val boardDesc = stringResource(R.string.dizgi_board_desc, state.board.size, state.pending.size)
@@ -734,7 +777,7 @@ private fun DizgiBoardCanvas(
                     )
                 }
                 textAt(
-                    tile.letter.toString().upperTr(),
+                    tile.letter.toString().upper(lang),
                     index,
                     if (tile.isJoker) JokerInk else TileInk,
                     scale = 0.58f,
@@ -754,11 +797,14 @@ private fun DizgiBoardCanvas(
                     cornerRadius = corner,
                 )
                 // Premium kareler etiketli: yeni oyuncu mekaniği tahtadan okuyabilir.
+                // Kısaltmalar dile göre değişir ("2H" Türkçe "2 Harf", "2L" İngilizce
+                // "double letter"); Canvas içinde kaynak okunamadığı için yukarıda
+                // çözülüp buraya geçirilir.
                 val label = when (DizgiBoard.premium(index)) {
-                    Premium.DL -> "2H"
-                    Premium.TL -> "3H"
-                    Premium.DW -> "2K"
-                    Premium.TW -> "3K"
+                    Premium.DL -> squareLabels[0]
+                    Premium.TL -> squareLabels[1]
+                    Premium.DW -> squareLabels[2]
+                    Premium.TW -> squareLabels[3]
                     Premium.NONE -> null
                 }
                 if (index == DizgiBoard.CENTER) {
@@ -781,6 +827,7 @@ private fun RackRow(
     exchangePicks: Set<Int>,
     onRackTap: (Int) -> Unit,
 ) {
+    val lang = LocalWordLang.current
     val rack = state.players[state.current].rack
     val used = state.pendingRack.values.toSet()
     Row(
@@ -820,7 +867,7 @@ private fun RackRow(
                 if (!placed) {
                     Box(Modifier.fillMaxSize()) {
                         Text(
-                            text = if (tile.isJoker) "★" else tile.letter.toString().upperTr(),
+                            text = if (tile.isJoker) "★" else tile.letter.toString().upper(lang),
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Black,
                             color = if (tile.isJoker) JokerInk else TileInk,
@@ -828,7 +875,7 @@ private fun RackRow(
                         )
                         if (!tile.isJoker) {
                             Text(
-                                text = "${tile.points}",
+                                text = "${DizgiLetters.of(lang).pointsOf(tile.letter)}",
                                 fontSize = 9.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = TileInk.copy(alpha = 0.65f),
@@ -852,6 +899,7 @@ private fun RackRow(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun JokerPicker(onPick: (Char) -> Unit, onDismiss: () -> Unit) {
+    val lang = LocalWordLang.current
     OverlayCard(scrollable = false) {
         Text(
             text = stringResource(R.string.dizgi_joker_pick),
@@ -865,7 +913,7 @@ private fun JokerPicker(onPick: (Char) -> Unit, onDismiss: () -> Unit) {
                 .heightIn(max = 260.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
-            DizgiLetters.letters.forEach { letter ->
+            DizgiLetters.of(lang).letters.forEach { letter ->
                 Surface(
                     onClick = { onPick(letter) },
                     shape = RoundedCornerShape(8.dp),
@@ -874,7 +922,7 @@ private fun JokerPicker(onPick: (Char) -> Unit, onDismiss: () -> Unit) {
                 ) {
                     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                         Text(
-                            text = letter.toString().upperTr(),
+                            text = letter.toString().upper(lang),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Black,
                             color = TileInk,

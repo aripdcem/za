@@ -27,6 +27,12 @@ jobs:
       - name: Mağaza metinleri denetimi
         run: python3 tools/check_store.py
 
+      # Kelime listeleri: dil tablosu iki yerde (tools/wordlang.py ve
+      # WordLang.kt) duruyor, ayrışırsa hata sessiz olur. Ayrıca listelerin
+      # alfabesi, sıralaması, uzunlukları ve Dizgi harf tablosu denetlenir.
+      - name: Kelime listesi denetimi
+        run: python3 tools/check_wordlists.py
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

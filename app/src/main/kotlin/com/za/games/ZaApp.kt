@@ -1,5 +1,7 @@
 package com.za.games
 
+import com.za.games.ui.common.LocalWordLang
+import com.za.games.platform.WordLangs
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -86,7 +88,17 @@ fun ZaApp() {
 
     BackHandler(enabled = currentGame != null) { currentGameId = null }
 
-    CompositionLocalProvider(LocalZaSound provides soundPlayer, LocalZaHaptics provides gatedHaptics) {
+    // Kelime oyunlarının dili: ekranın derinlerinde klavye sırası, harf büyütme
+    // ve taş etiketleri için gerekiyor, tek yerden sağlanır. Oyuncunun seçimi
+    // yoksa arayüzün diline uyar; o dilin listesi yoksa İngilizceye düşer.
+    // effectiveLanguage'a bağlı: oyuncu arayüz dilini değiştirince yeniden okunur.
+    val wordLang = remember(effectiveLanguage, showLanguage) { WordLangs.current(context) }
+
+    CompositionLocalProvider(
+        LocalZaSound provides soundPlayer,
+        LocalZaHaptics provides gatedHaptics,
+        LocalWordLang provides wordLang,
+    ) {
         if (currentGame == null && showAbout) {
             AboutScreen(onExit = { showAbout = false })
         } else if (currentGame == null && showLanguage) {

@@ -52,6 +52,67 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.41.0", "2026-09-20",
+            tr = listOf(
+                "Beş Harf, Kıskaç, Türetme ve Dizgi artık 14 dilde kendi sözlüğüyle oynanıyor; her dilin kendi klavyesi, kendi alfabe sırası ve kendi günlük bulmacası var",
+                "Kelime dili arayüzün dilinden ayrı seçilebiliyor: uygulamayı Almanca kullanıp Beş Harf'i Türkçe oynayabilirsin. Seçim dört oyunun kurulum kartında",
+            ),
+            en = listOf(
+                "Beş Harf, Kıskaç, Türetme and Dizgi now play in 14 languages with their own dictionaries; each language has its own keyboard, alphabetical order and daily puzzle",
+                "The word language is picked separately from the app language: use the app in German and play Beş Harf in Turkish. The setting sits in each game's setup card",
+            ),
+            others = mapOf(
+                "de" to listOf(
+                    "Beş Harf, Kıskaç, Türetme und Dizgi spielen jetzt in 14 Sprachen mit eigenen Wörterbüchern; jede Sprache hat ihre Tastatur, ihre alphabetische Reihenfolge und ihr tägliches Rätsel",
+                    "Die Wortsprache wird getrennt von der App-Sprache gewählt: App auf Deutsch, Beş Harf auf Türkisch. Die Einstellung steht im Startbereich jedes Spiels",
+                ),
+                "fr" to listOf(
+                    "Beş Harf, Kıskaç, Türetme et Dizgi se jouent maintenant en 14 langues avec leurs propres dictionnaires ; chaque langue a son clavier, son ordre alphabétique et son énigme du jour",
+                    "La langue des mots se choisit séparément de celle de l'appli : l'appli en français et Beş Harf en turc. Le réglage est dans l'écran de départ de chaque jeu",
+                ),
+                "nl" to listOf(
+                    "Beş Harf, Kıskaç, Türetme en Dizgi spelen nu in 14 talen met hun eigen woordenboeken; elke taal heeft zijn toetsenbord, zijn alfabetische orde en zijn dagpuzzel",
+                    "De woordtaal kies je los van de taal van de app: de app in het Nederlands en Beş Harf in het Turks. De instelling staat in het startscherm van elk spel",
+                ),
+                "es" to listOf(
+                    "Beş Harf, Kıskaç, Türetme y Dizgi ya se juegan en 14 idiomas con sus propios diccionarios; cada idioma tiene su teclado, su orden alfabético y su reto diario",
+                    "El idioma de las palabras se elige aparte del de la app: la app en español y Beş Harf en turco. El ajuste está en la pantalla de inicio de cada juego",
+                ),
+                "pt" to listOf(
+                    "Beş Harf, Kıskaç, Türetme e Dizgi agora são jogados em 14 idiomas com os seus próprios dicionários; cada idioma tem o seu teclado, a sua ordem alfabética e o seu desafio diário",
+                    "O idioma das palavras é escolhido separadamente do idioma do app: o app em português e Beş Harf em turco. O ajuste fica na tela inicial de cada jogo",
+                ),
+                "it" to listOf(
+                    "Beş Harf, Kıskaç, Türetme e Dizgi si giocano ora in 14 lingue con i propri dizionari; ogni lingua ha la sua tastiera, il suo ordine alfabetico e la sua sfida del giorno",
+                    "La lingua delle parole si scegli separatamente da quella dell'app: app in italiano e Beş Harf in turco. L'impostazione è nella schermata iniziale di ogni gioco",
+                ),
+                "da" to listOf(
+                    "Beş Harf, Kıskaç, Türetme og Dizgi spilles nu på 14 sprog med deres egne ordbøger; hvert sprog har sit tastatur, sin alfabetiske orden og sin daglige opgave",
+                    "Ordsproget vælges uafhængigt af appens sprog: appen på dansk og Beş Harf på tyrkisk. Indstillingen står på hvert spils startskærm",
+                ),
+                "sv" to listOf(
+                    "Beş Harf, Kıskaç, Türetme och Dizgi spelas nu på 14 språk med egna ordböcker; varje språk har sitt tangentbord, sin alfabetiska ordning och sin dagliga uppgift",
+                    "Ordspråket väljs separat från appens språk: appen på svenska och Beş Harf på turkiska. Inställningen finns på varje spels startskärm",
+                ),
+                "nb" to listOf(
+                    "Beş Harf, Kıskaç, Türetme og Dizgi spilles nå på 14 språk med egne ordbøker; hvert språk har sitt tastatur, sin alfabetiske rekkefølge og sin daglige oppgave",
+                    "Ordspråket velges uavhengig av appens språk: appen på norsk og Beş Harf på tyrkisk. Innstillingen står på hvert spills startskjerm",
+                ),
+                "fi" to listOf(
+                    "Beş Harf, Kıskaç, Türetme ja Dizgi pelataan nyt 14 kielellä omilla sanakirjoillaan; jokaisella kielellä on oma näppäimistö, oma aakkosjärjestys ja oma päivän pulma",
+                    "Sanojen kieli valitaan sovelluksen kielestä erikseen: sovellus suomeksi ja Beş Harf turkiksi. Asetus on jokaisen pelin aloitusnäytössä",
+                ),
+                "ru" to listOf(
+                    "Beş Harf, Kıskaç, Türetme и Dizgi теперь играются на 14 языках со своими словарями; у каждого языка своя клавиатура, свой алфавитный порядок и своя задача дня",
+                    "Язык слов выбирается отдельно от языка приложения: приложение по-русски, а Beş Harf по-турецки. Настройка — на стартовом экране каждой игры",
+                ),
+                "ar" to listOf(
+                    "صارت Beş Harf وKıskaç وTüretme وDizgi تُلعب بأربع عشرة لغة بقواميسها الخاصة؛ لكل لغة لوحة مفاتيحها وترتيبها الأبجدي ولغز يومها",
+                    "تُختار لغة الكلمات مستقلةً عن لغة التطبيق: التطبيق بالعربية وBeş Harf بالتركية. الإعداد في شاشة بداية كل لعبة",
+                ),
+            ),
+        ),
+        ReleaseNote(
             "0.40.0", "2026-09-19",
             tr = listOf(
                 "Uygulama 14 dilde: Türkçe, İngilizce, Almanca, Fransızca, Hollandaca, İspanyolca, Portekizce, İtalyanca, Danca, İsveççe, Norveççe, Fince, Rusça ve Arapça. Telefonun diline uyar; ana menüdeki dil düğmesinden de seçebilirsin",
