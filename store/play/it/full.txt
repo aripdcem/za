@@ -17,6 +17,6 @@ FUNZIONI
 • 14 lingue: italiano, inglese, turco, tedesco, francese, olandese, spagnolo, portoghese, danese, svedese, norvegese, finlandese, russo e arabo. L'app segue la lingua del telefono e puoi anche sceglierla dentro l'app
 • Condividi il risultato: il pulsante Condividi disegna una carta del risultato e un testo breve
 • Suono e vibrazione si spengono con un tocco; modalità per mancini
-• Open source (GPL-3.0): github.com/aripdcem/za
+• Open source (GPL-3.0): github.com/aripdcom/zagames
 
 Informativa sulla privacy: zagames.aripd.com/gizlilik.html

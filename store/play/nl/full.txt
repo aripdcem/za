@@ -17,6 +17,6 @@ FUNCTIES
 • 14 talen: Nederlands, Engels, Turks, Duits, Frans, Spaans, Portugees, Italiaans, Deens, Zweeds, Noors, Fins, Russisch en Arabisch. De app volgt de taal van je toestel, je kunt er ook een kiezen in de app
 • Deel je resultaat: de Delen-knop tekent een resultaatkaart en een korte tekst
 • Geluid en haptiek met één tik uit; linkshandige modus
-• Open source (GPL-3.0): github.com/aripdcem/za
+• Open source (GPL-3.0): github.com/aripdcom/zagames
 
 Privacybeleid: zagames.aripd.com/gizlilik.html

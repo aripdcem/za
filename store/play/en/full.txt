@@ -18,6 +18,6 @@ FEATURES
 • Share your result: the Share button renders a result card and a short text
 • Dictionaries built in for all 14 languages; each with its own keyboard and alphabetical order
 • Sound and haptics toggle with one tap; left-hand mode
-• Open source (GPL-3.0): github.com/aripdcem/za
+• Open source (GPL-3.0): github.com/aripdcom/zagames
 
 Privacy policy: zagames.aripd.com/gizlilik.html

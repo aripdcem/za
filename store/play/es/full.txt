@@ -17,6 +17,6 @@ CARACTERÍSTICAS
 • 14 idiomas: español, inglés, turco, alemán, francés, neerlandés, portugués, italiano, danés, sueco, noruego, finés, ruso y árabe. La app sigue el idioma del teléfono y también puedes elegirlo dentro de la app
 • Comparte tu resultado: el botón Compartir dibuja una tarjeta de resultado y un texto corto
 • Sonido y vibración se apagan con un toque; modo para zurdos
-• Código abierto (GPL-3.0): github.com/aripdcem/za
+• Código abierto (GPL-3.0): github.com/aripdcom/zagames
 
 Política de privacidad: zagames.aripd.com/gizlilik.html

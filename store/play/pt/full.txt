@@ -17,6 +17,6 @@ RECURSOS
 • 14 idiomas: português, inglês, turco, alemão, francês, holandês, espanhol, italiano, dinamarquês, sueco, norueguês, finlandês, russo e árabe. O app segue o idioma do telefone e você também pode escolher um dentro do app
 • Compartilhe seu resultado: o botão Compartilhar desenha um cartão de resultado e um texto curto
 • Som e vibração desligam com um toque; modo para canhotos
-• Código aberto (GPL-3.0): github.com/aripdcem/za
+• Código aberto (GPL-3.0): github.com/aripdcom/zagames
 
 Política de privacidade: zagames.aripd.com/gizlilik.html

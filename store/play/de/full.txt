@@ -17,6 +17,6 @@ FUNKTIONEN
 • 14 Sprachen: Deutsch, Englisch, Türkisch, Französisch, Niederländisch, Spanisch, Portugiesisch, Italienisch, Dänisch, Schwedisch, Norwegisch, Finnisch, Russisch und Arabisch. Die App folgt der Sprache des Telefons, du kannst sie auch in der App wählen
 • Ergebnis teilen: die Teilen-Taste zeichnet eine Ergebniskarte und einen kurzen Text
 • Ton und Haptik mit einem Tippen aus; Linkshändermodus
-• Open Source (GPL-3.0): github.com/aripdcem/za
+• Open Source (GPL-3.0): github.com/aripdcom/zagames
 
 Datenschutzerklärung: zagames.aripd.com/gizlilik.html

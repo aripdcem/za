@@ -18,6 +18,6 @@ Masa ve sayı: Tavla (Klasik, Tapa, Hapis; bilgisayara ya da arkadaşına karş�
 • Sonucunu paylaş: bitiş kartındaki Paylaş, görsel bir sonuç kartı ve kısa bir metin üretir
 • 14 dilin sözlüğü gömülü; her dilin kendi klavyesi ve alfabe sıralaması
 • Ses ve titreşim tek dokunuşla kapanır; sol el desteği
-• Açık kaynak (GPL-3.0): github.com/aripdcem/za
+• Açık kaynak (GPL-3.0): github.com/aripdcom/zagames
 
 Gizlilik politikası: zagames.aripd.com/gizlilik.html

@@ -525,7 +525,7 @@ Motor testleri Android SDK gerektirmez. Sürüm `-PzaVersion=X.Y.Z` özelliğiyl
 En yeni sürüm her zaman şu sabit adresten inebilir:
 
 ```
-https://github.com/aripdcem/za/releases/latest/download/za.apk
+https://github.com/aripdcom/zagames/releases/latest/download/za.apk
 ```
 
 Doğrulama: `sha256sum -c SHA256SUMS.txt`
@@ -534,8 +534,8 @@ Gerekli depo secret'ları (yalnızca depo sahibi ayarlar):
 
 ```bash
 keytool -genkeypair -v -keystore keys/za-release.jks -alias za -keyalg RSA -keysize 2048 -validity 10000
-base64 -w0 keys/za-release.jks | gh secret set ANDROID_KEYSTORE_BASE64 --repo aripdcem/za
-gh secret set ANDROID_KEYSTORE_PASSWORD --repo aripdcem/za
+base64 -w0 keys/za-release.jks | gh secret set ANDROID_KEYSTORE_BASE64 --repo aripdcom/zagames
+gh secret set ANDROID_KEYSTORE_PASSWORD --repo aripdcom/zagames
 ```
 
 Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
@@ -546,7 +546,7 @@ Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
 
 1. Depo **Settings → Pages** → Source: **GitHub Actions**
 2. Aynı sayfada Custom domain: **zagames.aripd.com**
-3. DNS'te `zagames.aripd.com` için `aripdcem.github.io` hedefli **CNAME** kaydı
+3. DNS'te `zagames.aripd.com` için `aripdcom.github.io` hedefli **CNAME** kaydı
 
 ## Lisans ve marka
 
