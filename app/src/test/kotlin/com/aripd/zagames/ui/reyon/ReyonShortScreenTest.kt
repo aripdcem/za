@@ -71,6 +71,14 @@ class ReyonShortScreenTest {
 
     private val trayPrefix: String get() = str(R.string.reyon_tray_label) + ":"
 
+    /**
+     * Tabanda kabul edilen pay. Taban sütunda iki iç içe ölçüm geçişinden geçiyor
+     * (oyun alanı → panel+tepsi kutusu) ve px/dp yuvarlaması birkaç dp yiyor:
+     * Satış'ta 140 dp hedefiyle 138 dp ölçüldü. Pay o yuvarlama için, açlık için
+     * değil — bozuk hâlde panel 26 dp'ydi.
+     */
+    private val PANEL_SLACK = 4.dp
+
     private fun startRound(kindLabel: String, startLabel: String) {
         rule.setZaContent { game("reyon").screen(0L, {}, {}) }
         rule.reyonOpenMenu()
@@ -111,10 +119,13 @@ class ReyonShortScreenTest {
         val panel = rule.onNodeWithTag(REYON_PANEL_TAG).getBoundsInRoot()
         assertTrue("$label: panel ekranın içinde olmalı: $panel / $root", panel.bottom <= root.bottom + 1.dp)
         val clipped = rows.count { it.height <= 0.dp }
+        val tray = describedBounds(trayPrefix)
+        val trayTop = tray.filter { it.height > 0.dp }.minOfOrNull { it.top }
         assertTrue(
-            "$label: panel ya en az $PANEL_MIN olmalı ya da hiçbir satırı kırpmamalı; " +
-                "ölçülen panel ${panel.height}, kırpılan $clipped/${rows.size} satır",
-            panel.height >= PANEL_MIN - 1.dp || clipped == 0,
+            "$label: panel ya en az ${PANEL_MIN - PANEL_SLACK} olmalı ya da hiçbir satırı kırpmamalı; " +
+                "ölçülen panel ${panel.height} (${panel.top}–${panel.bottom}), kırpılan $clipped/${rows.size} " +
+                "satır, tepsinin tepesi $trayTop",
+            panel.height >= PANEL_MIN - PANEL_SLACK || clipped == 0,
         )
     }
 

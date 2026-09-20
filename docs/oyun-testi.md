@@ -2696,6 +2696,8 @@ azalıyor; 360×640 dp'de tepsi kaydırılarak yer açılıyor.
 olur, ya da içeriği tabandan kısa olduğu için hiçbir satırı kırpmaz — ve içinde
 en az bir kural çizilmiştir. İki kollu, çünkü panel `weight(1f, fill = false)`
 ile duruyor: bırakılan yerden fazlasını almıyor ama içeriğinden de büyümüyor.
+Tabanda 4 dp pay var: taban iç içe iki ölçüm geçişinden geçtiği için px/dp
+yuvarlaması birkaç dp yiyor — Satış'ta 140 dp hedefiyle 138 dp ölçüldü.
 Panele kaç kural sığdığı üretilen ipucu metninin kaç satıra sardığına bağlı —
 bulmaca her koşumda yeniden üretildiği için satır saymak kararsız, bir koşumda
 tam bu yüzden kırıldı. G1 o yüzden cihaza kalıyor: gerçek metinle kaç kural
