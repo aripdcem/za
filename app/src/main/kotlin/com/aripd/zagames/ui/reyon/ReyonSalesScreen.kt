@@ -220,7 +220,7 @@ internal fun ReyonSalesContent(
                     // Kural paneli ile tepsi kalan yüksekliği paylaşıyor; "kalan"
                     // burada ölçülüyor, böylece üstteki döküm satırı da hesaba giriyor.
                     BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
-                        val trayH = trayHeight(maxHeight)
+                        val trayH = trayHeight(maxHeight, panelWant = PANEL_WANT)
                         Column(modifier = Modifier.fillMaxSize()) {
                             RulesPanel(score = score, target = st.sales.target, modifier = Modifier.weight(1f, fill = false).testTag(REYON_PANEL_TAG))
                             if (!st.finished) {
