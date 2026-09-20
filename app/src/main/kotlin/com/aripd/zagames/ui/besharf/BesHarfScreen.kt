@@ -64,6 +64,7 @@ import com.aripd.zagames.ui.common.ShareButton
 import com.aripd.zagames.ui.common.modeShareLabel
 import kotlinx.coroutines.delay
 import java.util.Locale
+import com.aripd.zagames.platform.zaString
 
 /**
  * Harfleri oyunun kendi diliyle büyütür. Sabit bir yerel ayar kullanılamaz:
@@ -468,7 +469,7 @@ private fun ResultOverlay(
         )
         if (state.status == BesHarfStatus.WON) {
             Text(
-                text = stringResource(
+                text = zaString(
                     R.string.guesses_fmt,
                     state.guesses.size,
                     BesHarfState.MAX_GUESSES,
@@ -478,7 +479,7 @@ private fun ResultOverlay(
             )
         } else {
             Text(
-                text = stringResource(R.string.answer_was, state.answer.upper(lang)),
+                text = zaString(R.string.answer_was, state.answer.upper(lang)),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
             )
@@ -498,7 +499,7 @@ private fun ResultOverlay(
                 },
                 details = listOf(
                     modeShareLabel(mode == BesHarfMode.DAILY, state.dailyDay),
-                    stringResource(R.string.share_streak_fmt, streak),
+                    zaString(R.string.share_streak_fmt, streak),
                 ),
                 board = besHarfPainter(state),
                 extraText = besHarfEmojiGrid(state),

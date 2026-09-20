@@ -368,7 +368,7 @@
     <string name="share_chooser">شارك النتيجة</string>
     <string name="share_failed">لم يتمكّن من فتح المشاركة</string>
     <string name="share_tagline">ZA: صفر إعلانات، صفر أذونات، لعب خالص. مجاني ومفتوح المصدر:</string>
-    <string name="share_link">https://za.aripd.com</string>
+    <string name="share_link">https://zagames.aripd.com</string>
     <string name="share_solved">تم الحل!</string>
     <string name="share_score_fmt">%1$s نقطة</string>
     <string name="share_lines_fmt">%1$d صفاً</string>
@@ -389,6 +389,7 @@
     <string name="about_source">الشيفرة المصدرية</string>
     <string name="about_report">أبلغ عن مشكلة</string>
     <string name="about_privacy">سياسة الخصوصية</string>
+    <string name="about_contact">راسلنا</string>
     <string name="about_open_failed">لم يتمكّن من فتح الرابط: لا يوجد متصفّح على هذا الجهاز</string>
     <string name="about_licenses">تراخيص المصادر المفتوحة</string>
     <string name="about_licenses_intro">يستخدم ZA المكوّنات مفتوحة المصدر التالية؛ المس أحدها لفتح مصدره.</string>

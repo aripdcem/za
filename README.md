@@ -16,7 +16,7 @@ Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç 
 | 0 satın alma | Ödeme/abonelik kodu yok |
 | Saf oyun | Skorlar yalnızca cihazda saklanır |
 | 14 dil | Türkçe, İngilizce, Almanca, Fransızca, Hollandaca, İspanyolca, Portekizce, İtalyanca, Danca, İsveççe, Norveççe, Fince, Rusça, Arapça — arayüz **ve** kelime oyunlarının sözlükleri; telefonun diline uyar, ayrıca elle seçilir (bkz. [Diller](#diller)) |
-| Gizlilik | Politika: [za.aripd.com/gizlilik.html](https://za.aripd.com/gizlilik.html); uygulama içi **Hakkında** ekranı sürümü, bağlantıları (site, kaynak, sorun bildirme) ve açık kaynak lisanslarını gösterir |
+| Gizlilik | Politika: [zagames.aripd.com/gizlilik.html](https://zagames.aripd.com/gizlilik.html); uygulama içi **Hakkında** ekranı sürümü, bağlantıları (site, kaynak, sorun bildirme) ve açık kaynak lisanslarını gösterir |
 
 ## Mimari
 
@@ -473,7 +473,7 @@ vardır, yazım sözlüğü doğruluğu verir ama yaygınlığı bilmez. Özel a
 özel adlar yalnız büyük harfle yazılıdır. Uzun listeler **ön-kodlu** yazılır (her satır önceki kelimeyle paylaşılan
 ön ekin uzunluğu + kalanı), bu 14 dilin listesini 4,6 MB yerine 3,0 MB'a indirir.
 
-Üç denetim betiği CI'da koşar:
+Dört denetim betiği CI'da koşar:
 
 ```bash
 python3 tools/check_strings.py    # dil listeleri tutarlı mı, her dilde bütün metinler var mı,
@@ -481,10 +481,13 @@ python3 tools/check_strings.py    # dil listeleri tutarlı mı, her dilde bütü
 python3 tools/check_store.py      # mağaza metinlerinin sınırları, dil kapsamı, görünmez karakterler
 python3 tools/check_wordlists.py  # dil tablosunun iki kopyası ayrışmış mı, listeler doğru alfabede
                                   # ve doğru sırada mı, Dizgi'nin torbası 98 taş mı
+python3 tools/check_site.py       # gizlilik sayfası 14 dilde mi, üreticisiyle ayrışmış mı,
+                                  # uygulamadaki bağlantılar sitenin alan adıyla aynı mı
 ```
 
 Mağaza görselleri (`store/graphics/`) `python3 tools/gen_store_graphics.py` ile uygulamanın kendi simgesinden
-türetilir; simgenin rengi ve blok düzeni değişirse görseller yeniden üretilir.
+türetilir; simgenin rengi ve blok düzeni değişirse görseller yeniden üretilir. Gizlilik sayfası
+(`site/gizlilik.html`) `python3 tools/gen_privacy.py` ile 14 dilde üretilir; politika metni betiğin içindedir.
 
 `ZaLocale.TAGS`, `res/xml/locales_config.xml`, `res/values-<dil>` klasörleri ve `store/play/<dil>` listelemeleri
 birbirinden ayrışırsa denetim hata verir: listede olup çevirisi olmayan bir dil, sistem dil seçicisinde görünüp
@@ -537,13 +540,13 @@ gh secret set ANDROID_KEYSTORE_PASSWORD --repo aripdcem/za
 
 Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
 
-### Web sitesi (za.aripd.com)
+### Web sitesi (zagames.aripd.com)
 
 `site/` klasörü GitHub Pages ile yayınlanır (`pages.yml`). Tek seferlik kurulum:
 
 1. Depo **Settings → Pages** → Source: **GitHub Actions**
-2. Aynı sayfada Custom domain: **za.aripd.com**
-3. DNS'te `za.aripd.com` için `aripdcem.github.io` hedefli **CNAME** kaydı
+2. Aynı sayfada Custom domain: **zagames.aripd.com**
+3. DNS'te `zagames.aripd.com` için `aripdcem.github.io` hedefli **CNAME** kaydı
 
 ## Lisans ve marka
 

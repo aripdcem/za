@@ -19,4 +19,4 @@ CARACTERÍSTICAS
 • Sonido y vibración se apagan con un toque; modo para zurdos
 • Código abierto (GPL-3.0): github.com/aripdcem/za
 
-Política de privacidad: za.aripd.com/gizlilik.html
+Política de privacidad: zagames.aripd.com/gizlilik.html

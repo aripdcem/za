@@ -368,7 +368,7 @@
     <string name="share_chooser">Compartir el resultado</string>
     <string name="share_failed">No se pudo abrir la opción de compartir</string>
     <string name="share_tagline">ZA: cero anuncios, cero permisos, juego puro. Gratis y de código abierto:</string>
-    <string name="share_link">https://za.aripd.com</string>
+    <string name="share_link">https://zagames.aripd.com</string>
     <string name="share_solved">¡Resuelto!</string>
     <string name="share_score_fmt">%1$s puntos</string>
     <string name="share_lines_fmt">%1$d líneas</string>
@@ -389,6 +389,7 @@
     <string name="about_source">Código fuente</string>
     <string name="about_report">Informar de un problema</string>
     <string name="about_privacy">Política de privacidad</string>
+    <string name="about_contact">Escríbenos</string>
     <string name="about_open_failed">No se pudo abrir el enlace: no hay navegador en este dispositivo</string>
     <string name="about_licenses">Licencias de código abierto</string>
     <string name="about_licenses_intro">ZA usa los componentes de código abierto de abajo; toca uno para abrir su fuente.</string>

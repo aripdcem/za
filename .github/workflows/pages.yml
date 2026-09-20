@@ -1,8 +1,8 @@
 name: Pages
 
-# site/ klasörünü GitHub Pages'e yayınlar (za.aripd.com).
+# site/ klasörünü GitHub Pages'e yayınlar (zagames.aripd.com).
 # Depo ayarlarında Pages kaynağı "GitHub Actions" olmalı; özel alan adı
-# za.aripd.com Settings → Pages'ten tanımlanır (DNS: CNAME → aripdcem.github.io).
+# zagames.aripd.com Settings → Pages'ten tanımlanır (DNS: CNAME → aripdcem.github.io).
 
 on:
   push:

@@ -17,6 +17,7 @@ import kotlin.math.cos
 import kotlin.math.exp
 import kotlin.math.sin
 import kotlin.random.Random
+import com.aripd.zagames.platform.zaText
 
 /** Oyun alanı biriminde parçacık (x ∈ 0..1, y ∈ 0..1.6); yalnızca çizim için. */
 internal class FiloParticle(
@@ -115,7 +116,7 @@ internal class FiloFx {
                         burst(event.x, event.y, 10, if (event.kind == EnemyKind.WASP) WASP_FIRE else DRONE_FIRE, 0.35f, 0.4f)
                     }
                 }
-                texts += FiloText(resources.getString(R.string.filo_points_fmt, event.points), event.x, event.y - 0.03f, if (world.multiplier > 1) MULTI else POINTS)
+                texts += FiloText(zaText(resources, R.string.filo_points_fmt, event.points), event.x, event.y - 0.03f, if (world.multiplier > 1) MULTI else POINTS)
             }
             is FiloEvent.PlayerHit -> {
                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -139,7 +140,7 @@ internal class FiloFx {
                     PowerKind.WEAPON -> resources.getString(R.string.filo_weapon_up) to WEAPON
                     PowerKind.SHIELD -> resources.getString(R.string.filo_shield) to SHIELD
                     PowerKind.BOMB -> resources.getString(R.string.filo_bomb_pickup) to BOMB
-                    PowerKind.SCORE -> resources.getString(R.string.filo_points_fmt, FiloWorld.SCORE_GIFT * world.multiplier) to POINTS
+                    PowerKind.SCORE -> zaText(resources, R.string.filo_points_fmt, FiloWorld.SCORE_GIFT * world.multiplier) to POINTS
                 }
                 texts += FiloText(label, px, py - 0.12f, color)
                 burst(px, py, 8, color, 0.3f, 0.35f)
@@ -158,12 +159,12 @@ internal class FiloFx {
                     texts += FiloText(resources.getString(R.string.filo_boss_incoming), 0.5f, 0.55f, DANGER, big = true)
                 } else {
                     sound?.play(Sfx.POP, volume = 0.5f, rate = 0.8f)
-                    texts += FiloText(resources.getString(R.string.filo_wave_start_fmt, event.wave), 0.5f, 0.55f, TITLE, big = true)
+                    texts += FiloText(zaText(resources, R.string.filo_wave_start_fmt, event.wave), 0.5f, 0.55f, TITLE, big = true)
                 }
             }
             is FiloEvent.WaveClear -> {
                 sound?.play(Sfx.BIG, volume = 0.6f, rate = 1.2f)
-                texts += FiloText(resources.getString(R.string.filo_wave_clear_fmt, event.bonus), 0.5f, 0.65f, BONUS, big = true)
+                texts += FiloText(zaText(resources, R.string.filo_wave_clear_fmt, event.bonus), 0.5f, 0.65f, BONUS, big = true)
             }
             is FiloEvent.BossDown -> {
                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)

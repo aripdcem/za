@@ -89,6 +89,7 @@ import kotlinx.coroutines.isActive
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.sin
+import com.aripd.zagames.platform.zaString
 
 /** Bölge paleti: zemin, kırılmaz duvar, kırılabilir blok, duvarın boşluğa bakan yüzü. */
 private class AreaPalette(val bg: Color, val wall: Color, val block: Color, val wallEdge: Color)
@@ -231,7 +232,7 @@ fun KuyuScreen(
             )
             ScoreCard(
                 label = stringResource(R.string.kuyu_depth),
-                value = stringResource(R.string.kuyu_depth_fmt, hud.depth),
+                value = zaString(R.string.kuyu_depth_fmt, hud.depth),
                 modifier = Modifier.weight(1f),
             )
         }
@@ -294,8 +295,8 @@ fun KuyuScreen(
 
 @Composable
 private fun StatusRow(hud: KuyuHud) {
-    val hpDesc = stringResource(R.string.kuyu_hp_desc_fmt, hud.hp, hud.maxHp)
-    val ammoDesc = stringResource(R.string.kuyu_ammo_desc_fmt, hud.ammo, hud.maxAmmo)
+    val hpDesc = zaString(R.string.kuyu_hp_desc_fmt, hud.hp, hud.maxHp)
+    val ammoDesc = zaString(R.string.kuyu_ammo_desc_fmt, hud.ammo, hud.maxAmmo)
     val gemsDesc = stringResource(R.string.kuyu_gems) + " " + hud.wallet
     val shieldDesc = stringResource(R.string.kuyu_up_shield)
     Row(
@@ -326,7 +327,7 @@ private fun StatusRow(hud: KuyuHud) {
         Spacer(Modifier.weight(1f))
         if (hud.combo >= 2) {
             Text(
-                text = stringResource(R.string.kuyu_combo_fmt, hud.combo),
+                text = zaString(R.string.kuyu_combo_fmt, hud.combo),
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.labelLarge,
@@ -459,7 +460,7 @@ private fun ChoiceCard(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
-                text = stringResource(R.string.kuyu_area_fmt, offer.area + 1),
+                text = zaString(R.string.kuyu_area_fmt, offer.area + 1),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
             )
@@ -503,7 +504,7 @@ private fun ChoiceCard(
             }
             Text(
                 text = stringResource(R.string.kuyu_shop) + " · " +
-                    stringResource(R.string.kuyu_wallet_fmt, hud.wallet),
+                    zaString(R.string.kuyu_wallet_fmt, hud.wallet),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
             )
@@ -535,7 +536,7 @@ private fun ChoiceCard(
                             text = if (entry.bought) {
                                 stringResource(R.string.kuyu_bought)
                             } else {
-                                stringResource(R.string.kuyu_price_fmt, entry.price)
+                                zaString(R.string.kuyu_price_fmt, entry.price)
                             },
                         )
                     }
@@ -622,7 +623,7 @@ private fun StartCard(
         if (mode == KuyuMode.DAILY) {
             if (daily != null) {
                 Text(
-                    text = stringResource(R.string.kuyu_daily_done_fmt, daily.score, daily.depth),
+                    text = zaString(R.string.kuyu_daily_done_fmt, daily.score, daily.depth),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -723,7 +724,7 @@ private fun OverCard(
             )
         }
         Text(
-            text = stringResource(R.string.kuyu_result_fmt, hud.depth, hud.gems, hud.bestCombo),
+            text = zaString(R.string.kuyu_result_fmt, hud.depth, hud.gems, hud.bestCombo),
             style = MaterialTheme.typography.bodySmall,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
@@ -738,9 +739,9 @@ private fun OverCard(
         ShareButton(
             ShareContent(
                 gameId = "kuyu",
-                headline = stringResource(R.string.share_score_fmt, formatScore(hud.score)),
+                headline = zaString(R.string.share_score_fmt, formatScore(hud.score)),
                 details = listOf(
-                    stringResource(R.string.kuyu_result_fmt, hud.depth, hud.gems, hud.bestCombo),
+                    zaString(R.string.kuyu_result_fmt, hud.depth, hud.gems, hud.bestCombo),
                     modeShareLabel(daily, null),
                 ),
             ),
@@ -772,7 +773,7 @@ private fun KuyuCanvas(
     modifier: Modifier = Modifier,
 ) {
     val frame by viewModel.frame.collectAsStateWithLifecycle()
-    val desc = stringResource(R.string.kuyu_board_desc, hud.depth, hud.hp, hud.ammo)
+    val desc = zaString(R.string.kuyu_board_desc, hud.depth, hud.hp, hud.ammo)
     val textMeasurer = rememberTextMeasurer()
     val textCache = remember { HashMap<String, TextLayoutResult>() }
     val palette = Palettes[hud.area.coerceIn(0, Palettes.size - 1)]

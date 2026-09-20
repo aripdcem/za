@@ -368,7 +368,7 @@
     <string name="share_chooser">Поделиться результатом</string>
     <string name="share_failed">Не удалось открыть меню «Поделиться»</string>
     <string name="share_tagline">ZA: ноль рекламы, ноль разрешений, чистая игра. Бесплатно и с открытым кодом:</string>
-    <string name="share_link">https://za.aripd.com</string>
+    <string name="share_link">https://zagames.aripd.com</string>
     <string name="share_solved">Решено!</string>
     <string name="share_score_fmt">%1$s очков</string>
     <string name="share_lines_fmt">%1$d линий</string>
@@ -389,6 +389,7 @@
     <string name="about_source">Исходный код</string>
     <string name="about_report">Сообщить о проблеме</string>
     <string name="about_privacy">Политика конфиденциальности</string>
+    <string name="about_contact">Написать нам</string>
     <string name="about_open_failed">Не удалось открыть ссылку: на устройстве нет браузера</string>
     <string name="about_licenses">Лицензии открытого кода</string>
     <string name="about_licenses_intro">ZA использует перечисленные ниже компоненты с открытым кодом; нажми на любой, чтобы открыть его исходник.</string>

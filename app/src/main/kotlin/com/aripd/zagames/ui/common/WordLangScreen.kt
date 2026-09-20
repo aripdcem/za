@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.aripd.zagames.R
 import com.aripd.zagames.platform.ZaLocale
 import com.aripd.zagames.sozluk.WordLang
+import com.aripd.zagames.platform.zaString
 
 /** Testlerin kelime dili listesini bulması için. */
 const val WORD_LANG_LIST_TAG = "word_lang_list"
@@ -137,7 +138,7 @@ private fun WordLangRow(label: String, detail: String?, checked: Boolean, onClic
 @Composable
 fun WordLangChip(lang: WordLang, onClick: () -> Unit) {
     val label = ZaLocale.endonym(lang.tag)
-    val description = stringResource(R.string.word_lang_button, label)
+    val description = zaString(R.string.word_lang_button, label)
     Surface(
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,

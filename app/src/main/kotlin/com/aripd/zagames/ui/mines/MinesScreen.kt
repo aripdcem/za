@@ -69,6 +69,7 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import com.aripd.zagames.platform.zaString
 
 @Composable
 fun MinesScreen(
@@ -192,7 +193,7 @@ fun MinesScreen(
             when (state?.status) {
                 null -> DifficultyOverlay(
                     descriptions = MinesDifficulty.entries.map {
-                        stringResource(R.string.mines_difficulty_desc_fmt, it.width, it.height, it.mineCount)
+                        zaString(R.string.mines_difficulty_desc_fmt, it.width, it.height, it.mineCount)
                     },
                     lastPicked = viewModel.lastDifficulty?.let { MinesDifficulty.entries.indexOf(it) },
                 ) { index ->
@@ -259,7 +260,7 @@ private fun MinesBoard(
 ) {
     val textMeasurer = rememberTextMeasurer()
     val layoutCache = remember { mutableMapOf<String, TextLayoutResult>() }
-    val boardDesc = stringResource(
+    val boardDesc = zaString(
         R.string.mines_board_desc, state.width, state.height, state.mineCount, state.flagged.size,
     )
     val currentTap by rememberUpdatedState(onCellTap)
@@ -363,7 +364,7 @@ private fun ResultOverlay(
             fontWeight = FontWeight.Bold,
         )
         Text(
-            text = stringResource(R.string.time_fmt, time),
+            text = zaString(R.string.time_fmt, time),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
         )
@@ -386,8 +387,8 @@ private fun minesShare(state: MinesState, time: String): ShareContent = ShareCon
     gameId = "mines",
     headline = stringResource(if (state.status == MinesStatus.WON) R.string.mines_won else R.string.mines_lost),
     details = listOf(
-        stringResource(R.string.mines_difficulty_desc_fmt, state.width, state.height, state.mineCount),
-        stringResource(R.string.time_fmt, time),
+        zaString(R.string.mines_difficulty_desc_fmt, state.width, state.height, state.mineCount),
+        zaString(R.string.time_fmt, time),
     ),
     board = minesPainter(state),
 )

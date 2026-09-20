@@ -1,7 +1,7 @@
 package com.aripd.zagames
 
 import com.aripd.zagames.ui.common.LocalWordLang
-import com.aripd.zagames.platform.WordLangs
+import com.aripd.zagames.ui.common.rememberWordLang
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -91,8 +91,10 @@ fun ZaApp() {
     // Kelime oyunlarının dili: ekranın derinlerinde klavye sırası, harf büyütme
     // ve taş etiketleri için gerekiyor, tek yerden sağlanır. Oyuncunun seçimi
     // yoksa arayüzün diline uyar; o dilin listesi yoksa İngilizceye düşer.
-    // effectiveLanguage'a bağlı: oyuncu arayüz dilini değiştirince yeniden okunur.
-    val wordLang = remember(effectiveLanguage, showLanguage) { WordLangs.current(context) }
+    // İki kaynağa bağlı: oyuncu arayüz dilini değiştirince de, oyun içindeki
+    // seçiciden kelime dilini değiştirince de yeniden okunur. İkincisi eksikti;
+    // sözlük yeni dile geçerken klavye eski dilde kalıyordu.
+    val wordLang = rememberWordLang(effectiveLanguage, showLanguage)
 
     CompositionLocalProvider(
         LocalZaSound provides soundPlayer,

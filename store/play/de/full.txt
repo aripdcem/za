@@ -19,4 +19,4 @@ FUNKTIONEN
 • Ton und Haptik mit einem Tippen aus; Linkshändermodus
 • Open Source (GPL-3.0): github.com/aripdcem/za
 
-Datenschutzerklärung: za.aripd.com/gizlilik.html
+Datenschutzerklärung: zagames.aripd.com/gizlilik.html

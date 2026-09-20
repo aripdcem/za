@@ -40,6 +40,7 @@ import com.aripd.zagames.platform.Changelog
 import com.aripd.zagames.platform.ZaLinks
 import com.aripd.zagames.platform.appLocale
 import com.aripd.zagames.ui.common.GameTopBar
+import com.aripd.zagames.platform.zaString
 
 /** Uygulamada kullanılan açık kaynak bileşen; metinler yerelleştirilir. */
 private class OssComponent(
@@ -90,7 +91,7 @@ fun AboutScreen(onExit: () -> Unit) {
                     color = MaterialTheme.colorScheme.primary,
                 )
                 Text(
-                    text = stringResource(R.string.about_version_fmt, version),
+                    text = zaString(R.string.about_version_fmt, version),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                 )
@@ -114,6 +115,7 @@ fun AboutScreen(onExit: () -> Unit) {
                 LinkButton(stringResource(R.string.about_source), ZaLinks.SOURCE)
                 LinkButton(stringResource(R.string.about_report), ZaLinks.REPORT)
                 LinkButton(stringResource(R.string.about_privacy), ZaLinks.PRIVACY)
+                MailButton(stringResource(R.string.about_contact), ZaLinks.CONTACT)
             }
 
             item { SectionTitle(stringResource(R.string.about_licenses)) }
@@ -146,7 +148,7 @@ fun AboutScreen(onExit: () -> Unit) {
                 val note = Changelog.entries[index]
                 Column(modifier = Modifier.padding(bottom = 4.dp)) {
                     Text(
-                        text = stringResource(R.string.whats_new_version_fmt, note.version, note.date),
+                        text = zaString(R.string.whats_new_version_fmt, note.version, note.date),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                     )
@@ -215,8 +217,19 @@ private fun Chip(label: String) {
 @Composable
 private fun LinkButton(label: String, url: String) {
     val context = LocalContext.current
+    ActionButton(label, url.removePrefix("https://")) { ZaLinks.open(context, url) }
+}
+
+@Composable
+private fun MailButton(label: String, address: String) {
+    val context = LocalContext.current
+    ActionButton(label, address) { ZaLinks.email(context, address) }
+}
+
+@Composable
+private fun ActionButton(label: String, detail: String, onClick: () -> Unit) {
     OutlinedButton(
-        onClick = { ZaLinks.open(context, url) },
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 3.dp),
@@ -224,7 +237,7 @@ private fun LinkButton(label: String, url: String) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(label)
             Text(
-                text = url.removePrefix("https://"),
+                text = detail,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
             )

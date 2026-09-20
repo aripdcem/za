@@ -19,4 +19,4 @@ FONCTIONS
 • Son et vibration coupés d'une touche ; mode gaucher
 • Open source (GPL-3.0) : github.com/aripdcem/za
 
-Politique de confidentialité : za.aripd.com/gizlilik.html
+Politique de confidentialité : zagames.aripd.com/gizlilik.html

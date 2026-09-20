@@ -13,6 +13,7 @@ import com.aripd.zagames.platform.SoundPlayer
 import kotlin.math.exp
 import kotlin.math.min
 import kotlin.random.Random
+import com.aripd.zagames.platform.zaText
 
 /** Hücre biriminde parçacık; yalnızca çizim için. */
 internal class GecitParticle(
@@ -96,7 +97,7 @@ internal class GecitFx {
             is GecitEvent.Milestone -> {
                 sound?.play(Sfx.CLEAR, volume = 0.7f)
                 haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                texts += GecitText(resources.getString(R.string.gecit_milestone_fmt, event.row), p.centerX, p.row + 1.2f)
+                texts += GecitText(zaText(resources, R.string.gecit_milestone_fmt, event.row), p.centerX, p.row + 1.2f)
             }
             is GecitEvent.Over -> {
                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)

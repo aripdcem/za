@@ -81,6 +81,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlinx.coroutines.isActive
+import com.aripd.zagames.platform.zaString
 
 private val TableTop = Color(0xFF0B2A3A)
 private val TableBottom = Color(0xFF123D52)
@@ -283,9 +284,9 @@ private fun RaketCanvas(
 ) {
     val frame by viewModel.frame.collectAsStateWithLifecycle()
     val desc = if (mode == RaketMode.WALL) {
-        stringResource(R.string.raket_wall_desc_fmt, hud.rally)
+        zaString(R.string.raket_wall_desc_fmt, hud.rally)
     } else {
-        stringResource(R.string.raket_board_desc_fmt, hud.bottom, hud.top, hud.rally)
+        zaString(R.string.raket_board_desc_fmt, hud.bottom, hud.top, hud.rally)
     }
     val hint = stringResource(if (mode == RaketMode.DUO) R.string.raket_duo_drag_hint else R.string.raket_drag_hint)
     val textMeasurer = rememberTextMeasurer()
@@ -520,7 +521,7 @@ private fun StartCard(
                 val rec = records.getOrNull(level)
                 Text(
                     text = if (rec != null && rec.wins + rec.losses > 0) {
-                        stringResource(R.string.raket_record_fmt, rec.wins, rec.losses)
+                        zaString(R.string.raket_record_fmt, rec.wins, rec.losses)
                     } else {
                         stringResource(R.string.raket_solo_hint)
                     },
@@ -612,9 +613,9 @@ private fun OverCard(
     }
     val big = if (mode == RaketMode.WALL) hits.toString() else "${hud.bottom}–${hud.top}"
     val result = if (mode == RaketMode.WALL) {
-        stringResource(R.string.raket_wall_result_fmt, hits)
+        zaString(R.string.raket_wall_result_fmt, hits)
     } else {
-        stringResource(R.string.raket_result_fmt, hud.bottom, hud.top, hud.bestRally)
+        zaString(R.string.raket_result_fmt, hud.bottom, hud.top, hud.bestRally)
     }
     val levelLabel = when (level.coerceIn(0, RaketWorld.MAX_LEVEL)) {
         0 -> stringResource(R.string.difficulty_easy)
@@ -623,8 +624,8 @@ private fun OverCard(
     }
     val headline = when (mode) {
         RaketMode.SOLO -> stringResource(if (won) R.string.raket_share_win_fmt else R.string.raket_share_loss_fmt, hud.bottom, hud.top)
-        RaketMode.DUO -> stringResource(R.string.raket_share_duo_fmt, hud.bottom, hud.top)
-        RaketMode.WALL -> stringResource(R.string.raket_share_wall_fmt, hits)
+        RaketMode.DUO -> zaString(R.string.raket_share_duo_fmt, hud.bottom, hud.top)
+        RaketMode.WALL -> zaString(R.string.raket_share_wall_fmt, hits)
     }
     val details = when (mode) {
         RaketMode.SOLO -> listOf(stringResource(R.string.raket_mode_solo) + " · " + levelLabel, result)

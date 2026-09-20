@@ -66,6 +66,7 @@ import com.aripd.zagames.platform.ShareContent
 import kotlin.math.abs
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import com.aripd.zagames.platform.zaString
 
 @Composable
 fun SnakeScreen(
@@ -210,8 +211,8 @@ fun SnakeScreen(
                     onExit = onExit,
                     share = ShareContent(
                         gameId = "snake",
-                        headline = stringResource(R.string.share_score_fmt, formatScore(state.score)),
-                        details = listOf(stringResource(R.string.share_length_fmt, state.body.size)),
+                        headline = zaString(R.string.share_score_fmt, formatScore(state.score)),
+                        details = listOf(zaString(R.string.share_length_fmt, state.body.size)),
                     ),
                 )
                 SnakeStatus.RUNNING -> Unit
@@ -247,7 +248,7 @@ private fun SnakeBoard(
             label = "foodPulse",
         )
 
-    val boardDesc = stringResource(R.string.snake_board_desc, state.body.size, state.score)
+    val boardDesc = zaString(R.string.snake_board_desc, state.body.size, state.score)
     Canvas(
         modifier = modifier
             .semantics { contentDescription = boardDesc }

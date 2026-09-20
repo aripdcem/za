@@ -482,6 +482,13 @@ sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölç
 (tek bulgu Kıskaç'ın kolay mod anahtarıydı, düzeltildi). Kontrast CI'da
 korunuyor.
 
+**F · diller:** v0.43.0'ta Almanca, Arapça ve Fince cihazda koşuldu. Klavye
+düzenleri, alfabe sırası, günlük bulmacanın dile göre ayrılması ve dil seçiminin
+kalıcılığı doğru; dört bulgu çıktı (kelime dili değişince klavye yenilenmiyor,
+Arapça'da `%d` metinleri Hint-Arap rakamı basıyor, Dizgi'nin prim gözü lejantı
+Türkçe dışında taşıyor, Blok'un yön tuş sırası sağdan sola aynalanıyor).
+Dökümü [v0.43.0 · diller ve tur sayacı](#v0430--diller-ve-tur-sayacı--cihazda--2026-09-20) bölümünde.
+
 19 oyunun tamamı açıldı, oynandı ve **hiçbirinde çökme yok** (`logcat` temiz).
 Sürekli çizen altı oyunun tamamı 60 kare/s tutuyor; kaçan vsync 0–3 (≈%0,4).
 Yani **kare hızı sorunu yok**.
@@ -2409,6 +2416,156 @@ ve kazanç olduğu gibi kalıyor. İki şey kalıcılaştırıldı:
 Duyarlılık notu (1 mm ≈ yolun %3'ü) tasarım gereği: yol 35 mm parmak yoluna
 sığıyor, çünkü tek başparmakla kenardan kenara geçilebilmesi isteniyor. Daha
 düşük kazanç aracı sakinleştirir ama tam yolu tek süpürmeye sığdırmaz.
+
+### v0.43.0 · diller ve tur sayacı · cihazda · 2026-09-20
+
+Kurulum: `za-v0.43.0.apk`, yeni paket `com.aripd.zagames`, telefonda eski sürüm
+yok (kullanıcı sildi). Bütün rekorlar sıfırdan başladı — v0.42.0'ın söylediği
+davranış. Koşum boyunca 15 oyun, 4 dil ve üç ekran ölçüsü gezildi;
+`logcat AndroidRuntime:E` **boş**, tek bir çökme yok. Arka plana alıp dönüş
+oyunun durumunu koruyor.
+
+**A — bitmiş tura geri dönüş bir daha sayılmıyor (v0.41.1 doğrulaması).**
+Kutlamanın çaldığını ölçmek için titreşim geçmişi kullanıldı
+(`dumpsys vibrator_manager`, `opPkg: com.aripd.zagames`): turu bitiren dokunuş
+geçmişe **iki** kayıt bırakıyor (dokunuşun kendisi + `Sfx.BIG` ile birlikte
+gelen uzun titreşim, aralarında ~57 ms), bitirmeyen dokunuş bir kayıt. Kod da
+bunu doğruluyor: `onCompleted()` ile ses/titreşim aynı `LaunchedEffect` içinde
+(`ReyonScreen.kt:160`), yani yeni titreşim yoksa rekor da gönderilmemiştir.
+
+| Oyun | Tur | ÇÖZÜLEN | Yeniden giriş | Sonuç |
+| --- | --- | --- | --- | --- |
+| Reyon · Denetim | 2 tur (biri 1 hatalı, biri temiz 0:15) | 0 → 2 | menüden 1 kez | 2 · yeni titreşim yok |
+| Reyon · Diziliş | Kolay, 2:35, 0 ipucu | 2 → 3 | menüden 3 kez | 3 · üçünde de titreşim yok |
+| Reyon · Diziliş | — | 3 | yazı ölçeği 1,1 → 1,3 → 1,1 (etkinlik yeniden kuruldu) | 3 · titreşim yok |
+| Sudoku | Kolay, 1:06 (çözücüyle girildi) | 0 → 1 | menüden 2 kez | 1 · titreşim yok |
+
+Ekran döndürme bu yolda denenemez, çünkü `MainActivity` `portrait` kilitli;
+yerine yazı ölçeği değiştirilip etkinlik yeniden kuruldu — `countedSeed`
+mevcut durumdan başladığı için sayaç kımıldamadı. Denetim'in rekoru sayı değil
+**en iyi süre** ("En iyi süre: 0:15"), Diziliş'in ÇÖZÜLEN sayacı ise dört modun
+ortak sayacı: iki denetim turu onu 2 yaptı.
+
+**F1 — kelime dili değişince klavye yenilenmiyor (bulgu).** Kurulum kartındaki
+dil düğmesinden başka bir dil seçmek oyunu doğru diliyle yeniden kuruyor (tahta
+sıfırlanıyor, sözlük değişiyor) ama **klavye eski dilde kalıyor**; ancak
+uygulama kapatılıp açılınca düzeliyor.
+
+| Arayüz | Kelime dili | Klavye | Yazılamayan harfler |
+| --- | --- | --- | --- |
+| Almanca | Almanca | QWERTZ (Ä Ö Ü) ✓ | — |
+| Almanca | Almanca → **Türkçe** | hâlâ QWERTZ | Ç Ğ İ Ş (ve ı) |
+| Almanca | Türkçe → **Almanca** (yeniden açılıştan sonra) | hâlâ Türkçe 29 tuş | Q W X Ä |
+
+Cihazda kanıtlandı: kelime dili Türkçe iken Alman klavyesiyle yazılan **KALEM**
+tahmin olarak kabul edildi (sözlük Türkçe), yani durum ikiye bölünüyor — motor
+yeni dilde, klavye eski dilde. Kök neden `ZaApp.kt:94`:
+`val wordLang = remember(effectiveLanguage, showLanguage) { WordLangs.current(context) }`
+— anahtarlar yalnız **arayüz** dilini ve dil ekranını izliyor, kelime dili
+seçimini değil. `LocalWordLang` klavye sırasının yanı sıra harf büyütmeyi ve
+Dizgi'nin taş etiketlerini de besliyor, hepsi aynı gecikmeden etkilenir.
+
+**F2 — Arapça'da `%d` metinleri Hint-Arap rakamı basıyor (bulgu).** Protokolün
+3. maddesi rakamların Latin kalmasını istiyor. `ZaLocale.number`'dan geçen HUD
+değerleri doğru (skor 0, seviye 1, süre 0:00), ama `stringResource(id, sayı)`
+ile kurulan metinler Java'nın Arapça yerel ayarıyla biçimleniyor:
+
+| Yer | Görünen | Olması gereken |
+| --- | --- | --- |
+| Mayın · zorluk kartı | `٩×١٢ · ١٤ لغماً` | 9×12 · 14 |
+| Sudoku · zorluk kartı | `يبدأ بـ ٤٠ تلميحات` | 40 |
+| Tavla · maç uzunluğu çipleri | `١ نقطة` `٣ نقطة` `٥ نقطة` | 1 / 3 / 5 |
+| Tavla · pul sayacı | `١٦٧ نقطة مسار` | 167 |
+| Blok · tuval erişilebilirlik metni | `المستوى ١، ٠ صفاً` | 1, 0 |
+| Yılan · tuval erişilebilirlik metni | `الطول ٣` | 3 |
+| Sudoku · göz erişilebilirlik metni | `الصف ١، العمود ٢: 7` | satır/sütun Latin |
+
+İlk dördü ekranda görünür, son üçü ekran okuyucuya gider. Sınıfın büyüklüğü:
+`values/strings.xml` içinde `%d` taşıyan **209** metin var ve hepsi koddan
+çağrılıyor; hangilerinin Arapça'da göründüğü çağrı yerine bağlı. Kalıcı çözüm
+sayıyı `%s` + `ZaLocale.number(...)` ile geçirmek ya da `stringResource`'u
+Latin rakam garantili bir sarmalayıcıdan okumak.
+
+**F3 — Dizgi'nin prim gözü lejantı Türkçe dışında taşıyor (bulgu).** Lejant tek
+satır ve Türkçe etiketlere göre ölçülmüş; uzun dillerde sığmıyor ve tahtadan
+yer çalıyor. Tahta genişliği (mavi prim gözlerinin uçtan uca ölçümü, 15 göz):
+
+| Dil | Lejantta görünen | Tahta | Göz |
+| --- | --- | --- | --- |
+| Türkçe | 4/4 (4.'sü iki satır) | 391 dp | 26 dp |
+| Almanca | 3/4 — "2W doppeltes Wort" harf harf sekiz satıra iniyor, "3W" hiç çizilmiyor | 267 dp | 18 dp |
+| Fince | 2/4 — üçüncünün yalnız renk kutusu ekranın ortasında kalıyor | 178 dp | **12 dp** |
+
+12 dp'lik gözde taş etiketi okunmuyor ve parmak hedefi kalmıyor.
+
+**F4 — uzun etiketler düğmelerin dışına taşıyor (bulgu).** Aynı sınıfın ikinci
+yüzü: metin iki satıra kırılıyor ama düğme kutusu büyümüyor.
+
+- Dizgi (Almanca, 411 dp): `Zurücknehmen` → "Zurückneh / men", `Tauschen` →
+  "Tausche / n"; ikisi de hapın dışına çıkıyor.
+- Reyon (Almanca, 360 dp): `Rückgängig` → "Rückgä / ngig", `Ins Tablett` iki
+  satır.
+- Reyon (**Türkçe**, 360 dp): `Tepsiye al` da iki satıra kırılıp taşıyor — yani
+  dar ekranda Türkçe de etkileniyor.
+
+**F5 — son oynananlar kutusu adı üç noktasız kesiyor.** 360 dp'de Almanca
+arayüzde kutu "Mineswe" yazıyor: kelime ortadan kesik, elips yok. 411 dp'de
+görülmedi (orada "Mayın Tarlası" sığıyor).
+
+**F6 — Arapça sağdan sola: tuvaller dönmüyor ama yön tuşları dönüyor.** Protokol
+tuvallerin dönmemesini istiyor; **dönmüyorlar**: Arapça Blok'ta "إلى اليسار"
+(sola) tuşu parçayı gerçekten sola taşıyor (687 px → 471 px), "إلى اليمين"
+sağa (471 px → 903 px); Tavla'nın tahtası da standart açılış dizilişinde.
+Dönen şey **tuş satırı**: Türkçe'de soldan sağa `◀ ▼ ▶ ⇓`, Arapça'da
+`⇓ ▶ ▼ ◀`. Aynalanmayan bir tuvale aynalanmış bir yön takımı bakıyor — sol
+kenara gitmek için ekranın sağ ucundaki tuşa basılıyor. Yön tuşları içeren
+satır sağdan sola dillerde `LayoutDirection.Ltr` ile sabitlenmeli (depoda hiçbir
+ekran `LocalLayoutDirection`'ı elle vermiyor).
+
+**F — doğru çıkanlar.**
+
+- Klavye düzenleri dile göre: Almanca QWERTZ + Ä Ö Ü, Fince QWERTY + Å Ä Ö,
+  Türkçe 29 tuş (Ç Ğ İ Ö Ş Ü), üçünde de üçüncü sıra ENTER … ⌫.
+- Sözlükler gerçekten o dilin: **BLUME** (de) ve **KISSA** (fi) tahmin olarak
+  kabul edildi ve renklendi.
+- Alfabe sırası: Almanca'da easy modda `BACKE` alt sınırken **ÄPFEL** denemesi
+  sınırları değiştirmedi (deneme 1/13 → 2/13) — yani ä, a ile birlikte
+  sıralanıyor. Unicode sırası kullanılsaydı Ä > Z olur, ÄPFEL üst sınıra
+  otururdu.
+- Kıskaç'ın yüzde ipucu Almanca'da `42% entfernt` / `52% entfernt` — v0.41.1'in
+  `%%` düzeltmesi cihazda da doğru.
+- Günlük bulmaca her kelime dilinde ayrı ilerliyor: Almanca tahtadaki BLUME,
+  Türkçe'ye geçince görünmüyor; Türkçe'de oynanan KALEM Almanca'ya
+  taşınmıyor; geri dönüldüğünde ikisi de yerinde.
+- Kelime dili seçimi arayüz dilinden bağımsız ve kalıcı: arayüz Fince iken
+  kelime dili Almanca kaldı, uygulama tamamen kapatılıp açıldığında korundu.
+- Uygulama dili kalıcı: ana menüdeki dil düğmesinden Almanca seçilince sistem
+  kaydı (`cmd locale get-app-locales`) `[de]` oluyor ve `force-stop` sonrası
+  korunuyor. Android 13'te düğme uygulamanın kendi listesini açıyor, seçim
+  sistemin uygulama-başına diline yazılıyor.
+- Büyük harf arayüzün diliyle: İngilizce'de `MINESWEEPER`, `MINES`, `WINS` —
+  noktalı İ yok.
+- Arapça yerleşim: başlık, çipler, üst çubuk ve HUD aynalanıyor; ana menü
+  sayaçları Latin (`0 إعلانات`, `ZA v0.43.0`); Fince'de çip satırı kaydırılabilir
+  (son çip ekran dışında başlıyor, kaydırınca tam geliyor — hata değil).
+- Başlık ölçüsü: yazı ölçeği **1,5**'te 411 dp'de "ZA Games" dört düğmeyle aynı
+  satırda kırpılmadan duruyor, 360 dp'de iki satıra bölünüyor ve tamamı
+  okunuyor. v0.43.0'ın iddiası cihazda doğrulandı.
+
+**Dile bağlı olmayan bulgu — 360×640 dp'de Reyon'un brifi çizilmiyor.** Diziliş
+modunda "Planogram brifi" başlığı duruyor ama kural satırları **9 px (≈4 dp)**
+yüksekliğe iniyor: ekranda hiçbir kural okunmuyor, ikinci kuralın erişilebilirlik
+kutusu sıfır. Kaydırma da açmıyor (sütun kaydırılabilir değil). Kurallar yalnız
+erişilebilirlik ağacında var. 411 dp'de aynı kurallar 85–110 px (32–42 dp).
+**Türkçe'de de, Almanca'da da aynı** — yani dil değil, yükseklik sorunu. Brif
+olmadan Diziliş çözülemez; 360×640 dp bir telefonda mod oynanamaz durumda.
+
+> Ölçülemedi: `input tap` ile üretilen ~30 ms'lik dokunuşlar Blok'un
+> tekrarlamalı yön tuşlarında (`PadButton`, `repeatIntervalMs = 110`) güvenilir
+> tetiklenmiyor; 700 ms basılı tutma her seferinde çalışıyor. Gerçek parmak
+> dokunuşu 60–120 ms olduğu için bunun oyuncuyu etkileyip etkilemediği bu
+> koşumda saptanamadı — ölçüm altı farklı süreyle denendi, parçanın düşmesi
+> ölçümü bozdu.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

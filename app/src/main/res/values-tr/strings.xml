@@ -368,7 +368,7 @@
     <string name="share_chooser">Sonucu paylaş</string>
     <string name="share_failed">Paylaşım açılamadı</string>
     <string name="share_tagline">ZA: sıfır reklam, sıfır izin, saf oyun. Ücretsiz ve açık kaynak:</string>
-    <string name="share_link">https://za.aripd.com</string>
+    <string name="share_link">https://zagames.aripd.com</string>
     <string name="share_solved">Çözüldü!</string>
     <string name="share_score_fmt">%1$s puan</string>
     <string name="share_lines_fmt">%1$d satır</string>
@@ -389,6 +389,7 @@
     <string name="about_source">Kaynak kodu</string>
     <string name="about_report">Sorun bildir</string>
     <string name="about_privacy">Gizlilik politikası</string>
+    <string name="about_contact">Bize yaz</string>
     <string name="about_open_failed">Bağlantı açılamadı: cihazda tarayıcı yok</string>
     <string name="about_licenses">Açık kaynak lisansları</string>
     <string name="about_licenses_intro">ZA aşağıdaki açık kaynak bileşenleri kullanır; dokununca kaynağı açılır.</string>

@@ -52,6 +52,67 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.43.1", "2026-09-20",
+            tr = listOf(
+                "Hakkında ekranına iletişim adresi eklendi: zagames@aripd.com. Dokununca telefonun e-posta uygulaması açılır",
+                "Gizlilik politikası artık 14 dilde ve sitenin adresi zagames.aripd.com oldu",
+            ),
+            en = listOf(
+                "The About screen now has a contact address: zagames@aripd.com. Tapping it opens your e-mail app",
+                "The privacy policy is now in 14 languages, and the site moved to zagames.aripd.com",
+            ),
+            others = mapOf(
+                "de" to listOf(
+                    "Der Info-Bildschirm hat jetzt eine Kontaktadresse: zagames@aripd.com. Ein Tipp öffnet deine E-Mail-App",
+                    "Die Datenschutzerklärung gibt es jetzt in 14 Sprachen, und die Seite liegt auf zagames.aripd.com",
+                ),
+                "fr" to listOf(
+                    "L'écran À propos a maintenant une adresse de contact : zagames@aripd.com. Une touche ouvre votre appli e-mail",
+                    "La politique de confidentialité existe maintenant en 14 langues, et le site est sur zagames.aripd.com",
+                ),
+                "nl" to listOf(
+                    "Het scherm Over heeft nu een contactadres: zagames@aripd.com. Een tik opent je e-mailapp",
+                    "Het privacybeleid staat nu in 14 talen en de site is verhuisd naar zagames.aripd.com",
+                ),
+                "es" to listOf(
+                    "La pantalla Acerca de ahora tiene una dirección de contacto: zagames@aripd.com. Al tocarla se abre tu app de correo",
+                    "La política de privacidad ya está en 14 idiomas y el sitio se mudó a zagames.aripd.com",
+                ),
+                "pt" to listOf(
+                    "A tela Sobre agora tem um endereço de contato: zagames@aripd.com. Ao tocar, seu app de e-mail abre",
+                    "A política de privacidade agora está em 14 idiomas e o site mudou para zagames.aripd.com",
+                ),
+                "it" to listOf(
+                    "La schermata Informazioni ora ha un indirizzo di contatto: zagames@aripd.com. Toccandolo si apre la tua app di posta",
+                    "L'informativa sulla privacy ora è in 14 lingue e il sito si è spostato su zagames.aripd.com",
+                ),
+                "da" to listOf(
+                    "Skærmen Om har nu en kontaktadresse: zagames@aripd.com. Et tryk åbner din e-mail-app",
+                    "Privatlivspolitikken findes nu på 14 sprog, og siden er flyttet til zagames.aripd.com",
+                ),
+                "sv" to listOf(
+                    "Skärmen Om har nu en kontaktadress: zagames@aripd.com. En tryckning öppnar din e-postapp",
+                    "Integritetspolicyn finns nu på 14 språk och webbplatsen har flyttat till zagames.aripd.com",
+                ),
+                "nb" to listOf(
+                    "Om-skjermen har nå en kontaktadresse: zagames@aripd.com. Et trykk åpner e-postappen din",
+                    "Personvernerklæringen finnes nå på 14 språk, og siden har flyttet til zagames.aripd.com",
+                ),
+                "fi" to listOf(
+                    "Tietoja-näytössä on nyt yhteysosoite: zagames@aripd.com. Napautus avaa sähköpostisovelluksesi",
+                    "Tietosuojakäytäntö on nyt 14 kielellä ja sivusto siirtyi osoitteeseen zagames.aripd.com",
+                ),
+                "ru" to listOf(
+                    "На экране «О приложении» появился адрес для связи: zagames@aripd.com. Нажатие открывает почтовое приложение",
+                    "Политика конфиденциальности теперь на 14 языках, а сайт переехал на zagames.aripd.com",
+                ),
+                "ar" to listOf(
+                    "صارت شاشة «حول» تحمل عنوان تواصل: zagames@aripd.com. النقر عليه يفتح تطبيق بريدك",
+                    "صارت سياسة الخصوصية بأربع عشرة لغة وانتقل الموقع إلى zagames.aripd.com",
+                ),
+            ),
+        ),
+        ReleaseNote(
             "0.43.0", "2026-09-20",
             tr = listOf(
                 "Uygulama her yerde ZA Games adıyla anılıyor: ana menünün başlığı ve paylaşım kartının rozeti kısa \"ZA\" yazıyordu",
@@ -615,12 +676,12 @@ object Changelog {
             tr = listOf(
                 "Her oyunun bitiş kartında Paylaş: görsel sonuç kartı ve metin",
                 "Kakuro, Sudoku, Mayın Tarlası, Beş Harf, 2048 ve Dizgi'de kartta bitmiş tahta",
-                "Paylaşım bağlantısı za.aripd.com (0.20.1)",
+                "Paylaşım bağlantısı zagames.aripd.com (0.20.1)",
             ),
             en = listOf(
                 "Share button on every end-of-game card: result image and text",
                 "Kakuro, Sudoku, Minesweeper, Beş Harf, 2048 and Dizgi include the finished board",
-                "Share link points to za.aripd.com (0.20.1)",
+                "Share link points to zagames.aripd.com (0.20.1)",
             ),
         ),
         ReleaseNote(

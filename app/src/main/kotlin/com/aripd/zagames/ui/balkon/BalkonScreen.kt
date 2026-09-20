@@ -84,6 +84,7 @@ import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
+import com.aripd.zagames.platform.zaString
 
 private val Wall = Color(0xFF7C5C46)
 private val WallDark = Color(0xFF5C4133)
@@ -344,7 +345,7 @@ private fun StatusRow(hud: BalkonHud, visible: Boolean) {
             )
         }
         Text(
-            text = stringResource(R.string.balkon_hits_fmt, hud.hits, hud.required),
+            text = zaString(R.string.balkon_hits_fmt, hud.hits, hud.required),
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = alpha),
@@ -394,8 +395,8 @@ private fun Controls(hud: BalkonHud, megaName: String, armed: Boolean, enabled: 
         verticalAlignment = Alignment.CenterVertically,
     ) {
         PadButton(
-            label = stringResource(R.string.balkon_mega_button_fmt, megaName, hud.charges),
-            description = stringResource(R.string.balkon_mega_button_fmt, megaName, hud.charges),
+            label = zaString(R.string.balkon_mega_button_fmt, megaName, hud.charges),
+            description = zaString(R.string.balkon_mega_button_fmt, megaName, hud.charges),
             accent = armed && enabled,
             fontSize = 16.sp,
             modifier = Modifier.weight(1f).fillMaxHeight(),
@@ -450,7 +451,7 @@ private fun ThemeCard(
             )
             if (bestLevel > 0) {
                 Text(
-                    text = stringResource(R.string.balkon_best_level_fmt, bestLevel),
+                    text = zaString(R.string.balkon_best_level_fmt, bestLevel),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary,
                 )
@@ -495,7 +496,7 @@ private fun ThemeOption(option: BalkonTheme, selected: Boolean, onClick: () -> U
                     color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    text = stringResource(R.string.balkon_mega_desc_fmt, stringResource(megaNameRes(option))),
+                    text = zaString(R.string.balkon_mega_desc_fmt, stringResource(megaNameRes(option))),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.75f),
                 )
@@ -550,7 +551,7 @@ private fun OverCard(
             color = MaterialTheme.colorScheme.primary,
         )
         Text(
-            text = stringResource(R.string.balkon_level_reached_fmt, hud.level),
+            text = zaString(R.string.balkon_level_reached_fmt, hud.level),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
         )
@@ -564,8 +565,8 @@ private fun OverCard(
         ShareButton(
             ShareContent(
                 gameId = "balkon",
-                headline = stringResource(R.string.share_score_fmt, formatScore(hud.score)),
-                details = listOf(stringResource(R.string.balkon_level_reached_fmt, hud.level), themeName),
+                headline = zaString(R.string.share_score_fmt, formatScore(hud.score)),
+                details = listOf(zaString(R.string.balkon_level_reached_fmt, hud.level), themeName),
             ),
         )
         Spacer(Modifier.height(4.dp))
@@ -594,7 +595,7 @@ private fun BalkonCanvas(
     modifier: Modifier = Modifier,
 ) {
     val frame by viewModel.frame.collectAsStateWithLifecycle()
-    val desc = stringResource(R.string.balkon_board_desc, hud.level, hud.seconds)
+    val desc = zaString(R.string.balkon_board_desc, hud.level, hud.seconds)
     val textMeasurer = rememberTextMeasurer()
     Canvas(
         modifier = modifier

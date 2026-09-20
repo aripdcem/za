@@ -65,6 +65,7 @@ import com.aripd.zagames.ui.common.ScoreCard
 import com.aripd.zagames.ui.common.formatTime
 import com.aripd.zagames.platform.ShareContent
 import com.aripd.zagames.ui.common.ShareButton
+import com.aripd.zagames.platform.zaString
 
 @Composable
 fun difficultyLabel(difficulty: SudokuDifficulty): String = stringResource(
@@ -176,7 +177,7 @@ fun SudokuScreen(
             when {
                 state == null -> DifficultyOverlay(
                     descriptions = SudokuDifficulty.entries.map {
-                        stringResource(R.string.sudoku_difficulty_desc_fmt, it.targetClues)
+                        zaString(R.string.sudoku_difficulty_desc_fmt, it.targetClues)
                     },
                     lastPicked = viewModel.lastDifficulty?.let { SudokuDifficulty.entries.indexOf(it) },
                 ) { index ->
@@ -336,7 +337,7 @@ private fun SudokuCell(
         isGiven -> " (${stringResource(R.string.sudoku_cell_given_note)})"
         else -> ""
     }
-    val description = stringResource(R.string.sudoku_cell_desc_fmt, row + 1, col + 1, content + note)
+    val description = zaString(R.string.sudoku_cell_desc_fmt, row + 1, col + 1, content + note)
     Box(
         modifier = modifier
             .clickable(
@@ -437,7 +438,7 @@ private fun DigitButton(
     onClick: () -> Unit,
 ) {
     val remaining = 9 - state.values.count { it == digit }
-    val description = stringResource(R.string.sudoku_digit_desc_fmt, digit, remaining.coerceAtLeast(0))
+    val description = zaString(R.string.sudoku_digit_desc_fmt, digit, remaining.coerceAtLeast(0))
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(12.dp),
@@ -519,7 +520,7 @@ private fun SolvedOverlay(
             fontWeight = FontWeight.Bold,
         )
         Text(
-            text = stringResource(R.string.time_fmt, time),
+            text = zaString(R.string.time_fmt, time),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
         )
@@ -541,6 +542,6 @@ private fun SolvedOverlay(
 private fun sudokuShare(state: SudokuState, time: String): ShareContent = ShareContent(
     gameId = "sudoku",
     headline = stringResource(R.string.share_solved),
-    details = listOf(difficultyLabel(state.difficulty), stringResource(R.string.time_fmt, time)),
+    details = listOf(difficultyLabel(state.difficulty), zaString(R.string.time_fmt, time)),
     board = sudokuPainter(state),
 )

@@ -368,7 +368,7 @@
     <string name="share_chooser">Resultaat delen</string>
     <string name="share_failed">Delen kon niet worden geopend</string>
     <string name="share_tagline">ZA: nul advertenties, nul rechten, puur spel. Gratis en open source:</string>
-    <string name="share_link">https://za.aripd.com</string>
+    <string name="share_link">https://zagames.aripd.com</string>
     <string name="share_solved">Opgelost!</string>
     <string name="share_score_fmt">%1$s punten</string>
     <string name="share_lines_fmt">%1$d rijen</string>
@@ -389,6 +389,7 @@
     <string name="about_source">Broncode</string>
     <string name="about_report">Probleem melden</string>
     <string name="about_privacy">Privacybeleid</string>
+    <string name="about_contact">Schrijf ons</string>
     <string name="about_open_failed">Link kon niet worden geopend: geen browser op dit apparaat</string>
     <string name="about_licenses">Open source licenties</string>
     <string name="about_licenses_intro">ZA gebruikt de onderstaande open source componenten; tik erop om de bron te openen.</string>

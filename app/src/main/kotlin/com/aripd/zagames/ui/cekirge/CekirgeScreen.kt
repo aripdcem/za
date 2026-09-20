@@ -85,6 +85,7 @@ import java.util.Locale
 import kotlin.math.min
 import kotlin.math.sin
 import kotlinx.coroutines.isActive
+import com.aripd.zagames.platform.zaString
 
 private val SkyTop = Color(0xFF7DD3FC)
 private val SkyBottom = Color(0xFFE0F2FE)
@@ -276,7 +277,7 @@ private fun CekirgeCanvas(
     modifier: Modifier = Modifier,
 ) {
     val frame by viewModel.frame.collectAsStateWithLifecycle()
-    val desc = stringResource(R.string.cekirge_board_desc_fmt, hud.score, hud.alive, hud.lives)
+    val desc = zaString(R.string.cekirge_board_desc_fmt, hud.score, hud.alive, hud.lives)
     val hint = stringResource(R.string.cekirge_hint)
     val textMeasurer = rememberTextMeasurer()
     val textCache = remember { HashMap<String, TextLayoutResult>() }
@@ -586,7 +587,7 @@ private fun StartCard(
         if (dailyMode) {
             if (daily != null) {
                 Text(
-                    text = stringResource(R.string.cekirge_daily_status_fmt, daily.attempts, CekirgeViewModel.DAILY_ATTEMPTS, daily.best),
+                    text = zaString(R.string.cekirge_daily_status_fmt, daily.attempts, CekirgeViewModel.DAILY_ATTEMPTS, daily.best),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -601,7 +602,7 @@ private fun StartCard(
             )
         } else if (freeBest > 0) {
             Text(
-                text = stringResource(R.string.cekirge_best_fmt, freeBest, freeWave),
+                text = zaString(R.string.cekirge_best_fmt, freeBest, freeWave),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -658,7 +659,7 @@ private fun OverCard(
     onMenu: () -> Unit,
     onExit: () -> Unit,
 ) {
-    val result = stringResource(R.string.cekirge_result_fmt, hud.wave, hud.kills)
+    val result = zaString(R.string.cekirge_result_fmt, hud.wave, hud.kills)
     OverlayCard {
         Text(
             text = stringResource(if (hud.invaded) R.string.cekirge_over_invaded else R.string.cekirge_over_lives),
@@ -696,7 +697,7 @@ private fun OverCard(
         ShareButton(
             ShareContent(
                 gameId = "cekirge",
-                headline = stringResource(R.string.cekirge_share_fmt, hud.wave, hud.score),
+                headline = zaString(R.string.cekirge_share_fmt, hud.wave, hud.score),
                 details = listOf(result, modeShareLabel(daily, null)),
             ),
         )
@@ -704,7 +705,7 @@ private fun OverCard(
         Button(onClick = onRestart, modifier = Modifier.fillMaxWidth()) {
             Text(
                 when {
-                    daily && attemptsLeft > 0 -> stringResource(R.string.cekirge_retry_fmt, attemptsLeft)
+                    daily && attemptsLeft > 0 -> zaString(R.string.cekirge_retry_fmt, attemptsLeft)
                     daily -> stringResource(R.string.play_free)
                     else -> stringResource(R.string.restart)
                 },

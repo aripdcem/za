@@ -81,6 +81,7 @@ import com.aripd.zagames.ui.common.modeShareLabel
 import kotlin.math.min
 import kotlin.math.sin
 import kotlinx.coroutines.isActive
+import com.aripd.zagames.platform.zaString
 
 private val SkyTop = Color(0xFF60B8F5)
 private val SkyBottom = Color(0xFFDDEFFB)
@@ -126,11 +127,11 @@ private fun gadgetDesc(gadget: Gadget?): String = stringResource(
 
 @Composable
 fun missionText(m: Mission): String = when (m.kind) {
-    MissionKind.DISTANCE -> stringResource(R.string.ucurtma_m_distance_fmt, m.target)
-    MissionKind.RIBBONS -> stringResource(R.string.ucurtma_m_ribbons_fmt, m.target)
-    MissionKind.UNDER_WIRE -> stringResource(R.string.ucurtma_m_under_fmt, m.target)
-    MissionKind.NEAR_MISS -> stringResource(R.string.ucurtma_m_near_fmt, m.target)
-    MissionKind.CUTS -> stringResource(R.string.ucurtma_m_cuts_fmt, m.target)
+    MissionKind.DISTANCE -> zaString(R.string.ucurtma_m_distance_fmt, m.target)
+    MissionKind.RIBBONS -> zaString(R.string.ucurtma_m_ribbons_fmt, m.target)
+    MissionKind.UNDER_WIRE -> zaString(R.string.ucurtma_m_under_fmt, m.target)
+    MissionKind.NEAR_MISS -> zaString(R.string.ucurtma_m_near_fmt, m.target)
+    MissionKind.CUTS -> zaString(R.string.ucurtma_m_cuts_fmt, m.target)
 }
 
 @Composable
@@ -167,7 +168,7 @@ fun UcurtmaScreen(
     val sound = LocalZaSound.current
     val fx = remember { UcurtmaFx() }
     val fxTick = remember { mutableLongStateOf(0L) }
-    val milestoneFmt = stringResource(R.string.ucurtma_meters_fmt, 0).replace("0", "%d")
+    val milestoneFmt = zaString(R.string.ucurtma_meters_fmt, 0).replace("0", "%d")
     fx.missionDoneLabel = stringResource(R.string.ucurtma_mission_done)
     fx.nearMissLabel = stringResource(R.string.ucurtma_near)
     fx.milestoneLabel = { m -> milestoneFmt.replace("%d", m.toString()) }
@@ -241,7 +242,7 @@ fun UcurtmaScreen(
                 .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            ScoreCard(label = stringResource(R.string.ucurtma_distance), value = stringResource(R.string.ucurtma_meters_fmt, hud.meters), modifier = Modifier.weight(1.1f), highlight = true)
+            ScoreCard(label = stringResource(R.string.ucurtma_distance), value = zaString(R.string.ucurtma_meters_fmt, hud.meters), modifier = Modifier.weight(1.1f), highlight = true)
             ScoreCard(label = stringResource(R.string.ucurtma_ribbons), value = hud.ribbons.toString(), modifier = Modifier.weight(0.8f))
             ScoreCard(label = stringResource(R.string.ucurtma_best), value = formatScore(maxOf(best, hud.score).toLong()), modifier = Modifier.weight(1f))
         }
@@ -314,7 +315,7 @@ private fun MissionStrip(missions: List<Mission>, hud: UcurtmaHud, visible: Bool
                 modifier = Modifier.weight(1f),
             ) {
                 Text(
-                    text = (if (done) "✓ " else "") + missionShort(m.kind) + " " + stringResource(R.string.ucurtma_progress_fmt, progress, m.target),
+                    text = (if (done) "✓ " else "") + missionShort(m.kind) + " " + zaString(R.string.ucurtma_progress_fmt, progress, m.target),
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = if (done) FontWeight.Bold else FontWeight.Medium,
                     textAlign = TextAlign.Center,
@@ -343,7 +344,7 @@ private fun UcurtmaCanvas(
     modifier: Modifier = Modifier,
 ) {
     val frame by viewModel.frame.collectAsStateWithLifecycle()
-    val desc = stringResource(R.string.ucurtma_board_desc_fmt, hud.meters, hud.ribbons)
+    val desc = zaString(R.string.ucurtma_board_desc_fmt, hud.meters, hud.ribbons)
     val hint = stringResource(R.string.ucurtma_hold_hint)
     val textMeasurer = rememberTextMeasurer()
     val textCache = remember { HashMap<String, TextLayoutResult>() }
@@ -596,7 +597,7 @@ private fun StartCard(
         if (dailyMode) {
             if (daily != null) {
                 Text(
-                    text = stringResource(R.string.ucurtma_daily_status_fmt, daily.attempts, UcurtmaViewModel.DAILY_ATTEMPTS, daily.best),
+                    text = zaString(R.string.ucurtma_daily_status_fmt, daily.attempts, UcurtmaViewModel.DAILY_ATTEMPTS, daily.best),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -611,7 +612,7 @@ private fun StartCard(
             )
         } else if (freeBest > 0) {
             Text(
-                text = stringResource(R.string.ucurtma_best_fmt, freeBest),
+                text = zaString(R.string.ucurtma_best_fmt, freeBest),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -633,7 +634,7 @@ private fun StartCard(
         val lockedNext = Gadget.entries.firstOrNull { it !in unlocked }
         Text(
             text = if (gadget == null && lockedNext != null) {
-                gadgetDesc(null) + " · " + gadgetName(lockedNext) + " " + stringResource(R.string.ucurtma_locked_fmt, Missions.unlockAt(lockedNext))
+                gadgetDesc(null) + " · " + gadgetName(lockedNext) + " " + zaString(R.string.ucurtma_locked_fmt, Missions.unlockAt(lockedNext))
             } else {
                 gadgetDesc(gadget)
             },
@@ -642,7 +643,7 @@ private fun StartCard(
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
         )
         Text(
-            text = stringResource(R.string.ucurtma_missions) + " · " + stringResource(R.string.ucurtma_completed_fmt, completed),
+            text = stringResource(R.string.ucurtma_missions) + " · " + zaString(R.string.ucurtma_completed_fmt, completed),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
         )
@@ -714,7 +715,7 @@ private fun OverCard(
             null -> R.string.ucurtma_abandoned
         },
     )
-    val result = stringResource(R.string.ucurtma_result_fmt, hud.meters, hud.ribbons, hud.cuts)
+    val result = zaString(R.string.ucurtma_result_fmt, hud.meters, hud.ribbons, hud.cuts)
     OverlayCard {
         Text(
             text = title,
@@ -752,7 +753,7 @@ private fun OverCard(
         }
         for (g in unlocked) {
             Text(
-                text = stringResource(R.string.ucurtma_unlocked_fmt, gadgetName(g)),
+                text = zaString(R.string.ucurtma_unlocked_fmt, gadgetName(g)),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -770,7 +771,7 @@ private fun OverCard(
         ShareButton(
             ShareContent(
                 gameId = "ucurtma",
-                headline = stringResource(R.string.ucurtma_share_fmt, hud.meters, hud.score),
+                headline = zaString(R.string.ucurtma_share_fmt, hud.meters, hud.score),
                 details = listOf(result, modeShareLabel(daily, null)),
             ),
         )
@@ -778,7 +779,7 @@ private fun OverCard(
         Button(onClick = onRestart, modifier = Modifier.fillMaxWidth()) {
             Text(
                 when {
-                    daily && attemptsLeft > 0 -> stringResource(R.string.ucurtma_retry_fmt, attemptsLeft)
+                    daily && attemptsLeft > 0 -> zaString(R.string.ucurtma_retry_fmt, attemptsLeft)
                     daily -> stringResource(R.string.play_free)
                     else -> stringResource(R.string.restart)
                 },

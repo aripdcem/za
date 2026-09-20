@@ -20,4 +20,4 @@ Masa ve sayı: Tavla (Klasik, Tapa, Hapis; bilgisayara ya da arkadaşına karş�
 • Ses ve titreşim tek dokunuşla kapanır; sol el desteği
 • Açık kaynak (GPL-3.0): github.com/aripdcem/za
 
-Gizlilik politikası: za.aripd.com/gizlilik.html
+Gizlilik politikası: zagames.aripd.com/gizlilik.html

@@ -15,6 +15,7 @@ import kotlin.math.abs
 import kotlin.math.exp
 import kotlin.math.min
 import kotlin.random.Random
+import com.aripd.zagames.platform.zaText
 
 /** Ekran kesrinde parçacık (x, y ∈ 0..1); yalnızca çizim için. */
 internal class VirajParticle(
@@ -78,7 +79,7 @@ internal class VirajFx {
         when (event) {
             is VirajEvent.Overtake -> {
                 sound?.play(Sfx.WHOOSH, volume = 0.5f, rate = 1.3f)
-                texts += VirajText(resources.getString(R.string.viraj_overtake_fmt, VirajWorld.OVERTAKE_POINTS.toInt()), px, 0.62f, POINTS)
+                texts += VirajText(zaText(resources, R.string.viraj_overtake_fmt, VirajWorld.OVERTAKE_POINTS.toInt()), px, 0.62f, POINTS)
             }
             VirajEvent.Crash -> {
                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -97,7 +98,7 @@ internal class VirajFx {
             is VirajEvent.Checkpoint -> {
                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                 sound?.play(Sfx.BIG, volume = 0.8f)
-                texts += VirajText(resources.getString(R.string.viraj_checkpoint_fmt, event.bonusSeconds), 0.5f, 0.4f, BONUS, big = true)
+                texts += VirajText(zaText(resources, R.string.viraj_checkpoint_fmt, event.bonusSeconds), 0.5f, 0.4f, BONUS, big = true)
             }
             is VirajEvent.Pickup -> {
                 haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
@@ -111,7 +112,7 @@ internal class VirajFx {
                         val label = when (event.gift) {
                             BoxGift.TURBO -> resources.getString(R.string.viraj_turbo)
                             BoxGift.SHIELD -> resources.getString(R.string.viraj_shield)
-                            BoxGift.TIME -> resources.getString(R.string.viraj_time_gift_fmt, VirajWorld.TIME_GIFT.toInt())
+                            BoxGift.TIME -> zaText(resources, R.string.viraj_time_gift_fmt, VirajWorld.TIME_GIFT.toInt())
                             null -> ""
                         }
                         texts += VirajText(label, px, 0.6f, BONUS)
@@ -134,7 +135,7 @@ internal class VirajFx {
             }
             is VirajEvent.Milestone -> {
                 sound?.play(Sfx.POP, volume = 0.5f, rate = 0.9f)
-                texts += VirajText(resources.getString(R.string.viraj_km_fmt, event.km), 0.5f, 0.3f, MILESTONE, big = true)
+                texts += VirajText(zaText(resources, R.string.viraj_km_fmt, event.km), 0.5f, 0.3f, MILESTONE, big = true)
             }
             VirajEvent.Over -> {
                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)

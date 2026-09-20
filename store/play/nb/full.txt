@@ -19,4 +19,4 @@ FUNKSJONER
 • Lyd og vibrasjon slås av med ett trykk; venstrehåndsmodus
 • Åpen kildekode (GPL-3.0): github.com/aripdcem/za
 
-Personvernerklæring: za.aripd.com/gizlilik.html
+Personvernerklæring: zagames.aripd.com/gizlilik.html

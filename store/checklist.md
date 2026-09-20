@@ -14,8 +14,8 @@ asistan (depo, metin, görsel üretimi).
 | [ ] | Uygulama oluştur: ad `ZA Games: Sıfır Reklam`, varsayılan dil Türkçe, tür Oyun, ücretsiz | C |
 | [x] | Paket adı `com.aripd.zagames` | A |
 | [ ] | **Play App Signing** açık; yükleme anahtarı = sürüm iş akışındaki release anahtarı | C |
-| [ ] | İletişim e-postası seçimi: `za-games@aripd.com` (öneri) ya da `dev@aripd.com`. Listelemede herkese görünür | C |
-| [ ] | Seçilen adres uygulama içine de eklenecek mi? Hakkında ekranında bugün GitHub "Sorun bildir" var, e-posta yok | C karar, A uygular |
+| [x] | İletişim e-postası: `zagames@aripd.com`. Listelemede herkese görünür | C |
+| [x] | Adres uygulama içinde de var: Hakkında → "Bize yaz" (`zagames@aripd.com`); gizlilik sayfasının iletişim bölümünde de | A |
 
 ## 2. Uygulama içi zorunluluklar (eskiden "satışa hazır" listesinin 1. maddesi)
 
@@ -23,7 +23,7 @@ asistan (depo, metin, görsel üretimi).
 | --- | --- | --- |
 | [x] | Düşen blok oyununun adı: kullanıcıya görünen her yerde **Blok** (v0.21.0), modül/paket/sınıf/metin kimlikleri de Blok (v0.39.0) | A |
 | [x] | Lisans ekranı: Hakkında içinde açık kaynak bileşenleri, CC BY-SA notu, Apache 2.0 metni, GPL-3.0 satırı | A |
-| [x] | Gizlilik politikası sayfası ve uygulama içi bağlantısı: https://za.aripd.com/gizlilik.html | A |
+| [x] | Gizlilik politikası sayfası ve uygulama içi bağlantısı: https://zagames.aripd.com/gizlilik.html | A |
 | [x] | Hata bildirme bağlantısı: Hakkında → "Sorun bildir" (GitHub issues) | A |
 | [x] | Web sitesi ve kaynak kodu bağlantıları | A |
 

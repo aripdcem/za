@@ -17,5 +17,5 @@ Diğer beyanlar:
 - **İzinler:** Manifestte `uses-permission` yok. Paylaşım için `FileProvider` (izin değildir) ve sonuç kartının yalnızca kullanıcının seçtiği uygulamaya okuma yetkisiyle verilmesi; bu, Play tanımında "veri paylaşımı" sayılmaz (kullanıcının başlattığı işlem).
 - **Hedef kitle:** 13 yaş ve üzeri seçilmesi önerilir. Uygulama her yaş için uygundur ama "çocuklara yönelik" seçimi Aile politikası yükümlülükleri getirir.
 - **İçerik derecelendirme (IARC) anketi:** Kuyu'da botla düşmanlara basma ve Balkon'da yayalara çekirdek/balon/tükürük atma karikatür tarzı, kansız mizahtır; anketi buna göre dürüst doldur (sonuç büyük olasılıkla PEGI 3/7, ESRB E/E10+).
-- **Gizlilik politikası URL'si:** https://za.aripd.com/gizlilik.html
+- **Gizlilik politikası URL'si:** https://zagames.aripd.com/gizlilik.html
 - **Erişilebilirlik / sağlık / finans beyanları:** Uygulanamaz.

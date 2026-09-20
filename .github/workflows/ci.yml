@@ -33,6 +33,9 @@ jobs:
       - name: Kelime listesi denetimi
         run: python3 tools/check_wordlists.py
 
+      - name: Site denetimi
+        run: python3 tools/check_site.py
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

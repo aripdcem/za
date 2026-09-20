@@ -85,6 +85,7 @@ import java.util.Locale
 import kotlin.math.min
 import kotlin.math.sin
 import kotlinx.coroutines.isActive
+import com.aripd.zagames.platform.zaString
 
 private val SpaceTop = Color(0xFF0B1026)
 private val SpaceBottom = Color(0xFF1E1B4B)
@@ -340,7 +341,7 @@ private fun CiciCanvas(
     modifier: Modifier = Modifier,
 ) {
     val frame by viewModel.frame.collectAsStateWithLifecycle()
-    val desc = stringResource(R.string.cici_board_desc_fmt, hud.score, hud.lives, hud.caught)
+    val desc = zaString(R.string.cici_board_desc_fmt, hud.score, hud.lives, hud.caught)
     val hint = stringResource(R.string.cici_drag_hint)
     val textMeasurer = rememberTextMeasurer()
     val textCache = remember { HashMap<String, TextLayoutResult>() }
@@ -663,7 +664,7 @@ private fun StartCard(
         if (dailyMode) {
             if (daily != null) {
                 Text(
-                    text = stringResource(R.string.cici_daily_status_fmt, daily.attempts, CiciViewModel.DAILY_ATTEMPTS, daily.best),
+                    text = zaString(R.string.cici_daily_status_fmt, daily.attempts, CiciViewModel.DAILY_ATTEMPTS, daily.best),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -678,7 +679,7 @@ private fun StartCard(
             )
         } else if (freeBest > 0) {
             Text(
-                text = stringResource(R.string.cici_best_fmt, freeBest),
+                text = zaString(R.string.cici_best_fmt, freeBest),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -738,7 +739,7 @@ private fun OverCard(
     onMenu: () -> Unit,
     onExit: () -> Unit,
 ) {
-    val result = stringResource(R.string.cici_result_fmt, seeds, waters, honeys, hud.bestStreak, clock(hud.seconds))
+    val result = zaString(R.string.cici_result_fmt, seeds, waters, honeys, hud.bestStreak, clock(hud.seconds))
     OverlayCard {
         Text(
             text = stringResource(R.string.cici_over_title),
@@ -776,7 +777,7 @@ private fun OverCard(
         ShareButton(
             ShareContent(
                 gameId = "cici",
-                headline = stringResource(R.string.cici_share_fmt, hud.score, hud.caught),
+                headline = zaString(R.string.cici_share_fmt, hud.score, hud.caught),
                 details = listOf(result, modeShareLabel(daily, null)),
             ),
         )
@@ -784,7 +785,7 @@ private fun OverCard(
         Button(onClick = onRestart, modifier = Modifier.fillMaxWidth()) {
             Text(
                 when {
-                    daily && attemptsLeft > 0 -> stringResource(R.string.cici_retry_fmt, attemptsLeft)
+                    daily && attemptsLeft > 0 -> zaString(R.string.cici_retry_fmt, attemptsLeft)
                     daily -> stringResource(R.string.play_free)
                     else -> stringResource(R.string.restart)
                 },

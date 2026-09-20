@@ -368,7 +368,7 @@
     <string name="share_chooser">Jaa tulos</string>
     <string name="share_failed">Jakamista ei voitu avata</string>
     <string name="share_tagline">ZA: nolla mainoksia, nolla lupia, pelkkää peliä. Ilmainen ja avoin lähdekoodi:</string>
-    <string name="share_link">https://za.aripd.com</string>
+    <string name="share_link">https://zagames.aripd.com</string>
     <string name="share_solved">Ratkaistu!</string>
     <string name="share_score_fmt">%1$s pistettä</string>
     <string name="share_lines_fmt">%1$d riviä</string>
@@ -389,6 +389,7 @@
     <string name="about_source">Lähdekoodi</string>
     <string name="about_report">Ilmoita ongelmasta</string>
     <string name="about_privacy">Tietosuojakäytäntö</string>
+    <string name="about_contact">Kirjoita meille</string>
     <string name="about_open_failed">Linkkiä ei voitu avata: laitteessa ei ole selainta</string>
     <string name="about_licenses">Avoimen lähdekoodin lisenssit</string>
     <string name="about_licenses_intro">ZA käyttää alla olevia avoimen lähdekoodin osia; napauta jotakin avataksesi sen lähteen.</string>

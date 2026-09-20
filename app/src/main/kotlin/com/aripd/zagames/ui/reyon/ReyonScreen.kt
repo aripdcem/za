@@ -70,12 +70,14 @@ import com.aripd.zagames.reyon.ReyonHint
 import com.aripd.zagames.reyon.ReyonLevel
 import com.aripd.zagames.reyon.ReyonState
 import com.aripd.zagames.reyon.Rules
+import com.aripd.zagames.ui.common.ActionLabel
 import com.aripd.zagames.ui.common.GameTopBar
 import com.aripd.zagames.ui.common.OverlayCard
 import com.aripd.zagames.ui.common.ScoreCard
 import com.aripd.zagames.ui.common.ShareButton
 import com.aripd.zagames.ui.common.formatTime
 import com.aripd.zagames.ui.common.modeShareLabel
+import com.aripd.zagames.platform.zaString
 
 /**
  * Reyon: dört tür, tek ekran. Diziliş (planogram bulmacası), Denetim (uyum
@@ -357,7 +359,7 @@ private fun ShelfCanvas(
     val labeler = remember(textMeasurer) { BlockLabeler(textMeasurer) }
     val path = remember { Path() }
     val unplaced = puzzle.products.size - state.placedCount
-    val desc = stringResource(R.string.reyon_board_desc_fmt, rows, cols, unplaced)
+    val desc = zaString(R.string.reyon_board_desc_fmt, rows, cols, unplaced)
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
@@ -460,8 +462,8 @@ private fun HintLine(state: ReyonState, hint: ReyonHint?) {
     if (hint == null) return
     val res = LocalContext.current.resources
     val text = when (hint) {
-        is ReyonHint.Wrong -> stringResource(R.string.reyon_hint_wrong_fmt, ReyonText.kind(res, state.puzzle.products[hint.product].kind))
-        is ReyonHint.Place -> stringResource(
+        is ReyonHint.Wrong -> zaString(R.string.reyon_hint_wrong_fmt, ReyonText.kind(res, state.puzzle.products[hint.product].kind))
+        is ReyonHint.Place -> zaString(
             R.string.reyon_hint_place_fmt,
             ReyonText.kind(res, state.puzzle.products[hint.product].kind),
             ReyonText.shelfAt(res, hint.row, state.puzzle.rows),
@@ -508,7 +510,7 @@ private fun Tray(
         ) {
             for (p in pending) {
                 val name = ReyonText.kind(res, p.kind)
-                val desc = "$trayLabel: " + stringResource(R.string.reyon_tray_item_fmt, name, p.facings)
+                val desc = "$trayLabel: " + zaString(R.string.reyon_tray_item_fmt, name, p.facings)
                 val isSelected = p.id == selected
                 val ring = when {
                     isSelected -> ReyonPalette.SelectedRing
@@ -561,13 +563,13 @@ private fun Controls(canUndo: Boolean, canRemove: Boolean, onUndo: () -> Unit, o
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         OutlinedButton(onClick = onUndo, enabled = canUndo, modifier = Modifier.weight(1f)) {
-            Text(stringResource(R.string.undo))
+            ActionLabel(stringResource(R.string.undo))
         }
         OutlinedButton(onClick = onRemove, enabled = canRemove, modifier = Modifier.weight(1f)) {
-            Text(stringResource(R.string.reyon_remove))
+            ActionLabel(stringResource(R.string.reyon_remove))
         }
         Button(onClick = onHint, modifier = Modifier.weight(1f)) {
-            Text(stringResource(R.string.reyon_hint))
+            ActionLabel(stringResource(R.string.reyon_hint))
         }
     }
 }
@@ -669,7 +671,7 @@ private fun MenuCard(
         )
         ModeAndLevelChips(mode = mode, level = level, onMode = onMode, onLevel = onLevel)
         Text(
-            text = stringResource(R.string.reyon_level_desc_fmt, level.rows, level.cols, level.products.first, level.products.last),
+            text = zaString(R.string.reyon_level_desc_fmt, level.rows, level.cols, level.products.first, level.products.last),
             style = MaterialTheme.typography.labelSmall,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
@@ -677,9 +679,9 @@ private fun MenuCard(
         val record = records[level]
         val info = when {
             mode == ReyonMode.DAILY && record != null ->
-                stringResource(R.string.reyon_daily_done_fmt, formatTime(record.time), record.hints)
+                zaString(R.string.reyon_daily_done_fmt, formatTime(record.time), record.hints)
             mode == ReyonMode.DAILY -> stringResource(R.string.reyon_daily_desc)
-            bestTime > 0 -> stringResource(R.string.reyon_best_fmt, formatTime(bestTime))
+            bestTime > 0 -> zaString(R.string.reyon_best_fmt, formatTime(bestTime))
             else -> stringResource(R.string.reyon_free_desc)
         }
         Text(
@@ -708,7 +710,7 @@ private fun SolvedCard(
 ) {
     val res = LocalContext.current.resources
     val time = formatTime(result.time)
-    val details = stringResource(R.string.reyon_result_fmt, ReyonText.level(res, state.puzzle.level), result.hints)
+    val details = zaString(R.string.reyon_result_fmt, ReyonText.level(res, state.puzzle.level), result.hints)
     OverlayCard {
         Text(
             text = stringResource(R.string.congrats),
@@ -738,7 +740,7 @@ private fun SolvedCard(
             ShareContent(
                 gameId = "reyon",
                 headline = stringResource(R.string.share_solved),
-                details = listOf(details, stringResource(R.string.time_fmt, time), modeShareLabel(result.daily, result.day)),
+                details = listOf(details, zaString(R.string.time_fmt, time), modeShareLabel(result.daily, result.day)),
                 board = reyonPainter(state, res),
             ),
         )

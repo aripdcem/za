@@ -65,12 +65,14 @@ import com.aripd.zagames.reyon.ReyonLevel
 import com.aripd.zagames.reyon.ReyonSalesState
 import com.aripd.zagames.reyon.SalesRule
 import com.aripd.zagames.reyon.SalesScore
+import com.aripd.zagames.ui.common.ActionLabel
 import com.aripd.zagames.ui.common.GameTopBar
 import com.aripd.zagames.ui.common.OverlayCard
 import com.aripd.zagames.ui.common.ScoreCard
 import com.aripd.zagames.ui.common.ShareButton
 import com.aripd.zagames.ui.common.formatScore
 import com.aripd.zagames.ui.common.modeShareLabel
+import com.aripd.zagames.platform.zaString
 
 internal fun starsText(stars: Int): String = "★".repeat(stars) + "☆".repeat(3 - stars)
 
@@ -254,14 +256,14 @@ internal fun ReyonSalesContent(
                     enabled = st.canUndo,
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text(stringResource(R.string.undo))
+                    ActionLabel(stringResource(R.string.undo))
                 }
                 OutlinedButton(
                     onClick = { if (viewModel.removeSelected()) haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove) },
                     enabled = selected >= 0 && st.isPlaced(selected),
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text(stringResource(R.string.reyon_remove))
+                    ActionLabel(stringResource(R.string.reyon_remove))
                 }
                 Button(
                     onClick = {
@@ -270,7 +272,7 @@ internal fun ReyonSalesContent(
                     enabled = st.isComplete,
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text(stringResource(R.string.reyon_sales_finish))
+                    ActionLabel(stringResource(R.string.reyon_sales_finish))
                 }
             }
         }
@@ -297,7 +299,7 @@ private fun SalesCanvas(
     val labeler = remember(textMeasurer) { BlockLabeler(textMeasurer) }
     val path = remember { Path() }
     val unplaced = sales.products.size - state.placedCount
-    val desc = stringResource(R.string.reyon_sales_board_desc_fmt, rows, cols, unplaced, score.total)
+    val desc = zaString(R.string.reyon_sales_board_desc_fmt, rows, cols, unplaced, score.total)
     val targetScore = remember(sales) { com.aripd.zagames.reyon.SalesScorer.score(sales.board, sales.products, targetOf(sales)) }
     Canvas(
         modifier = Modifier
@@ -360,14 +362,14 @@ private fun BreakdownLine(state: ReyonSalesState, score: SalesScore, selected: I
         val p = state.sales.products[selected]
         val single = com.aripd.zagames.reyon.SalesScorer.score(state.sales.board, state.sales.products, state.snapshot())
         val parts = ArrayList<String>()
-        parts += stringResource(R.string.reyon_sales_part_fmt, stringResource(R.string.reyon_sales_rule_position), com.aripd.zagames.reyon.SalesRules.position(p, state.placement(selected)!!.row, state.sales.rows))
+        parts += zaString(R.string.reyon_sales_part_fmt, stringResource(R.string.reyon_sales_rule_position), com.aripd.zagames.reyon.SalesRules.position(p, state.placement(selected)!!.row, state.sales.rows))
         val total = single.byProduct[selected]
         val rest = total - com.aripd.zagames.reyon.SalesRules.position(p, state.placement(selected)!!.row, state.sales.rows)
-        if (rest != 0) parts += stringResource(R.string.reyon_sales_part_fmt, stringResource(R.string.reyon_sales_neighbors), rest)
-        stringResource(R.string.reyon_sales_breakdown_fmt, ReyonText.kind(res, p.kind), parts.joinToString(" · "), total)
+        if (rest != 0) parts += zaString(R.string.reyon_sales_part_fmt, stringResource(R.string.reyon_sales_neighbors), rest)
+        zaString(R.string.reyon_sales_breakdown_fmt, ReyonText.kind(res, p.kind), parts.joinToString(" · "), total)
     } else if (selected >= 0) {
         val p = state.sales.products[selected]
-        stringResource(R.string.reyon_sales_selected_fmt, ReyonText.kind(res, p.kind), p.demand)
+        zaString(R.string.reyon_sales_selected_fmt, ReyonText.kind(res, p.kind), p.demand)
     } else {
         stringResource(R.string.reyon_sales_pick_hint)
     }
@@ -394,7 +396,7 @@ private fun ReviewBar(review: SalesReview, target: Int, onReview: (SalesReview) 
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Chip(stringResource(R.string.reyon_sales_review_mine), review == SalesReview.MINE, Modifier.weight(1f)) { onReview(SalesReview.MINE) }
-        Chip(stringResource(R.string.reyon_sales_review_target_fmt, target), review == SalesReview.TARGET, Modifier.weight(1.2f)) { onReview(SalesReview.TARGET) }
+        Chip(zaString(R.string.reyon_sales_review_target_fmt, target), review == SalesReview.TARGET, Modifier.weight(1.2f)) { onReview(SalesReview.TARGET) }
         Chip(stringResource(R.string.reyon_sales_back_to_result), false, Modifier.weight(1f)) { onReview(SalesReview.RESULT) }
     }
 }
@@ -491,7 +493,7 @@ private fun SalesTray(state: ReyonSalesState, version: Int, selected: Int, onSel
         ) {
             for (p in pending) {
                 val name = ReyonText.kind(res, p.kind)
-                val desc = "$trayLabel: " + stringResource(R.string.reyon_tray_item_fmt, name, p.facings)
+                val desc = "$trayLabel: " + zaString(R.string.reyon_tray_item_fmt, name, p.facings)
                 val isSelected = p.id == selected
                 Surface(
                     onClick = { onSelect(p.id) },
@@ -515,7 +517,7 @@ private fun SalesTray(state: ReyonSalesState, version: Int, selected: Int, onSel
                         Text(
                             text = buildString {
                                 append("×${p.facings} ")
-                                append(stringResource(R.string.reyon_sales_demand_fmt, p.demand))
+                                append(zaString(R.string.reyon_sales_demand_fmt, p.demand))
                                 if (p.premium) append(" ★")
                                 if (p.heavy) append(" ▼")
                             },
@@ -556,7 +558,7 @@ private fun SalesMenuCard(
         )
         ModeAndLevelChips(mode = mode, level = level, onMode = onMode, onLevel = onLevel)
         Text(
-            text = stringResource(R.string.reyon_level_desc_fmt, level.rows, level.cols, level.products.first, level.products.last),
+            text = zaString(R.string.reyon_level_desc_fmt, level.rows, level.cols, level.products.first, level.products.last),
             style = MaterialTheme.typography.labelSmall,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
@@ -570,10 +572,10 @@ private fun SalesMenuCard(
                     record.score >= record.target * 0.75 -> 1
                     else -> 0
                 } else 0
-                stringResource(R.string.reyon_sales_daily_done_fmt, record.score, record.target, starsText(stars))
+                zaString(R.string.reyon_sales_daily_done_fmt, record.score, record.target, starsText(stars))
             }
             mode == ReyonMode.DAILY -> stringResource(R.string.reyon_sales_daily_desc)
-            bestPercent > 0 -> stringResource(R.string.reyon_sales_best_fmt, bestPercent)
+            bestPercent > 0 -> zaString(R.string.reyon_sales_best_fmt, bestPercent)
             else -> stringResource(R.string.reyon_sales_free_desc)
         }
         Text(
@@ -603,7 +605,7 @@ private fun SalesResultCard(
     onExit: () -> Unit,
 ) {
     val res = LocalContext.current.resources
-    val details = stringResource(R.string.reyon_sales_result_fmt, result.score, result.target, result.percent)
+    val details = zaString(R.string.reyon_sales_result_fmt, result.score, result.target, result.percent)
     val levelName = ReyonText.level(res, state.sales.level)
     OverlayCard {
         Text(
@@ -639,7 +641,7 @@ private fun SalesResultCard(
         ShareButton(
             ShareContent(
                 gameId = "reyon",
-                headline = stringResource(R.string.share_score_fmt, formatScore(result.score.toLong())),
+                headline = zaString(R.string.share_score_fmt, formatScore(result.score.toLong())),
                 details = listOf(levelName, details, starsText(result.stars), modeShareLabel(result.daily, result.day)),
                 board = salesPainter(state, res),
             ),

@@ -19,4 +19,4 @@ FUNZIONI
 • Suono e vibrazione si spengono con un tocco; modalità per mancini
 • Open source (GPL-3.0): github.com/aripdcem/za
 
-Informativa sulla privacy: za.aripd.com/gizlilik.html
+Informativa sulla privacy: zagames.aripd.com/gizlilik.html

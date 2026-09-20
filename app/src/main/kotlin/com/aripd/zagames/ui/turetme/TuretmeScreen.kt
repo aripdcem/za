@@ -67,6 +67,7 @@ import com.aripd.zagames.ui.common.ShareButton
 import com.aripd.zagames.ui.common.modeShareLabel
 import kotlinx.coroutines.delay
 import java.util.Locale
+import com.aripd.zagames.platform.zaString
 
 /**
  * Harfleri oyunun kendi diliyle büyütür. Sabit bir yerel ayar kullanılamaz:
@@ -560,8 +561,8 @@ private fun CompletedOverlay(
                 gameId = "turetme",
                 headline = stringResource(R.string.turetme_completed),
                 details = listOf(
-                    stringResource(R.string.share_score_fmt, formatScore(state.score)),
-                    stringResource(R.string.share_words_fmt, state.found.size, state.targets.size),
+                    zaString(R.string.share_score_fmt, formatScore(state.score)),
+                    zaString(R.string.share_words_fmt, state.found.size, state.targets.size),
                     modeShareLabel(mode == TuretmeMode.DAILY, state.dailyDay),
                 ),
             ),
