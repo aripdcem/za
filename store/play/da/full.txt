@@ -19,4 +19,4 @@ FUNKTIONER
 • Lyd og vibration slås fra med ét tryk; venstrehåndstilstand
 • Open source (GPL-3.0): github.com/aripdcem/za
 
-Privatlivspolitik: za.aripd.com/gizlilik.html
+Privatlivspolitik: zagames.aripd.com/gizlilik.html

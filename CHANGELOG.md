@@ -5,6 +5,9 @@ Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/aripd/zagames/
 ## 0.43.1 (2026-09-20)
 - **İletişim adresi: `zagames@aripd.com`.** Hakkında ekranına "Bize yaz" satırı eklendi (14 dilde); dokununca telefonun e-posta uygulaması adres dolu açılır. Uygulama yine ağa çıkmaz, mektubu kullanıcının kendi uygulaması gönderir
 - Aynı adres gizlilik sayfasının iletişim bölümünde de var: Play, gizlilik politikasında iletişim bilgisi arar ve orada yalnızca GitHub bağlantısı duruyordu
+- **Gizlilik politikası 14 dilde.** Tek adreste, her dil kendi bölümünde (Play tek URL ister); Arapça bölümü sağdan sola. Sayfayı `tools/gen_privacy.py` üretiyor, metin betiğin içinde
+- Site `zagames.aripd.com` adresine taşındı; uygulamadaki bağlantılar, mağaza metinleri, belgeler ve iş akışı notları 35 dosyada güncellendi
+- Yeni denetim `tools/check_site.py` CI'da: gizlilik sayfası üreticisiyle ayrıştıysa, bir dilin bölümü ya da iletişim adresi eksikse, uygulamadaki bağlantılar sitenin alan adıyla uyuşmuyorsa sürüm çıkmaz. Sitenin dil kapsamı bugüne kadar hiçbir denetime bağlı değildi
 - Web sitesi de markayı tam adıyla söylüyor; ana sayfanın açıklaması hâlâ "Türkçe kelime oyunları" diyordu, v0.41.0'dan beri 14 dilde
 
 ## 0.43.0 (2026-09-20)
@@ -158,7 +161,7 @@ Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/aripd/zagames/
 - Geçit: aynı yönde ardışık nehirlerde geçiş her zaman açık (köprü kütükleri ya da hız farkı)
 
 ## 0.20.1 (2026-09-06)
-- Paylaşım bağlantısı za.aripd.com
+- Paylaşım bağlantısı zagames.aripd.com
 
 ## 0.20.0 (2026-09-06)
 - Her oyunun bitiş kartında Paylaş: görsel sonuç kartı ve metin

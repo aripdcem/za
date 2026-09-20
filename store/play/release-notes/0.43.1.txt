@@ -1,42 +1,56 @@
 <tr-TR>
 • Hakkında ekranına iletişim adresi eklendi: zagames@aripd.com. Dokununca telefonun e-posta uygulaması açılır.
+• Gizlilik politikası artık 14 dilde ve sitenin adresi zagames.aripd.com oldu.
 </tr-TR>
 <en-US>
 • The About screen now has a contact address: zagames@aripd.com. Tapping it opens your e-mail app.
+• The privacy policy is now in 14 languages, and the site moved to zagames.aripd.com.
 </en-US>
 <de-DE>
 • Der Info-Bildschirm hat jetzt eine Kontaktadresse: zagames@aripd.com. Ein Tipp öffnet deine E-Mail-App.
+• Die Datenschutzerklärung gibt es jetzt in 14 Sprachen, und die Seite liegt auf zagames.aripd.com.
 </de-DE>
 <fr-FR>
 • L'écran À propos a maintenant une adresse de contact : zagames@aripd.com. Une touche ouvre votre appli e-mail.
+• La politique de confidentialité existe maintenant en 14 langues, et le site est sur zagames.aripd.com.
 </fr-FR>
 <nl-NL>
 • Het scherm Over heeft nu een contactadres: zagames@aripd.com. Een tik opent je e-mailapp.
+• Het privacybeleid staat nu in 14 talen en de site is verhuisd naar zagames.aripd.com.
 </nl-NL>
 <es-ES>
 • La pantalla Acerca de ahora tiene una dirección de contacto: zagames@aripd.com. Al tocarla se abre tu app de correo.
+• La política de privacidad ya está en 14 idiomas y el sitio se mudó a zagames.aripd.com.
 </es-ES>
 <pt-BR>
 • A tela Sobre agora tem um endereço de contato: zagames@aripd.com. Ao tocar, seu app de e-mail abre.
+• A política de privacidade agora está em 14 idiomas e o site mudou para zagames.aripd.com.
 </pt-BR>
 <it-IT>
 • La schermata Informazioni ora ha un indirizzo di contatto: zagames@aripd.com. Toccandolo si apre la tua app di posta.
+• L'informativa sulla privacy ora è in 14 lingue e il sito si è spostato su zagames.aripd.com.
 </it-IT>
 <da-DK>
 • Skærmen Om har nu en kontaktadresse: zagames@aripd.com. Et tryk åbner din e-mail-app.
+• Privatlivspolitikken findes nu på 14 sprog, og siden er flyttet til zagames.aripd.com.
 </da-DK>
 <sv-SE>
 • Skärmen Om har nu en kontaktadress: zagames@aripd.com. En tryckning öppnar din e-postapp.
+• Integritetspolicyn finns nu på 14 språk och webbplatsen har flyttat till zagames.aripd.com.
 </sv-SE>
 <no-NO>
 • Om-skjermen har nå en kontaktadresse: zagames@aripd.com. Et trykk åpner e-postappen din.
+• Personvernerklæringen finnes nå på 14 språk, og siden har flyttet til zagames.aripd.com.
 </no-NO>
 <fi-FI>
 • Tietoja-näytössä on nyt yhteysosoite: zagames@aripd.com. Napautus avaa sähköpostisovelluksesi.
+• Tietosuojakäytäntö on nyt 14 kielellä ja sivusto siirtyi osoitteeseen zagames.aripd.com.
 </fi-FI>
 <ru-RU>
 • На экране «О приложении» появился адрес для связи: zagames@aripd.com. Нажатие открывает почтовое приложение.
+• Политика конфиденциальности теперь на 14 языках, а сайт переехал на zagames.aripd.com.
 </ru-RU>
 <ar>
 • صارت شاشة «حول» تحمل عنوان تواصل: zagames@aripd.com. النقر عليه يفتح تطبيق بريدك.
+• صارت سياسة الخصوصية بأربع عشرة لغة وانتقل الموقع إلى zagames.aripd.com.
 </ar>

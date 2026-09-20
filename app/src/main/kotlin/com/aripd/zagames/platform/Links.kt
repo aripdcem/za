@@ -10,8 +10,8 @@ import com.aripd.zagames.R
 /** Dışa açılan bağlantılar. Uygulama ağa çıkmaz; bağlantıyı cihazdaki tarayıcı açar. */
 object ZaLinks {
     const val CONTACT = "zagames@aripd.com"
-    const val SITE = "https://za.aripd.com"
-    const val PRIVACY = "https://za.aripd.com/gizlilik.html"
+    const val SITE = "https://zagames.aripd.com"
+    const val PRIVACY = "https://zagames.aripd.com/gizlilik.html"
     const val SOURCE = "https://github.com/aripdcem/za"
     const val REPORT = "https://github.com/aripdcem/za/issues/new"
     const val LICENSE = "https://github.com/aripdcem/za/blob/main/LICENSE"

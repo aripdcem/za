@@ -19,4 +19,4 @@
 • الصوت والاهتزاز يُطفآن بنقرة؛ نمط اليد اليسرى
 • مفتوح المصدر (GPL-3.0): github.com/aripdcem/za
 
-سياسة الخصوصية: za.aripd.com/gizlilik.html
+سياسة الخصوصية: zagames.aripd.com/gizlilik.html

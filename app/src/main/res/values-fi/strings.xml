@@ -368,7 +368,7 @@
     <string name="share_chooser">Jaa tulos</string>
     <string name="share_failed">Jakamista ei voitu avata</string>
     <string name="share_tagline">ZA: nolla mainoksia, nolla lupia, pelkkää peliä. Ilmainen ja avoin lähdekoodi:</string>
-    <string name="share_link">https://za.aripd.com</string>
+    <string name="share_link">https://zagames.aripd.com</string>
     <string name="share_solved">Ratkaistu!</string>
     <string name="share_score_fmt">%1$s pistettä</string>
     <string name="share_lines_fmt">%1$d riviä</string>

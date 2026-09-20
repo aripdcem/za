@@ -368,7 +368,7 @@
     <string name="share_chooser">Поделиться результатом</string>
     <string name="share_failed">Не удалось открыть меню «Поделиться»</string>
     <string name="share_tagline">ZA: ноль рекламы, ноль разрешений, чистая игра. Бесплатно и с открытым кодом:</string>
-    <string name="share_link">https://za.aripd.com</string>
+    <string name="share_link">https://zagames.aripd.com</string>
     <string name="share_solved">Решено!</string>
     <string name="share_score_fmt">%1$s очков</string>
     <string name="share_lines_fmt">%1$d линий</string>

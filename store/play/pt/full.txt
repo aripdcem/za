@@ -19,4 +19,4 @@ RECURSOS
 • Som e vibração desligam com um toque; modo para canhotos
 • Código aberto (GPL-3.0): github.com/aripdcem/za
 
-Política de privacidade: za.aripd.com/gizlilik.html
+Política de privacidade: zagames.aripd.com/gizlilik.html

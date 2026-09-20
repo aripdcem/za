@@ -368,7 +368,7 @@
     <string name="share_chooser">Ergebnis teilen</string>
     <string name="share_failed">Teilen konnte nicht geöffnet werden</string>
     <string name="share_tagline">ZA: null Werbung, null Berechtigungen, reines Spiel. Kostenlos und Open Source:</string>
-    <string name="share_link">https://za.aripd.com</string>
+    <string name="share_link">https://zagames.aripd.com</string>
     <string name="share_solved">Gelöst!</string>
     <string name="share_score_fmt">%1$s Punkte</string>
     <string name="share_lines_fmt">%1$d Reihen</string>

@@ -368,7 +368,7 @@
     <string name="share_chooser">Del resultatet</string>
     <string name="share_failed">Klarte ikke å åpne deling</string>
     <string name="share_tagline">ZA: null annonser, null tillatelser, rent spill. Gratis og åpen kildekode:</string>
-    <string name="share_link">https://za.aripd.com</string>
+    <string name="share_link">https://zagames.aripd.com</string>
     <string name="share_solved">Løst!</string>
     <string name="share_score_fmt">%1$s poeng</string>
     <string name="share_lines_fmt">%1$d rader</string>

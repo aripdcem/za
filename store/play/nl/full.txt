@@ -19,4 +19,4 @@ FUNCTIES
 • Geluid en haptiek met één tik uit; linkshandige modus
 • Open source (GPL-3.0): github.com/aripdcem/za
 
-Privacybeleid: za.aripd.com/gizlilik.html
+Privacybeleid: zagames.aripd.com/gizlilik.html

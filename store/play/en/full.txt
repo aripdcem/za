@@ -20,4 +20,4 @@ FEATURES
 • Sound and haptics toggle with one tap; left-hand mode
 • Open source (GPL-3.0): github.com/aripdcem/za
 
-Privacy policy: za.aripd.com/gizlilik.html
+Privacy policy: zagames.aripd.com/gizlilik.html

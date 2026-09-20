@@ -19,4 +19,4 @@ OMINAISUUDET
 • Äänet ja tärinä pois yhdellä napautuksella; vasenkätinen tila
 • Avoin lähdekoodi (GPL-3.0): github.com/aripdcem/za
 
-Tietosuojakäytäntö: za.aripd.com/gizlilik.html
+Tietosuojakäytäntö: zagames.aripd.com/gizlilik.html
