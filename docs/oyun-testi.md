@@ -2842,16 +2842,20 @@ gözden geçirilmeli.
 
 CI bunu doğrulayamaz: Robolectric'in yazı ölçüleri cihazınkinden farklı, zaten
 `ReyonShortScreenTest` h568'de üç kuralı görüp geçiyordu — bulguyu cihaz
-çıkardı. Yeniden ölçüm yayındaki yapıyla alınır:
+çıkardı. Ölçüm yayındaki yapıyla alınır:
 
 ```bash
 python3 tools/cihaz_testi.py reyon --apk za-v0.43.3.apk
 ```
 
 Raporun ilk satırındaki özet `00bfb83305ecd4e005c9c0abac9d2952059f5822b02e6b11e3800181d16415e7`
-olmalı (v0.43.3 `za-v0.43.3.apk` = `za.apk`); eşleşmiyorsa düzeltme ölçülen
-yapıda yok demektir. Bu tuzağa bir kez düşüldü: ilk ölçüm yanlış daldan
-kurulmuş bir yapıyla alındı ve düzeltme işlemedi sanıldı.
+olmalı (v0.43.3 `za-v0.43.3.apk` = `za.apk`). Yerel derlemeyle ölçülüyorsa özet
+elbette tutmaz; orada sağlama `Konum` gövdesinin iki satır (≈35 dp) olması.
+Bu tuzağa bir kez düşüldü: ilk ölçüm yanlış daldan kurulmuş bir yapıyla alındı
+ve düzeltme işlemedi sanıldı.
+
+Sonuç aşağıda: "v0.43.3 · G4 denemesinin doğrulaması" — deneme tuttu, 2 dp'lik
+pay cihazda da yetti.
 
 **G5 — Sipariş listesi.** İlk ürün satırı tam: **108,5 dp** (ad, stok, talep
 bandı, −/+ adımlayıcı, teslim notu). İkincisi 79 dp ile yarım görünüyor, yani
@@ -2880,6 +2884,62 @@ değişmiyor — tasarımın söylediği şey cihazda da böyle.
 > "Yenilikler" kartı hub'ı örtüyordu (`yenilik_kapat`); Reyon yarım turu sakladığı
 > için oyuna girince mod çipleri ekranda olmuyordu (`reyon_kurulum_karti`, "Başa
 > dön"e basar). Üçü de `tools/cihaz_testi.py` içinde.
+
+### v0.43.3 · G4 denemesinin doğrulaması · cihazda · 2026-09-21
+
+`maxLines = 2` + 1 dp satır arası denemesi cihazda ölçüldü: **hedef tuttu, ama
+payı gerçekten dar ve bedeli öngörüldüğü gibi ödendi.**
+
+Kurulum: `origin/main` (ceba53f) `./gradlew :app:assembleDebug` ile derlendi
+(`versionName=0.43.3`), SM-A515F'e `adb install -r`. Kısa ekran
+`wm size 1080x1920` + `wm density 480`, yani `reyon --ekran 360x640 --olcek 3.0`.
+Ölçeğin 3.0 olması gerekti: varsayılan `--olcek 2.0` (720×1280) üç türde de
+"Reyon açılamadı" verdi, sebebi bu koşumda saptanmadı.
+
+> Ölçümden önce derlemenin düzeltmeyi taşıdığı doğrulanmalı: `Konum` gövdesi iki
+> satırsa (35 dp) taşıyor, üç satırsa (53 dp) taşımıyor. Bu koşumun ilk denemesi
+> `main`'in eski bir kopyasından derlendiği için v0.43.2'yi "0.43.3" etiketiyle
+> ölçtü; sayılar v0.43.2'nin sayılarıydı.
+
+**G4 — 360×640 dp, panel 140,0 dp (başlığın tepesinden tepsi başlığına).**
+
+| Kural | Ad | Gövde |
+| --- | --- | --- |
+| Konum | 17,7 dp | **35,3 dp** (iki satır; v0.43.2'de 53 dp / üç satır) |
+| Tamamlayıcı | 17,7 dp | 17,7 dp |
+| Çakışma | **17,7 dp** (v0.43.2'de 0,3 dp) | 5,3 dp (kırpık şerit) |
+| Kategori bloğu | kaydırmayla 17,7 dp | — |
+| Marka bloğu | kaydırmayla 17,7 dp | — |
+
+Yani **üçüncü kuralın adı tabanın içine girdi** — planın hedefi buydu ve 2 dp'lik
+pay tuttu. Ama üçüncü kural yalnız adıyla duruyor, gövdesi 5,3 dp'lik bir şeride
+iniyor; "beş kuralın üçü okunuyor" derken okunanın ad olduğu, puanın ne kadar
+olduğu değil, akılda tutulmalı. Tek kaydırma (270 px) 3.–5. kuralları tam
+getiriyor.
+
+**Öngörülen bedel ödendi.** `Konum` gövdesi 360 dp'de üç noktayla kesiliyor;
+ekranda okunan son parça `… ★ yalnız göz hiz…`, yani kaybedilen tam olarak
+öngörülen kural: `★ yalnız göz hizasında ×4`. Oyuncu bu kuralı kısa ekranda
+panelden öğrenemez.
+
+**411 dp'de bedel yok.** Cihazın kendi ekranında gövde yine iki satır (35,8 dp)
+ama **tam**: `· ▼ ağır yalnız altta ×3 · ★ yalnız göz hizasında ×4` sonuna kadar
+okunuyor, üç nokta çıkmıyor. Beş kuralın adı da ağaçta: `Marka bloğu` bu turda
+12,6 dp ile yarım kaldı, ama panel tepsiyle aynı kalandan beslendiği ve tepsideki
+ürün sayısı tura göre değiştiği için tek koşumdan gerileme sonucu çıkarılmadı —
+tekrarı gerekiyor.
+
+**Aynı koşumda değişmeyenler** (360×640 dp, v0.43.2 → v0.43.3): Diziliş ve Satış
+rafı 167,3 dp, Sipariş rafı 156,3 dp, Diziliş brif satırları 32,3 · 32,3 · 32,3 ·
+17,3 dp. Düzeltme yüksekliği kuralın kendisinden çıkardığı için tuval, tepsi ve
+öbür iki modun yerleşimi kıpırdamadı — G1, G2, G3, G5, G6 yeniden açılmıyor.
+`logcat AndroidRuntime:E` boş; ekran ayarları `wm size reset` + `wm density reset`
+ile geri alındı.
+
+**Karar bekleyen tek şey** `Konum` gövdesinin kısa ekranda kesilmesi. Belgede
+zaten yazılı: kayıpsız yol gövdeyi kısaltmak, ama oradaki her kelime bir puanlama
+kuralı taşıyor ve 14 dilde kısaltmak anlamı bozabilir. Ölçüm bunu çözmez, metin
+kararı ister.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
