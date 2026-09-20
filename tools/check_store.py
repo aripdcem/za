@@ -35,7 +35,7 @@ errors, warnings = [], []
 
 def app_languages():
     """ZaLocale.TAGS listesi: uygulamanın gerçekten çevirisi olan dilleri."""
-    path = os.path.join(ROOT, "app", "src", "main", "kotlin", "com", "za", "games",
+    path = os.path.join(ROOT, "app", "src", "main", "kotlin", "com", "aripd", "zagames",
                         "platform", "ZaLocale.kt")
     source = open(path, encoding="utf-8").read()
     block = re.search(r"val TAGS: List<String> = listOf\((.*?)\)", source, re.S)

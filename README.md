@@ -23,7 +23,7 @@ Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç 
 ```
 za/
 ├── app/                          # Android uygulaması (Kotlin + Jetpack Compose)
-│   └── com.za.games
+│   └── com.aripd.zagames
 │       ├── platform/             # Çekirdek: GameRegistry, ScoreStore, SettingsStore, SoundPlayer, ShareCard
 │       ├── ui/common/            # Oyunların paylaştığı bileşenler (tuşlar, katmanlar, kartlar)
 │       ├── ui/hub/               # Ana menü (oyun listesi + manifesto + ses düğmesi)
@@ -44,7 +44,7 @@ Temel ilke: **oyun kuralları saf Kotlin modüllerinde, arayüz `app` içinde** 
 ### Yeni oyun eklemek
 
 1. `games/<oyun>/` altında saf Kotlin motor modülü oluşturun (testleriyle birlikte) ve `settings.gradle.kts`'e ekleyin.
-2. `app/src/main/kotlin/com/za/games/ui/<oyun>/` altında Compose ekranını yazın.
+2. `app/src/main/kotlin/com/aripd/zagames/ui/<oyun>/` altında Compose ekranını yazın.
 3. `GameRegistry.games` listesine bir `GameEntry` ekleyin — ana menü kartı ve rekor takibi kendiliğinden çalışır.
 4. **Oyunu cihazda test protokolünden geçirin** ([`docs/oyun-testi.md`](docs/oyun-testi.md)): cihaz koşumu, kare hızı, giriş kalibrasyonu ve denge ölçümü. Birim testleri kuralları doğrular, oynanabilirliği değil.
 

@@ -108,7 +108,7 @@ Amaç: oyun gerçekten açılıyor, oynanıyor ve çökmüyor mu?
 
 ```bash
 ANDROID_HOME=$HOME/Android/Sdk ./gradlew :app:installDebug
-adb shell am start -n com.za.games/.MainActivity
+adb shell am start -n com.aripd.zagames/.MainActivity
 adb logcat -c && adb logcat AndroidRuntime:E '*:S'   # ayrı bir kabukta
 ```
 
@@ -286,7 +286,7 @@ Uygulamanın dilini değiştirmek: ana menünün üst çubuğundaki dil düğmes
 (Android 13+ sistem seçicisini açar), ya da
 
 ```bash
-adb shell am start -a android.settings.APP_LOCALE_SETTINGS -d package:com.za.games
+adb shell am start -a android.settings.APP_LOCALE_SETTINGS -d package:com.aripd.zagames
 ```
 
 Her dil için tam tur gerekmez; **üç dil** yeterlidir ve neden seçildikleri şu:
@@ -376,7 +376,7 @@ taşımalı:
 - yalnızca ekranda **görünen** bilgiyi kullanma (motorun içini okumak yerine
   düşman hızını kareler arası farktan kestirmek)
 
-Örnek: `games/filo/src/test/kotlin/com/za/games/filo/FiloBalanceProbe.kt`.
+Örnek: `games/filo/src/test/kotlin/com/aripd/zagames/filo/FiloBalanceProbe.kt`.
 
 > Botun sonucu bir **alt sınırdır**, tavan değil: iyi bir insan daha ileri gider.
 > "Bot 11. dalgada ölüyor" tek başına "oyun çok zor" demek değildir. Ama botun
