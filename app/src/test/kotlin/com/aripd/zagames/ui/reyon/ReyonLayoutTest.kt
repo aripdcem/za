@@ -100,10 +100,18 @@ class ReyonLayoutTest {
         assertEquals(TRAY_KEEP, rest - panel)
     }
 
-    /** Çok kısa ekranda tavan tabanın altına inmiyor. */
+    /**
+     * Kalan iki tabana yetmediğinde tepsi kazanıyor, panel kalanı alıyor.
+     *
+     * [PANEL_MIN] bir hedef, dokunulmaz bir taban değil: 100 dp'lik kalanda tepsi
+     * 72 dp'sini alıyor ve panele 28 dp düşüyor — eski kolun (`trayHeight`) çok
+     * kısa ekranda yaptığının aynısı. Belgedeki ölçülmüş örnek de bu: 480 dp'lik
+     * uygulama alanında panel 105,5 dp.
+     */
     @Test
-    fun theCapNeverDropsBelowTheFloor() {
-        assertEquals(PANEL_MIN, panelCap(100.dp))
+    fun whenNeitherFloorFitsTheTrayWins() {
+        assertEquals(28.dp, panelCap(100.dp))
+        assertEquals(TRAY_MIN, 100.dp - panelCap(100.dp))
     }
 
     /** Diziliş'in kolu (tepsi önce ölçülür) değişmedi. */
