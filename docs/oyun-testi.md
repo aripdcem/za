@@ -3002,6 +3002,55 @@ konusu. Kırpılan ad, kaydırmanın son satırı olduğu için gözden kaçabil
 
 `logcat AndroidRuntime:E` boş; ekran ayarları geri alındı.
 
+### Tepsinin uzun ekrandaki tavanı · denendi, cihazda · 2026-09-21
+
+411 dp'de beşinci kuralın kırpılmasının sebebi panelin tepsiden artanı alması
+olduğu için kol tepsinin tavanına takıldı: uzun ekranda tavan, panele beş kuralın
+istediği kadar (`PANEL_WANT` = 240 dp) bırakacak kadar iniyor.
+
+```kotlin
+internal fun trayHeight(rest: Dp, panelWant: Dp = PANEL_MIN): Dp {
+    val pay = minOf(panelWant, rest - TRAY_KEEP).coerceAtLeast(PANEL_MIN)
+    return (rest - pay).coerceAtLeast(TRAY_MIN)
+}
+```
+
+`TRAY_KEEP` = 168 dp, yani başlık + iki sıra ürün (cihazda ölçülen 167 dp).
+Pay ancak tepsiye bu kadar kalıyorsa yükseliyor; kalmıyorsa `PANEL_MIN`'e
+düşüyor. Ayrım `rest` 308 dp'yi geçince başlıyor, yani **kısa ekran hiç
+etkilenmiyor**. Varsayılan `panelWant` = `PANEL_MIN` olduğu için Diziliş ile
+Sipariş'in kolu da birebir eski hâlinde; payı yalnız Satış yükseltiyor.
+240 dp tahmin değil: v0.43.2'de tepsinin iki sıra kaldığı turlarda panel tam bu
+boydaydı ve beş kuralın beşi de görünüyordu.
+
+**411 dp'de sonuç — üç turda da beş kural tam.**
+
+| | Tepsi | Panel | `Marka bloğu` adı |
+| --- | --- | --- | --- |
+| önce (tepsi üç sıra) | 218,7 dp | 208,0 dp | 12,6 dp — kırpık |
+| önce (tepsi iki sıra) | 167,2 dp | 240,0 dp | 17,9 dp |
+| **sonra** | 194,3 / 167,2 dp | **232,4 dp** | **17,9 dp** |
+
+Panel artık tura göre 240 ↔ 208 arasında gidip gelmiyor: üç turda da 232,4 dp,
+yani içeriğinin tam boyu (`fill = false` olduğu için ayrılan 240 dp'nin hepsini
+almıyor). Tepsi doğal boyu tavanın altındaysa (iki sıra, 167,2 dp) tavan
+bağlamıyor.
+
+**Bedeli: 411 dp'de tepsinin son sırası bir sürükleme uzağa gidiyor.** Ölçüldü:
+yedi ürünün altısı tam görünüyor, yedincisi 3,0 dp'lik şeride iniyor; tek
+sürüklemeyle tam geliyor (30,1 dp) ve dokunuş seçimi alıyor (döküm satırı
+"Bir ürüne dokun"dan çıkıyor). Yani tepsi kullanılabilir kalıyor — `TRAY_MIN`'in
+koruduğu şey bozulmuyor.
+
+**Kısa ekran birebir aynı.** 360×640 dp'de Satış: `Konum` 17,7 · `Tamamlayıcı`
+17,7 · `Çakışma` 17,7 dp, gövde 31,0 dp, dokununca 48,7 dp, ikinci dokunuş
+kapatıyor — değişiklikten önceki sayıların aynısı. Üç modun rafı da aynı
+(167,3 · 167,3 · 156,3 dp).
+
+Kural saf bir işlev olduğu için aritmetiği `ReyonLayoutTest` koruyor: kısa ekranda
+eski payın aynısı, uzun ekranda panele `PANEL_WANT`, ayrım noktası 308/309 dp,
+tepsi tabanının altına inmiyor ve varsayılan çağrı değişmiyor.
+
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
 Bu belgenin ilk hâlinde "uygulama geneli kare hızı sorunu" diye bir açık konu

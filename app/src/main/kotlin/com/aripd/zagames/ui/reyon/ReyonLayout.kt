@@ -72,8 +72,39 @@ internal fun shelfHeight(width: Dp, available: Dp, ratio: Float): Dp =
     minOf(width / ratio, available * SHELF_SHARE)
 
 /**
- * Tepsinin tavanı: panel ile tepsiye kalan [rest] yükseklikten panele
- * [PANEL_MIN] bırakacak kadar. Doğal yükseklik bunun altında kalırsa
- * bağlamıyor, yani uzun telefonda tepsi eskisi gibi tam görünüyor.
+ * Uzun ekranda panele bırakılacak pay: Satış'ın beş puan kuralının tamamı.
+ *
+ * [PANEL_MIN] bir **taban**, "içerik sığsın" güvencesi değil. Uzun ekranda o
+ * taban hiç bağlamıyor, çünkü tepsi ağırlıksız ölçülüp doğal boyunu önce alıyor
+ * ve panele artan kalıyor: 411 dp'de tepsi ürün adları sarınca iki sıra yerine
+ * üç sıra oluyor (167 ↔ 219 dp) ve panel onunla 240 ↔ 208 dp arasında gidiyor.
+ * 208 dp'de beşinci kuralın adı kırpılıyor — cihazda ölçüldü.
+ *
+ * 240 dp tahmin değil, ölçüm: v0.43.2'de tepsinin iki sıra kaldığı turlarda
+ * panel tam bu boydaydı ve beş kuralın beşi de görünüyordu. v0.43.3'ün satırları
+ * ~7 dp daha sıkı, yani payı var.
  */
-internal fun trayHeight(rest: Dp): Dp = (rest - PANEL_MIN).coerceAtLeast(TRAY_MIN)
+internal val PANEL_WANT = 240.dp
+
+/**
+ * Tepsiye her hâlükârda bırakılan pay: başlık + iki sıra ürün (cihazda 167 dp).
+ *
+ * [PANEL_WANT] ancak bunun üstünde yer kalırsa uygulanıyor; altında kural
+ * [PANEL_MIN]'e düşüyor, yani kısa ekranda yerleşim **birebir eskisi gibi**
+ * kalıyor. Ayrım `rest` 308 dp'yi geçince başlıyor.
+ */
+internal val TRAY_KEEP = 168.dp
+
+/**
+ * Tepsinin tavanı: panel ile tepsiye kalan [rest] yükseklikten panele
+ * [panelWant] bırakacak kadar — ama tepsiye [TRAY_KEEP] kalıyorsa. Kalmıyorsa
+ * pay [PANEL_MIN]'e iniyor. Doğal yükseklik tavanın altında kalırsa tavan
+ * bağlamıyor, taşarsa tepsi kendi içinde kayıyor.
+ *
+ * Varsayılan [panelWant] = [PANEL_MIN] olduğu için çağıranların davranışı
+ * değişmiyor; payı yalnız Satış yükseltiyor, kuralları oradaki panel taşıyor.
+ */
+internal fun trayHeight(rest: Dp, panelWant: Dp = PANEL_MIN): Dp {
+    val pay = minOf(panelWant, rest - TRAY_KEEP).coerceAtLeast(PANEL_MIN)
+    return (rest - pay).coerceAtLeast(TRAY_MIN)
+}
