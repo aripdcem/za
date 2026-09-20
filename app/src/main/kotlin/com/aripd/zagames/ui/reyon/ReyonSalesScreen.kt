@@ -54,6 +54,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
@@ -462,15 +463,26 @@ private fun RulesPanel(score: SalesScore, target: Int, modifier: Modifier = Modi
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 6.dp, vertical = 2.dp),
+                    // Satır arası 2 → 1 dp: beş kuralda 10 dp eder ve hiçbir metni
+                    // kırpmadan kazanılır. Tek başına yetmez, iki satır sınırıyla
+                    // birlikte üçüncü kuralın adını tabanın içine sokuyor.
+                    .padding(horizontal = 6.dp, vertical = 1.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(text = stringResource(name), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
+                    // Gövde iki satırla sınırlı: 360 dp'de Konum kuralının açıklaması üç
+                    // satıra sarıp tek başına 76 dp yiyor ve panelin tabanı (140 dp) iki
+                    // kurala ancak yetiyordu (cihazda G4). İki satır satırı ~52 dp'ye
+                    // indiriyor, üçüncü kuralın adı tabanın içinde kalıyor. Sınır beş
+                    // kuralın hepsine konuyor ki panel dile göre oynamasın; öbür dördü
+                    // zaten tek satır.
                     Text(
                         text = stringResource(desc),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
                 Text(

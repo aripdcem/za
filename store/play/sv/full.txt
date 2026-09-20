@@ -17,6 +17,6 @@ FUNKTIONER
 • 14 språk: svenska, engelska, turkiska, tyska, franska, nederländska, spanska, portugisiska, italienska, danska, norska, finska, ryska och arabiska. Appen följer telefonens språk, och du kan också välja ett i appen
 • Dela ditt resultat: Dela-knappen ritar ett resultatkort och en kort text
 • Ljud och vibration stängs av med en tryckning; vänsterhandsläge
-• Öppen källkod (GPL-3.0): github.com/aripdcem/za
+• Öppen källkod (GPL-3.0): github.com/aripdcom/zagames
 
 Integritetspolicy: zagames.aripd.com/gizlilik.html

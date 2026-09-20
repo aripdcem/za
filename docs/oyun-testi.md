@@ -2673,7 +2673,17 @@ bozulmuyor. Uzun telefonda iki tavan da doğal yüksekliğin üstünde kaldığ�
 `ReyonShortScreenTest` üç modu 360×640 dp'de ölçüyor; kırpılmış kutulara bakıyor,
 yani cihazın erişilebilirlik ağacında gördüğü değerlere.
 
-**Cihazda ölçülecek** (360×640 dp, üç mod):
+**Cihazda ölçülecek** (360×640 dp, üç mod). Ölçüm tek komutla:
+
+```
+python3 tools/cihaz_testi.py reyon --apk za-v0.43.2.apk
+```
+
+Betik APK'yı kurar, ekranı 360×640 dp'ye alır (`wm size 720x1280` + `wm density
+320`), üç modu sırayla açar ve rafın, panelin, tepsinin kutularını dp olarak
+yazar; sonra ekranı sıfırlayıp aynı ölçümü cihazın kendi çözünürlüğünde yineler
+(G6). Panel satırlarının kaçının görünür olduğunu da sayar — kırpılan satır 0 dp
+gelir, cihazın erişilebilirlik ağacında göründüğü gibi.
 
 | # | Ne | Beklenen |
 | --- | --- | --- |
@@ -2720,6 +2730,124 @@ her satıra ulaşıldığı için mod oynanabilir, ama tek satır dar. Bu sürü
 kapsamında değil; başlığın sıkıştırılması (ya da katlanması) ayrı bir iş, cihazda
 411 dp'de sorun görünmediği için de aceleci davranmamak doğru. Cihazda 360×640
 dp'de kaç satır göründüğü ölçülürse iş için sayı elde edilir.
+
+### v0.43.2 · G1–G6 cihazda · 2026-09-20
+
+`za-v0.43.2.apk` kuruldu; ölçüm `python3 tools/cihaz_testi.py reyon` ile, tekrarı
+elle (ekran görüntüsü + erişilebilirlik dökümü). Kısa ekran `wm size 720x1280` +
+`wm density 320` (360×640 dp), karşılaştırma cihazın kendi ekranında (411 dp).
+Karşılaştırma için v0.43.1 aynı betikle yeniden ölçüldü (`adb install -r -d` ile
+geri kuruldu, ölçümden sonra v0.43.2'ye dönüldü).
+
+| # | Ne | Sonuç |
+| --- | --- | --- |
+| G1 | Diziliş brif kural satırı | **✅ 32,5 dp** · 3 kural tam okunuyor, 4.'sü kırpık; kaydırma kalanları getiriyor |
+| G2 | Raf gözünde ürün adı | **✅ kırpılma yok** (Zor planı, 6 göz, göz 56 dp) |
+| G3 | Dokunma eşlemesi | **✅ 6/6** yerleştirme dokunulan göze düştü |
+| G4 | Satış'ta puan kuralları | **❌ 5 kuralın 2'si** okunuyor (411 dp'de beşi de) |
+| G5 | Sipariş listesi | **✅** ilk satır tam (108,5 dp), altısı da kaydırmayla geliyor |
+| G6 | 411 dp yerleşimi | **✅ v0.43.1 ile birebir aynı** |
+
+**360×640 dp'de v0.43.1 → v0.43.2.** Aynı betiğin iki sürümde verdiği kutular:
+
+| Mod | Ölçü | v0.43.1 | v0.43.2 |
+| --- | --- | --- | --- |
+| Diziliş | raf | 336 × **196,5** dp | 336 × **167,0** dp |
+| Diziliş | brif satırları | **düğüm yok** (kurallar çizilmiyor) | **32,5 · 32,5 · 32,5 · 16,5** dp |
+| Satış | raf | 336 × 196,5 dp | 336 × 167,0 dp |
+| Satış | panel başlığı | 11,0 dp (kırpık) | 18,0 dp (tam) |
+| Sipariş | raf | 336 × 156,0 dp | 336 × 156,0 dp |
+| Sipariş | liste satırları | 32,0 · 14,5 dp | 32,0 · 14,5 dp |
+
+Tuval payı bağladı: Diziliş ve Satış'ta raf 29,5 dp kısaldı, o yükseklik panele
+gitti. Sipariş'in rafı zaten tavanın altındaydı, değişmedi.
+
+**G1 — brif.** Kolay planda beş kural üretildi; panelde **üçü tam** (her biri
+32,5 dp), dördüncüsü 16,5 dp'lik kırpık bir şerit. Panelde tek bir kaydırma
+(180 px) 2.–5. kuralları tam getiriyor, birinci kural şeride iniyor. v0.43.1'de
+aynı ekranda kural satırının kutusu ölçülemiyordu (elle ölçümde 13 dp).
+
+**G2 — ürün adı.** En dar göz Zor planında: raf 336 dp / 6 göz = **56 dp**.
+Tek yüzlük dört ürün yerleştirildi; hepsi tam yazıyor, üç nokta yok:
+`Deodorant`, `Şampuan`, `Reçel` tek satır, `Islak mendil` göz içinde iki satıra
+sarıyor. Erişilebilirlik ağacında da kırpılmış metin yok.
+
+**G3 — dokunma eşlemesi.** Basıklaşan tuvalde (4 raf × 6 göz, raf yüksekliği
+167 dp → satır ≈ 42 dp) altı yerleştirmenin altısı da dokunulan göze düştü:
+1. rafın 1–4. gözlerine dört tek yüzlük ürün, 3. rafın 1. gözüne üç yüzlük Süt
+(1–3. göz), 4. rafın 6. gözüne iki yüzlük Sos (5–6. göz, tasarım gereği sağa
+yaslanarak). Çizim de dokunma da tuvalin ölçülen boyutundan türediği için
+eşleme bozulmuyor — cihazda doğrulandı.
+
+**G4 — Satış kuralları (hedef tutmadı).** Panel tabanını tam alıyor
+(başlıktan tepsiye 280 px = **140 dp**, yani `PANEL_MIN`), ama 360 dp'de
+**beş kuralın ikisi** okunuyor: `Konum` ve `Tamamlayıcı`. Kalan üçü
+(`Çakışma`, `Kategori bloğu`, `Marka bloğu`) kaydırmayla geliyor; panelin
+kaydırma çubuğu görünüyor. Ölçülen yükseklikler:
+
+| Parça | Yükseklik |
+| --- | --- |
+| "Satış kuralları" başlığı | 20 dp |
+| `Konum` (gövde üç satıra sarıyor) | 76 dp |
+| `Tamamlayıcı` (gövde tek satır) | 44 dp |
+| Her kısa kural (aynı biçim) | 44 dp |
+
+Yani üçüncü kuralın da görünmesi için panel **≈184 dp** olmalı (140 + 44) ya da
+`Konum`'un üç satırlık gövdesi tek satıra inmeli (o da ≈36 dp kazandırır, üç
+kural 148 dp'ye sığar). Karar tabanı yükseltmekse maliyeti raftan çıkar: 44 dp
+daha panel demek, raf 167 → ~123 dp demek. 411 dp'de panel 240 dp ve **beş
+kural da görünüyor**, yani sorun yalnız kısa ekranda.
+
+**G4 denemesi (cihazda yeniden ölçülecek).** Tabanı yükseltmek yolu kapalı:
+44 dp daha panel, Satış rafını 167 → ~123 dp'ye indirir; 4 satırlık rafta göz
+~30 dp, ad bölgesi ~12 dp kalır ve blok etiketi (8 sp'de ~19 dp ister) üç
+noktaya düşer — G2'yi kırar. O yüzden yükseklik kuralın kendisinden çıkarıldı:
+
+- Kural gövdesi **iki satırla sınırlandı** (`maxLines = 2`). Yalnız `Konum`'u
+  etkiliyor, öbür dördünün gövdesi zaten tek satır. Satır 76 → ~60 dp.
+- Satır arası dolgu **2 → 1 dp**: beş kuralda 10 dp, hiçbir metni kırpmadan.
+
+Ölçülen yüksekliklerle beklenen: başlık 20 + `Konum` 58 + `Tamamlayıcı` 42 =
+120 dp, üçüncü kuralın adı 120–138 dp'ye düşüyor, yani 140 dp'lik tabanın
+içinde — **payı 2 dp**. Dar; cihaz doğrulamadan "tuttu" denmemeli.
+
+İki şey de kayıpsız değil: `Konum`'un üçüncü satırı (`▼ ağır yalnız altta ×3 ·
+★ yalnız göz hizasında ×4`) 360 dp'de üç noktayla kesilecek. Kayıpsız yol o
+gövdeyi kısaltmak, ama oradaki her kelime puanlama kuralı taşıyor ("ağır",
+"yalnız") ve 14 dilde kısaltmak anlamı bozabilir — metin kısaltılacaksa
+gözden geçirilmeli.
+
+CI bunu doğrulayamaz: Robolectric'in yazı ölçüleri cihazınkinden farklı, zaten
+`ReyonShortScreenTest` h568'de üç kuralı görüp geçiyordu — bulguyu cihaz
+çıkardı. Yeniden ölçüm: `python3 tools/cihaz_testi.py reyon --apk <yeni apk>`.
+
+**G5 — Sipariş listesi.** İlk ürün satırı tam: **108,5 dp** (ad, stok, talep
+bandı, −/+ adımlayıcı, teslim notu). İkincisi 79 dp ile yarım görünüyor, yani
+listede her zaman "devamı var" işareti duruyor. Kaydırmayla altı ürünün altısı
+da tam yüksekliğine ulaşıyor. Adımlayıcı çalışıyor: çizilen kutu 44 × 32 dp
+(dokunma alanı 48 dp), "+" dokunuşu siparişi 0 → 1 koli yaptı. Belgedeki açık
+maddenin cihaz karşılığı: Robolectric'in ~112 dp dediği yerde cihazda listenin
+görünen yüksekliği **197,5 dp** (bir tam + bir yarım satır).
+
+**G6 — 411 dp.** İki sürüm birebir aynı:
+
+| Mod | Ölçü | v0.43.1 | v0.43.2 |
+| --- | --- | --- | --- |
+| Diziliş | raf | 387,0 × 226,3 dp | 387,0 × 226,3 dp |
+| Satış | raf | 387,0 × 226,3 dp | 387,0 × 226,3 dp |
+| Sipariş | raf | 387,0 × 179,8 dp | 387,0 × 179,8 dp |
+| Diziliş/Satış | tepsi satırı | 30,1 dp | 30,1 dp |
+| Sipariş | liste satırı | 32,0 dp | 32,0 dp |
+
+Uzun telefonda iki tavan da doğal yüksekliğin üstünde kaldığı için yerleşim
+değişmiyor — tasarımın söylediği şey cihazda da böyle.
+
+> **Betikte düzeltilen üç şey** (ölçüm bu hâliyle koşmuyordu):
+> `kaydir()` sabit 540/1800 px ile kaydırıyordu, 720×1280'lik ekranda bu koordinat
+> ekranın dışına düşüyor ve hiç kaydırmıyordu; güncelleme sonrası açılan
+> "Yenilikler" kartı hub'ı örtüyordu (`yenilik_kapat`); Reyon yarım turu sakladığı
+> için oyuna girince mod çipleri ekranda olmuyordu (`reyon_kurulum_karti`, "Başa
+> dön"e basar). Üçü de `tools/cihaz_testi.py` içinde.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

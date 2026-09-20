@@ -17,6 +17,6 @@ OMINAISUUDET
 • 14 kieltä: suomi, englanti, turkki, saksa, ranska, hollanti, espanja, portugali, italia, tanska, ruotsi, norja, venäjä ja arabia. Sovellus seuraa puhelimen kieltä, ja voit myös valita kielen sovelluksesta
 • Jaa tuloksesi: Jaa-painike piirtää tuloskortin ja lyhyen tekstin
 • Äänet ja tärinä pois yhdellä napautuksella; vasenkätinen tila
-• Avoin lähdekoodi (GPL-3.0): github.com/aripdcem/za
+• Avoin lähdekoodi (GPL-3.0): github.com/aripdcom/zagames
 
 Tietosuojakäytäntö: zagames.aripd.com/gizlilik.html

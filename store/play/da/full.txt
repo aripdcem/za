@@ -17,6 +17,6 @@ FUNKTIONER
 • 14 sprog: dansk, engelsk, tyrkisk, tysk, fransk, nederlandsk, spansk, portugisisk, italiensk, svensk, norsk, finsk, russisk og arabisk. Appen følger telefonens sprog, og du kan også vælge et i appen
 • Del dit resultat: Del-knappen tegner et resultatkort og en kort tekst
 • Lyd og vibration slås fra med ét tryk; venstrehåndstilstand
-• Open source (GPL-3.0): github.com/aripdcem/za
+• Open source (GPL-3.0): github.com/aripdcom/zagames
 
 Privatlivspolitik: zagames.aripd.com/gizlilik.html

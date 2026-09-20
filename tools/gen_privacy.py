@@ -16,7 +16,7 @@ OUT = os.path.join(ROOT, "site", "gizlilik.html")
 ZA_LOCALE = os.path.join(ROOT, "app", "src", "main", "kotlin", "com", "aripd",
                          "zagames", "platform", "ZaLocale.kt")
 MAIL = "zagames@aripd.com"
-ISSUES = "https://github.com/aripdcem/za/issues/new"
+ISSUES = "https://github.com/aripdcom/zagames/issues/new"
 RTL = {"ar"}
 
 # Her dil aynı beş başlığı ve iletişim bölümünü taşır. Metinler HTML olarak
@@ -475,7 +475,7 @@ def section(tag):
         out.append(f'    <p>{body}</p>')
     out.append(f'    <h3>{policy["contact"]}</h3>')
     out.append(f'    <p>{policy["contact_intro"]} <a href="mailto:{MAIL}">{MAIL}</a> · '
-               f'<a href="{ISSUES}">github.com/aripdcem/za/issues</a></p>')
+               f'<a href="{ISSUES}">github.com/aripdcom/zagames/issues</a></p>')
     out.append('  </section>')
     return "\n".join(out)
 
@@ -509,7 +509,7 @@ def page(tags):
   <footer>
     <span>ZA Games · zero-ads games</span>
     <a href="./">Ana sayfa</a>
-    <a href="https://github.com/aripdcem/za">GitHub</a>
+    <a href="https://github.com/aripdcom/zagames">GitHub</a>
   </footer>
 </div>
 </body>
