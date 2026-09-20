@@ -10,6 +10,8 @@ Google Play listelemesi için metinler ve form cevapları. Kaynak dosyalar burad
 | `play/release-notes/<sürüm>.txt` | Sürüm notları (dil başına `<tr-TR>` / `<en-US>` … blokları) | dil başına 500 karakter |
 | `data-safety.md` | Veri güvenliği formu cevapları | |
 | `icerik-derecelendirme.md` | IARC anketi cevapları, oyun oyun içerik dökümü, hedef kitle | |
+| `graphics/icon-512.png` | Uygulama simgesi | 512×512, 32 bit PNG |
+| `graphics/feature-1024.png` | Öne çıkan görsel | 1024×500 |
 | `checklist.md` | Yayın öncesi kontrol listesi ve görsel gereksinimleri | |
 
 ## Diller
@@ -36,8 +38,18 @@ istediği için kopyalarken aşağıdaki karşılığı seçin.
 | `play/ru` | ru-RU | Rusça |
 | `play/ar` | ar | Arapça |
 
-Kelime oyunları (Beş Harf, Kıskaç, Türetme, Dizgi) Türkçe kelime listeleriyle oynandığı için
-her listelemede bu dört oyunun metninin Türkçe ya da İngilizce kaldığı yazılıdır.
+Kelime oyunları (Beş Harf, Kıskaç, Türetme, Dizgi) v0.41.0'dan beri bu dillerin hepsinde
+kendi sözlükleriyle oynanıyor, o yüzden listelemelerde artık dil kısıtı yazmıyor.
+
+## Görseller
+
+`graphics/` altındaki iki PNG'yi `python3 tools/gen_store_graphics.py` üretir. Kaynak,
+uygulamanın kendi simgesidir (`res/drawable/ic_launcher_foreground.xml` ve
+`res/values/colors.xml`): renk ve blok düzeni oradan okunur, simge değişirse görseller de
+değişir. Öne çıkan görselde marka adından başka metin yok; böylece tek görsel 14 dilin
+hepsinde geçerli. Yanlarındaki `.svg` dosyaları düzenlenebilir kaynaklardır.
+
+Ekran görüntüleri buraya girmez: onlar gerçek cihazdan çekilir (bkz. `checklist.md`).
 
 Sınırları, dil kapsamını ve görünmez karakterleri `python3 tools/check_store.py` ile denetleyebilirsin;
 CI'da da koşar.

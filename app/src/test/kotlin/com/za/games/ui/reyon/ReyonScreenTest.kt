@@ -1,5 +1,8 @@
 package com.za.games.ui.reyon
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
@@ -68,6 +71,38 @@ class ReyonScreenTest {
             rule.onNodeWithText(str(R.string.reyon_hint)).performClick()
         }
         rule.onNodeWithText(str(R.string.congrats)).assertIsDisplayed()
+    }
+
+    @Test
+    fun leavingAndReenteringASolvedPuzzleDoesNotCountItAgain() {
+        // Çözüm görünüm modelinde durur; menüye gidip dönmek (ya da mod çipini
+        // değiştirmek) ekranı yeniden kurar. Rekor bir kez gönderilmeli.
+        val scores = mutableListOf<Long>()
+        var shown by mutableStateOf(true)
+        rule.setZaContent { if (shown) game("reyon").screen(0L, { scores += it }, {}) }
+        openMenu()
+        rule.reyonPickKind(str(R.string.reyon_kind_puzzle))
+        rule.onNodeWithText(str(R.string.mode_free)).performClick()
+        rule.onNodeWithText(str(R.string.difficulty_easy)).performClick()
+        rule.onNodeWithText(str(R.string.reyon_start)).performClick()
+
+        val trayPrefix = str(R.string.reyon_tray_label) + ":"
+        fun trayItems() = rule.onAllNodes(hasContentDescription(trayPrefix, substring = true))
+        rule.waitUntil(timeoutMillis = 30_000) { trayItems().fetchSemanticsNodes().isNotEmpty() }
+        var guard = 0
+        while (trayItems().fetchSemanticsNodes().isNotEmpty() && guard++ < 20) {
+            rule.onNodeWithText(str(R.string.reyon_hint)).performClick()
+        }
+        rule.onNodeWithText(str(R.string.congrats)).assertIsDisplayed()
+        assertEquals(listOf(1L), scores)
+
+        // Ekranı bileşimden çıkarıp geri koymak menüye gidip dönmenin ta kendisi:
+        // kökte SaveableStateHolder yok, görünüm modeli Activity'de yaşamaya devam eder.
+        rule.runOnIdle { shown = false }
+        rule.waitForIdle()
+        rule.runOnIdle { shown = true }
+        rule.onNodeWithText(str(R.string.congrats)).assertIsDisplayed()
+        assertEquals("yeniden giriş çözümü bir daha saymamalı", listOf(1L), scores)
     }
 
     @Test

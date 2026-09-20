@@ -403,7 +403,7 @@
     <string name="about_cc_note">Koska sanalistat perustuvat FrequencyWordsiin, ne jaetaan CC BY-SA 4.0 -lisenssillä; lisenssiteksti:</string>
     <string name="about_license_show">Näytä Apache 2.0 -lisenssin teksti</string>
     <string name="about_license_hide">Piilota lisenssiteksti</string>
-    <string name="about_app_license">ZA:n lähdekoodi on avoin GNU GPL v3 -lisenssillä. Nimi ”ZA” ja logo eivät kuulu lisenssiin.</string>
+    <string name="about_app_license">ZA Gamesin lähdekoodi on avoin GNU GPL v3 -lisenssillä. Nimi ”ZA Games” ja logo eivät kuulu lisenssiin.</string>
     <string name="about_app_license_link">Lisenssiteksti (GitHub)</string>
 
     <!-- What's new -->

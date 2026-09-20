@@ -40,7 +40,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -153,8 +152,14 @@ private fun ReyonPuzzleContent(
     val sound = LocalZaSound.current
     val res = LocalContext.current.resources
 
-    // Aynı çözüm ekran yeniden kurulunca (döndürme) ikinci kez sayılmasın.
-    var countedSeed by rememberSaveable { mutableLongStateOf(Long.MIN_VALUE) }
+    // Aynı çözüm ikinci kez sayılmasın: döndürmede de, menüye gidip dönüşte
+    // de, mod değişiminde de. Sayaç mevcut durumdan başlar, çünkü ViewModel
+    // Activity'ye bağlıdır ve sonucu ekrandan çıkınca da taşır. Kaydedilen
+    // durum burada yetmez: kökte SaveableStateHolder yok, menüye dönüşte
+    // kayıt silinir (doğru örnek: SudokuScreen).
+    var countedSeed by remember {
+        mutableLongStateOf(state?.puzzle?.seed?.takeIf { result != null } ?: Long.MIN_VALUE)
+    }
     val latestCompleted by rememberUpdatedState(onCompleted)
     LaunchedEffect(result) {
         val seed = state?.puzzle?.seed ?: return@LaunchedEffect

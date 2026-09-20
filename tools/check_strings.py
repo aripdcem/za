@@ -18,6 +18,8 @@ Denetimler:
   6. strings_words.xml kelime listesi olan her dilde, anahtar kümeleri eşit
   7. Kotlin'deki her R.string.X bir kaynakta var
   8. Kullanılmayan kaynak anahtarı uyarı verir
+  9. Kaçışsız çift tırnak yok: aapt2 tırnağı sessizce atar
+ 10. Argümansız okunan metinde %% yok: ekranda iki işaret görünür
 """
 import os
 import re
@@ -82,6 +84,45 @@ def bad_percent(text):
     for m in FMT_RE.finditer(text):
         covered.update(range(m.start(), m.end()))
     return [i for i, ch in enumerate(text) if ch == '%' and i not in covered]
+
+
+def bare_quotes(text):
+    """Kaçışsız çift tırnakların yeri.
+
+    aapt2 kaçışsız " karakterini tırnak aç/kapa sayar ve atar; metin
+    sessizce tırnaksız çıkar. Derleme kırılmadığı için tek yakalayan bu.
+    Kesme işaretini aapt2 kendisi hata sayar, o yüzden burada aranmaz.
+    """
+    out, i = [], 0
+    while i < len(text):
+        if text[i] == '\\':
+            i += 2
+            continue
+        if text[i] == '"':
+            out.append(i)
+        i += 1
+    return out
+
+
+def string_usage():
+    """(argümanla okunan anahtarlar, argümansız okunanlar).
+
+    getString(id) ve stringResource(id) String.format çalıştırmaz: içindeki
+    %% ekrana iki işaret olarak gelir. Argüman verilen çağrı çalıştırır.
+    Anahtarın hemen ardındaki işaret ayırt eder: ')' çağrı bitti, ','
+    argüman geliyor. Başka bir şey gelirse (listeye konmuş kimlik gibi)
+    sayıma girmez — yanlış hata vermemek için.
+    """
+    formatted, plain = set(), set()
+    for root in KOTLIN_ROOTS:
+        for dirpath, _, names in os.walk(root):
+            for n in names:
+                if not n.endswith('.kt'):
+                    continue
+                src = open(os.path.join(dirpath, n), encoding='utf-8').read()
+                for k, sep in re.findall(r'R\.string\.([A-Za-z0-9_]+)\s*([,)])', src):
+                    (formatted if sep == ',' else plain).add(k)
+    return formatted, plain
 
 
 def declared_tags():
@@ -195,6 +236,22 @@ def main():
             head = ', '.join(missing[:6])
             more = f' … (+{len(missing) - 6})' if len(missing) > 6 else ''
             warn(f'values-{loc}: {len(missing)} metin çevrilmemiş: {head}{more}')
+
+    # 9-10. Her dosya tek tek: kaçışsız tırnak ve hiç biçimlenmeyen %%
+    #
+    # İkisi de derlemeyi kırmaz, yalnızca kullanıcı görür: tırnak kaybolur,
+    # %% olduğu gibi kalır. Kıskaç ipucunda ve Hakkında lisans satırında
+    # sürümler boyunca öyle durdular.
+    formatted_keys, plain_keys = string_usage()
+    for (loc, name), keys in sorted(files.items()):
+        where = f'values{"-" + loc if loc else ""}/{name}'
+        for k, v in sorted(keys.items()):
+            if bare_quotes(v):
+                err(f'{where}: "{k}" kaçışsız çift tırnak içeriyor '
+                    f'(\\" olmalı, yoksa aapt2 tırnağı atar)')
+            if '%%' in v and k in plain_keys and k not in formatted_keys:
+                err(f'{where}: "{k}" %% içeriyor ama argümansız okunuyor '
+                    f'(ekranda %% görünür; tek % ve formatted="false" gerekir)')
 
     # 6-7. Kotlin referansları
     known = set(base) | set(base_words)

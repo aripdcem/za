@@ -403,7 +403,7 @@
     <string name="about_cc_note">لأن قوائم الكلمات مشتقة من FrequencyWords، فهي تُشارك بترخيص CC BY-SA 4.0؛ نص الترخيص:</string>
     <string name="about_license_show">أظهر نص ترخيص Apache 2.0</string>
     <string name="about_license_hide">أخفِ نص الترخيص</string>
-    <string name="about_app_license">شيفرة ZA مفتوحة بترخيص GNU GPL v3. الاسم «ZA» والشعار غير مشمولين بالترخيص.</string>
+    <string name="about_app_license">شيفرة ZA Games مفتوحة بترخيص GNU GPL v3. الاسم «ZA Games» والشعار غير مشمولين بالترخيص.</string>
     <string name="about_app_license_link">نص الترخيص (GitHub)</string>
 
     <!-- What's new -->

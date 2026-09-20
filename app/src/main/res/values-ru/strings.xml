@@ -403,7 +403,7 @@
     <string name="about_cc_note">Поскольку словари основаны на FrequencyWords, они распространяются по CC BY-SA 4.0; текст лицензии:</string>
     <string name="about_license_show">Показать текст лицензии Apache 2.0</string>
     <string name="about_license_hide">Скрыть текст лицензии</string>
-    <string name="about_app_license">Исходный код ZA открыт по GNU GPL v3. Название «ZA» и логотип в лицензию не входят.</string>
+    <string name="about_app_license">Исходный код ZA Games открыт по GNU GPL v3. Название «ZA Games» и логотип в лицензию не входят.</string>
     <string name="about_app_license_link">Текст лицензии (GitHub)</string>
 
     <!-- What's new -->
