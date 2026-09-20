@@ -2,6 +2,13 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/aripd/zagames/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.43.3 (2026-09-20)
+- **Reyon · Satış: dar ekranda daha çok puan kuralı.** v0.43.2 cihazda ölçüldüğünde 360×640 dp'de beş puan kuralından ikisi görünüyordu (G4). Panel tabanını zaten tam alıyor (140 dp); yüksekliği yiyen, `Konum` kuralının üç satıra sarıp tek başına 76 dp tutan gövdesiydi — öbür dördünün gövdesi tek satır, 44 dp
+- Kural gövdesi iki satırla sınırlandı (`Konum` 76 → ~60 dp) ve satır arası dolgu 2 → 1 dp indi (beş kuralda 10 dp, hiçbir metni kırpmadan). Beklenen: başlık 20 + `Konum` 58 + `Tamamlayıcı` 42 = 120 dp, üçüncü kuralın adı 120–138 dp'ye düşüyor, 140 dp'lik tabanın içinde. **Payı 2 dp, cihazda ölçülecek**
+- Tabanı 184 dp'ye yükseltme yolu kapalıydı: 44 dp daha panel, Satış rafını 167 → ~123 dp'ye indirir; 4 satırlık rafta ad bölgesi ~12 dp kalır ve blok etiketi (8 sp'de ~19 dp ister) üç noktaya düşer, yani G2 kırılırdı. G1, G2 ve G4 aynı yükseklikten besleniyor
+- `Konum`'un üçüncü satırı 360 dp'de üç noktayla kesiliyor. Kayıpsız yol gövdeyi kısaltmak, ama oradaki "ağır" ve "yalnız" gibi kelimelerin her biri puanlama kuralı taşıyor; 14 dilde kısaltmak ayrı bir karar
+- Bu düzeltmeyi CI doğrulayamaz: Robolectric'in yazı ölçüleri cihazınkinden farklı — `ReyonShortScreenTest` h568'de üç kuralı görüp geçiyordu, bulguyu cihaz çıkardı. Doğrulaması `python3 tools/cihaz_testi.py reyon` ile cihazda
+
 ## 0.43.2 (2026-09-20)
 - **Reyon kısa telefonlarda oynanabilir oldu.** 360×640 dp bir ekranda raf tuvali oyun alanının tamamını yiyordu: Diziliş'in planogram brifine ~0 kalıyor, kural satırları 13 dp'ye iniyor, ikinci kuralın erişilebilirlik kutusu sıfır oluyordu. Brif olmadan bulmaca çözülemediği için mod o ekranda oynanamaz durumdaydı (v0.43.1 cihaz koşumunun açık kalan bulgusu)
 - Sebep: tuval yalnız genişlikten ölçülüyordu (en boy oranı yüksekliği belirliyor) ve sütunda ağırlıksız olduğu için yüksekliği önce o alıyordu; altındaki panel artandan besleniyordu. Artık tuval oyun alanının en çok %40'ını alıyor, kalan yükseklik de panel ile tepsi arasında bölünüyor: tepsi panele en az 140 dp (başlık + üç satır) bırakıyor, taşan kısmı kendi içinde kayıyor. "Kalan" tahmin edilmiyor, ölçülüyor — panel ile tepsi kendi ölçüm kutusunun içinde durduğu için aradaki ipucu/döküm satırı hesaba kendiliğinden giriyor. Uzun telefonda iki tavan da doğal yüksekliğin üstünde kaldığı için yerleşim aynen sürüyor

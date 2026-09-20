@@ -52,6 +52,53 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.43.3", "2026-09-20",
+            tr = listOf(
+                "Reyon · Satış: dar ekranda daha çok puan kuralı görünsün diye kural açıklamaları iki satırla sınırlandı, satır araları daraldı",
+            ),
+            en = listOf(
+                "Reyon · Sales: rule descriptions are capped at two lines and the rows sit tighter, so more scoring rules fit on a narrow screen",
+            ),
+            others = mapOf(
+                "de" to listOf(
+                    "Reyon · Verkauf: Regelbeschreibungen sind auf zwei Zeilen begrenzt und die Zeilen stehen enger, damit auf schmalen Bildschirmen mehr Punkteregeln passen",
+                ),
+                "fr" to listOf(
+                    "Reyon · Ventes : les descriptions des règles tiennent en deux lignes et les lignes sont plus serrées, pour afficher plus de règles de score sur un écran étroit",
+                ),
+                "nl" to listOf(
+                    "Reyon · Verkoop: regelbeschrijvingen zijn beperkt tot twee regels en de rijen staan dichter op elkaar, zodat er op een smal scherm meer scoreregels passen",
+                ),
+                "es" to listOf(
+                    "Reyon · Ventas: las descripciones de las reglas se limitan a dos líneas y las filas están más juntas, para que quepan más reglas de puntuación en pantallas estrechas",
+                ),
+                "pt" to listOf(
+                    "Reyon · Vendas: as descrições das regras ficam em duas linhas e as linhas estão mais juntas, para caber mais regras de pontuação em telas estreitas",
+                ),
+                "it" to listOf(
+                    "Reyon · Vendite: le descrizioni delle regole sono limitate a due righe e le righe sono più compatte, così su schermi stretti entrano più regole di punteggio",
+                ),
+                "da" to listOf(
+                    "Reyon · Salg: regelbeskrivelser er begrænset til to linjer, og rækkerne sidder tættere, så der er plads til flere pointregler på en smal skærm",
+                ),
+                "sv" to listOf(
+                    "Reyon · Försäljning: regelbeskrivningarna begränsas till två rader och raderna sitter tätare, så att fler poängregler får plats på en smal skärm",
+                ),
+                "nb" to listOf(
+                    "Reyon · Salg: regelbeskrivelsene er begrenset til to linjer og radene sitter tettere, slik at flere poengregler får plass på en smal skjerm",
+                ),
+                "fi" to listOf(
+                    "Reyon · Myynti: sääntöjen kuvaukset rajattiin kahteen riviin ja rivit ovat tiiviimmin, jotta kapealle näytölle mahtuu enemmän pisteytyssääntöjä",
+                ),
+                "ru" to listOf(
+                    "Reyon · Продажи: описания правил ограничены двумя строками, а строки стали плотнее, чтобы на узком экране помещалось больше правил начисления",
+                ),
+                "ar" to listOf(
+                    "Reyon · البيع: صارت شروح القواعد في سطرين على الأكثر وتقاربت الصفوف، ليظهر في الشاشة الضيقة عدد أكبر من قواعد النقاط",
+                ),
+            ),
+        ),
+        ReleaseNote(
             "0.43.2", "2026-09-20",
             tr = listOf(
                 "Reyon kısa telefonlarda oynanabilir oldu: 360×640 dp ekranda raf tuvali bütün yüksekliği yutuyor, Diziliş'in planogram brifi hiç çizilmiyordu — brif olmadan bulmaca çözülemez",
