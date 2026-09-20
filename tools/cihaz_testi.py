@@ -79,6 +79,36 @@ def cihaz_var() -> None:
         sys.exit(f"Birden çok cihaz bağlı; birini bırakın:\n" + "\n".join(bagli))
 
 
+def kurulu_yapi(paket: str) -> str:
+    """Ölçümün hangi yapıda alındığını tek satırda döndürür.
+
+    Yanlış daldan kurulmuş bir yapıyla alınan ölçüm, doğru yapı sanıldığı
+    sürece sahte bulgu üretir; bir kez yaşandı (G4). Sürüm adı tek başına
+    ayırt etmez: sürüm yükseltildikten sonra her dalın yapısı aynı adı
+    taşır. Ayırt eden, kurulu base.apk'nin özeti — yayındaki APK'nin
+    SHA256'sıyla birebir aynı olmalı, çünkü pm install dosyayı olduğu gibi
+    kopyalar.
+    """
+    surum = ""
+    for satir in kabuk(f"dumpsys package {paket}").splitlines():
+        s = satir.strip()
+        if s.startswith("versionName="):
+            surum = s.split("=", 1)[1].strip()
+            break
+    ozet = ""
+    yollar = [s.split(":", 1)[1].strip()
+              for s in kabuk(f"pm path {paket}").splitlines()
+              if s.startswith("package:")]
+    if yollar:
+        ham = kabuk(f"sha256sum {yollar[0]}").split()
+        if ham and len(ham[0]) == 64 and all(c in "0123456789abcdef" for c in ham[0]):
+            ozet = ham[0]
+    if not yollar:
+        return f"{paket} kurulu değil"
+    return (f"{paket} {surum or '(sürüm okunamadı)'} "
+            f"sha256={ozet or '(okunamadı)'}")
+
+
 def ekran_al(hedef: str) -> str:
     kabuk("screencap -p /sdcard/za_test.png")
     adb("pull", "/sdcard/za_test.png", hedef)
@@ -565,6 +595,7 @@ def komut_reyon(args) -> None:
     if args.apk:
         print(f"Kuruluyor: {args.apk}")
         print("   ", adb("install", "-r", args.apk).strip() or "(çıktı yok)")
+    print("Ölçülen yapı:", kurulu_yapi(PAKET))
     onceki = kabuk("wm size") + kabuk("wm density")
     print("Önceki ekran:", " ".join(onceki.split()))
     try:
@@ -614,6 +645,7 @@ def komut_tarama(args) -> None:
     başarısızlık değil.
     """
     oyunlar = args.oyunlar or OYUNLAR
+    print("Ölçülen yapı:", kurulu_yapi(args.paket))
     adb("logcat", "-c")
     print(f"{'oyun':16}{'kare/s':>8}{'kare':>7}{'jank':>14}{'p50':>7}{'kaçan':>7}  durum")
     for ad in oyunlar:

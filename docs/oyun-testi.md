@@ -100,6 +100,29 @@ doğrulayın**, ve bir bulguyu koda yazmadan önce bulgunun kendisini sınayın.
 `tools/coklu_dokunus.py` (uinput ile sanal dokunmatik; `input`/`sendevent`
 tek parmakla sınırlı).
 
+### Her ölçüm hangi yapıda alındığını yazar
+
+`cihaz_testi.py reyon` ve `... tarama` raporun ilk satırına kurulu yapının
+parmak izini basar:
+
+```
+Ölçülen yapı: com.aripd.zagames 0.43.3 sha256=00bfb833…
+```
+
+Özet, yayındaki APK'nin `SHA256SUMS.txt` içindeki değeriyle birebir aynı
+olmalı; `pm install` dosyayı olduğu gibi kopyaladığı için eşleşmezse ölçüm o
+yapıda alınmamıştır. Elle bakmak için:
+
+```bash
+adb shell sha256sum "$(adb shell pm path com.aripd.zagames | cut -d: -f2 | tr -d '\r')"
+```
+
+Sürüm adı tek başına yetmez: sürüm yükseltildikten sonra **her dalın** yapısı
+aynı adı taşır. v0.43.3'te G4 ölçümü yanlış daldan kurulmuş bir yapıyla
+alındı; sonuç düzeltmenin işe yaramadığını gösteriyordu, oysa düzeltme o
+yapıda yoktu. Parmak izi eşleşmiyorsa bulgu geçersizdir — önce doğru yapı
+kurulur, sonra ölçülür.
+
 ---
 
 ## A · Cihaz koşumu
@@ -2819,7 +2842,16 @@ gözden geçirilmeli.
 
 CI bunu doğrulayamaz: Robolectric'in yazı ölçüleri cihazınkinden farklı, zaten
 `ReyonShortScreenTest` h568'de üç kuralı görüp geçiyordu — bulguyu cihaz
-çıkardı. Yeniden ölçüm: `python3 tools/cihaz_testi.py reyon --apk <yeni apk>`.
+çıkardı. Yeniden ölçüm yayındaki yapıyla alınır:
+
+```bash
+python3 tools/cihaz_testi.py reyon --apk za-v0.43.3.apk
+```
+
+Raporun ilk satırındaki özet `00bfb83305ecd4e005c9c0abac9d2952059f5822b02e6b11e3800181d16415e7`
+olmalı (v0.43.3 `za-v0.43.3.apk` = `za.apk`); eşleşmiyorsa düzeltme ölçülen
+yapıda yok demektir. Bu tuzağa bir kez düşüldü: ilk ölçüm yanlış daldan
+kurulmuş bir yapıyla alındı ve düzeltme işlemedi sanıldı.
 
 **G5 — Sipariş listesi.** İlk ürün satırı tam: **108,5 dp** (ad, stok, talep
 bandı, −/+ adımlayıcı, teslim notu). İkincisi 79 dp ile yarım görünüyor, yani
