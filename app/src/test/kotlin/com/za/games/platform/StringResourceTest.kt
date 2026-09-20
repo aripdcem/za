@@ -27,7 +27,7 @@ class StringResourceTest {
     fun theLicenseNoteKeepsItsQuotes() {
         assertTrue(
             "marka adı tırnak içinde kalmalı",
-            context.getString(R.string.about_app_license).contains("\"ZA\""),
+            context.getString(R.string.about_app_license).contains("\"ZA Games\""),
         )
     }
 

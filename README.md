@@ -549,11 +549,11 @@ Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
 
 - **Kod:** GNU General Public License v3.0 veya sonraki bir sürümü (`LICENSE`; SPDX: `GPL-3.0-or-later`). Kodu
   alıp değiştirebilir ve dağıtabilirsin; dağıttığın türevin kaynağı da aynı lisansla açık olmalı.
-- **Marka:** "ZA" ve "ZA Games" adları ile ZA logosu lisansa dahil değildir. Kodu kullanan ya da türeten projeler
+- **Marka:** "ZA Games" ve "ZA" adları ile ZA Games logosu lisansa dahil değildir. Kodu kullanan ya da türeten projeler
   bu ad ve logoyla dağıtılamaz; kendi adını ve simgesini kullanmalıdır.
 - **Kelime listeleri:** Zemberek-NLP kök sözlüğünden (Apache-2.0) ve FrequencyWords tr_50k'dan (CC BY-SA 4.0)
   türetilmiştir; listeler CC BY-SA 4.0 koşullarıyla paylaşılır (`games/*/src/main/resources`).
-- Sesler, görseller ve oyun tasarımları ZA'ya aittir ve kodla birlikte aynı lisans kapsamındadır. Katkılar aynı
+- Sesler, görseller ve oyun tasarımları ZA Games'e aittir ve kodla birlikte aynı lisans kapsamındadır. Katkılar aynı
   lisansla kabul edilir. Uygulama içi **Hakkında** ekranı üçüncü taraf bileşenleri ve lisanslarını listeler.
 
 ## Yol haritası
@@ -571,4 +571,4 @@ Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
 
 ### English summary
 
-**ZA** is an Android platform for truly ad-free games ("zero ad game play"): no ads, no trackers, no permissions (not even INTERNET), no purchases. It ships 27 games — arcade, puzzle, word and board — in 14 languages, following the phone's language with an in-app picker. Game rules live in deterministic, fully unit-tested pure Kotlin modules under `games/`; the Compose UI lives in `app`. Sound effects are tiny procedurally generated WAVs (`tools/gen_sfx.py`) and can be muted from the hub. Add a game by writing an engine module, a Compose screen, and one `GameEntry` in `GameRegistry`. Build with `./gradlew :app:assembleDebug`, test engines with `./gradlew :games:engineTests`. Licensed under GPL-3.0-or-later; the "ZA" name and logo are not part of the license.
+**ZA** is an Android platform for truly ad-free games ("zero ad game play"): no ads, no trackers, no permissions (not even INTERNET), no purchases. It ships 27 games — arcade, puzzle, word and board — in 14 languages, following the phone's language with an in-app picker. Game rules live in deterministic, fully unit-tested pure Kotlin modules under `games/`; the Compose UI lives in `app`. Sound effects are tiny procedurally generated WAVs (`tools/gen_sfx.py`) and can be muted from the hub. Add a game by writing an engine module, a Compose screen, and one `GameEntry` in `GameRegistry`. Build with `./gradlew :app:assembleDebug`, test engines with `./gradlew :games:engineTests`. Licensed under GPL-3.0-or-later; the "ZA Games" name and logo are not part of the license.

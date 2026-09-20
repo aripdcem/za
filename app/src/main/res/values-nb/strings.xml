@@ -403,7 +403,7 @@
     <string name="about_cc_note">Siden ordlistene bygger på FrequencyWords, deles de under CC BY-SA 4.0; lisenstekst:</string>
     <string name="about_license_show">Vis lisensteksten til Apache 2.0</string>
     <string name="about_license_hide">Skjul lisensteksten</string>
-    <string name="about_app_license">Kildekoden til ZA er åpen under GNU GPL v3. Navnet «ZA» og logoen er ikke en del av lisensen.</string>
+    <string name="about_app_license">Kildekoden til ZA Games er åpen under GNU GPL v3. Navnet «ZA Games» og logoen er ikke en del av lisensen.</string>
     <string name="about_app_license_link">Lisenstekst (GitHub)</string>
 
     <!-- What's new -->

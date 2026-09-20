@@ -403,7 +403,7 @@
     <string name="about_cc_note">Como as listas de palavras derivam do FrequencyWords, elas são compartilhadas sob CC BY-SA 4.0; texto da licença:</string>
     <string name="about_license_show">Mostrar o texto da licença Apache 2.0</string>
     <string name="about_license_hide">Ocultar o texto da licença</string>
-    <string name="about_app_license">O código-fonte do ZA é aberto sob a GNU GPL v3. O nome “ZA” e o logotipo não fazem parte da licença.</string>
+    <string name="about_app_license">O código-fonte do ZA Games é aberto sob a GNU GPL v3. O nome “ZA Games” e o logotipo não fazem parte da licença.</string>
     <string name="about_app_license_link">Texto da licença (GitHub)</string>
 
     <!-- What's new -->

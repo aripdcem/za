@@ -101,7 +101,7 @@ asistan (depo, metin, görsel üretimi).
 | [ ] | Fiyat ile derinliği eşle: Tavla, Kakuro, Kuyu, Dizgi ve Türkçe kelime oyunları tek başına 1 USD'yi hak eder; Vergici, Toplam Kapma, Yılan ve 2048 paket olmalı | C karar |
 
 > Ücretli katman notu: kaynak GPL-3.0. Satış hukuken mümkün, ama alan herkes
-> derleyip dağıtabilir; pratik koruma "ZA" markası, Play'in kolaylığı ve
+> derleyip dağıtabilir; pratik koruma "ZA Games" markası, Play'in kolaylığı ve
 > güncellemelerdir. Kilit arayüzü tasarlanırken bu gerçek varsayılmalı, DRM
 > hayaliyle uğraşılmamalı.
 
