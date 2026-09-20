@@ -176,6 +176,7 @@ internal fun ReyonSalesContent(
             if (st != null && score != null) {
                 val showTarget = result != null && review == SalesReview.TARGET
                 val shelfH = shelfHeight(maxWidth, maxHeight, st.sales.cols / (st.sales.rows * 0.78f))
+                val trayH = maxHeight * TRAY_SHARE
                 Column(modifier = Modifier.fillMaxSize()) {
                     SalesCanvas(
                         state = st,
@@ -214,7 +215,7 @@ internal fun ReyonSalesContent(
                             state = st,
                             version = version,
                             selected = selected,
-                            modifier = Modifier.heightIn(max = maxHeight * TRAY_SHARE),
+                            modifier = Modifier.heightIn(max = trayH),
                         ) { id ->
                             viewModel.select(id)
                             haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)

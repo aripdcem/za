@@ -25,6 +25,11 @@ internal const val SHELF_SHARE = 0.34f
 /** Tepsinin oyun alanından alabileceği en büyük pay; taşan tepsi kendi içinde kayar. */
 internal const val TRAY_SHARE = 0.40f
 
+// İki pay da `BoxWithConstraints`'in içinde, ama `Column`'un dışında hesaplanmalı:
+// `ColumnScope` da `@LayoutScopeMarker` taşıdığı için sütunun içinde
+// `BoxWithConstraintsScope` örtülüyor ve maxWidth/maxHeight örtük alıcıyla
+// okunamıyor (derleme hatası).
+
 /**
  * Raf tuvalinin yüksekliği: en boy oranının istediği kadar, ama oyun alanının
  * [SHELF_SHARE] payını geçmeden.

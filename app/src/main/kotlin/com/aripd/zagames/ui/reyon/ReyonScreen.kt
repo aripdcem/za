@@ -239,6 +239,7 @@ private fun ReyonPuzzleContent(
                 val hinted = (lastHint as? ReyonHint.Place)?.product ?: -1
                 val wrongHint = (lastHint as? ReyonHint.Wrong)?.product ?: -1
                 val shelfH = shelfHeight(maxWidth, maxHeight, st.puzzle.cols / (st.puzzle.rows * 0.78f))
+                val trayH = maxHeight * TRAY_SHARE
                 Column(modifier = Modifier.fillMaxSize()) {
                     ShelfCanvas(
                         state = st,
@@ -285,7 +286,7 @@ private fun ReyonPuzzleContent(
                             viewModel.select(id)
                             haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         },
-                        modifier = Modifier.heightIn(max = maxHeight * TRAY_SHARE),
+                        modifier = Modifier.heightIn(max = trayH),
                     )
                 }
             }
