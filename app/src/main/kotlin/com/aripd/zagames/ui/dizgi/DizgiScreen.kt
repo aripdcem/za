@@ -86,6 +86,7 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import com.aripd.zagames.platform.zaString
 
 /**
  * Harfleri oyunun kendi diliyle büyütür. Sabit bir yerel ayar kullanılamaz:
@@ -410,9 +411,9 @@ private fun HandoverPane(state: DizgiState, onReady: () -> Unit) {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         OverlayCard {
             Text(
-                text = stringResource(
+                text = zaString(
                     R.string.dizgi_turn_of,
-                    stringResource(R.string.dizgi_player_n, state.current + 1),
+                    zaString(R.string.dizgi_player_n, state.current + 1),
                 ),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
@@ -420,7 +421,7 @@ private fun HandoverPane(state: DizgiState, onReady: () -> Unit) {
             LastMoveText(state)
             state.players.forEachIndexed { i, p ->
                 Text(
-                    text = "${stringResource(R.string.dizgi_player_n, i + 1)}: ${formatScore(p.score.toLong())}",
+                    text = "${zaString(R.string.dizgi_player_n, i + 1)}: ${formatScore(p.score.toLong())}",
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = if (i == state.current) FontWeight.Bold else FontWeight.Normal,
                     color = if (i == state.current) {
@@ -447,11 +448,11 @@ private fun HandoverPane(state: DizgiState, onReady: () -> Unit) {
 private fun LastMoveText(state: DizgiState) {
     val lang = LocalWordLang.current
     val move = state.lastMove ?: return
-    val name = stringResource(R.string.dizgi_player_n, move.player + 1)
+    val name = zaString(R.string.dizgi_player_n, move.player + 1)
     val text = when (move.kind) {
-        DizgiMoveKind.PASS -> stringResource(R.string.dizgi_move_pass, name)
-        DizgiMoveKind.EXCHANGE -> stringResource(R.string.dizgi_move_exchange, name)
-        DizgiMoveKind.PLACE -> stringResource(
+        DizgiMoveKind.PASS -> zaString(R.string.dizgi_move_pass, name)
+        DizgiMoveKind.EXCHANGE -> zaString(R.string.dizgi_move_exchange, name)
+        DizgiMoveKind.PLACE -> zaString(
             R.string.dizgi_move_words,
             name,
             move.words.joinToString(", ") { it.upper(lang) },
@@ -499,7 +500,7 @@ private fun PlayPane(
         ) {
             state.players.forEachIndexed { i, p ->
                 ScoreCard(
-                    label = stringResource(R.string.dizgi_player_n, i + 1),
+                    label = zaString(R.string.dizgi_player_n, i + 1),
                     value = formatScore(p.score.toLong()),
                     modifier = Modifier.weight(1f),
                     highlight = i == state.current && state.status == DizgiStatus.RUNNING,
@@ -508,7 +509,7 @@ private fun PlayPane(
         }
 
         Text(
-            text = stringResource(R.string.dizgi_bag_count, state.bag.size) +
+            text = zaString(R.string.dizgi_bag_count, state.bag.size) +
                 "  ·  ${stringResource(R.string.high_score)}: ${formatScore(highScore)}",
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.55f),
@@ -550,7 +551,7 @@ private fun PlayPane(
                     DizgiInvalid.NOT_CONNECTED -> stringResource(R.string.dizgi_inv_connect)
                     DizgiInvalid.CENTER_REQUIRED -> stringResource(R.string.dizgi_inv_center)
                     DizgiInvalid.SHORT_WORD -> stringResource(R.string.dizgi_inv_short)
-                    DizgiInvalid.INVALID_WORD -> stringResource(
+                    DizgiInvalid.INVALID_WORD -> zaString(
                         R.string.dizgi_inv_word,
                         words.joinToString(", ") { it.upper(lang) },
                     )
@@ -559,7 +560,7 @@ private fun PlayPane(
         }
         Text(
             text = invalidText ?: if (exchangeMode) {
-                stringResource(R.string.dizgi_exchange_hint, exchangePicks.size)
+                zaString(R.string.dizgi_exchange_hint, exchangePicks.size)
             } else {
                 " "
             },
@@ -607,7 +608,7 @@ private fun PlayPane(
                         onAction = onExchangeCancel,
                     )
                     PadButton(
-                        label = stringResource(R.string.dizgi_exchange_n, exchangePicks.size),
+                        label = zaString(R.string.dizgi_exchange_n, exchangePicks.size),
                         description = stringResource(R.string.dizgi_exchange),
                         modifier = Modifier.weight(1.4f).height(52.dp),
                         fontSize = ActionFont,
@@ -706,7 +707,7 @@ private fun DizgiBoardCanvas(
     val lang = LocalWordLang.current
     val textMeasurer = rememberTextMeasurer()
     val layoutCache = remember { mutableMapOf<String, TextLayoutResult>() }
-    val boardDesc = stringResource(R.string.dizgi_board_desc, state.board.size, state.pending.size)
+    val boardDesc = zaString(R.string.dizgi_board_desc, state.board.size, state.pending.size)
     val currentTap by rememberUpdatedState(onCellTap)
 
     Canvas(
@@ -980,13 +981,13 @@ private fun FinishedOverlay(
     val verdict = if (tie) {
         stringResource(R.string.dizgi_draw)
     } else {
-        stringResource(
+        zaString(
             R.string.dizgi_winner,
-            stringResource(R.string.dizgi_player_n, ranking.first().index + 1),
+            zaString(R.string.dizgi_player_n, ranking.first().index + 1),
         )
     }
     val lines = ranking.map { (index, player) ->
-        "${stringResource(R.string.dizgi_player_n, index + 1)}: ${formatScore(player.score.toLong())}"
+        "${zaString(R.string.dizgi_player_n, index + 1)}: ${formatScore(player.score.toLong())}"
     }
     OverlayCard {
         Text(

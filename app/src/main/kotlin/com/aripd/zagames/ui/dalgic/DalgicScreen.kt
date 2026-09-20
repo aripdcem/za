@@ -83,6 +83,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlinx.coroutines.isActive
+import com.aripd.zagames.platform.zaString
 
 private val SkyColor = Color(0xFFBAE6FD)
 private val WaterTop = Color(0xFF38BDF8)
@@ -328,7 +329,7 @@ private fun DalgicCanvas(
     modifier: Modifier = Modifier,
 ) {
     val frame by viewModel.frame.collectAsStateWithLifecycle()
-    val desc = stringResource(R.string.dalgic_board_desc_fmt, hud.score, hud.divers, (hud.oxygen * 100f).roundToInt())
+    val desc = zaString(R.string.dalgic_board_desc_fmt, hud.score, hud.divers, (hud.oxygen * 100f).roundToInt())
     val hint = stringResource(R.string.dalgic_drag_hint)
     val textMeasurer = rememberTextMeasurer()
     val textCache = remember { HashMap<String, TextLayoutResult>() }
@@ -578,7 +579,7 @@ private fun StartCard(
         if (dailyMode) {
             if (daily != null) {
                 Text(
-                    text = stringResource(R.string.dalgic_daily_status_fmt, daily.attempts, DalgicViewModel.DAILY_ATTEMPTS, daily.best),
+                    text = zaString(R.string.dalgic_daily_status_fmt, daily.attempts, DalgicViewModel.DAILY_ATTEMPTS, daily.best),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -593,7 +594,7 @@ private fun StartCard(
             )
         } else if (freeBest > 0) {
             Text(
-                text = stringResource(R.string.dalgic_best_fmt, freeBest),
+                text = zaString(R.string.dalgic_best_fmt, freeBest),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -650,7 +651,7 @@ private fun OverCard(
     onMenu: () -> Unit,
     onExit: () -> Unit,
 ) {
-    val result = stringResource(R.string.dalgic_result_fmt, hud.rescued, hud.wave + 1)
+    val result = zaString(R.string.dalgic_result_fmt, hud.rescued, hud.wave + 1)
     OverlayCard {
         Text(
             text = stringResource(R.string.dalgic_over_title),
@@ -688,7 +689,7 @@ private fun OverCard(
         ShareButton(
             ShareContent(
                 gameId = "dalgic",
-                headline = stringResource(R.string.dalgic_share_fmt, hud.rescued, hud.score),
+                headline = zaString(R.string.dalgic_share_fmt, hud.rescued, hud.score),
                 details = listOf(result, modeShareLabel(daily, null)),
             ),
         )
@@ -696,7 +697,7 @@ private fun OverCard(
         Button(onClick = onRestart, modifier = Modifier.fillMaxWidth()) {
             Text(
                 when {
-                    daily && attemptsLeft > 0 -> stringResource(R.string.dalgic_retry_fmt, attemptsLeft)
+                    daily && attemptsLeft > 0 -> zaString(R.string.dalgic_retry_fmt, attemptsLeft)
                     daily -> stringResource(R.string.play_free)
                     else -> stringResource(R.string.restart)
                 },

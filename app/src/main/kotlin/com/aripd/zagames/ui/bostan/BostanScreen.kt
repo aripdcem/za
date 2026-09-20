@@ -92,6 +92,7 @@ import kotlin.math.floor
 import kotlin.math.min
 import kotlin.math.sin
 import kotlinx.coroutines.isActive
+import com.aripd.zagames.platform.zaString
 
 private val Grass = Color(0xFF4D7C0F)
 private val GrassDark = Color(0xFF3F6212)
@@ -390,9 +391,9 @@ private fun CardBar(
             val name = defenderName(kind)
             val cooldown = hud.cooldowns.getOrElse(kind.ordinal) { 0f }
             ToolCard(
-                desc = stringResource(R.string.bostan_card_desc_fmt, name, kind.cost),
+                desc = zaString(R.string.bostan_card_desc_fmt, name, kind.cost),
                 // Beklerken fiyat yerine kalan süre: "neden basamıyorum" sorusu kalmasın.
-                label = if (cooldown > 0f) stringResource(R.string.bostan_cooldown_fmt, ceil(cooldown * kind.cooldown).toInt()) else kind.cost.toString(),
+                label = if (cooldown > 0f) zaString(R.string.bostan_cooldown_fmt, ceil(cooldown * kind.cooldown).toInt()) else kind.cost.toString(),
                 selected = selected == kind,
                 dim = hud.water < kind.cost,
                 cooldown = cooldown,
@@ -483,12 +484,12 @@ private fun BostanCanvas(
     modifier: Modifier = Modifier,
 ) {
     val frame by viewModel.frame.collectAsStateWithLifecycle()
-    val desc = stringResource(R.string.bostan_board_desc_fmt, hud.water, hud.wave, hud.totalWaves, hud.enemiesAlive)
+    val desc = zaString(R.string.bostan_board_desc_fmt, hud.water, hud.wave, hud.totalWaves, hud.enemiesAlive)
     val hint = stringResource(R.string.bostan_tap_hint)
     val trailing = when {
         hud.status != BostanStatus.RUNNING || hud.totalWaves == 0 -> ""
-        hud.nextWaveIn > 0f && (hud.wave == 0 || hud.waveProgress >= 1f) -> stringResource(R.string.bostan_next_wave_fmt, ceil(hud.nextWaveIn).toInt())
-        hud.enemiesAlive > 0 -> stringResource(R.string.bostan_alive_fmt, hud.enemiesAlive)
+        hud.nextWaveIn > 0f && (hud.wave == 0 || hud.waveProgress >= 1f) -> zaString(R.string.bostan_next_wave_fmt, ceil(hud.nextWaveIn).toInt())
+        hud.enemiesAlive > 0 -> zaString(R.string.bostan_alive_fmt, hud.enemiesAlive)
         else -> ""
     }
     val textMeasurer = rememberTextMeasurer()
@@ -970,7 +971,7 @@ private fun StartCard(
         if (dailyMode) {
             if (daily != null) {
                 Text(
-                    text = stringResource(R.string.bostan_daily_status_fmt, daily.attempts, BostanViewModel.DAILY_ATTEMPTS, best),
+                    text = zaString(R.string.bostan_daily_status_fmt, daily.attempts, BostanViewModel.DAILY_ATTEMPTS, best),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -985,7 +986,7 @@ private fun StartCard(
             )
         } else if (best > 0) {
             Text(
-                text = stringResource(R.string.bostan_best_fmt, difficultyName(difficulty), best),
+                text = zaString(R.string.bostan_best_fmt, difficultyName(difficulty), best),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -1045,8 +1046,8 @@ private fun OverCard(
     onExit: () -> Unit,
 ) {
     val won = hud.status == BostanStatus.WON
-    val result = stringResource(R.string.bostan_result_fmt, hud.wave, hud.totalWaves, hud.kills, hud.lives)
-    val expert = stringResource(R.string.bostan_expert_fmt, level.expertLives, level.expertScore)
+    val result = zaString(R.string.bostan_result_fmt, hud.wave, hud.totalWaves, hud.kills, hud.lives)
+    val expert = zaString(R.string.bostan_expert_fmt, level.expertLives, level.expertScore)
     val diff = difficultyName(difficulty)
     OverlayCard {
         Text(
@@ -1098,7 +1099,7 @@ private fun OverCard(
         ShareButton(
             ShareContent(
                 gameId = "bostan",
-                headline = if (won) stringResource(R.string.bostan_share_won_fmt, hud.score) else stringResource(R.string.bostan_share_lost_fmt, hud.wave, hud.score),
+                headline = if (won) zaString(R.string.bostan_share_won_fmt, hud.score) else zaString(R.string.bostan_share_lost_fmt, hud.wave, hud.score),
                 details = listOf("$diff · $result", modeShareLabel(daily, null)),
             ),
         )
@@ -1106,7 +1107,7 @@ private fun OverCard(
         Button(onClick = onRestart, modifier = Modifier.fillMaxWidth()) {
             Text(
                 when {
-                    daily && attemptsLeft > 0 -> stringResource(R.string.bostan_retry_fmt, attemptsLeft)
+                    daily && attemptsLeft > 0 -> zaString(R.string.bostan_retry_fmt, attemptsLeft)
                     daily -> stringResource(R.string.play_free)
                     else -> stringResource(R.string.restart)
                 },

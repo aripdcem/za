@@ -22,10 +22,10 @@ import com.aripd.zagames.blok.BlokState
 import com.aripd.zagames.blok.BlokStatus
 import kotlin.math.abs
 import kotlin.math.min
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import com.aripd.zagames.R
+import com.aripd.zagames.platform.zaString
 
 /** Taş renkleri: koyu zeminde okunaklı, klasik paletten uyarlanmış tonlar. */
 fun Tetromino.color(): Color = when (this) {
@@ -53,7 +53,7 @@ fun BoardCanvas(
     flashAlpha: Float = 0f,
 ) {
     val boardWidth = state.width
-    val boardDesc = stringResource(R.string.blok_board_desc, state.level, state.lines, state.score)
+    val boardDesc = zaString(R.string.blok_board_desc, state.level, state.lines, state.score)
     Canvas(
         modifier = modifier
             .semantics { contentDescription = boardDesc }

@@ -62,6 +62,7 @@ import com.aripd.zagames.ui.common.formatScore
 import com.aripd.zagames.platform.ShareContent
 import com.aripd.zagames.ui.common.ShareButton
 import kotlin.math.abs
+import com.aripd.zagames.platform.zaString
 
 @Composable
 fun G2048Screen(
@@ -178,10 +179,10 @@ fun G2048Screen(
                         onExit = onExit,
                         share = g2048Share(
                             state,
-                            stringResource(R.string.share_score_fmt, formatScore(state.score)),
+                            zaString(R.string.share_score_fmt, formatScore(state.score)),
                             listOf(
-                                stringResource(R.string.share_moves_fmt, state.moves),
-                                stringResource(R.string.share_max_tile_fmt, state.cells.max()),
+                                zaString(R.string.share_moves_fmt, state.moves),
+                                zaString(R.string.share_max_tile_fmt, state.cells.max()),
                             ),
                         ),
                     )
@@ -193,8 +194,8 @@ fun G2048Screen(
                             state,
                             stringResource(R.string.won_2048_title),
                             listOf(
-                                stringResource(R.string.share_score_fmt, formatScore(state.score)),
-                                stringResource(R.string.share_moves_fmt, state.moves),
+                                zaString(R.string.share_score_fmt, formatScore(state.score)),
+                                zaString(R.string.share_moves_fmt, state.moves),
                             ),
                         ),
                     )

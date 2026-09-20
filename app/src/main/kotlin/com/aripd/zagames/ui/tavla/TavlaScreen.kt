@@ -80,6 +80,7 @@ import com.aripd.zagames.ui.common.ShareButton
 import kotlinx.coroutines.delay
 import kotlin.math.abs
 import kotlin.math.min
+import com.aripd.zagames.platform.zaString
 
 // Tahta renkleri: koyu ceviz zemin, iki ton hane, fildişi ve abanoz pullar.
 private val BoardColor = Color(0xFF2B1D17)
@@ -272,7 +273,7 @@ private fun SetupPanel(
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             TARGETS.forEach { target ->
                 OptionChip(
-                    label = stringResource(R.string.tavla_target_fmt, target),
+                    label = zaString(R.string.tavla_target_fmt, target),
                     selected = setup.target == target,
                     modifier = Modifier.weight(1f),
                 ) { viewModel.setTarget(target) }
@@ -412,7 +413,7 @@ private fun OptionChip(
 
 @Composable
 private fun playerName(player: Int, vsComputer: Boolean): String = when {
-    !vsComputer -> stringResource(R.string.tavla_player_fmt, player + 1)
+    !vsComputer -> zaString(R.string.tavla_player_fmt, player + 1)
     player == 0 -> stringResource(R.string.tavla_you)
     else -> stringResource(R.string.tavla_computer)
 }
@@ -595,7 +596,7 @@ private fun ScoreRow(state: TavlaState, names: List<String>) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = stringResource(R.string.tavla_game_fmt, state.game, state.rules.target),
+                text = zaString(R.string.tavla_game_fmt, state.game, state.rules.target),
                 style = MaterialTheme.typography.labelSmall,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
@@ -607,7 +608,7 @@ private fun ScoreRow(state: TavlaState, names: List<String>) {
             )
             if (state.rules.cube) {
                 Text(
-                    text = stringResource(R.string.tavla_cube_fmt, state.cubeValue),
+                    text = zaString(R.string.tavla_cube_fmt, state.cubeValue),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
                 )
@@ -669,7 +670,7 @@ private fun PlayerCard(
                 )
             }
             Text(
-                text = stringResource(R.string.tavla_pips_fmt, pips, off),
+                text = zaString(R.string.tavla_pips_fmt, pips, off),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.75f),
                 maxLines = 1,
@@ -692,7 +693,7 @@ private fun StatusLine(state: TavlaState, names: List<String>, thinking: Boolean
     }
     val text = when {
         state.phase == Phase.MOVING && !state.canMove -> stringResource(R.string.tavla_no_moves)
-        state.isOpeningTurn() -> stringResource(
+        state.isOpeningTurn() -> zaString(
             R.string.tavla_opening_fmt,
             state.openingDice[0],
             state.openingDice[1],
@@ -700,7 +701,7 @@ private fun StatusLine(state: TavlaState, names: List<String>, thinking: Boolean
         )
         aiTurn && thinking -> stringResource(R.string.tavla_thinking)
         state.phase == Phase.TO_ROLL || state.phase == Phase.MOVING || state.phase == Phase.DOUBLE_OFFERED ->
-            stringResource(R.string.tavla_turn_fmt, names[state.turn])
+            zaString(R.string.tavla_turn_fmt, names[state.turn])
         else -> " "
     }
     Text(
@@ -776,7 +777,7 @@ private fun ActionRow(state: TavlaState, humanActs: Boolean, viewModel: TavlaVie
 private fun DoubleOfferCard(offerer: String, cube: Int, onAccept: () -> Unit, onDecline: () -> Unit) {
     OverlayCard {
         Text(
-            text = stringResource(R.string.tavla_double_offer_fmt, offerer, cube, cube * 2),
+            text = zaString(R.string.tavla_double_offer_fmt, offerer, cube, cube * 2),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
@@ -799,7 +800,7 @@ private fun GameOverCard(state: TavlaState, names: List<String>, onNext: () -> U
             text = if (winner == null) {
                 stringResource(R.string.tavla_draw)
             } else {
-                stringResource(R.string.tavla_won_fmt, names[winner])
+                zaString(R.string.tavla_won_fmt, names[winner])
             },
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
@@ -848,7 +849,7 @@ private fun MatchOverCard(
     OverlayCard {
         val winner = state.winner ?: 0
         Text(
-            text = stringResource(R.string.tavla_match_won_fmt, names[winner], state.scores[0], state.scores[1]),
+            text = zaString(R.string.tavla_match_won_fmt, names[winner], state.scores[0], state.scores[1]),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
@@ -870,11 +871,11 @@ private fun MatchOverCard(
         ShareButton(
             ShareContent(
                 gameId = "tavla",
-                headline = stringResource(R.string.tavla_match_won_fmt, names[winner], state.scores[0], state.scores[1]),
+                headline = zaString(R.string.tavla_match_won_fmt, names[winner], state.scores[0], state.scores[1]),
                 details = listOfNotNull(
-                    stringResource(R.string.tavla_target_label) + ": " + stringResource(R.string.tavla_target_fmt, state.rules.target),
+                    stringResource(R.string.tavla_target_label) + ": " + zaString(R.string.tavla_target_fmt, state.rules.target),
                     if (state.mars && !state.resigned) stringResource(R.string.tavla_mars) else null,
-                    wins?.let { stringResource(R.string.share_wins_fmt, it) },
+                    wins?.let { zaString(R.string.share_wins_fmt, it) },
                 ),
             ),
         )
@@ -959,7 +960,7 @@ private fun TavlaBoard(
 ) {
     val textMeasurer = rememberTextMeasurer()
     val diceText = state.dice.joinToString("-")
-    val desc = stringResource(R.string.tavla_board_desc, turnName, diceText)
+    val desc = zaString(R.string.tavla_board_desc, turnName, diceText)
     val trayDesc = stringResource(R.string.tavla_off_tray)
     // Sürüklenen pul: kaynağı, parmağın konumu ve o an bırakılırsa gideceği hane (çizim için).
     var dragFrom by remember { mutableStateOf<Int?>(null) }

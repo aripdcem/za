@@ -20,6 +20,8 @@ Denetimler:
   8. Kullanılmayan kaynak anahtarı uyarı verir
   9. Kaçışsız çift tırnak yok: aapt2 tırnağı sessizce atar
  10. Argümansız okunan metinde %% yok: ekranda iki işaret görünür
+ 11. Argümanlı metin zaString/zaText ile okunur: rakamlar Latin kalsın
+ 12. Hiçbir metin %f ya da %,d taşımaz: zaText Locale.ROOT ile biçimler
 """
 import os
 import re
@@ -84,6 +86,27 @@ def bad_percent(text):
     for m in FMT_RE.finditer(text):
         covered.update(range(m.start(), m.end()))
     return [i for i, ch in enumerate(text) if ch == '%' and i not in covered]
+
+
+def raw_format_calls():
+    """Argümanlı ham çağrılar: stringResource(id, ...) ve x.getString(id, ...).
+
+    Bunlar metni cihazın yerel ayarıyla biçimler; Arapça'da %d Hint-Arap
+    rakamı basar. Latin rakam garantisi zaString/zaText'te (bkz. ZaText.kt).
+    """
+    pattern = re.compile(r'(?:\bstringResource|\.getString)\(\s*R\.string\.\w+\s*,')
+    found = []
+    for root in KOTLIN_ROOTS:
+        for dirpath, _, names in os.walk(root):
+            for n in names:
+                if not n.endswith('.kt') or n == 'ZaText.kt':
+                    continue
+                path = os.path.join(dirpath, n)
+                src = open(path, encoding='utf-8').read()
+                for line_no, line in enumerate(src.split('\n'), 1):
+                    if pattern.search(line):
+                        found.append(f'{path}:{line_no}')
+    return found
 
 
 def bare_quotes(text):
@@ -252,6 +275,21 @@ def main():
             if '%%' in v and k in plain_keys and k not in formatted_keys:
                 err(f'{where}: "{k}" %% içeriyor ama argümansız okunuyor '
                     f'(ekranda %% görünür; tek % ve formatted="false" gerekir)')
+
+    # 11-12. Rakamlar her dilde Latin kalsın
+    #
+    # Arapça'da getString(id, sayı) %d'yi Hint-Arap rakamına çevirir; zorluk
+    # kartında "٩×١٢" çıkıyordu. zaString/zaText Locale.ROOT ile biçimler.
+    # Locale.ROOT ondalık ayırıcıyı da Latinleştirir, bu yüzden %f ve %,d
+    # taşıyan metin olmamalı — bugün yok, kural onu korur.
+    for where in raw_format_calls():
+        err(f'{where}: argümanlı metin ham okunuyor; zaString/zaText kullan '
+            f'(Arapça\'da rakamlar Hint-Arap çıkar)')
+    for (loc, name), keys in sorted(files.items()):
+        for k, v in sorted(keys.items()):
+            if re.search(r'%[0-9]*\$?[,]?f|%,d', v):
+                err(f'values{"-" + loc if loc else ""}/{name}: "{k}" %f ya da %,d '
+                    f'taşıyor; zaText Locale.ROOT ile biçimlediği için ayırıcı yanlış çıkar')
 
     # 6-7. Kotlin referansları
     known = set(base) | set(base_words)

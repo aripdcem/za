@@ -79,6 +79,7 @@ import com.aripd.zagames.platform.LocalZaHaptics
 import com.aripd.zagames.platform.LocalZaSound
 import com.aripd.zagames.ui.common.GameTopBar
 import com.aripd.zagames.ui.common.OverlayCard
+import com.aripd.zagames.ui.common.DirectionRow
 import com.aripd.zagames.ui.common.PadButton
 import com.aripd.zagames.ui.common.ScoreCard
 import com.aripd.zagames.ui.common.formatScore
@@ -91,6 +92,7 @@ import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.sin
 import kotlin.random.Random
+import com.aripd.zagames.platform.zaString
 
 private val GrassA = Color(0xFF3F6212)
 private val GrassB = Color(0xFF4D7C0F)
@@ -229,7 +231,7 @@ fun GecitScreen(
             if (mode == GecitMode.DAILY) {
                 ScoreCard(
                     label = stringResource(R.string.gecit_attempt),
-                    value = stringResource(
+                    value = zaString(
                         R.string.gecit_attempt_fmt,
                         daily?.attempts ?: 0,
                         GecitViewModel.DAILY_ATTEMPTS,
@@ -359,12 +361,13 @@ private fun EagleBar(fraction: Float, gems: Int, visible: Boolean) {
  */
 @Composable
 private fun Controls(leftHanded: Boolean, onMove: (Move) -> Unit) {
-    Row(
+    // Satır yön anlamı taşıyor (◀ ▶ tavuğu gerçekten sola/sağa götürür) ve
+    // tuval aynalanmıyor; sağdan sola dillerde satır da aynalanmamalı.
+    DirectionRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 8.dp)
             .height(84.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         if (leftHanded) {
             HopButtons(forwardFirst = true, onMove = onMove)
@@ -520,7 +523,7 @@ private fun StartCard(
         if (mode == GecitMode.DAILY) {
             if (daily != null) {
                 Text(
-                    text = stringResource(
+                    text = zaString(
                         R.string.gecit_daily_status_fmt,
                         daily.attempts,
                         GecitViewModel.DAILY_ATTEMPTS,
@@ -580,7 +583,7 @@ private fun RetryLabel(daily: Boolean, attemptsLeft: Int) {
     Text(
         text = when {
             !daily -> stringResource(R.string.restart)
-            attemptsLeft > 0 -> stringResource(R.string.gecit_retry_fmt, attemptsLeft)
+            attemptsLeft > 0 -> zaString(R.string.gecit_retry_fmt, attemptsLeft)
             else -> stringResource(R.string.play_free)
         },
     )
@@ -660,7 +663,7 @@ private fun OverCard(
             )
         }
         Text(
-            text = stringResource(R.string.gecit_result_fmt, hud.score - hud.gems, hud.gems, hud.seconds),
+            text = zaString(R.string.gecit_result_fmt, hud.score - hud.gems, hud.gems, hud.seconds),
             style = MaterialTheme.typography.bodySmall,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
@@ -676,9 +679,9 @@ private fun OverCard(
         ShareButton(
             ShareContent(
                 gameId = "gecit",
-                headline = stringResource(R.string.share_score_fmt, formatScore(hud.score)),
+                headline = zaString(R.string.share_score_fmt, formatScore(hud.score)),
                 details = listOf(
-                    stringResource(R.string.gecit_result_fmt, hud.score - hud.gems, hud.gems, hud.seconds),
+                    zaString(R.string.gecit_result_fmt, hud.score - hud.gems, hud.gems, hud.seconds),
                     modeShareLabel(daily, null),
                 ),
             ),
@@ -712,7 +715,7 @@ private fun GecitCanvas(
 ) {
     val frame by viewModel.frame.collectAsStateWithLifecycle()
     val currentMove by rememberUpdatedState(onMove)
-    val desc = stringResource(R.string.gecit_board_desc, hud.row, hud.score)
+    val desc = zaString(R.string.gecit_board_desc, hud.row, hud.score)
     val textMeasurer = rememberTextMeasurer()
     val textCache = remember { HashMap<String, TextLayoutResult>() }
     Canvas(

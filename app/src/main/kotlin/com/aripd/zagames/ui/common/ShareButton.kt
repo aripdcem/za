@@ -31,6 +31,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import com.aripd.zagames.platform.zaString
 
 /**
  * Bitiş kartlarındaki "Paylaş" düğmesi: kartı üretir ve sistemin paylaşım
@@ -82,7 +83,7 @@ fun ShareButton(content: ShareContent, modifier: Modifier = Modifier, compact: B
 @Composable
 fun modeShareLabel(daily: Boolean, epochDay: Long?): String = if (daily) {
     val day = epochDay ?: LocalDate.now().toEpochDay()
-    stringResource(
+    zaString(
         R.string.share_daily_fmt,
         LocalDate.ofEpochDay(day).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)),
     )

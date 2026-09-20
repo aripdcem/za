@@ -53,6 +53,7 @@ import com.aripd.zagames.ui.common.PadButton
 import com.aripd.zagames.ui.common.ScoreCard
 import com.aripd.zagames.platform.ShareContent
 import com.aripd.zagames.ui.common.ShareButton
+import com.aripd.zagames.platform.zaString
 
 private val TaxColor = Color(0xFFF87171)
 private val CoinColor = Color(0xFFFBBF24)
@@ -190,8 +191,8 @@ fun VergiciScreen(
         ) {
             if (phase == VergiciPhase.PLAYING && selected != null) {
                 PadButton(
-                    label = stringResource(R.string.vergici_take_fmt, selected ?: 0),
-                    description = stringResource(R.string.vergici_take_fmt, selected ?: 0),
+                    label = zaString(R.string.vergici_take_fmt, selected ?: 0),
+                    description = zaString(R.string.vergici_take_fmt, selected ?: 0),
                     accent = true,
                     fontSize = 18.sp,
                     modifier = Modifier.weight(1f).fillMaxHeight(),
@@ -220,12 +221,12 @@ private fun InfoLine(state: VergiciState?, selected: Int?) {
         state == null -> stringResource(R.string.vergici_rules)
         selected != null -> {
             val taxed = state.divisorsOf(selected)
-            stringResource(R.string.vergici_preview_fmt, selected, taxed.joinToString(", "), taxed.sum())
+            zaString(R.string.vergici_preview_fmt, selected, taxed.joinToString(", "), taxed.sum())
         }
         state.over && state.leftovers.isNotEmpty() ->
-            stringResource(R.string.vergici_leftover_fmt, state.leftovers.joinToString(", "))
+            zaString(R.string.vergici_leftover_fmt, state.leftovers.joinToString(", "))
         state.lastTaken > 0 ->
-            stringResource(R.string.vergici_last_fmt, state.lastTaken, state.lastTaxed.joinToString(", "))
+            zaString(R.string.vergici_last_fmt, state.lastTaken, state.lastTaxed.joinToString(", "))
         else -> stringResource(R.string.vergici_rules)
     }
     Text(
@@ -290,10 +291,10 @@ private fun NumberCell(
     modifier: Modifier = Modifier,
 ) {
     val desc = when {
-        !onBoard -> stringResource(R.string.vergici_cell_gone_fmt, x)
-        taxed -> stringResource(R.string.vergici_cell_taxed_fmt, x)
-        takeable -> stringResource(R.string.vergici_cell_takeable_fmt, x)
-        else -> stringResource(R.string.vergici_cell_locked_fmt, x)
+        !onBoard -> zaString(R.string.vergici_cell_gone_fmt, x)
+        taxed -> zaString(R.string.vergici_cell_taxed_fmt, x)
+        takeable -> zaString(R.string.vergici_cell_takeable_fmt, x)
+        else -> zaString(R.string.vergici_cell_locked_fmt, x)
     }
     val bg = when {
         !onBoard -> Color.Transparent
@@ -358,11 +359,11 @@ private fun SetupCard(
         )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             VergiciState.SIZES.forEach { n ->
-                SizeChip(label = stringResource(R.string.vergici_size_fmt, n), selected = n == size, modifier = Modifier.weight(1f)) { onSize(n) }
+                SizeChip(label = zaString(R.string.vergici_size_fmt, n), selected = n == size, modifier = Modifier.weight(1f)) { onSize(n) }
             }
         }
         Text(
-            text = stringResource(R.string.vergici_wins_fmt, wins) + if (best > 0) " · " + stringResource(R.string.vergici_best_fmt, size, best) else "",
+            text = zaString(R.string.vergici_wins_fmt, wins) + if (best > 0) " · " + zaString(R.string.vergici_best_fmt, size, best) else "",
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center,
@@ -419,7 +420,7 @@ private fun OverCard(
             textAlign = TextAlign.Center,
         )
         Text(
-            text = stringResource(R.string.vergici_result_fmt, state.player, state.taxman),
+            text = zaString(R.string.vergici_result_fmt, state.player, state.taxman),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
         )
@@ -435,8 +436,8 @@ private fun OverCard(
                 gameId = "vergici",
                 headline = verdict,
                 details = listOfNotNull(
-                    stringResource(R.string.vergici_result_fmt, state.player, state.taxman),
-                    stringResource(R.string.vergici_size_fmt, state.n),
+                    zaString(R.string.vergici_result_fmt, state.player, state.taxman),
+                    zaString(R.string.vergici_size_fmt, state.n),
                     target?.let {
                         stringResource(if (it.exact) R.string.vergici_target_fmt else R.string.vergici_good_fmt, it.score)
                     },

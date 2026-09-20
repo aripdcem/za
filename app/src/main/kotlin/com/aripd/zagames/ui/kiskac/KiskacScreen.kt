@@ -67,6 +67,7 @@ import com.aripd.zagames.ui.common.modeShareLabel
 import java.util.Locale
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
+import com.aripd.zagames.platform.zaString
 
 /**
  * Harfleri oyunun kendi diliyle büyütür. Sabit bir yerel ayar kullanılamaz:
@@ -342,7 +343,7 @@ private fun KiskacBoard(
             word = state.lowerBound,
             placeholder = "A",
             label = stringResource(R.string.kiskac_lower_label),
-            hint = percentLower?.let { stringResource(R.string.kiskac_after_fmt, it) },
+            hint = percentLower?.let { zaString(R.string.kiskac_after_fmt, it) },
         )
 
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -351,7 +352,7 @@ private fun KiskacBoard(
             }
         }
         Text(
-            text = stringResource(
+            text = zaString(
                 R.string.kiskac_attempts_fmt,
                 state.guesses.size,
                 KiskacState.MAX_GUESSES,
@@ -364,7 +365,7 @@ private fun KiskacBoard(
             word = state.upperBound,
             placeholder = "Z",
             label = stringResource(R.string.kiskac_upper_label),
-            hint = percentUpper?.let { stringResource(R.string.kiskac_before_fmt, it) },
+            hint = percentUpper?.let { zaString(R.string.kiskac_before_fmt, it) },
             hintFirst = true,
         )
 
@@ -586,7 +587,7 @@ private fun ResultOverlay(
         )
         if (state.status == KiskacStatus.WON) {
             Text(
-                text = stringResource(
+                text = zaString(
                     R.string.guesses_fmt,
                     state.guesses.size,
                     KiskacState.MAX_GUESSES,
@@ -596,7 +597,7 @@ private fun ResultOverlay(
             )
         } else {
             Text(
-                text = stringResource(R.string.answer_was, state.answer.upper(lang)),
+                text = zaString(R.string.answer_was, state.answer.upper(lang)),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
             )
@@ -616,7 +617,7 @@ private fun ResultOverlay(
                 },
                 details = listOf(
                     modeShareLabel(mode == KiskacMode.DAILY, state.dailyDay),
-                    stringResource(R.string.share_streak_fmt, streak),
+                    zaString(R.string.share_streak_fmt, streak),
                 ),
             ),
         )

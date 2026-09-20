@@ -72,6 +72,7 @@ import com.aripd.zagames.ui.common.ScoreCard
 import com.aripd.zagames.ui.common.formatTime
 import com.aripd.zagames.platform.ShareContent
 import com.aripd.zagames.ui.common.ShareButton
+import com.aripd.zagames.platform.zaString
 
 private val BoardBg = Color(0xFF0F1628)
 private val ClueCell = Color(0xFF1E293B)
@@ -199,7 +200,7 @@ fun KakuroScreen(
                 }
                 state == null -> DifficultyOverlay(
                     descriptions = KakuroDifficulty.entries.map {
-                        stringResource(R.string.kakuro_difficulty_desc_fmt, it.size - 1, it.size - 1)
+                        zaString(R.string.kakuro_difficulty_desc_fmt, it.size - 1, it.size - 1)
                     },
                     lastPicked = viewModel.lastDifficulty?.let { KakuroDifficulty.entries.indexOf(it) },
                 ) { index ->
@@ -305,7 +306,7 @@ private fun KakuroBoard(
     val textMeasurer = rememberTextMeasurer()
     val cache = remember { HashMap<String, TextLayoutResult>() }
     val empty = state.cells.indices.count { state.cells[it].white && state.values[it] == 0 }
-    val desc = stringResource(R.string.kakuro_board_desc_fmt, n - 1, n - 1, empty)
+    val desc = zaString(R.string.kakuro_board_desc_fmt, n - 1, n - 1, empty)
     val peerAcross = if (selected >= 0) state.acrossOf[selected] else -1
     val peerDown = if (selected >= 0) state.downOf[selected] else -1
     Canvas(
@@ -488,7 +489,7 @@ private fun SolvedOverlay(
             fontWeight = FontWeight.Bold,
         )
         Text(
-            text = stringResource(R.string.time_fmt, time),
+            text = zaString(R.string.time_fmt, time),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
         )
@@ -512,8 +513,8 @@ private fun kakuroShare(state: KakuroState, time: String): ShareContent = ShareC
     headline = stringResource(R.string.share_solved),
     details = listOf(
         difficultyLabel(state.difficulty),
-        stringResource(R.string.kakuro_difficulty_desc_fmt, state.size - 1, state.size - 1),
-        stringResource(R.string.time_fmt, time),
+        zaString(R.string.kakuro_difficulty_desc_fmt, state.size - 1, state.size - 1),
+        zaString(R.string.time_fmt, time),
     ),
     board = kakuroPainter(state),
 )

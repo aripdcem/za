@@ -53,6 +53,7 @@ import com.aripd.zagames.ui.common.OverlayCard
 import com.aripd.zagames.ui.common.ScoreCard
 import com.aripd.zagames.platform.ShareContent
 import com.aripd.zagames.ui.common.ShareButton
+import com.aripd.zagames.platform.zaString
 
 private val P0Color = Color(0xFF22D3EE)
 private val P1Color = Color(0xFFF472B6)
@@ -79,8 +80,8 @@ fun ToplamScreen(
     var showSecret by remember { mutableStateOf(false) }
     val vsComputer = viewModel.matchVsComputer
     val names = listOf(
-        if (vsComputer) stringResource(R.string.toplam_you) else stringResource(R.string.toplam_player_fmt, 1),
-        if (vsComputer) stringResource(R.string.toplam_computer) else stringResource(R.string.toplam_player_fmt, 2),
+        if (vsComputer) stringResource(R.string.toplam_you) else zaString(R.string.toplam_player_fmt, 1),
+        if (vsComputer) stringResource(R.string.toplam_computer) else zaString(R.string.toplam_player_fmt, 2),
     )
 
     LaunchedEffect(wins) {
@@ -135,9 +136,9 @@ fun ToplamScreen(
             text = when {
                 phase != ToplamPhase.PLAYING -> stringResource(R.string.toplam_rules)
                 state.over && state.winner == null -> stringResource(R.string.toplam_draw)
-                state.over -> stringResource(R.string.toplam_won_fmt, names[state.winner ?: 0])
+                state.over -> zaString(R.string.toplam_won_fmt, names[state.winner ?: 0])
                 thinking -> stringResource(R.string.toplam_thinking)
-                else -> stringResource(R.string.toplam_turn_fmt, names[state.turn])
+                else -> zaString(R.string.toplam_turn_fmt, names[state.turn])
             },
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Bold,
@@ -205,7 +206,7 @@ fun ToplamScreen(
                         headline = if (state.winner == null) {
                             stringResource(R.string.toplam_draw)
                         } else {
-                            stringResource(R.string.toplam_won_fmt, names[state.winner ?: 0])
+                            zaString(R.string.toplam_won_fmt, names[state.winner ?: 0])
                         },
                         details = listOfNotNull(
                             "${names[0]} ${tally.p0} · ${stringResource(R.string.toplam_draws)} ${tally.draws} · ${names[1]} ${tally.p1}",
@@ -235,8 +236,8 @@ private fun NumberRow(state: ToplamState, enabled: Boolean, onPick: (Int) -> Uni
             val owner = state.ownerOf(x)
             val winning = x in state.winningTriple
             val desc = when (owner) {
-                null -> stringResource(R.string.toplam_chip_free_fmt, x)
-                else -> stringResource(R.string.toplam_chip_taken_fmt, x)
+                null -> zaString(R.string.toplam_chip_free_fmt, x)
+                else -> zaString(R.string.toplam_chip_taken_fmt, x)
             }
             Surface(
                 onClick = { onPick(x) },

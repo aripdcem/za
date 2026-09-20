@@ -75,6 +75,8 @@ import com.aripd.zagames.ui.common.OverlayCard
 import com.aripd.zagames.ui.common.ScoreCard
 import com.aripd.zagames.ui.common.ShareButton
 import com.aripd.zagames.ui.common.modeShareLabel
+import com.aripd.zagames.platform.zaString
+import com.aripd.zagames.platform.zaText
 
 /** Sipariş modu: raf (stok düzeyleri), gün başlığı, ürün başına sipariş adımlayıcısı, gün kapanışı. */
 @Composable
@@ -272,7 +274,7 @@ private fun OrderShelfCanvas(state: ReyonOrderState, version: Int) {
     val textMeasurer = rememberTextMeasurer()
     val labeler = remember(textMeasurer) { BlockLabeler(textMeasurer) }
     val path = remember { Path() }
-    val desc = stringResource(R.string.reyon_order_board_desc_fmt, order.rows, order.cols, minOf(state.day + 1, order.days), state.profit)
+    val desc = zaString(R.string.reyon_order_board_desc_fmt, order.rows, order.cols, minOf(state.day + 1, order.days), state.profit)
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
@@ -316,7 +318,7 @@ private fun DayHeader(state: ReyonOrderState, version: Int, hinted: Int, noHint:
     Column(modifier = Modifier.fillMaxWidth().padding(top = 6.dp, start = 4.dp, end = 4.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = stringResource(R.string.reyon_order_day_title_fmt, ReyonText.dow(res, day), day + 1, order.days),
+                text = zaString(R.string.reyon_order_day_title_fmt, ReyonText.dow(res, day), day + 1, order.days),
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f),
@@ -324,7 +326,7 @@ private fun DayHeader(state: ReyonOrderState, version: Int, hinted: Int, noHint:
             val ahead = order.promos.filter { it.day >= state.day }.sortedBy { it.day }
             if (ahead.isNotEmpty()) {
                 Text(
-                    text = ahead.joinToString(" · ") { res.getString(R.string.reyon_order_promo_ahead_fmt, ReyonText.dow(res, it.day), ReyonText.kind(res, order.items[it.item].product.kind)) },
+                    text = ahead.joinToString(" · ") { zaText(res, R.string.reyon_order_promo_ahead_fmt, ReyonText.dow(res, it.day), ReyonText.kind(res, order.items[it.item].product.kind)) },
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.tertiary,
                     textAlign = TextAlign.End,
@@ -332,7 +334,7 @@ private fun DayHeader(state: ReyonOrderState, version: Int, hinted: Int, noHint:
             }
         }
         val hintText = when {
-            hinted >= 0 -> stringResource(R.string.reyon_order_hint_fmt, ReyonText.kind(res, order.items[hinted].product.kind), state.orderOf(hinted))
+            hinted >= 0 -> zaString(R.string.reyon_order_hint_fmt, ReyonText.kind(res, order.items[hinted].product.kind), state.orderOf(hinted))
             noHint -> stringResource(R.string.reyon_order_hint_none)
             else -> null
         }
@@ -382,23 +384,23 @@ private fun OrderRow(state: ReyonOrderState, version: Int, index: Int, item: Ord
     val cases = state.orderOf(index)
     val canOrder = state.canOrder(index)
     val arrival = state.arrivalDay(index)
-    val desc = stringResource(R.string.reyon_order_item_desc_fmt, name, stock, item.capacity, cases)
+    val desc = zaString(R.string.reyon_order_item_desc_fmt, name, stock, item.capacity, cases)
     val more = stringResource(R.string.reyon_order_more)
     val less = stringResource(R.string.reyon_order_less)
 
     // Bilgi satırı: bugünkü ve teslimat günü tahmini, gelen teslimat, bozulacak birimler, promosyon.
     val info = ArrayList<String>()
-    info += stringResource(R.string.reyon_order_today_fmt, item.low(day), item.high(day))
-    if (arrival < order.days && arrival != day) info += stringResource(R.string.reyon_order_forecast_fmt, ReyonText.dow(res, arrival), item.low(arrival), item.high(arrival))
+    info += zaString(R.string.reyon_order_today_fmt, item.low(day), item.high(day))
+    if (arrival < order.days && arrival != day) info += zaString(R.string.reyon_order_forecast_fmt, ReyonText.dow(res, arrival), item.low(arrival), item.high(arrival))
     for (d in state.day + 1 until minOf(order.days, state.day + OrderRules.MAX_LEAD + 1)) {
         val units = state.incoming(index, d)
-        if (units > 0) info += stringResource(R.string.reyon_order_incoming_fmt, ReyonText.dow(res, d), units)
+        if (units > 0) info += zaString(R.string.reyon_order_incoming_fmt, ReyonText.dow(res, d), units)
     }
     if (item.perishable) {
         val tonight = state.expiring(index, day)
         val tomorrow = state.expiring(index, day + 1) - tonight
-        if (tonight > 0) info += stringResource(R.string.reyon_order_expiring_fmt, tonight)
-        if (tomorrow > 0) info += stringResource(R.string.reyon_order_expiring_tomorrow_fmt, tomorrow)
+        if (tonight > 0) info += zaString(R.string.reyon_order_expiring_fmt, tonight)
+        if (tomorrow > 0) info += zaString(R.string.reyon_order_expiring_tomorrow_fmt, tomorrow)
     }
     val promoNow = order.isPromo(day, index)
 
@@ -436,7 +438,7 @@ private fun OrderRow(state: ReyonOrderState, version: Int, index: Int, item: Ord
                     )
                 }
                 Text(
-                    text = stringResource(R.string.reyon_order_stock_fmt, stock, item.capacity),
+                    text = zaString(R.string.reyon_order_stock_fmt, stock, item.capacity),
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
                     color = if (stock == 0) ReyonPalette.Violated else MaterialTheme.colorScheme.onSurface,
@@ -459,7 +461,7 @@ private fun OrderRow(state: ReyonOrderState, version: Int, index: Int, item: Ord
                 if (canOrder) {
                     StepButton(label = "−", desc = "$less: $name", enabled = cases > 0) { onAdjust(index, -1) }
                     Text(
-                        text = if (cases > 0) stringResource(R.string.reyon_order_case_fmt, cases, cases * item.caseSize) else stringResource(R.string.reyon_order_no_order),
+                        text = if (cases > 0) zaString(R.string.reyon_order_case_fmt, cases, cases * item.caseSize) else stringResource(R.string.reyon_order_no_order),
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
@@ -469,7 +471,7 @@ private fun OrderRow(state: ReyonOrderState, version: Int, index: Int, item: Ord
                     StepButton(label = "+", desc = "$more: $name", enabled = cases < item.maxCases) { onAdjust(index, 1) }
                     Spacer(Modifier.weight(1f))
                     Text(
-                        text = stringResource(R.string.reyon_order_case_size_fmt, item.caseSize, ReyonText.dow(res, arrival)),
+                        text = zaString(R.string.reyon_order_case_size_fmt, item.caseSize, ReyonText.dow(res, arrival)),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                         textAlign = TextAlign.End,
@@ -525,17 +527,17 @@ private fun DaySummaryCard(state: ReyonOrderState, summary: DaySummary, onContin
     val res = LocalContext.current.resources
     OverlayCard {
         Text(
-            text = stringResource(R.string.reyon_order_summary_title_fmt, ReyonText.dow(res, summary.day)),
+            text = zaString(R.string.reyon_order_summary_title_fmt, ReyonText.dow(res, summary.day)),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
         )
         val lines = ArrayList<Pair<String, Color?>>()
-        lines += stringResource(R.string.reyon_order_sum_sold_fmt, summary.soldUnits, summary.margin) to ReyonPalette.Satisfied
-        if (summary.lostUnits > 0) lines += stringResource(R.string.reyon_order_sum_lost_fmt, summary.lostUnits) to ReyonPalette.Violated
-        lines += stringResource(R.string.reyon_order_sum_holding_fmt, summary.holding) to null
-        if (summary.wastedUnits > 0) lines += stringResource(R.string.reyon_order_sum_waste_fmt, summary.wastedUnits, summary.waste) to ReyonPalette.Violated
-        if (summary.returnedUnits > 0) lines += stringResource(R.string.reyon_order_sum_returns_fmt, summary.returnedUnits, summary.returns) to ReyonPalette.Violated
-        if (summary.deliveredUnits > 0) lines += stringResource(R.string.reyon_order_sum_delivered_fmt, summary.deliveredUnits) to null
+        lines += zaString(R.string.reyon_order_sum_sold_fmt, summary.soldUnits, summary.margin) to ReyonPalette.Satisfied
+        if (summary.lostUnits > 0) lines += zaString(R.string.reyon_order_sum_lost_fmt, summary.lostUnits) to ReyonPalette.Violated
+        lines += zaString(R.string.reyon_order_sum_holding_fmt, summary.holding) to null
+        if (summary.wastedUnits > 0) lines += zaString(R.string.reyon_order_sum_waste_fmt, summary.wastedUnits, summary.waste) to ReyonPalette.Violated
+        if (summary.returnedUnits > 0) lines += zaString(R.string.reyon_order_sum_returns_fmt, summary.returnedUnits, summary.returns) to ReyonPalette.Violated
+        if (summary.deliveredUnits > 0) lines += zaString(R.string.reyon_order_sum_delivered_fmt, summary.deliveredUnits) to null
         for ((text, color) in lines) {
             Text(
                 text = text,
@@ -545,7 +547,7 @@ private fun DaySummaryCard(state: ReyonOrderState, summary: DaySummary, onContin
             )
         }
         Text(
-            text = stringResource(R.string.reyon_order_sum_profit_fmt, summary.profit, state.profit),
+            text = zaString(R.string.reyon_order_sum_profit_fmt, summary.profit, state.profit),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
@@ -587,7 +589,7 @@ private fun OrderMenuCard(
         )
         ModeAndLevelChips(mode = mode, level = level, onMode = onMode, onLevel = onLevel)
         Text(
-            text = stringResource(R.string.reyon_order_level_desc_fmt, level.rows, level.cols, OrderRules.days(level), OrderRules.promoCount(level)),
+            text = zaString(R.string.reyon_order_level_desc_fmt, level.rows, level.cols, OrderRules.days(level), OrderRules.promoCount(level)),
             style = MaterialTheme.typography.labelSmall,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
@@ -601,10 +603,10 @@ private fun OrderMenuCard(
                     record.score >= record.target * 0.75 -> 1
                     else -> 0
                 } else 0
-                stringResource(R.string.reyon_order_daily_done_fmt, record.score, record.target, starsText(stars))
+                zaString(R.string.reyon_order_daily_done_fmt, record.score, record.target, starsText(stars))
             }
             mode == ReyonMode.DAILY -> stringResource(R.string.reyon_order_daily_desc)
-            bestPercent > 0 -> stringResource(R.string.reyon_order_best_fmt, bestPercent)
+            bestPercent > 0 -> zaString(R.string.reyon_order_best_fmt, bestPercent)
             else -> stringResource(R.string.reyon_order_free_desc)
         }
         Text(
@@ -655,9 +657,9 @@ private fun WeekChart(state: ReyonOrderState, result: OrderResult) {
     val line = ReyonPalette.HighlightRing
     val axis = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f)
     val res = LocalContext.current.resources
-    val desc = stringResource(
+    val desc = zaString(
         R.string.reyon_order_chart_desc_fmt,
-        history.joinToString(", ") { res.getString(R.string.reyon_order_chart_day_fmt, it.day + 1, it.profit) },
+        history.joinToString(", ") { zaText(res, R.string.reyon_order_chart_day_fmt, it.day + 1, it.profit) },
         turnoverText(result.turnover),
         turnoverText(result.targetTurnover),
     )
@@ -678,7 +680,7 @@ private fun WeekChart(state: ReyonOrderState, result: OrderResult) {
                     color = line,
                 )
                 Text(
-                    text = stringResource(R.string.reyon_order_chart_expert_fmt, turnoverText(result.targetTurnover)),
+                    text = zaString(R.string.reyon_order_chart_expert_fmt, turnoverText(result.targetTurnover)),
                     style = MaterialTheme.typography.labelSmall,
                     color = axis,
                 )
@@ -745,8 +747,8 @@ private fun OrderResultCard(
     onExit: () -> Unit,
 ) {
     val res = LocalContext.current.resources
-    val details = stringResource(R.string.reyon_order_result_fmt, result.score, result.target, result.percent)
-    val stats = stringResource(R.string.reyon_order_stats_fmt, turnoverText(result.turnover), turnoverText(result.targetTurnover), result.service, result.targetService)
+    val details = zaString(R.string.reyon_order_result_fmt, result.score, result.target, result.percent)
+    val stats = zaString(R.string.reyon_order_stats_fmt, turnoverText(result.turnover), turnoverText(result.targetTurnover), result.service, result.targetService)
     val levelName = ReyonText.level(res, state.order.level)
     OverlayCard {
         Text(
@@ -790,7 +792,7 @@ private fun OrderResultCard(
             ShareContent(
                 gameId = "reyon",
                 headline = stringResource(R.string.reyon_order_done_title) + " · " + starsText(result.stars),
-                details = listOf(levelName, details, stringResource(R.string.reyon_order_share_fmt, turnoverText(result.turnover)), modeShareLabel(result.daily, result.day)),
+                details = listOf(levelName, details, zaString(R.string.reyon_order_share_fmt, turnoverText(result.turnover)), modeShareLabel(result.daily, result.day)),
                 board = orderPainter(state, res),
             ),
         )

@@ -91,6 +91,7 @@ import kotlinx.coroutines.isActive
 import kotlin.math.PI
 import kotlin.math.max
 import kotlin.math.sin
+import com.aripd.zagames.platform.zaString
 
 private const val DRAW = 90
 private const val RUMBLE = 3
@@ -252,7 +253,7 @@ fun VirajScreen(
             )
             ScoreCard(
                 label = stringResource(R.string.viraj_speed),
-                value = stringResource(R.string.viraj_kmh_fmt, hud.kmh),
+                value = zaString(R.string.viraj_kmh_fmt, hud.kmh),
                 modifier = Modifier.weight(1f),
             )
         }
@@ -382,7 +383,7 @@ private fun VirajCanvas(
     modifier: Modifier = Modifier,
 ) {
     val frame by viewModel.frame.collectAsStateWithLifecycle()
-    val desc = stringResource(R.string.viraj_board_desc, hud.kmh, hud.meters, hud.overtakes)
+    val desc = zaString(R.string.viraj_board_desc, hud.kmh, hud.meters, hud.overtakes)
     val textMeasurer = rememberTextMeasurer()
     val textCache = remember { HashMap<String, TextLayoutResult>() }
     val proj = remember { Array(DRAW + 1) { Proj() } }
@@ -829,7 +830,7 @@ private fun StartCard(
         if (mode == VirajMode.DAILY) {
             if (daily != null) {
                 Text(
-                    text = stringResource(R.string.viraj_daily_status_fmt, daily.attempts, VirajViewModel.DAILY_ATTEMPTS, daily.best),
+                    text = zaString(R.string.viraj_daily_status_fmt, daily.attempts, VirajViewModel.DAILY_ATTEMPTS, daily.best),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -905,7 +906,7 @@ private fun OverCard(
     onExit: () -> Unit,
 ) {
     val km = ZaLocale.decimal(hud.meters / 1000f)
-    val result = stringResource(R.string.viraj_result_fmt, km, hud.overtakes, hud.checkpoints)
+    val result = zaString(R.string.viraj_result_fmt, km, hud.overtakes, hud.checkpoints)
     OverlayCard {
         Text(
             text = stringResource(R.string.viraj_time_up),
@@ -942,7 +943,7 @@ private fun OverCard(
         ShareButton(
             ShareContent(
                 gameId = "viraj",
-                headline = stringResource(R.string.share_score_fmt, formatScore(hud.score)),
+                headline = zaString(R.string.share_score_fmt, formatScore(hud.score)),
                 details = listOf(result, modeShareLabel(daily, null)),
             ),
         )
@@ -950,7 +951,7 @@ private fun OverCard(
         Button(onClick = onRestart, modifier = Modifier.fillMaxWidth()) {
             Text(
                 if (daily && attemptsLeft > 0) {
-                    stringResource(R.string.viraj_retry_fmt, attemptsLeft)
+                    zaString(R.string.viraj_retry_fmt, attemptsLeft)
                 } else if (daily) {
                     stringResource(R.string.play_free)
                 } else {

@@ -11,6 +11,7 @@ import com.aripd.zagames.reyon.ReyonAudit
 import com.aripd.zagames.reyon.Kind
 import com.aripd.zagames.reyon.ReyonLevel
 import com.aripd.zagames.reyon.ReyonPuzzle
+import com.aripd.zagames.platform.zaText
 
 /** Motor yapılarını yerelleştirilmiş metne çevirir; paylaşım ve testler de kullanır. */
 object ReyonText {
@@ -100,7 +101,7 @@ object ReyonText {
         row == 0 -> res.getString(R.string.reyon_shelf_top_at)
         row == 1 -> res.getString(R.string.reyon_shelf_eye_at)
         row == rows - 1 -> res.getString(R.string.reyon_shelf_bottom_at)
-        else -> res.getString(R.string.reyon_shelf_nth_at, row + 1)
+        else -> zaText(res, R.string.reyon_shelf_nth_at, row + 1)
     }
 
     /** Raf adı, yalın: "en üst raf", "göz hizası (2. raf)", ... */
@@ -108,7 +109,7 @@ object ReyonText {
         row == 0 -> res.getString(R.string.reyon_shelf_top)
         row == 1 -> res.getString(R.string.reyon_shelf_eye)
         row == rows - 1 -> res.getString(R.string.reyon_shelf_bottom)
-        else -> res.getString(R.string.reyon_shelf_nth, row + 1)
+        else -> zaText(res, R.string.reyon_shelf_nth, row + 1)
     }
 
     /** Bulunan sapmanın açıklaması. */
@@ -116,23 +117,23 @@ object ReyonText {
         fun name(id: Int) = kind(res, audit.plan[id].kind)
         val a = d.products[0]
         return when (d.kind) {
-            DeviationKind.SWAP -> res.getString(R.string.reyon_dev_swap_fmt, name(a), name(d.partner))
+            DeviationKind.SWAP -> zaText(res, R.string.reyon_dev_swap_fmt, name(a), name(d.partner))
             DeviationKind.GAP -> {
                 val missing = audit.items.none { it.product.id == a }
                 res.getString(if (missing) R.string.reyon_dev_missing_fmt else R.string.reyon_dev_gap_fmt, name(a))
             }
-            DeviationKind.FOREIGN -> res.getString(R.string.reyon_dev_foreign_fmt, name(a), d.foreign?.let { kind(res, it) } ?: "?")
+            DeviationKind.FOREIGN -> zaText(res, R.string.reyon_dev_foreign_fmt, name(a), d.foreign?.let { kind(res, it) } ?: "?")
             DeviationKind.BRAND -> {
                 val actual = audit.items.firstOrNull { it.product.id == a }?.product?.brand ?: audit.plan[a].brand
-                res.getString(R.string.reyon_dev_brand_fmt, name(a), brand(res, audit.plan[a].brand), brand(res, actual))
+                zaText(res, R.string.reyon_dev_brand_fmt, name(a), brand(res, audit.plan[a].brand), brand(res, actual))
             }
-            DeviationKind.SIZE -> res.getString(R.string.reyon_dev_size_fmt, name(a))
+            DeviationKind.SIZE -> zaText(res, R.string.reyon_dev_size_fmt, name(a))
             DeviationKind.SPILL -> {
                 val b = d.partner
                 val grownIsA = (audit.items.firstOrNull { it.product.id == a }?.facings ?: 0) > audit.plan[a].facings
                 val grown = if (grownIsA) a else b
                 val shrunk = if (grownIsA) b else a
-                res.getString(R.string.reyon_dev_spill_fmt, name(grown), name(shrunk))
+                zaText(res, R.string.reyon_dev_spill_fmt, name(grown), name(shrunk))
             }
         }
     }
@@ -140,21 +141,21 @@ object ReyonText {
     fun clue(res: Resources, puzzle: ReyonPuzzle, clue: Clue): String {
         fun name(id: Int) = kind(res, puzzle.products[id].kind)
         return when (clue) {
-            is Clue.Placed -> res.getString(R.string.reyon_clue_placed, name(clue.product), shelfAt(res, clue.row, puzzle.rows))
-            is Clue.OnShelf -> res.getString(R.string.reyon_clue_on_shelf, name(clue.product), shelfAt(res, clue.row, puzzle.rows))
-            is Clue.InSlot -> res.getString(R.string.reyon_clue_in_slot, name(clue.product), clue.col + 1)
+            is Clue.Placed -> zaText(res, R.string.reyon_clue_placed, name(clue.product), shelfAt(res, clue.row, puzzle.rows))
+            is Clue.OnShelf -> zaText(res, R.string.reyon_clue_on_shelf, name(clue.product), shelfAt(res, clue.row, puzzle.rows))
+            is Clue.InSlot -> zaText(res, R.string.reyon_clue_in_slot, name(clue.product), clue.col + 1)
             is Clue.AtEdge -> res.getString(if (clue.left) R.string.reyon_clue_left_edge else R.string.reyon_clue_right_edge, name(clue.product))
-            is Clue.Adjacent -> res.getString(R.string.reyon_clue_adjacent, name(clue.a), name(clue.b))
-            is Clue.LeftOf -> res.getString(R.string.reyon_clue_left_of, name(clue.a), name(clue.b))
-            is Clue.SameShelf -> res.getString(R.string.reyon_clue_same_shelf, name(clue.a), name(clue.b))
-            is Clue.DifferentShelf -> res.getString(R.string.reyon_clue_different_shelf, name(clue.a), name(clue.b))
-            is Clue.Above -> res.getString(R.string.reyon_clue_above, name(clue.a), name(clue.b))
+            is Clue.Adjacent -> zaText(res, R.string.reyon_clue_adjacent, name(clue.a), name(clue.b))
+            is Clue.LeftOf -> zaText(res, R.string.reyon_clue_left_of, name(clue.a), name(clue.b))
+            is Clue.SameShelf -> zaText(res, R.string.reyon_clue_same_shelf, name(clue.a), name(clue.b))
+            is Clue.DifferentShelf -> zaText(res, R.string.reyon_clue_different_shelf, name(clue.a), name(clue.b))
+            is Clue.Above -> zaText(res, R.string.reyon_clue_above, name(clue.a), name(clue.b))
             Clue.EyeLevel -> res.getString(R.string.reyon_clue_eye_level)
             Clue.HeavyBottom -> res.getString(R.string.reyon_clue_heavy_bottom)
-            is Clue.CategoryBlock -> res.getString(R.string.reyon_clue_category_block, category(res, clue.category))
-            is Clue.CategoriesApart -> res.getString(R.string.reyon_clue_categories_apart, category(res, clue.a), category(res, clue.b))
-            is Clue.BrandVertical -> res.getString(R.string.reyon_clue_brand_vertical, brand(res, clue.brand))
-            is Clue.SizeFlow -> res.getString(R.string.reyon_clue_size_flow, brand(res, clue.brand))
+            is Clue.CategoryBlock -> zaText(res, R.string.reyon_clue_category_block, category(res, clue.category))
+            is Clue.CategoriesApart -> zaText(res, R.string.reyon_clue_categories_apart, category(res, clue.a), category(res, clue.b))
+            is Clue.BrandVertical -> zaText(res, R.string.reyon_clue_brand_vertical, brand(res, clue.brand))
+            is Clue.SizeFlow -> zaText(res, R.string.reyon_clue_size_flow, brand(res, clue.brand))
         }
     }
 }

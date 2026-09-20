@@ -86,6 +86,7 @@ import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
 import kotlinx.coroutines.isActive
+import com.aripd.zagames.platform.zaString
 
 private val SpaceTop = Color(0xFF060B1C)
 private val SpaceBottom = Color(0xFF111A3A)
@@ -305,12 +306,12 @@ private fun StatusBar(hud: FiloHud, visible: Boolean) {
             drawRect(fill.copy(alpha = alpha), size = Size(size.width * fraction.coerceIn(0f, 1f), size.height))
         }
         StatusChip(
-            text = stringResource(R.string.filo_multiplier_fmt, hud.multiplier),
+            text = zaString(R.string.filo_multiplier_fmt, hud.multiplier),
             strong = hud.multiplier > 1,
             alpha = alpha,
         )
         StatusChip(
-            text = stringResource(R.string.filo_weapon_fmt, hud.weapon),
+            text = zaString(R.string.filo_weapon_fmt, hud.weapon),
             strong = hud.weapon > 1,
             alpha = alpha,
         )
@@ -359,7 +360,7 @@ private fun FiloCanvas(
     modifier: Modifier = Modifier,
 ) {
     val frame by viewModel.frame.collectAsStateWithLifecycle()
-    val desc = stringResource(R.string.filo_board_desc, hud.wave, hud.lives, hud.bombs)
+    val desc = zaString(R.string.filo_board_desc, hud.wave, hud.lives, hud.bombs)
     val textMeasurer = rememberTextMeasurer()
     val textCache = remember { HashMap<String, TextLayoutResult>() }
     val path = remember { Path() }
@@ -665,7 +666,7 @@ private fun StartCard(
         if (mode == FiloMode.DAILY) {
             if (daily != null) {
                 Text(
-                    text = stringResource(R.string.filo_daily_status_fmt, daily.attempts, FiloViewModel.DAILY_ATTEMPTS, daily.best),
+                    text = zaString(R.string.filo_daily_status_fmt, daily.attempts, FiloViewModel.DAILY_ATTEMPTS, daily.best),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -749,7 +750,7 @@ private fun OverCard(
     onMenu: () -> Unit,
     onExit: () -> Unit,
 ) {
-    val result = stringResource(R.string.filo_result_fmt, hud.wave, hud.kills)
+    val result = zaString(R.string.filo_result_fmt, hud.wave, hud.kills)
     OverlayCard {
         Text(
             text = stringResource(R.string.filo_over_title),
@@ -786,7 +787,7 @@ private fun OverCard(
         ShareButton(
             ShareContent(
                 gameId = "filo",
-                headline = stringResource(R.string.share_score_fmt, formatScore(hud.score)),
+                headline = zaString(R.string.share_score_fmt, formatScore(hud.score)),
                 details = listOf(result, modeShareLabel(daily, null)),
             ),
         )
@@ -794,7 +795,7 @@ private fun OverCard(
         Button(onClick = onRestart, modifier = Modifier.fillMaxWidth()) {
             Text(
                 if (daily && attemptsLeft > 0) {
-                    stringResource(R.string.filo_retry_fmt, attemptsLeft)
+                    zaString(R.string.filo_retry_fmt, attemptsLeft)
                 } else if (daily) {
                     stringResource(R.string.play_free)
                 } else {
@@ -860,7 +861,7 @@ private fun Controls(leftHanded: Boolean, bombs: Int, onBomb: () -> Unit) {
         }
         val bomb = @Composable {
             PadButton(
-                label = stringResource(R.string.filo_bomb_count_fmt, bombs),
+                label = zaString(R.string.filo_bomb_count_fmt, bombs),
                 description = stringResource(R.string.filo_ctrl_bomb),
                 modifier = Modifier
                     .width(150.dp)

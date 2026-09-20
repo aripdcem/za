@@ -40,6 +40,7 @@ import com.aripd.zagames.platform.Changelog
 import com.aripd.zagames.platform.ZaLinks
 import com.aripd.zagames.platform.appLocale
 import com.aripd.zagames.ui.common.GameTopBar
+import com.aripd.zagames.platform.zaString
 
 /** Uygulamada kullanılan açık kaynak bileşen; metinler yerelleştirilir. */
 private class OssComponent(
@@ -90,7 +91,7 @@ fun AboutScreen(onExit: () -> Unit) {
                     color = MaterialTheme.colorScheme.primary,
                 )
                 Text(
-                    text = stringResource(R.string.about_version_fmt, version),
+                    text = zaString(R.string.about_version_fmt, version),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                 )
@@ -147,7 +148,7 @@ fun AboutScreen(onExit: () -> Unit) {
                 val note = Changelog.entries[index]
                 Column(modifier = Modifier.padding(bottom = 4.dp)) {
                     Text(
-                        text = stringResource(R.string.whats_new_version_fmt, note.version, note.date),
+                        text = zaString(R.string.whats_new_version_fmt, note.version, note.date),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                     )

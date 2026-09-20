@@ -54,10 +54,12 @@ import com.aripd.zagames.blok.BlokStatus
 import com.aripd.zagames.platform.appLocale
 import com.aripd.zagames.ui.common.GameOverOverlay
 import com.aripd.zagames.ui.common.GameTopBar
+import com.aripd.zagames.ui.common.DirectionRow
 import com.aripd.zagames.ui.common.PadButton
 import com.aripd.zagames.ui.common.PausedOverlay
 import com.aripd.zagames.ui.common.formatScore
 import com.aripd.zagames.platform.ShareContent
+import com.aripd.zagames.platform.zaString
 
 @Composable
 fun BlokScreen(
@@ -185,10 +187,10 @@ fun BlokScreen(
                         onExit = onExit,
                         share = ShareContent(
                             gameId = "blok",
-                            headline = stringResource(R.string.share_score_fmt, formatScore(state.score)),
+                            headline = zaString(R.string.share_score_fmt, formatScore(state.score)),
                             details = listOf(
                                 stringResource(R.string.level) + " " + state.level,
-                                stringResource(R.string.share_lines_fmt, state.lines),
+                                zaString(R.string.share_lines_fmt, state.lines),
                             ),
                         ),
                     )
@@ -329,7 +331,7 @@ private fun ControlsPad(
                 onAction = onHold,
             )
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        DirectionRow {
             PadButton(
                 label = "◀",
                 description = stringResource(R.string.ctrl_left),

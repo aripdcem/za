@@ -69,6 +69,7 @@ import com.aripd.zagames.ui.common.ShareButton
 import com.aripd.zagames.ui.common.formatTime
 import com.aripd.zagames.ui.common.modeShareLabel
 import kotlinx.coroutines.delay
+import com.aripd.zagames.platform.zaString
 
 /** Denetim modu: üstte plan, altta sapmalı gerçek raf; sapmalara dokunulur. */
 @Composable
@@ -253,7 +254,7 @@ internal fun ReyonAuditContent(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text(
-                    text = stringResource(R.string.reyon_audit_remaining_fmt, st.audit.deviations.size - st.foundCount),
+                    text = zaString(R.string.reyon_audit_remaining_fmt, st.audit.deviations.size - st.foundCount),
                     style = MaterialTheme.typography.labelSmall,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
@@ -354,7 +355,7 @@ private fun PlanCanvas(state: ReyonAuditState, width: Dp, height: Dp, onTap: (()
     val labeler = remember(textMeasurer) { BlockLabeler(textMeasurer) }
     val path = remember { Path() }
     val currentTap by rememberUpdatedState(onTap)
-    val desc = stringResource(R.string.reyon_audit_plan_desc_fmt, audit.rows, audit.cols)
+    val desc = zaString(R.string.reyon_audit_plan_desc_fmt, audit.rows, audit.cols)
     Canvas(
         modifier = Modifier
             .size(width, height)
@@ -379,7 +380,7 @@ private fun AuditCanvas(state: ReyonAuditState, version: Int, missSlot: Int, wid
     val textMeasurer = rememberTextMeasurer()
     val labeler = remember(textMeasurer) { BlockLabeler(textMeasurer) }
     val path = remember { Path() }
-    val desc = stringResource(R.string.reyon_audit_board_desc_fmt, rows, cols, state.foundCount, audit.deviations.size)
+    val desc = zaString(R.string.reyon_audit_board_desc_fmt, rows, cols, state.foundCount, audit.deviations.size)
     Canvas(
         modifier = Modifier
             .size(width, height)
@@ -465,7 +466,7 @@ private fun AuditMenuCard(
         )
         ModeAndLevelChips(mode = mode, level = level, onMode = onMode, onLevel = onLevel)
         Text(
-            text = stringResource(R.string.reyon_audit_level_desc_fmt, level.rows, level.cols, ReyonAuditGenerator.count(level)),
+            text = zaString(R.string.reyon_audit_level_desc_fmt, level.rows, level.cols, ReyonAuditGenerator.count(level)),
             style = MaterialTheme.typography.labelSmall,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
@@ -473,9 +474,9 @@ private fun AuditMenuCard(
         val record = records[level]
         val info = when {
             mode == ReyonMode.DAILY && record != null ->
-                stringResource(R.string.reyon_audit_daily_done_fmt, formatTime(record.time), record.mistakes)
+                zaString(R.string.reyon_audit_daily_done_fmt, formatTime(record.time), record.mistakes)
             mode == ReyonMode.DAILY -> stringResource(R.string.reyon_audit_daily_desc)
-            bestTime > 0 -> stringResource(R.string.reyon_best_fmt, formatTime(bestTime))
+            bestTime > 0 -> zaString(R.string.reyon_best_fmt, formatTime(bestTime))
             else -> stringResource(R.string.reyon_audit_free_desc)
         }
         Text(
@@ -504,7 +505,7 @@ private fun AuditDoneCard(
 ) {
     val res = LocalContext.current.resources
     val time = formatTime(result.time)
-    val details = stringResource(R.string.reyon_audit_result_fmt, ReyonText.level(res, state.audit.level), result.mistakes, result.hints)
+    val details = zaString(R.string.reyon_audit_result_fmt, ReyonText.level(res, state.audit.level), result.mistakes, result.hints)
     OverlayCard {
         Text(
             text = stringResource(R.string.reyon_audit_done_title),
@@ -534,7 +535,7 @@ private fun AuditDoneCard(
             ShareContent(
                 gameId = "reyon",
                 headline = stringResource(R.string.reyon_audit_done_title),
-                details = listOf(details, stringResource(R.string.time_fmt, time), modeShareLabel(result.daily, result.day)),
+                details = listOf(details, zaString(R.string.time_fmt, time), modeShareLabel(result.daily, result.day)),
                 board = auditPainter(state, res),
             ),
         )

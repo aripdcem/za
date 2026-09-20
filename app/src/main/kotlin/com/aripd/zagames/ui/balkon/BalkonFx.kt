@@ -12,6 +12,7 @@ import com.aripd.zagames.platform.Sfx
 import com.aripd.zagames.platform.SoundPlayer
 import kotlin.math.exp
 import kotlin.random.Random
+import com.aripd.zagames.platform.zaText
 
 /** Dünya biriminde parçacık (x, y ekran genişliği/derinlik kesri); yalnızca çizim için. */
 internal class BalkonParticle(
@@ -128,20 +129,20 @@ internal class BalkonFx {
             BalkonEvent.MegaReady -> {
                 sound?.play(Sfx.CLEAR, volume = 0.7f)
                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                texts += BalkonText(resources.getString(R.string.balkon_mega_ready_fmt, megaName(resources)), world.avatarX, 0.14f, MEGA)
+                texts += BalkonText(zaText(resources, R.string.balkon_mega_ready_fmt, megaName(resources)), world.avatarX, 0.14f, MEGA)
             }
             is BalkonEvent.Bonus -> {
                 sound?.play(Sfx.BIG, volume = 0.5f, rate = 1.3f)
-                texts += BalkonText(resources.getString(R.string.balkon_bonus_fmt, event.seconds), event.x, event.y - 0.07f, BONUS)
+                texts += BalkonText(zaText(resources, R.string.balkon_bonus_fmt, event.seconds), event.x, event.y - 0.07f, BONUS)
             }
             is BalkonEvent.LevelClear -> {
                 sound?.play(Sfx.BIG, volume = 0.8f)
                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                texts += BalkonText(resources.getString(R.string.balkon_level_clear_fmt, event.level, event.bonus), 0.5f, 0.5f, BONUS, big = true)
+                texts += BalkonText(zaText(resources, R.string.balkon_level_clear_fmt, event.level, event.bonus), 0.5f, 0.5f, BONUS, big = true)
             }
             is BalkonEvent.LevelStart -> {
                 sound?.play(Sfx.CLEAR, volume = 0.5f, rate = 0.9f)
-                texts += BalkonText(resources.getString(R.string.balkon_level_fmt, event.level), 0.5f, 0.5f, POINTS, big = true)
+                texts += BalkonText(zaText(resources, R.string.balkon_level_fmt, event.level), 0.5f, 0.5f, POINTS, big = true)
             }
             BalkonEvent.Over -> {
                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)

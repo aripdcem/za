@@ -82,6 +82,7 @@ import com.aripd.zagames.ui.common.ScoreCard
 import com.aripd.zagames.ui.common.ShareButton
 import com.aripd.zagames.ui.common.modeShareLabel
 import kotlinx.coroutines.isActive
+import com.aripd.zagames.platform.zaString
 
 private val BoardColor = Color(0xFFF7F3EA)
 private val LaneLine = Color(0x1F000000)
@@ -316,7 +317,7 @@ private fun TuseCanvas(
     modifier: Modifier = Modifier,
 ) {
     val frame by viewModel.frame.collectAsStateWithLifecycle()
-    val desc = stringResource(R.string.tuse_board_desc_fmt, hud.tapped, hud.nextLane + 1)
+    val desc = zaString(R.string.tuse_board_desc_fmt, hud.tapped, hud.nextLane + 1)
     val startLabel = stringResource(R.string.tuse_start)
     val textMeasurer = rememberTextMeasurer()
     val textCache = remember { HashMap<String, TextLayoutResult>() }
@@ -463,15 +464,15 @@ private fun StartCard(
         }
         when (menu) {
             TuseMenuMode.CLASSIC -> if (classicBest > 0L) {
-                RecordLine(stringResource(R.string.tuse_classic_best_fmt, formatSeconds(classicBest)))
+                RecordLine(zaString(R.string.tuse_classic_best_fmt, formatSeconds(classicBest)))
             }
             TuseMenuMode.ARCADE -> if (arcadeBest > 0) {
-                RecordLine(stringResource(R.string.tuse_arcade_best_fmt, arcadeBest))
+                RecordLine(zaString(R.string.tuse_arcade_best_fmt, arcadeBest))
             }
             TuseMenuMode.DAILY -> {
                 if (daily != null) {
                     RecordLine(
-                        stringResource(
+                        zaString(
                             R.string.tuse_daily_status_fmt,
                             daily.attempts,
                             TuseViewModel.DAILY_ATTEMPTS,
@@ -542,15 +543,15 @@ private fun OverCard(
         else -> "${hud.tapped}/${hud.total}"
     }
     val result = when {
-        arcade -> stringResource(R.string.tuse_result_arcade_fmt, hud.tapped, formatRate(hud.speed))
-        done -> stringResource(R.string.tuse_result_classic_fmt, hud.tapped, seconds, formatRate(if (hud.elapsedMs > 0L) hud.tapped * 1000f / hud.elapsedMs else 0f))
-        else -> stringResource(R.string.tuse_result_partial_fmt, hud.tapped, hud.total, seconds)
+        arcade -> zaString(R.string.tuse_result_arcade_fmt, hud.tapped, formatRate(hud.speed))
+        done -> zaString(R.string.tuse_result_classic_fmt, hud.tapped, seconds, formatRate(if (hud.elapsedMs > 0L) hud.tapped * 1000f / hud.elapsedMs else 0f))
+        else -> zaString(R.string.tuse_result_partial_fmt, hud.tapped, hud.total, seconds)
     }
     val name = songName(song)
     val headline = if (arcade) {
-        stringResource(R.string.tuse_share_arcade_fmt, name, hud.tapped)
+        zaString(R.string.tuse_share_arcade_fmt, name, hud.tapped)
     } else {
-        stringResource(R.string.tuse_share_classic_fmt, name, hud.tapped, seconds)
+        zaString(R.string.tuse_share_classic_fmt, name, hud.tapped, seconds)
     }
     val modeLabel = when (menu) {
         TuseMenuMode.CLASSIC -> stringResource(R.string.tuse_mode_classic)
@@ -596,7 +597,7 @@ private fun OverCard(
         Button(onClick = onRestart, modifier = Modifier.fillMaxWidth()) {
             Text(
                 when {
-                    menu == TuseMenuMode.DAILY && attemptsLeft > 0 -> stringResource(R.string.tuse_retry_fmt, attemptsLeft)
+                    menu == TuseMenuMode.DAILY && attemptsLeft > 0 -> zaString(R.string.tuse_retry_fmt, attemptsLeft)
                     menu == TuseMenuMode.DAILY -> stringResource(R.string.play_free)
                     else -> stringResource(R.string.restart)
                 },

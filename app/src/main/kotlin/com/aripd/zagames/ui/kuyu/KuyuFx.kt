@@ -12,6 +12,7 @@ import com.aripd.zagames.platform.Sfx
 import com.aripd.zagames.platform.SoundPlayer
 import kotlin.math.exp
 import kotlin.random.Random
+import com.aripd.zagames.platform.zaText
 
 /** Kare biriminde konum/hız; yalnızca çizim için, simülasyonu etkilemez. */
 internal class Particle(
@@ -100,7 +101,7 @@ internal class KuyuFx {
                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                 burst(event.col + 0.5f, event.row + 0.5f, 12, GEM, 4f, up = true)
                 texts += FloatingText(
-                    resources.getString(R.string.kuyu_chest, event.gems),
+                    zaText(resources, R.string.kuyu_chest, event.gems),
                     event.col + 0.5f,
                     event.row - 0.5f,
                     GEM,
@@ -133,7 +134,7 @@ internal class KuyuFx {
                 sound?.play(Sfx.CLEAR, volume = 0.8f)
                 haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 texts += FloatingText(
-                    resources.getString(R.string.kuyu_combo_bonus_fmt, event.count, event.bonus),
+                    zaText(resources, R.string.kuyu_combo_bonus_fmt, event.count, event.bonus),
                     p.centerX,
                     p.y - 0.6f,
                     GEM,
@@ -154,7 +155,7 @@ internal class KuyuFx {
             is KuyuEvent.Area -> {
                 sound?.play(Sfx.BIG, volume = 0.6f)
                 texts += FloatingText(
-                    resources.getString(R.string.kuyu_area_fmt, event.index + 1),
+                    zaText(resources, R.string.kuyu_area_fmt, event.index + 1),
                     p.centerX,
                     p.y - 0.8f,
                     PLAYER,

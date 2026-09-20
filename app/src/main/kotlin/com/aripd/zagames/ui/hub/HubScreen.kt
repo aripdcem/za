@@ -43,6 +43,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aripd.zagames.R
@@ -56,6 +57,7 @@ import java.util.Locale
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
+import com.aripd.zagames.platform.zaString
 
 /** Ana menü: platform manifestosu ve oyun listesi. */
 @Composable
@@ -140,7 +142,7 @@ private fun WhatsNewCard(note: ReleaseNote, onDismiss: () -> Unit) {
                 color = MaterialTheme.colorScheme.primary,
             )
             Text(
-                text = stringResource(R.string.whats_new_version_fmt, note.version, note.date),
+                text = zaString(R.string.whats_new_version_fmt, note.version, note.date),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             )
@@ -225,11 +227,15 @@ private fun RecentCard(game: GameEntry, onPlay: () -> Unit, modifier: Modifier =
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             game.art(Modifier.size(40.dp))
+            // Uzun adlar tek satıra sığmıyor: "Minesweeper" 360 dp'de
+            // "Mineswe" diye kesiliyordu, üstelik elipssiz. İki satır ve
+            // gerekirse üç nokta (v0.43.0 cihaz koşumu, F5).
             Text(
                 text = stringResource(game.titleRes),
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.Bold,
-                maxLines = 1,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Center,
             )
         }
@@ -396,7 +402,7 @@ private fun GameCard(game: GameEntry, highScore: Long, isNew: Boolean, onPlay: (
                     if (highScore > 0L) {
                         Spacer(Modifier.height(4.dp))
                         Text(
-                            text = stringResource(
+                            text = zaString(
                                 R.string.high_score_fmt,
                                 ZaLocale.number(highScore),
                             ),

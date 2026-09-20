@@ -88,6 +88,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlinx.coroutines.isActive
+import com.aripd.zagames.platform.zaString
 
 private val SkyTopLow = Color(0xFF7DD3FC)
 private val SkyBottomLow = Color(0xFFE0F2FE)
@@ -264,7 +265,7 @@ fun SincapScreen(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             ScoreCard(label = stringResource(R.string.score), value = formatScore(hud.score.toLong()), modifier = Modifier.weight(1.1f), highlight = true)
-            ScoreCard(label = stringResource(R.string.sincap_height), value = stringResource(R.string.sincap_height_fmt, if (inRun) hud.height else 0), modifier = Modifier.weight(0.9f))
+            ScoreCard(label = stringResource(R.string.sincap_height), value = zaString(R.string.sincap_height_fmt, if (inRun) hud.height else 0), modifier = Modifier.weight(0.9f))
             ScoreCard(label = stringResource(R.string.sincap_nuts), value = if (inRun) hud.nuts.toString() else "–", modifier = Modifier.weight(0.7f))
             ScoreCard(label = stringResource(R.string.sincap_best), value = formatScore(maxOf(best, if (inRun) hud.score else 0).toLong()), modifier = Modifier.weight(1f))
         }
@@ -322,7 +323,7 @@ private fun SincapCanvas(
     modifier: Modifier = Modifier,
 ) {
     val frame by viewModel.frame.collectAsStateWithLifecycle()
-    val desc = stringResource(R.string.sincap_board_desc_fmt, hud.height, hud.score)
+    val desc = zaString(R.string.sincap_board_desc_fmt, hud.height, hud.score)
     val hint = stringResource(R.string.sincap_tap_hint)
     val catFmt = stringResource(R.string.sincap_cat_gap_fmt)
     val textMeasurer = rememberTextMeasurer()
@@ -659,7 +660,7 @@ private fun StartCard(
         if (dailyMode) {
             if (daily != null) {
                 Text(
-                    text = stringResource(R.string.sincap_daily_status_fmt, daily.attempts, SincapViewModel.DAILY_ATTEMPTS, daily.best),
+                    text = zaString(R.string.sincap_daily_status_fmt, daily.attempts, SincapViewModel.DAILY_ATTEMPTS, daily.best),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -674,7 +675,7 @@ private fun StartCard(
             )
         } else if (freeBest > 0) {
             Text(
-                text = stringResource(R.string.sincap_best_fmt, freeBest, freeHeight),
+                text = zaString(R.string.sincap_best_fmt, freeBest, freeHeight),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -731,7 +732,7 @@ private fun OverCard(
     onMenu: () -> Unit,
     onExit: () -> Unit,
 ) {
-    val result = stringResource(R.string.sincap_result_fmt, hud.height, hud.nuts)
+    val result = zaString(R.string.sincap_result_fmt, hud.height, hud.nuts)
     val title = hud.cause?.let { causeLabel(it) } ?: stringResource(R.string.sincap_over_fall)
     OverlayCard {
         Text(
@@ -770,7 +771,7 @@ private fun OverCard(
         ShareButton(
             ShareContent(
                 gameId = "sincap",
-                headline = stringResource(R.string.sincap_share_fmt, hud.height, hud.score),
+                headline = zaString(R.string.sincap_share_fmt, hud.height, hud.score),
                 details = listOf(result, modeShareLabel(daily, null)),
             ),
         )
@@ -778,7 +779,7 @@ private fun OverCard(
         Button(onClick = onRestart, modifier = Modifier.fillMaxWidth()) {
             Text(
                 when {
-                    daily && attemptsLeft > 0 -> stringResource(R.string.sincap_retry_fmt, attemptsLeft)
+                    daily && attemptsLeft > 0 -> zaString(R.string.sincap_retry_fmt, attemptsLeft)
                     daily -> stringResource(R.string.play_free)
                     else -> stringResource(R.string.restart)
                 },

@@ -55,6 +55,9 @@ import com.aripd.zagames.platform.appLocale
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import java.util.Locale
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 
 fun formatScore(value: Long): String = ZaLocale.number(value)
 
@@ -125,6 +128,26 @@ fun ScoreCard(
                 },
             )
         }
+    }
+}
+
+/**
+ * Yön tuşlarının satırı; sağdan sola dillerde aynalanmaz.
+ *
+ * Tuvaller her dilde aynı yönde çiziliyor — oyun alanı yazı yönüne bakmaz.
+ * Satırın kendisi aynalanınca "sola" tuşu ekranın sağ ucuna düşüyor ve
+ * aynalanmamış bir tuvale aynalanmış bir yön takımı bakıyordu (v0.43.0
+ * cihaz koşumu, F6). Yalnız yön anlamı taşıyan satırlar için; döndürme ya
+ * da "geri al" gibi tuşlar dilin yönüne uymaya devam eder.
+ */
+@Composable
+fun DirectionRow(
+    modifier: Modifier = Modifier,
+    horizontalArrangement: Arrangement.Horizontal = Arrangement.spacedBy(8.dp),
+    content: @Composable RowScope.() -> Unit,
+) {
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+        Row(modifier = modifier, horizontalArrangement = horizontalArrangement, content = content)
     }
 }
 
