@@ -3005,23 +3005,41 @@ konusu. Kırpılan ad, kaydırmanın son satırı olduğu için gözden kaçabil
 ### Tepsinin uzun ekrandaki tavanı · denendi, cihazda · 2026-09-21
 
 411 dp'de beşinci kuralın kırpılmasının sebebi panelin tepsiden artanı alması
-olduğu için kol tepsinin tavanına takıldı: uzun ekranda tavan, panele beş kuralın
-istediği kadar (`PANEL_WANT` = 240 dp) bırakacak kadar iniyor.
+olduğu için kol ters çevrildi: Satış'ta **panel önce ölçülüyor**, tepsi kalanı
+alıyor. Compose sütunda ağırlıksız çocukları önce ölçtüğü için kolu seçmek,
+tavanı hangi çocuğa koyduğumuzla oluyor.
 
 ```kotlin
-internal fun trayHeight(rest: Dp, panelWant: Dp = PANEL_MIN): Dp {
-    val pay = minOf(panelWant, rest - TRAY_KEEP).coerceAtLeast(PANEL_MIN)
-    return (rest - pay).coerceAtLeast(TRAY_MIN)
-}
+internal fun panelCap(rest: Dp): Dp =
+    minOf(maxOf(PANEL_MIN, rest - TRAY_KEEP), rest - TRAY_MIN).coerceAtLeast(0.dp)
+
+// RulesPanel: Modifier.heightIn(max = panelCap(maxHeight))   // ağırlıksız → önce
+// SalesTray:  Modifier.weight(1f, fill = false)              // kalanı alır
 ```
 
 `TRAY_KEEP` = 168 dp, yani başlık + iki sıra ürün (cihazda ölçülen 167 dp).
-Pay ancak tepsiye bu kadar kalıyorsa yükseliyor; kalmıyorsa `PANEL_MIN`'e
-düşüyor. Ayrım `rest` 308 dp'yi geçince başlıyor, yani **kısa ekran hiç
-etkilenmiyor**. Varsayılan `panelWant` = `PANEL_MIN` olduğu için Diziliş ile
-Sipariş'in kolu da birebir eski hâlinde; payı yalnız Satış yükseltiyor.
-240 dp tahmin değil: v0.43.2'de tepsinin iki sıra kaldığı turlarda panel tam bu
-boydaydı ve beş kuralın beşi de görünüyordu.
+Panel içeriği kadar yer alıyor, en çok bu tavana kadar; Diziliş ile Sipariş'in
+kolu (`trayHeight`) hiç değişmedi.
+
+İki sınır var ve ikisi de gerekli. `maxOf` tavanı kısa ekranda tabana çekiyor;
+`minOf` ise tepsinin tabanını (`TRAY_MIN` = 72 dp) koruyor, çünkü panel önce
+ölçülüyor ve tavan onu sınırlamazsa çok kısa ekranda tepsiye yer kalmaz — 480
+dp'lik uygulama alanında ölçülen kalan 177,5 dp ve `maxOf` tek başına 140 dp
+derdi, tepsiye 37,5 dp bırakırdı. İkisi birlikte, `rest` 308 dp'nin altında
+**eski kolun birebir aynısı**: `panelCap(rest) == rest - trayHeight(rest)`.
+Yani "kısa ekran etkilenmiyor" burada tahmin değil; `ReyonLayoutTest` bunu
+72–308 dp aralığının her değeri için doğruluyor.
+
+**Tavan neden panelin içeriğine göre yazılmadı.** İlk deneme tavanı sabit bir
+`PANEL_WANT` = 240 dp'ye bağlıyordu; o sayı, tepsinin iki sıra kaldığı turlarda
+ölçülen panel boyuydu. Ama panelin ihtiyacı sabit değil: her kural satırı ad
+(17,7 dp) + gövde (1–2 satır × 17,7 dp), yani bir gövdenin daha sarması 17,7 dp
+ekliyor. Cihazda beş kural 232,4 dp tuttu — 240'a payı **7,6 dp**, yani tek bir
+fazladan satır sığmaz. Bunu iki şey tetikler ve ikisi de sahada var: daha uzun
+bir dil (Almanca/Fransızca açıklamalar) ve kullanıcının büyüttüğü yazı ölçeği
+(`labelSmall` sp cinsinden, tavan dp cinsinden). Şimdiki hâlde panel kendi boyunu
+alıyor, tavan yalnız tepsiyi koruyor: uzun içerikte panel tavana dayanıyor, kısa
+içerikte artan tepsiye kalıyor. Kalibre edilecek bir sayı kalmadı.
 
 **411 dp'de sonuç — üç turda da beş kural tam.**
 
@@ -3048,8 +3066,16 @@ kapatıyor — değişiklikten önceki sayıların aynısı. Üç modun rafı da
 (167,3 · 167,3 · 156,3 dp).
 
 Kural saf bir işlev olduğu için aritmetiği `ReyonLayoutTest` koruyor: kısa ekranda
-eski payın aynısı, uzun ekranda panele `PANEL_WANT`, ayrım noktası 308/309 dp,
-tepsi tabanının altına inmiyor ve varsayılan çağrı değişmiyor.
+tavan tabanda (226 ve 308 dp), ayrım noktası 308/309 dp, uzun ekranda tepsiye her
+hâlükârda `TRAY_KEEP`, kısa içerikte tepsiye ondan fazlası, uzun içerikte panel
+tavanda duruyor ve Diziliş'in kolu değişmiyor.
+
+**Ölçüm tekrarı gerekiyor.** Yukarıdaki tablo `PANEL_WANT` = 240 dp'li ilk
+denemeden; kolun son hâli panelde aynı sayıyı (232,4 dp — panel zaten içeriği
+kadar yer alıyordu) ama tepside biraz fazlasını veriyor: 426 dp'lik kalanda
+tepsiye 186 dp yerine 193,6 dp kalıyor. Beklenen: beş kural yine tam, tepsinin
+son sırası yine bir sürükleme uzağında ama şeridi biraz daha geniş. 360×640
+dp'deki sayılar değişmemeli.
 
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 

@@ -2,6 +2,7 @@ package com.aripd.zagames.ui.reyon
 
 import androidx.compose.ui.unit.dp
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
@@ -9,43 +10,105 @@ import org.junit.Test
  *
  * Kural saf bir işlev olduğu için burada cihaz da Robolectric de gerekmiyor;
  * ölçülen sayılar cihazdan geliyor (`docs/oyun-testi.md`), sınanan onların
- * aritmetiği. Asıl korunan şey: uzun ekranda panele [PANEL_WANT] bırakılıyor
- * ama bu kısa ekranın yerleşimini **hiç** değiştirmiyor.
+ * aritmetiği. İki kol var: Diziliş'te tepsi önce ölçülür ([trayHeight]),
+ * Satış'ta panel önce ölçülür ([panelCap]).
+ *
+ * Korunan asıl şey: Satış'ın kolu uzun ekranda panele yer açarken kısa ekranın
+ * yerleşimini **hiç** değiştirmiyor, ve tavan panelin içeriğine göre değil
+ * tepsinin payına göre yazıldığı için dil ya da yazı ölçeği değişince
+ * kalibrasyon bozulmuyor.
  */
 class ReyonLayoutTest {
 
-    /** Kısa ekran: pay [PANEL_MIN]'de kalıyor, yani tepsi eskisi gibi ölçülüyor. */
+    /** Kısa ekran: tavan tabanda kalıyor, yani yerleşim v0.43.2'de ölçüldüğü gibi. */
     @Test
-    fun shortScreenKeepsTheOldShare() {
+    fun shortScreenPinsThePanelCapToTheFloor() {
         // 360×640 dp'de ölçülen kalan; panel 140 dp tabanını alıyordu.
-        assertEquals(86.dp, trayHeight(226.dp, panelWant = PANEL_WANT))
-        assertEquals(trayHeight(226.dp), trayHeight(226.dp, panelWant = PANEL_WANT))
+        assertEquals(PANEL_MIN, panelCap(226.dp))
+        // Ayrım noktası: tepsiye TRAY_KEEP kalana kadar tavan kıpırdamıyor.
+        assertEquals(PANEL_MIN, panelCap(308.dp))
+        assertEquals(PANEL_MIN + 1.dp, panelCap(309.dp))
     }
 
-    /** Uzun ekran: tepsinin tavanı panele [PANEL_WANT] bırakacak kadar iniyor. */
+    /**
+     * Ayrım noktasının altında iki kol birebir aynı pay veriyor.
+     *
+     * Panel önce ölçülünce tavan `min(PANEL_MIN, rest - TRAY_MIN)`e iniyor, ki bu
+     * da tepsi önce ölçüldüğünde panele düşen paydı. Yani Satış'ın kolunu
+     * çevirmek kısa ekranda **hiçbir şeyi** değiştirmiyor; "etkilenmiyor" burada
+     * tahmin değil, aritmetik.
+     */
     @Test
-    fun tallScreenLeavesTheWantedShareToThePanel() {
-        // 411 dp'de ölçülen kalan: tepsi doğal boyunda 219 dp istiyordu, panele
-        // 208 dp kalıyor ve beşinci kural kırpılıyordu.
-        assertEquals(426.dp - PANEL_WANT, trayHeight(426.dp, panelWant = PANEL_WANT))
+    fun belowTheSplitBothArmsGiveTheSameShare() {
+        for (rest in 72..308) {
+            assertEquals("kalan $rest dp", rest.dp - trayHeight(rest.dp), panelCap(rest.dp))
+        }
     }
 
-    /** Ayrım noktası: tepsiye [TRAY_KEEP] kalmıyorsa pay tabana düşüyor. */
+    /**
+     * Tepsinin tabanı tavanın üstünde: çok kısa ekranda panel tepsiyi yemiyor.
+     *
+     * 480 dp'lik uygulama alanında ölçülen kalan 177,5 dp; belgedeki sayı tepsi
+     * 72 dp, panel 105,5 dp. Tavanı yalnız `maxOf` belirlese 140 dp derdi ve
+     * tepsiye 37,5 dp kalırdı — ürün seçilemeyen bir tepsi bulmacayı çözülemez
+     * yapar.
+     */
     @Test
-    fun theWantedShareOnlyAppliesWhenTheTrayStillGetsItsTwoRows() {
-        assertEquals(PANEL_MIN, 308.dp - trayHeight(308.dp, panelWant = PANEL_WANT))
-        assertEquals(PANEL_MIN + 1.dp, 309.dp - trayHeight(309.dp, panelWant = PANEL_WANT))
+    fun theTrayFloorOutranksThePanelFloor() {
+        assertEquals(105.5.dp, panelCap(177.5.dp))
+        assertEquals(TRAY_MIN, 177.5.dp - panelCap(177.5.dp))
+        // Kalan tepsinin tabanından da azsa tavan sıfırlanıyor (negatif olmuyor).
+        assertEquals(0.dp, panelCap(60.dp))
     }
 
-    /** Payı yükseltmek tepsiyi tabanının altına indirmiyor. */
+    /** Uzun ekran: tavan yükseliyor, ama tepsinin iki sırası her hâlükârda duruyor. */
     @Test
-    fun theTrayNeverDropsBelowItsFloor() {
-        assertEquals(TRAY_MIN, trayHeight(100.dp, panelWant = PANEL_WANT))
+    fun tallScreenRaisesTheCapButAlwaysKeepsTheTrayTwoRows() {
+        // 411 dp'de ölçülen kalan.
+        assertEquals(426.dp - TRAY_KEEP, panelCap(426.dp))
+        assertEquals(TRAY_KEEP, 426.dp - panelCap(426.dp))
     }
 
-    /** Varsayılan çağrı (Diziliş, Sipariş) değişmedi. */
+    /**
+     * Tavan panelin *istediği* değil, izin verilen en çoğu.
+     *
+     * Panel ağırlıksız olduğu için içeriği kadar yer alıyor; kısa içerikte artan
+     * tepsiye kalıyor. Cihazda beş kural 232,4 dp tuttu, yani 426 dp'lik kalanda
+     * tepsiye TRAY_KEEP'ten fazlası düşüyor.
+     */
     @Test
-    fun theDefaultShareIsUnchanged() {
+    fun aShortPanelLeavesMoreThanTheKeepToTheTray() {
+        val rest = 426.dp
+        val olculenIcerik = 232.4.dp
+        val panel = minOf(olculenIcerik, panelCap(rest))
+        assertEquals(olculenIcerik, panel)
+        assertTrue("tepsiye kalan ${rest - panel}", rest - panel > TRAY_KEEP)
+    }
+
+    /**
+     * Uzun bir dilde ya da büyük yazı ölçeğinde içerik tavanı aşarsa panel tavanda
+     * duruyor ve tepsi payını koruyor. Sabit bir "istenen boy" olsaydı panel orada
+     * kalır ve beşinci kuralın adı yine kırpılırdı.
+     */
+    @Test
+    fun aLongPanelStopsAtTheCapInsteadOfEatingTheTray() {
+        val rest = 426.dp
+        // Beş kuralın gövdesi ikinci satıra sararsa: 232,4 + 4 × 17,7 dp.
+        val uzunIcerik = 303.2.dp
+        val panel = minOf(uzunIcerik, panelCap(rest))
+        assertEquals(rest - TRAY_KEEP, panel)
+        assertEquals(TRAY_KEEP, rest - panel)
+    }
+
+    /** Çok kısa ekranda tavan tabanın altına inmiyor. */
+    @Test
+    fun theCapNeverDropsBelowTheFloor() {
+        assertEquals(PANEL_MIN, panelCap(100.dp))
+    }
+
+    /** Diziliş'in kolu (tepsi önce ölçülür) değişmedi. */
+    @Test
+    fun theBriefArmIsUnchanged() {
         for (rest in listOf(100, 226, 308, 426, 700)) {
             assertEquals("kalan $rest dp", (rest.dp - PANEL_MIN).coerceAtLeast(TRAY_MIN), trayHeight(rest.dp))
         }

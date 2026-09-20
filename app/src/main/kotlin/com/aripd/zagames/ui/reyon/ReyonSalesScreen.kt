@@ -220,15 +220,25 @@ internal fun ReyonSalesContent(
                     // Kural paneli ile tepsi kalan yüksekliği paylaşıyor; "kalan"
                     // burada ölçülüyor, böylece üstteki döküm satırı da hesaba giriyor.
                     BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
-                        val trayH = trayHeight(maxHeight, panelWant = PANEL_WANT)
+                        // Panel ağırlıksız, yani önce ölçülüyor: içeriği kadar yer alıyor,
+                        // en çok panelCap kadar. Tepsi kalanı alıyor. Ters kol (tepsi önce)
+                        // 411 dp'de beşinci kuralın adını kırpıyordu; tepsi tura göre iki ya
+                        // da üç sıra olduğu için panelin payı da 240 ↔ 208 dp arasında
+                        // oynuyordu. Tur bitince tepsi çizilmiyor, o yüzden tavan da
+                        // kalkıyor — yoksa panelin altında boşluk kalırdı.
+                        val panelH = if (st.finished) maxHeight else panelCap(maxHeight)
                         Column(modifier = Modifier.fillMaxSize()) {
-                            RulesPanel(score = score, target = st.sales.target, modifier = Modifier.weight(1f, fill = false).testTag(REYON_PANEL_TAG))
+                            RulesPanel(
+                                score = score,
+                                target = st.sales.target,
+                                modifier = Modifier.heightIn(max = panelH).testTag(REYON_PANEL_TAG),
+                            )
                             if (!st.finished) {
                                 SalesTray(
                                     state = st,
                                     version = version,
                                     selected = selected,
-                                    modifier = Modifier.heightIn(max = trayH).testTag(REYON_TRAY_TAG),
+                                    modifier = Modifier.weight(1f, fill = false).testTag(REYON_TRAY_TAG),
                                 ) { id ->
                                     viewModel.select(id)
                                     haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)

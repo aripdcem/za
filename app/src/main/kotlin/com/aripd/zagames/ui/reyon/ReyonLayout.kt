@@ -20,11 +20,17 @@ import androidx.compose.ui.unit.dp
  * Kural iki adımda:
  *
  *  1. Tuval oyun alanının en çok [SHELF_SHARE] payını alır ([shelfHeight]).
- *  2. Kalan yükseklik panel ile tepsi arasında bölünür: tepsi, panele
- *     [PANEL_MIN] bırakacak kadar yer alır ([trayHeight]), taşan kısım kendi
+ *  2. Kalan yükseklik panel ile tepsi arasında bölünür, taşan kısım kendi
  *     içinde kayar. "Kalan" tahmin edilmiyor, ölçülüyor: panel ile tepsi kendi
  *     `BoxWithConstraints`'inin içinde duruyor, böylece aradaki ipucu/döküm
  *     satırı gibi değişken yükseklikler hesaba kendiliğinden giriyor.
+ *
+ * Bölüşmenin iki kolu var ve hangisinin "önce ölçüldüğü" ekrana göre seçiliyor.
+ * Diziliş'te tepsi önce ölçülüp panele [PANEL_MIN] bırakıyor ([trayHeight]).
+ * Satış'ta panel önce ölçülüp tepsiye [TRAY_KEEP] bırakıyor ([panelCap]), çünkü
+ * orada sığması gereken şey panelin içeriği: beş puan kuralı. Compose sütunda
+ * ağırlıksız çocukları önce ölçtüğü için kolu seçmek, tavanı hangi çocuğa
+ * koyduğumuzla oluyor.
  *
  * Böylece panel en az [PANEL_MIN] yüksekliğinde oluyor — başlık + üç satır.
  * Uzun telefonda iki tavan da doğal yüksekliklerin üstünde kaldığı için orada
@@ -72,39 +78,54 @@ internal fun shelfHeight(width: Dp, available: Dp, ratio: Float): Dp =
     minOf(width / ratio, available * SHELF_SHARE)
 
 /**
- * Uzun ekranda panele bırakılacak pay: Satış'ın beş puan kuralının tamamı.
- *
- * [PANEL_MIN] bir **taban**, "içerik sığsın" güvencesi değil. Uzun ekranda o
- * taban hiç bağlamıyor, çünkü tepsi ağırlıksız ölçülüp doğal boyunu önce alıyor
- * ve panele artan kalıyor: 411 dp'de tepsi ürün adları sarınca iki sıra yerine
- * üç sıra oluyor (167 ↔ 219 dp) ve panel onunla 240 ↔ 208 dp arasında gidiyor.
- * 208 dp'de beşinci kuralın adı kırpılıyor — cihazda ölçüldü.
- *
- * 240 dp tahmin değil, ölçüm: v0.43.2'de tepsinin iki sıra kaldığı turlarda
- * panel tam bu boydaydı ve beş kuralın beşi de görünüyordu. v0.43.3'ün satırları
- * ~7 dp daha sıkı, yani payı var.
- */
-internal val PANEL_WANT = 240.dp
-
-/**
  * Tepsiye her hâlükârda bırakılan pay: başlık + iki sıra ürün (cihazda 167 dp).
  *
- * [PANEL_WANT] ancak bunun üstünde yer kalırsa uygulanıyor; altında kural
- * [PANEL_MIN]'e düşüyor, yani kısa ekranda yerleşim **birebir eskisi gibi**
- * kalıyor. Ayrım `rest` 308 dp'yi geçince başlıyor.
+ * [panelCap] bunu koruyor: panel ne kadar uzun olursa olsun tepsinin iki sırası
+ * duruyor, üçüncü sırası bir sürüklemeye kalıyor (411 dp'de ölçüldü: 3,0 dp'lik
+ * şerit tek sürüklemeyle 30,1 dp'ye geliyor ve dokunuş seçimi alıyor).
  */
 internal val TRAY_KEEP = 168.dp
 
 /**
  * Tepsinin tavanı: panel ile tepsiye kalan [rest] yükseklikten panele
- * [panelWant] bırakacak kadar — ama tepsiye [TRAY_KEEP] kalıyorsa. Kalmıyorsa
- * pay [PANEL_MIN]'e iniyor. Doğal yükseklik tavanın altında kalırsa tavan
- * bağlamıyor, taşarsa tepsi kendi içinde kayıyor.
+ * [PANEL_MIN] bırakacak kadar. Doğal yükseklik bunun altında kalırsa
+ * bağlamıyor, yani uzun telefonda tepsi eskisi gibi tam görünüyor.
  *
- * Varsayılan [panelWant] = [PANEL_MIN] olduğu için çağıranların davranışı
- * değişmiyor; payı yalnız Satış yükseltiyor, kuralları oradaki panel taşıyor.
+ * Bu kolu Diziliş kullanıyor: brifin içeriği tura göre uzayıp kısalıyor ve
+ * panelin tepsiden artanı alması orada sorun olmadı (kısa ekranda taban zaten
+ * bağlıyor, uzun ekranda brif sığıyor).
  */
-internal fun trayHeight(rest: Dp, panelWant: Dp = PANEL_MIN): Dp {
-    val pay = minOf(panelWant, rest - TRAY_KEEP).coerceAtLeast(PANEL_MIN)
-    return (rest - pay).coerceAtLeast(TRAY_MIN)
-}
+internal fun trayHeight(rest: Dp): Dp = (rest - PANEL_MIN).coerceAtLeast(TRAY_MIN)
+
+/**
+ * Panelin tavanı: kalan [rest] yükseklikten tepsiye [TRAY_KEEP] bırakacak
+ * kadar, ama [PANEL_MIN]'in altına inmeden. Panel ağırlıksız olduğu için
+ * **önce ölçülüyor** ve bu tavana kadar kendi içeriği kadar yer alıyor; tepsi
+ * kalanı alıyor, taşarsa kendi içinde kayıyor.
+ *
+ * Satış bunu kullanıyor, çünkü orada panelin içeriği "sığmalı" olan şey: beş
+ * puan kuralı. Kolun tersi (tepsi önce, panel artan) 411 dp'de beşinci kuralın
+ * adını kırpıyordu — tepsi ürün adları sarınca iki sıra yerine üç sıra oluyor
+ * (167 ↔ 219 dp) ve panel onunla 240 ↔ 208 dp arasında gidiyordu; 208 dp'de
+ * `Marka bloğu` 12,6 dp'ye iniyordu (cihazda ölçüldü).
+ *
+ * Panelin ihtiyacı sabit bir sayı değil, ölçülen içerik: cihazda beş kural
+ * 232,4 dp tuttu, ama her kural satırı ad (17,7 dp) + gövde (1–2 satır × 17,7
+ * dp) olduğu için bir gövdenin daha sarması 17,7 dp ekliyor. Dil ve yazı
+ * ölçeği bunu değiştirdiği için tavan "panelin istediği kadar" diye
+ * yazılamazdı; onun yerine panel kendi boyunu alıyor, tavan yalnız tepsiyi
+ * koruyor. Böylece uzun bir dilde panel tavana dayanıyor, kısa bir içerikte
+ * tepsiye daha çok yer kalıyor.
+ *
+ * Tepsinin tabanı ([TRAY_MIN]) tavanın üstünde: panel önce ölçüldüğü için tavan
+ * onu sınırlamazsa çok kısa ekranda tepsiye hiç yer kalmazdı — 480 dp'lik
+ * uygulama alanında kalan 177,5 dp ve `maxOf` tek başına 140 dp derdi, tepsiye
+ * 37,5 dp bırakırdı. Ürün seçilemeyen bir tepsi bulmacayı çözülemez yapar.
+ *
+ * İki sınırla birlikte kural, `rest` 308 dp'nin altında **eski kolun birebir
+ * aynısı**: orada `maxOf` 140 veriyor ve tavan `min(140, rest - TRAY_MIN)`
+ * oluyor, ki bu da tepsi önce ölçüldüğünde panele düşen paydı
+ * (`rest - trayHeight(rest)`). Test bunu bir aralık üzerinde doğruluyor.
+ */
+internal fun panelCap(rest: Dp): Dp =
+    minOf(maxOf(PANEL_MIN, rest - TRAY_KEEP), rest - TRAY_MIN).coerceAtLeast(0.dp)
