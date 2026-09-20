@@ -176,7 +176,6 @@ internal fun ReyonSalesContent(
             if (st != null && score != null) {
                 val showTarget = result != null && review == SalesReview.TARGET
                 val shelfH = shelfHeight(maxWidth, maxHeight, st.sales.cols / (st.sales.rows * 0.78f))
-                val trayH = trayHeight(maxHeight, shelfH)
                 Column(modifier = Modifier.fillMaxSize()) {
                     SalesCanvas(
                         state = st,
@@ -209,16 +208,23 @@ internal fun ReyonSalesContent(
                     } else {
                         BreakdownLine(state = st, score = score, selected = selected)
                     }
-                    RulesPanel(score = score, target = st.sales.target, modifier = Modifier.weight(1f, fill = false))
-                    if (!st.finished) {
-                        SalesTray(
-                            state = st,
-                            version = version,
-                            selected = selected,
-                            modifier = Modifier.heightIn(max = trayH),
-                        ) { id ->
-                            viewModel.select(id)
-                            haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    // Kural paneli ile tepsi kalan yüksekliği paylaşıyor; "kalan"
+                    // burada ölçülüyor, böylece üstteki döküm satırı da hesaba giriyor.
+                    BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                        val trayH = trayHeight(maxHeight)
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            RulesPanel(score = score, target = st.sales.target, modifier = Modifier.weight(1f, fill = false))
+                            if (!st.finished) {
+                                SalesTray(
+                                    state = st,
+                                    version = version,
+                                    selected = selected,
+                                    modifier = Modifier.heightIn(max = trayH),
+                                ) { id ->
+                                    viewModel.select(id)
+                                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                }
+                            }
                         }
                     }
                 }

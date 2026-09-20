@@ -160,7 +160,7 @@ class ReyonShortScreenTest {
         startRound(str(R.string.reyon_kind_order), str(R.string.reyon_order_start))
         val morePrefix = str(R.string.reyon_order_more) + ":"
         awaitNodes(morePrefix)
-        // Adımlayıcının dokunma alanı 48 dp; en az iki ürün satırı görünmeli.
-        assertRowsAreReadable("sipariş satırı", describedBounds(morePrefix), least = 2, min = 40.dp)
+        // Adımlayıcı 44×32 dp (`StepButton`); en az iki ürün satırı tam görünmeli.
+        assertRowsAreReadable("sipariş satırı", describedBounds(morePrefix), least = 2, min = 30.dp)
     }
 }

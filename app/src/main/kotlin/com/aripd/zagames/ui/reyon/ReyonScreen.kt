@@ -239,7 +239,6 @@ private fun ReyonPuzzleContent(
                 val hinted = (lastHint as? ReyonHint.Place)?.product ?: -1
                 val wrongHint = (lastHint as? ReyonHint.Wrong)?.product ?: -1
                 val shelfH = shelfHeight(maxWidth, maxHeight, st.puzzle.cols / (st.puzzle.rows * 0.78f))
-                val trayH = trayHeight(maxHeight, shelfH)
                 Column(modifier = Modifier.fillMaxSize()) {
                     ShelfCanvas(
                         state = st,
@@ -269,25 +268,32 @@ private fun ReyonPuzzleContent(
                         },
                     )
                     HintLine(state = st, hint = lastHint)
-                    Brief(
-                        state = st,
-                        version = version,
-                        highlightClue = highlightClue,
-                        onToggle = viewModel::toggleHighlight,
-                        modifier = Modifier.weight(1f, fill = false),
-                    )
-                    Tray(
-                        state = st,
-                        version = version,
-                        selected = selected,
-                        highlighted = highlighted,
-                        wrongHint = wrongHint,
-                        onSelect = { id ->
-                            viewModel.select(id)
-                            haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        },
-                        modifier = Modifier.heightIn(max = trayH),
-                    )
+                    // Brif ile tepsi kalan yüksekliği paylaşıyor; "kalan" burada
+                    // ölçülüyor, böylece ipucu satırı da hesaba giriyor.
+                    BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                        val trayH = trayHeight(maxHeight)
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            Brief(
+                                state = st,
+                                version = version,
+                                highlightClue = highlightClue,
+                                onToggle = viewModel::toggleHighlight,
+                                modifier = Modifier.weight(1f, fill = false),
+                            )
+                            Tray(
+                                state = st,
+                                version = version,
+                                selected = selected,
+                                highlighted = highlighted,
+                                wrongHint = wrongHint,
+                                onSelect = { id ->
+                                    viewModel.select(id)
+                                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                },
+                                modifier = Modifier.heightIn(max = trayH),
+                            )
+                        }
+                    }
                 }
             }
             when {

@@ -14,25 +14,34 @@ import androidx.compose.ui.unit.dp
  * yüksekliğin tamamını yiyor, panele ~0 kalıyordu: v0.43.1 cihaz koşumunda
  * Diziliş'in brifi hiç çizilmedi (kural satırı ≈13 dp, ikinci kuralın
  * erişilebilirlik kutusu sıfır) ve brif olmadan bulmaca çözülemediği için mod
- * o ekranda oynanamaz durumdaydı.
+ * o ekranda oynanamaz durumdaydı. Aynı açlık Satış'ta da vardı: beş puan
+ * kuralından ikisi görünüyordu (Robolectric ölçümü).
  *
- * Kural: tuval oyun alanının en çok [SHELF_SHARE] payını alır, tepsi de panele
- * [PANEL_MIN] kalacak kadar. İki tavan da uzun telefonda doğal yüksekliklerin
- * üstünde kaldığı için orada yerleşim aynen sürer; yalnız kısa ekranda devreye
- * girer.
+ * Kural iki adımda:
  *
- * İki tavan da `BoxWithConstraints`'in içinde, ama `Column`'un dışında
- * hesaplanmalı: `ColumnScope` da `@LayoutScopeMarker` taşıdığı için sütunun
- * içinde `BoxWithConstraintsScope` örtülüyor ve maxWidth/maxHeight örtük
- * alıcıyla okunamıyor (derleme hatası).
+ *  1. Tuval oyun alanının en çok [SHELF_SHARE] payını alır ([shelfHeight]).
+ *  2. Kalan yükseklik panel ile tepsi arasında bölünür: tepsi, panele
+ *     [PANEL_MIN] bırakacak kadar yer alır ([trayHeight]), taşan kısım kendi
+ *     içinde kayar. "Kalan" tahmin edilmiyor, ölçülüyor: panel ile tepsi kendi
+ *     `BoxWithConstraints`'inin içinde duruyor, böylece aradaki ipucu/döküm
+ *     satırı gibi değişken yükseklikler hesaba kendiliğinden giriyor.
+ *
+ * Böylece panel en az [PANEL_MIN] yüksekliğinde oluyor — başlık + üç satır.
+ * Uzun telefonda iki tavan da doğal yüksekliklerin üstünde kaldığı için orada
+ * yerleşim aynen sürüyor.
+ *
+ * Tavanlar `BoxWithConstraints`'in içinde, ama `Column`'un dışında hesaplanmalı:
+ * `ColumnScope` da `@LayoutScopeMarker` taşıdığı için sütunun içinde
+ * `BoxWithConstraintsScope` örtülüyor ve maxWidth/maxHeight örtük alıcıyla
+ * okunamıyor (derleme hatası).
  */
-internal const val SHELF_SHARE = 0.34f
+internal const val SHELF_SHARE = 0.40f
 
-/** Panele bırakılan taban: başlık + üç kural satırı. */
-internal val PANEL_MIN = 120.dp
+/** Panele bırakılan taban: başlık + üç satır. */
+internal val PANEL_MIN = 140.dp
 
-/** Tepsinin tabanı; bundan aşağısında ürün seçmek zorlaşır. */
-private val TRAY_MIN = 96.dp
+/** Tepsinin tabanı: başlık + bir sıra ürün. Panel ile tepsi aynı yükseklikten beslendiği için gerekli. */
+private val TRAY_MIN = 72.dp
 
 /**
  * Raf tuvalinin yüksekliği: en boy oranının istediği kadar, ama oyun alanının
@@ -50,9 +59,8 @@ internal fun shelfHeight(width: Dp, available: Dp, ratio: Float): Dp =
     minOf(width / ratio, available * SHELF_SHARE)
 
 /**
- * Tepsinin tavanı: rafın altında panele [PANEL_MIN] kalacak kadar; taşan tepsi
- * kendi içinde kayar. Uzun telefonda doğal yükseklik bu tavanın altında kaldığı
- * için bağlamaz.
+ * Tepsinin tavanı: panel ile tepsiye kalan [rest] yükseklikten panele
+ * [PANEL_MIN] bırakacak kadar. Doğal yükseklik bunun altında kalırsa
+ * bağlamıyor, yani uzun telefonda tepsi eskisi gibi tam görünüyor.
  */
-internal fun trayHeight(available: Dp, shelf: Dp): Dp =
-    (available - shelf - PANEL_MIN).coerceAtLeast(TRAY_MIN)
+internal fun trayHeight(rest: Dp): Dp = (rest - PANEL_MIN).coerceAtLeast(TRAY_MIN)
