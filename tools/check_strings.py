@@ -28,12 +28,12 @@ from collections import Counter
 
 RES = 'app/src/main/res'
 LOCALES_CONFIG = 'app/src/main/res/xml/locales_config.xml'
-ZA_LOCALE = 'app/src/main/kotlin/com/za/games/platform/ZaLocale.kt'
+ZA_LOCALE = 'app/src/main/kotlin/com/aripd/zagames/platform/ZaLocale.kt'
 DEFAULT_LOCALE = 'en'  # res/values içeriğinin dili
 KOTLIN_ROOTS = ['app/src/main/kotlin', 'app/src/test/kotlin']
 def word_langs():
     """WordLang tablosundaki diller: kelime listesi olan her dil."""
-    src = open('games/sozluk/src/main/kotlin/com/za/games/sozluk/WordLang.kt',
+    src = open('games/sozluk/src/main/kotlin/com/aripd/zagames/sozluk/WordLang.kt',
                encoding='utf-8').read()
     return set(re.findall(r'tag = "([a-z]+)"', src))
 STRING_RE = re.compile(r'<string name="([^"]+)"[^>]*>(.*?)</string>', re.S)

@@ -12,7 +12,7 @@ asistan (depo, metin, görsel üretimi).
 | [ ] | Kimlik doğrulaması tamamlandı (Console'un istediği belgeler) | C |
 | [ ] | Ödeme profili (ücretsiz uygulama için zorunlu değil; ücretli katman için gerekir) | C |
 | [ ] | Uygulama oluştur: ad `ZA Games: Sıfır Reklam`, varsayılan dil Türkçe, tür Oyun, ücretsiz | C |
-| [x] | Paket adı `com.za.games` | A |
+| [x] | Paket adı `com.aripd.zagames` | A |
 | [ ] | **Play App Signing** açık; yükleme anahtarı = sürüm iş akışındaki release anahtarı | C |
 | [ ] | İletişim e-postası seçimi: `za-games@aripd.com` (öneri) ya da `dev@aripd.com`. Listelemede herkese görünür | C |
 | [ ] | Seçilen adres uygulama içine de eklenecek mi? Hakkında ekranında bugün GitHub "Sorun bildir" var, e-posta yok | C karar, A uygular |

@@ -27,7 +27,7 @@ from wordlang import LANGS, check as check_table  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 KOTLIN = os.path.join(ROOT, "games", "sozluk", "src", "main", "kotlin",
-                      "com", "za", "games", "sozluk", "WordLang.kt")
+                      "com", "aripd", "zagames", "sozluk", "WordLang.kt")
 TILE_TOTAL = 98
 errors = []
 

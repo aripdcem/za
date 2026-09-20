@@ -1,0 +1,42 @@
+<tr-TR>
+• Uygulamanın paket kimliği com.aripd.zagames oldu. Yandan kurulumda yeni bir uygulama olarak görünür: eski sürüm telefonda kalır ve rekorları taşınmaz.
+</tr-TR>
+<en-US>
+• The app's package id is now com.aripd.zagames. When sideloading it shows up as a new app: the old version stays on the phone and its records do not carry over.
+</en-US>
+<de-DE>
+• Die Paket-ID der App ist jetzt com.aripd.zagames. Beim Sideloading erscheint sie als neue App: die alte Version bleibt auf dem Telefon, ihre Rekorde wandern nicht mit.
+</de-DE>
+<fr-FR>
+• L'identifiant de paquet de l'appli est désormais com.aripd.zagames. En installation manuelle elle apparaît comme une nouvelle appli : l'ancienne version reste sur le téléphone et ses records ne suivent pas.
+</fr-FR>
+<nl-NL>
+• De pakket-id van de app is nu com.aripd.zagames. Bij handmatig installeren verschijnt hij als een nieuwe app: de oude versie blijft op de telefoon en de records gaan niet mee.
+</nl-NL>
+<es-ES>
+• El identificador de paquete de la app ahora es com.aripd.zagames. Al instalarla manualmente aparece como una app nueva: la versión anterior sigue en el teléfono y sus récords no se trasladan.
+</es-ES>
+<pt-BR>
+• O identificador de pacote do app agora é com.aripd.zagames. Ao instalar manualmente ele aparece como um app novo: a versão antiga continua no telefone e os recordes não são transferidos.
+</pt-BR>
+<it-IT>
+• L'identificatore del pacchetto dell'app ora è com.aripd.zagames. Installandola manualmente compare come una nuova app: la versione precedente resta sul telefono e i record non vengono trasferiti.
+</it-IT>
+<da-DK>
+• Appens pakke-id er nu com.aripd.zagames. Ved sideloading vises den som en ny app: den gamle version bliver på telefonen, og dens rekorder følger ikke med.
+</da-DK>
+<sv-SE>
+• Appens paket-id är nu com.aripd.zagames. Vid sidladdning visas den som en ny app: den gamla versionen blir kvar i telefonen och dess rekord följer inte med.
+</sv-SE>
+<no-NO>
+• Appens pakke-id er nå com.aripd.zagames. Ved sidelasting vises den som en ny app: den gamle versjonen blir værende på telefonen, og rekordene følger ikke med.
+</no-NO>
+<fi-FI>
+• Sovelluksen pakettitunnus on nyt com.aripd.zagames. Sivuasennuksessa se näkyy uutena sovelluksena: vanha versio jää puhelimeen eivätkä sen ennätykset siirry.
+</fi-FI>
+<ru-RU>
+• Идентификатор пакета приложения теперь com.aripd.zagames. При ручной установке оно выглядит как новое приложение: старая версия остаётся на телефоне, её рекорды не переносятся.
+</ru-RU>
+<ar>
+• صار معرّف حزمة التطبيق com.aripd.zagames. عند التثبيت اليدوي يظهر كتطبيق جديد: تبقى النسخة القديمة على الهاتف ولا تنتقل أرقامها القياسية.
+</ar>

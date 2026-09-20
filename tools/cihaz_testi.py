@@ -31,7 +31,7 @@ import xml.etree.ElementTree as ET
 import numpy as np
 from PIL import Image
 
-PAKET = "com.za.games"
+PAKET = "com.aripd.zagames"
 
 # Hub'daki sırayla tüm oyunlar; `tarama` varsayılan olarak hepsini gezer.
 OYUNLAR = [

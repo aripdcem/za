@@ -1,6 +1,11 @@
 # Sürüm geçmişi
 
-Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/za/games/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
+Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/aripd/zagames/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
+
+## 0.42.0 (2026-09-20)
+- **Paket adı `com.za.games`'ten `com.aripd.zagames`'e taşındı.** Eski ad sahibi olunmayan bir alanı (`za.com`) ima ediyordu; yenisi `aripd.com` ile tutarlı ve lansman adını taşıyor. Play'e ilk yüklemeden önce yapılması gereken tek seferlik değişiklik: yayınlanmış bir paket adı bir daha asla değiştirilemez
+- Android için bu **yeni bir uygulama** demek. Yandan kurulumda eski sürüm telefonda kalır; rekorlar, ayarlar ve günlük ilerleme yeni kuruluma geçmez. Kaldırmak isteyen eskisini elle siler
+- Değişen tek şey kimlik: 296 Kotlin dosyasının paket satırı, dizin ağaçları, `applicationId`, `namespace` ve paylaşım sağlayıcısının yetkisi (`${applicationId}.share` olduğu için kendiliğinden). Oyunların kuralları, kayıt anahtarları ve metinler değişmedi
 
 ## 0.41.1 (2026-09-20)
 - **Reyon:** çözülmüş bir tura geri dönünce (menüden ya da mod çipinden) kutlama yeniden çalıyor ve "çözülen bulmaca" rekoru her girişte 1 artıyordu. Dört Reyon ekranında da sayaç artık mevcut durumdan başlıyor
