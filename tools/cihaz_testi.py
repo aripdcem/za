@@ -186,9 +186,36 @@ def dokun(oge: dict) -> None:
     time.sleep(1.2)
 
 
+def ekran_px() -> tuple[int, int]:
+    """Ekranın o anki piksel ölçüsü; geçici (override) ölçü varsa o geçerlidir."""
+    cikti = kabuk("wm size")
+    gecici = re.search(r"Override size:\s*(\d+)x(\d+)", cikti)
+    fiziksel = re.search(r"Physical size:\s*(\d+)x(\d+)", cikti)
+    m = gecici or fiziksel
+    return (int(m.group(1)), int(m.group(2))) if m else (1080, 2400)
+
+
 def kaydir() -> None:
-    kabuk("input swipe 540 1800 540 900 400")
+    # Koordinatlar ekrandan türetilir: `wm size` ile küçültülmüş ekranda sabit
+    # pikseller ekranın dışına düşüyor ve kaydırma hiç olmuyordu.
+    g, y = ekran_px()
+    kabuk(f"input swipe {g // 2} {int(y * 0.75)} {g // 2} {int(y * 0.38)} 400")
     time.sleep(1.6)   # savrulma otursun; erken okuma kaymış koordinat verir
+
+
+YENILIK_TAMAM = ("Tamam", "Got it", "Verstanden", "Selvä", "فهمت")
+
+
+def yenilik_kapat() -> None:
+    """Güncellemeden sonra çıkan "Yenilikler" kartını kapatır.
+
+    Kart hub'ın üstünü örttüğü için kapatılmazsa oyun kartları bulunamaz.
+    """
+    for _ in range(2):
+        oge = next((o for o in arayuz() if o["t"] in YENILIK_TAMAM), None)
+        if not oge:
+            return
+        dokun(oge)
 
 
 def hub_ac(paket: str) -> None:
@@ -199,6 +226,7 @@ def hub_ac(paket: str) -> None:
     kabuk(f"am force-stop {paket}")
     kabuk(f"am start -n {paket}/.MainActivity")
     time.sleep(2.5)
+    yenilik_kapat()
 
 
 def oyun_ekraninda(ad: str, ogeler: list[dict] | None = None) -> bool:
@@ -435,6 +463,7 @@ REYON_ETIKET = {
     "artır": ["Artır", "More"],
     "raf": ["Reyon ", "Satış rafı ", "Sipariş rafı ", "Sales shelf ", "Order shelf "],
     "kural": ["Satış kuralları", "Sales rules"],
+    "basa": ["Başa dön", "Back to start"],
 }
 REYON_BASLAT = {
     "diziliş": ["Başla", "Start"],
@@ -464,6 +493,22 @@ def on_ekli(ogeler: list[dict], anahtar: str, ek: str = ": ") -> list[dict]:
     return [o for o in ogeler if any(o["t"].startswith(p) for p in onler)]
 
 
+def reyon_kurulum_karti() -> None:
+    """Sürmekte olan turdan kurulum kartına döner.
+
+    Reyon yarım kalan turu saklıyor: oyundan çıkıp yeniden girince tur
+    kaldığı yerden açılıyor ve mod çipleri ekranda olmuyor.
+    """
+    for _ in range(3):
+        ogeler = arayuz()
+        if any(o["t"] in REYON_ETIKET["diziliş"] for o in ogeler):
+            return
+        geri = next((o for o in ogeler if o["t"] in REYON_ETIKET["basa"]), None)
+        if not geri:
+            return
+        dokun(geri)
+
+
 def reyon_turu_ac(tur: str) -> bool:
     """Reyon menüsünde türü, serbest modu ve Kolay'ı seçip turu başlatır."""
     for grup, hedefler in (("tur", REYON_ETIKET[tur]), ("mod", REYON_ETIKET["serbest"]),
@@ -474,7 +519,11 @@ def reyon_turu_ac(tur: str) -> bool:
             if oge:
                 dokun(oge)
                 break
-            # Kısa ekranda menü kartı kayıyor; düğme aşağıda kalmış olabilir.
+            # Mod çipine dokunmak o modun yarım turunu açabiliyor: kurulum
+            # kartına dönülür. Kısa ekranda kart kaydığı için de aranır.
+            reyon_kurulum_karti()
+            if any(o["t"] in hedefler for o in arayuz()):
+                continue
             kaydir()
         else:
             print(f"    {tur}: {grup} düğmesi bulunamadı ({'/'.join(hedefler)})")
@@ -494,6 +543,7 @@ def reyon_olc(tur: str, olcek: float) -> dict:
     if not oyunu_ac("Reyon"):
         print("    Reyon açılamadı")
         return {}
+    reyon_kurulum_karti()
     if not reyon_turu_ac(tur):
         return {}
     ogeler = arayuz(hepsi=True)
