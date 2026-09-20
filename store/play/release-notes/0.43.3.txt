@@ -1,0 +1,42 @@
+<tr-TR>
+• Reyon · Satış: dar ekranda daha çok puan kuralı görünsün diye kural açıklamaları iki satırla sınırlandı, satır araları daraldı.
+</tr-TR>
+<en-US>
+• Reyon · Sales: rule descriptions are capped at two lines and the rows sit tighter, so more scoring rules fit on a narrow screen.
+</en-US>
+<de-DE>
+• Reyon · Verkauf: Regelbeschreibungen sind auf zwei Zeilen begrenzt und die Zeilen stehen enger, damit auf schmalen Bildschirmen mehr Punkteregeln passen.
+</de-DE>
+<fr-FR>
+• Reyon · Ventes : les descriptions des règles tiennent en deux lignes et les lignes sont plus serrées, pour afficher plus de règles de score sur un écran étroit.
+</fr-FR>
+<nl-NL>
+• Reyon · Verkoop: regelbeschrijvingen zijn beperkt tot twee regels en de rijen staan dichter op elkaar, zodat er op een smal scherm meer scoreregels passen.
+</nl-NL>
+<es-ES>
+• Reyon · Ventas: las descripciones de las reglas se limitan a dos líneas y las filas están más juntas, para que quepan más reglas de puntuación en pantallas estrechas.
+</es-ES>
+<pt-BR>
+• Reyon · Vendas: as descrições das regras ficam em duas linhas e as linhas estão mais juntas, para caber mais regras de pontuação em telas estreitas.
+</pt-BR>
+<it-IT>
+• Reyon · Vendite: le descrizioni delle regole sono limitate a due righe e le righe sono più compatte, così su schermi stretti entrano più regole di punteggio.
+</it-IT>
+<da-DK>
+• Reyon · Salg: regelbeskrivelser er begrænset til to linjer, og rækkerne sidder tættere, så der er plads til flere pointregler på en smal skærm.
+</da-DK>
+<sv-SE>
+• Reyon · Försäljning: regelbeskrivningarna begränsas till två rader och raderna sitter tätare, så att fler poängregler får plats på en smal skärm.
+</sv-SE>
+<no-NO>
+• Reyon · Salg: regelbeskrivelsene er begrenset til to linjer og radene sitter tettere, slik at flere poengregler får plass på en smal skjerm.
+</no-NO>
+<fi-FI>
+• Reyon · Myynti: sääntöjen kuvaukset rajattiin kahteen riviin ja rivit ovat tiiviimmin, jotta kapealle näytölle mahtuu enemmän pisteytyssääntöjä.
+</fi-FI>
+<ru-RU>
+• Reyon · Продажи: описания правил ограничены двумя строками, а строки стали плотнее, чтобы на узком экране помещалось больше правил начисления.
+</ru-RU>
+<ar>
+• Reyon · البيع: صارت شروح القواعد في سطرين على الأكثر وتقاربت الصفوف، ليظهر في الشاشة الضيقة عدد أكبر من قواعد النقاط.
+</ar>
