@@ -2954,6 +2954,48 @@ okunabilir durumda ve hiçbir dilde metin değişmedi. Cihazda bakılacak: 360 d
 `Konum` satırında ok görünüyor mu, dokununca gövdenin son parçası (`★ yalnız göz
 hizasında ×4`) tam okunuyor mu.
 
+### v0.43.3 · Açılan kural satırı cihazda · 2026-09-21
+
+`Satış'ta kırpılan kural gövdesi dokununca açılıyor` (b5392be) SM-A515F'te
+ölçüldü. Belgenin sorduğu iki şeyin ikisi de **tuttu**.
+
+Ölçülen yapı `kurulu_yapi()` ile doğrulandı: cihazdaki `base.apk`
+`sha256=79cbcef9…`, yerel `app-debug.apk` ile birebir aynı. Kısa ekran yine
+`wm size 1080x1920` + `wm density 480` (360×640 dp).
+
+**1 — Ok görünüyor, yalnız gereken satırda.** 360 dp'de `Konum` satırının
+sağında, puanın solunda küçük bir `⌄` duruyor. `Tamamlayıcı` ve `Çakışma`
+satırlarında ok yok — ikisinin gövdesi de tek satır, yani taşmıyor.
+`onTextLayout` → `hasVisualOverflow` ölçütü cihazda beklendiği gibi çalışıyor.
+411 dp'de hiçbir satırda ok yok, çünkü orada beş gövde de iki satıra sığıyor.
+
+**2 — Dokununca son parça tam okunuyor.** Satıra dokunmak gövdeyi üç satıra
+açıyor ve kesilen kural sonuna kadar okunuyor: `… · ★ yalnız göz hizasında ×4`,
+üç nokta yok. Ok `⌃` olarak dönüyor, açık satır yuvarlatılmış açık zeminle
+vurgulanıyor. İkinci dokunuş kapatıyor.
+
+| Durum | `Konum` gövdesi | `Çakışma` adı | Ok |
+| --- | --- | --- | --- |
+| kapalı | 31,0 dp (iki satır, `★ yalnız …`) | 17,7 dp | `⌄` |
+| dokunuştan sonra | **48,7 dp (üç satır, tam)** | 5,3 dp | `⌃` |
+| ikinci dokunuş | 31,0 dp | 17,7 dp | `⌄` |
+
+Dokunma hedefi satırın tamamı; ölçümde `Konum` yazısının üstüne dokunuldu
+(121, 1109) ve satır açıldı.
+
+**G4'ün kazandığı geri verilmiyor.** Kapalı görünüm değişmedi: `Çakışma`nın adı
+140 dp'lik tabanın içinde, 17,7 dp. Satır açıkken üçüncü kuralın adı 5,3 dp'ye
+iniyor, yani açılan gövde panelin kendi kaydırmasına taşıyor — tasarımda yazdığı
+gibi. Kapatınca yerine dönüyor.
+
+**411 dp.** Gövde iki satır ve tam (32,0 dp), ok yok. Beş kuralın adı da ağaçta;
+`Marka bloğu` bu koşumda da 12,6 dp ile yarım kaldı — iki koşumun ikisinde de
+aynı sayı çıktığı için tura bağlı bir dalgalanma olmayabilir. Bu düzeltmeden
+gelmiyor (düzeltme yalnız yükseklik azaltıyor), ama 411 dp'de beşinci kuralın
+adının neden kırpıldığı ayrıca bakılmayı hak ediyor.
+
+`logcat AndroidRuntime:E` boş; ekran ayarları geri alındı.
+
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
 Bu belgenin ilk hâlinde "uygulama geneli kare hızı sorunu" diye bir açık konu
