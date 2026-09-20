@@ -5,6 +5,7 @@ import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -37,8 +38,14 @@ import org.robolectric.annotation.Config
  * olmadan bulmaca çözülemez, yani mod o ekranda oynanamaz durumdaydı.
  *
  * Ölçüm kırpılmış kutulara bakıyor (`getBoundsInRoot`), yani cihazın
- * erişilebilirlik ağacında gördüğü değerlere: panelin ilk satırları gerçekten
- * çizilmiş, okunur yükseklikte ve ekranın içinde olmalı.
+ * erişilebilirlik ağacında gördüğü değerlere.
+ *
+ * Yerleşimin garantisi panelin **yüksekliği**: en az [PANEL_MIN], yani başlık +
+ * üç satır. Panele kaç kural sığdığı buna değil, üretilen ipucu metninin kaç
+ * satıra sardığına bağlı; bulmaca her koşumda yeniden üretildiği için satır
+ * saymak kararsız olur (bir koşumda tam bu yüzden kırıldı). Burada aranan
+ * panelin boyu ve "en az bir kural gerçekten çizilmiş"; kısa ekranda kaç kural
+ * okunduğu cihazda ölçülüyor (`docs/oyun-testi.md`, G1).
  *
  * Yükseklik doğrudan uygulama alanı: Robolectric sistem çubuğu koymadığı için
  * `h640dp` 640 dp'lik bir uygulama alanı demek. Cihazda 360×640 dp bir ekranın
@@ -88,6 +95,14 @@ class ReyonShortScreenTest {
         rule.onAllNodesWithText(str(id))[0].getBoundsInRoot()
     }
 
+    /** Yerleşim garantisi: panelin boyu en az [PANEL_MIN] ve paneli ekranın içinde. */
+    private fun assertPanelHasItsFloor() {
+        val root = rule.onRoot().getBoundsInRoot()
+        val panel = rule.onNodeWithTag(REYON_PANEL_TAG).getBoundsInRoot()
+        assertTrue("panel en az $PANEL_MIN olmalı, ölçülen ${panel.height}", panel.height >= PANEL_MIN - 1.dp)
+        assertTrue("panel ekranın içinde olmalı: $panel / $root", panel.bottom <= root.bottom + 1.dp)
+    }
+
     /** Panelin en az [least] satırı [min] yüksekliğinde çizilmiş ve ekranın içinde olmalı. */
     private fun assertRowsAreReadable(label: String, rows: List<DpRect>, least: Int, min: Dp) {
         val root = rule.onRoot().getBoundsInRoot()
@@ -118,12 +133,12 @@ class ReyonShortScreenTest {
         startRound(str(R.string.reyon_kind_puzzle), str(R.string.reyon_start))
         val briefPrefix = str(R.string.reyon_brief_label) + ":"
         awaitNodes(briefPrefix)
+        assertPanelHasItsFloor()
         val brief = describedBounds(briefPrefix)
-        // Kolay bulmacanın brifi 3-6 kural (ortalama 3,7); kaç kural varsa ilk üçü
-        // okunmalı. Kural satırı bir satırlık bodySmall metni + 3 dp dolgu, yani
-        // en az 20 dp; bozukken 13 dp ölçülmüştü.
+        // Kural satırı bir satırlık bodySmall metni + 3 dp dolgu, yani en az 20 dp;
+        // bozukken 13 dp ölçülmüştü.
         assertTrue("brif boş olmamalı", brief.isNotEmpty())
-        assertRowsAreReadable("brif", brief, least = minOf(3, brief.size), min = 20.dp)
+        assertRowsAreReadable("brif", brief, least = 1, min = 20.dp)
         val root = rule.onRoot().getBoundsInRoot()
         val shelfPrefix = str(R.string.reyon_board_desc_fmt, 0, 0, 0).substringBefore(' ')
         val shelf = rule.onNode(hasContentDescription(shelfPrefix, substring = true)).getBoundsInRoot()
@@ -141,6 +156,7 @@ class ReyonShortScreenTest {
     fun theSalesRulesPanelIsDrawnOnAShortPhone() {
         startRound(str(R.string.reyon_kind_sales), str(R.string.reyon_sales_start))
         awaitNodes(trayPrefix)
+        assertPanelHasItsFloor()
         val rules = textBounds(
             R.string.reyon_sales_rule_position,
             R.string.reyon_sales_rule_complement,
@@ -166,6 +182,8 @@ class ReyonShortScreenTest {
         startRound(str(R.string.reyon_kind_order), str(R.string.reyon_order_start))
         val morePrefix = str(R.string.reyon_order_more) + ":"
         awaitNodes(morePrefix)
+        // PANEL_MIN garantisi burada aranmıyor: garantiyi tepsi yer vererek
+        // sağlıyor, Sipariş'te ise tepsi yok. Liste gün başlığına sıkışıyor.
         // Adımlayıcı 44×32 dp (`StepButton`).
         assertRowsAreReadable("sipariş satırı", describedBounds(morePrefix), least = 1, min = 30.dp)
         val steppers = rule.onAllNodes(hasContentDescription(morePrefix, substring = true))

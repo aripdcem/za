@@ -40,6 +40,9 @@ internal const val SHELF_SHARE = 0.40f
 /** Panele bırakılan taban: başlık + üç satır. */
 internal val PANEL_MIN = 140.dp
 
+/** Panelin ölçüm etiketi; yerleşim garantisi ([PANEL_MIN]) testte bundan okunuyor. */
+const val REYON_PANEL_TAG = "reyon_panel"
+
 /** Tepsinin tabanı: başlık + bir sıra ürün. Panel ile tepsi aynı yükseklikten beslendiği için gerekli. */
 private val TRAY_MIN = 72.dp
 

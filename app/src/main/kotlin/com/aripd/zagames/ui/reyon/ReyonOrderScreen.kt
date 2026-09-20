@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -191,7 +192,7 @@ internal fun ReyonOrderContent(
                                 sound?.play(Sfx.POP, volume = 0.4f, rate = if (d > 0) 1.2f else 0.9f)
                             }
                         },
-                        modifier = Modifier.weight(1f, fill = false),
+                        modifier = Modifier.weight(1f, fill = false).testTag(REYON_PANEL_TAG),
                     )
                     Text(
                         text = stringResource(R.string.reyon_order_rules),

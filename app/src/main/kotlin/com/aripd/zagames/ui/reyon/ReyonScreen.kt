@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -278,7 +279,7 @@ private fun ReyonPuzzleContent(
                                 version = version,
                                 highlightClue = highlightClue,
                                 onToggle = viewModel::toggleHighlight,
-                                modifier = Modifier.weight(1f, fill = false),
+                                modifier = Modifier.weight(1f, fill = false).testTag(REYON_PANEL_TAG),
                             )
                             Tray(
                                 state = st,

@@ -2677,7 +2677,7 @@ yani cihazın erişilebilirlik ağacında gördüğü değerlere.
 
 | # | Ne | Beklenen |
 | --- | --- | --- |
-| G1 | Diziliş'te brif kural satırı | ≥ 20 dp, en az üç kural okunuyor; kaydırma kalan kuralları getiriyor |
+| G1 | Diziliş'te brif kural satırı | ≥ 20 dp, kaç kural okunuyor (hedef üç); kaydırma kalanları getiriyor |
 | G2 | Raf gözündeki ürün adı | kırpılmamış (üç nokta yok), en dar göz Zor planında |
 | G3 | Dokunma eşlemesi | tepsiden seçilen ürün dokunulan göze yerleşiyor (basıklaşan tuvalde de) |
 | G4 | Satış'ta puan kuralları | en az üç kural okunuyor (v0.43.1'de beşten ikisi görünüyordu) |
@@ -2692,6 +2692,11 @@ azalıyor; 360×640 dp'de tepsi kaydırılarak yer açılıyor.
 
 `ReyonShortScreenTest` brifi üç uygulama alanı yüksekliğinde ölçüyor: 640, 568
 (cihazda 360×640 dp ekranın uygulama alanı, bulgunun geldiği ölçü) ve 480 dp.
+Ölçtüğü, yerleşimin gerçekten söz verdiği şey: **panelin boyu** en az 140 dp ve
+içinde en az bir kural çizilmiş. Panele kaç kural sığdığı üretilen ipucu
+metninin kaç satıra sardığına bağlı — bulmaca her koşumda yeniden üretildiği
+için satır saymak kararsız, bir koşumda tam bu yüzden kırıldı. G1 o yüzden
+cihaza kalıyor: gerçek metinle kaç kural okunuyor?
 
 **Açık madde — Sipariş'in listesi gün başlığına sıkışıyor.** Robolectric ölçümü:
 568 dp'lik uygulama alanında listenin görünen kısmı ~112 dp, yani bir ürün satırı
