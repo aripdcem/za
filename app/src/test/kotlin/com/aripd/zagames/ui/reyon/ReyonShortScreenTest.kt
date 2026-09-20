@@ -107,25 +107,28 @@ class ReyonShortScreenTest {
     /**
      * Yerleşim garantisi: panel açlıktan ölmüyor.
      *
-     * İki kolu var, çünkü panel `weight(1f, fill = false)` ile duruyor: kendisine
-     * bırakılan yerden fazlasını almıyor ama içeriğinden de büyümüyor. O yüzden ya
-     * tabanını ([PANEL_MIN]) almıştır — sığmayan satırlar kaydırmayla gelir — ya da
-     * içeriği tabandan kısa olduğu için kendi boyunda durur; o durumda kırpılan
-     * satır olmaz. Bozuk hâlde ikisi de yoktu: panel 26 dp'ydi ve satırlar
-     * kırpılıyordu.
+     * Payı [PANEL_MIN], ama panel ile tepsi aynı kalandan besleniyor ve tepsinin de
+     * bir tabanı var ([TRAY_MIN]) — kalan ikisine birden yetmezse panele düşen
+     * `kalan - TRAY_MIN` oluyor. Beklenen taban o yüzden ikisinin küçüğü. Panel
+     * `weight(1f, fill = false)` ile durduğu için içeriğinden de büyümüyor: içerik
+     * tabandan kısaysa panel kendi boyunda kalır, o durumda da kırpılan satır
+     * olmaz. Bozuk hâlde hiçbiri yoktu: kalan 448 dp iken panel 26 dp'ydi ve
+     * satırlar kırpılıyordu.
      */
     private fun assertPanelIsNotStarved(label: String, rows: List<DpRect>) {
         val root = rule.onRoot().getBoundsInRoot()
         val panel = rule.onNodeWithTag(REYON_PANEL_TAG).getBoundsInRoot()
+        val tray = rule.onNodeWithTag(REYON_TRAY_TAG).getBoundsInRoot()
         assertTrue("$label: panel ekranın içinde olmalı: $panel / $root", panel.bottom <= root.bottom + 1.dp)
+        // Panel ile tepsi kutuyu tepeden aşağı paylaşıyor, yani kalan ikisinin toplamı.
+        val rest = panel.height + tray.height
+        val floor = minOf(PANEL_MIN, rest - TRAY_MIN)
         val clipped = rows.count { it.height <= 0.dp }
-        val tray = describedBounds(trayPrefix)
-        val trayTop = tray.filter { it.height > 0.dp }.minOfOrNull { it.top }
         assertTrue(
-            "$label: panel ya en az ${PANEL_MIN - PANEL_SLACK} olmalı ya da hiçbir satırı kırpmamalı; " +
-                "ölçülen panel ${panel.height} (${panel.top}–${panel.bottom}), kırpılan $clipped/${rows.size} " +
-                "satır, tepsinin tepesi $trayTop",
-            panel.height >= PANEL_MIN - PANEL_SLACK || clipped == 0,
+            "$label: panel ya en az ${floor - PANEL_SLACK} olmalı ya da hiçbir satırı kırpmamalı; " +
+                "ölçülen panel ${panel.height}, tepsi ${tray.height}, kalan $rest, " +
+                "kırpılan $clipped/${rows.size} satır",
+            panel.height >= floor - PANEL_SLACK || clipped == 0,
         )
     }
 

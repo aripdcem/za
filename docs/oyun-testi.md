@@ -2698,6 +2698,14 @@ en az bir kural çizilmiştir. İki kollu, çünkü panel `weight(1f, fill = fal
 ile duruyor: bırakılan yerden fazlasını almıyor ama içeriğinden de büyümüyor.
 Tabanda 4 dp pay var: taban iç içe iki ölçüm geçişinden geçtiği için px/dp
 yuvarlaması birkaç dp yiyor — Satış'ta 140 dp hedefiyle 138 dp ölçüldü.
+
+Beklenen taban aslında iki tabanın küçüğü, çünkü panel ile tepsi aynı kalandan
+besleniyor ve tepsinin de bir tabanı var (`TRAY_MIN` = 72 dp): kalan ikisine
+birden yetmezse panele `kalan − 72` düşüyor. Ölçülen: 480 dp'lik uygulama
+alanında kalan 177,5 dp, tepsi 72 dp, panel 105,5 dp — dört kuraldan üçü
+görünüyor, dördüncüsü kaydırmayla geliyor. Bu bilinçli: ürün seçilemeyen bir
+tepsi de bulmacayı çözülemez yapar. 568 ve 640 dp'de kalan ikisine yetiyor ve
+panel tam tabanını alıyor.
 Panele kaç kural sığdığı üretilen ipucu metninin kaç satıra sardığına bağlı —
 bulmaca her koşumda yeniden üretildiği için satır saymak kararsız, bir koşumda
 tam bu yüzden kırıldı. G1 o yüzden cihaza kalıyor: gerçek metinle kaç kural

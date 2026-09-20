@@ -291,7 +291,7 @@ private fun ReyonPuzzleContent(
                                     viewModel.select(id)
                                     haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                 },
-                                modifier = Modifier.heightIn(max = trayH),
+                                modifier = Modifier.heightIn(max = trayH).testTag(REYON_TRAY_TAG),
                             )
                         }
                     }
