@@ -1,0 +1,42 @@
+<tr-TR>
+• Uygulama her yerde ZA Games adıyla anılıyor: ana menünün başlığı ve paylaşım kartının rozeti kısa "ZA" yazıyordu.
+</tr-TR>
+<en-US>
+• The app goes by ZA Games everywhere: the hub title and the share card badge used to read just "ZA".
+</en-US>
+<de-DE>
+• Die App heißt überall ZA Games: im Titel des Hauptmenüs und auf dem Abzeichen der Teilen-Karte stand nur "ZA".
+</de-DE>
+<fr-FR>
+• L'appli s'appelle ZA Games partout : le titre du menu et le badge de la carte de partage n'affichaient que "ZA".
+</fr-FR>
+<nl-NL>
+• De app heet overal ZA Games: in de titel van het hoofdmenu en op het insigne van de deelkaart stond alleen "ZA".
+</nl-NL>
+<es-ES>
+• La app se llama ZA Games en todas partes: el título del menú y el distintivo de la tarjeta para compartir solo decían "ZA".
+</es-ES>
+<pt-BR>
+• O app se chama ZA Games em todo lugar: o título do menu e o emblema do cartão de compartilhamento diziam apenas "ZA".
+</pt-BR>
+<it-IT>
+• L'app si chiama ZA Games ovunque: il titolo del menu e il contrassegno della scheda di condivisione dicevano solo "ZA".
+</it-IT>
+<da-DK>
+• Appen hedder ZA Games overalt: titlen i hovedmenuen og mærket på delekortet stod kun som "ZA".
+</da-DK>
+<sv-SE>
+• Appen heter ZA Games överallt: rubriken i huvudmenyn och märket på delningskortet stod bara som "ZA".
+</sv-SE>
+<no-NO>
+• Appen heter ZA Games overalt: tittelen i hovedmenyen og merket på delekortet sto bare som "ZA".
+</no-NO>
+<fi-FI>
+• Sovellus on kaikkialla ZA Games: päävalikon otsikossa ja jakokortin merkissä luki pelkkä "ZA".
+</fi-FI>
+<ru-RU>
+• Приложение везде называется ZA Games: в заголовке главного меню и на значке карточки для обмена было просто «ZA».
+</ru-RU>
+<ar>
+• صار التطبيق يُسمّى ZA Games في كل مكان: كان عنوان القائمة الرئيسية وشارة بطاقة المشاركة تكتب «ZA» فقط.
+</ar>

@@ -200,11 +200,7 @@ object ShareCard {
     private fun drawHeader(context: Context, canvas: Canvas, accent: Int) {
         val badge = RectF(PAD, PAD, PAD + HEADER_H, PAD + HEADER_H)
         canvas.drawRoundRect(badge, 28f, 28f, fill(accent))
-        val mark = textPaint(58f, BG, 900).apply {
-            textAlign = Paint.Align.CENTER
-            letterSpacing = 0.06f
-        }
-        drawCentered(canvas, "ZA", badge.centerX(), badge.centerY(), mark)
+        drawMark(canvas, badge, fill(BG))
 
         val x = badge.right + 36f
         val title = textPaint(44f, INK, 700)
@@ -216,6 +212,33 @@ object ShareCard {
         canvas.drawText(
             context.getString(R.string.hub_tagline), x, blockTop + titleH + 8f - tagline.fontMetrics.ascent, tagline,
         )
+    }
+
+    /**
+     * Uygulama simgesindeki tetromino "Z", rozetin içine ortalanmış.
+     *
+     * Kaynağı `res/drawable/ic_launcher_foreground.xml`: 5×5 ızgarada 13 blok,
+     * blok kenarı 7,2 ve ızgara adımı 8 birim. Oranlar oradan alındı, böylece
+     * paylaşım kartındaki işaret simgenin birebir aynısı. Rozetin yanında
+     * uygulamanın adı zaten yazılı olduğu için burada harf yok.
+     */
+    private fun drawMark(canvas: Canvas, box: RectF, paint: Paint) {
+        val cells = listOf(
+            0 to 0, 1 to 0, 2 to 0, 3 to 0, 4 to 0,
+            3 to 1, 2 to 2, 1 to 3,
+            0 to 4, 1 to 4, 2 to 4, 3 to 4, 4 to 4,
+        )
+        val unit = box.width() * 0.62f / 39.2f
+        val step = unit * 8f
+        val side = unit * 7.2f
+        val span = step * 4f + side
+        val left = box.centerX() - span / 2f
+        val top = box.centerY() - span / 2f
+        for ((cx, cy) in cells) {
+            val x = left + cx * step
+            val y = top + cy * step
+            canvas.drawRect(x, y, x + side, y + side, paint)
+        }
     }
 
     private fun drawFooter(context: Context, canvas: Canvas, height: Int, accent: Int) {

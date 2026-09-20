@@ -1344,7 +1344,7 @@ ortasına göre doğru çalışıyor ve kazanç iki tarafta da 1,25. (Raket duva
 dayanmışsa o parmak 0 hareket veriyor — kırpma beklenen davranış.)
 
 **Ses ve titreşim.** 8 saniyelik rallide HAL'in `fast_out` akışı 137 satır
-günlük bastı; titreşim geçmişinde `com.za.games` için 45–50 ms'lik TOUCH
+günlük bastı; titreşim geçmişinde uygulama için 45–50 ms'lik TOUCH
 darbelerinden 51 kayıt var. İkisi de çalışıyor.
 
 **360 dp.** Menü kartı: mod çipleri, zorluk çipleri ve "Başla" görünüyor,

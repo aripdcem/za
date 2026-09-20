@@ -52,6 +52,53 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.43.0", "2026-09-20",
+            tr = listOf(
+                "Uygulama her yerde ZA Games adıyla anılıyor: ana menünün başlığı ve paylaşım kartının rozeti kısa \"ZA\" yazıyordu",
+            ),
+            en = listOf(
+                "The app goes by ZA Games everywhere: the hub title and the share card badge used to read just \"ZA\"",
+            ),
+            others = mapOf(
+                "de" to listOf(
+                    "Die App heißt überall ZA Games: im Titel des Hauptmenüs und auf dem Abzeichen der Teilen-Karte stand nur \"ZA\"",
+                ),
+                "fr" to listOf(
+                    "L'appli s'appelle ZA Games partout : le titre du menu et le badge de la carte de partage n'affichaient que \"ZA\"",
+                ),
+                "nl" to listOf(
+                    "De app heet overal ZA Games: in de titel van het hoofdmenu en op het insigne van de deelkaart stond alleen \"ZA\"",
+                ),
+                "es" to listOf(
+                    "La app se llama ZA Games en todas partes: el título del menú y el distintivo de la tarjeta para compartir solo decían \"ZA\"",
+                ),
+                "pt" to listOf(
+                    "O app se chama ZA Games em todo lugar: o título do menu e o emblema do cartão de compartilhamento diziam apenas \"ZA\"",
+                ),
+                "it" to listOf(
+                    "L'app si chiama ZA Games ovunque: il titolo del menu e il contrassegno della scheda di condivisione dicevano solo \"ZA\"",
+                ),
+                "da" to listOf(
+                    "Appen hedder ZA Games overalt: titlen i hovedmenuen og mærket på delekortet stod kun som \"ZA\"",
+                ),
+                "sv" to listOf(
+                    "Appen heter ZA Games överallt: rubriken i huvudmenyn och märket på delningskortet stod bara som \"ZA\"",
+                ),
+                "nb" to listOf(
+                    "Appen heter ZA Games overalt: tittelen i hovedmenyen og merket på delekortet sto bare som \"ZA\"",
+                ),
+                "fi" to listOf(
+                    "Sovellus on kaikkialla ZA Games: päävalikon otsikossa ja jakokortin merkissä luki pelkkä \"ZA\"",
+                ),
+                "ru" to listOf(
+                    "Приложение везде называется ZA Games: в заголовке главного меню и на значке карточки для обмена было просто «ZA»",
+                ),
+                "ar" to listOf(
+                    "صار التطبيق يُسمّى ZA Games في كل مكان: كان عنوان القائمة الرئيسية وشارة بطاقة المشاركة تكتب «ZA» فقط",
+                ),
+            ),
+        ),
+        ReleaseNote(
             "0.42.0", "2026-09-20",
             tr = listOf(
                 "Uygulamanın paket kimliği com.aripd.zagames oldu. Yandan kurulumda bu yeni bir uygulama olarak görünür: eski sürüm telefonda kalır, rekorları taşınmaz",

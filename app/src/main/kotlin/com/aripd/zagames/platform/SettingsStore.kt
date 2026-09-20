@@ -73,17 +73,6 @@ class SettingsStore(context: Context) {
             prefs.edit().putInt(KEY_SEEN_VERSION, value).apply()
         }
 
-    init {
-        // v0.39.0: Blok'un kimliği değişti; "son oynananlar" kaydı bir kez taşınır.
-        val legacy = KEY_PLAYED_PREFIX + "tetris"
-        if (prefs.contains(legacy)) {
-            prefs.edit()
-                .putLong(KEY_PLAYED_PREFIX + "blok", prefs.getLong(legacy, 0L))
-                .remove(legacy)
-                .apply()
-        }
-    }
-
     /** Oyunun son açılma zamanı (epoch ms); hiç açılmadıysa 0. */
     fun lastPlayed(gameId: String): Long = prefs.getLong(KEY_PLAYED_PREFIX + gameId, 0L)
 
