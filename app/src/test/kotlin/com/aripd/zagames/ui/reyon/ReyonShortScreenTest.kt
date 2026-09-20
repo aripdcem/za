@@ -40,12 +40,13 @@ import org.robolectric.annotation.Config
  * Ölçüm kırpılmış kutulara bakıyor (`getBoundsInRoot`), yani cihazın
  * erişilebilirlik ağacında gördüğü değerlere.
  *
- * Yerleşimin garantisi panelin **yüksekliği**: en az [PANEL_MIN], yani başlık +
- * üç satır. Panele kaç kural sığdığı buna değil, üretilen ipucu metninin kaç
- * satıra sardığına bağlı; bulmaca her koşumda yeniden üretildiği için satır
- * saymak kararsız olur (bir koşumda tam bu yüzden kırıldı). Burada aranan
- * panelin boyu ve "en az bir kural gerçekten çizilmiş"; kısa ekranda kaç kural
- * okunduğu cihazda ölçülüyor (`docs/oyun-testi.md`, G1).
+ * Yerleşimin garantisi panelin **yüksekliği**: ya tabanını ([PANEL_MIN], yani
+ * başlık + üç satır) almış olur, ya da içeriği tabandan kısa olduğu için kendi
+ * boyunda durup hiçbir satırı kırpmaz. Panele kaç kural sığdığı buna değil,
+ * üretilen ipucu metninin kaç satıra sardığına bağlı; bulmaca her koşumda
+ * yeniden üretildiği için satır saymak kararsız olur (bir koşumda tam bu yüzden
+ * kırıldı). Kısa ekranda kaç kural okunduğu cihazda ölçülüyor
+ * (`docs/oyun-testi.md`, G1).
  *
  * Yükseklik doğrudan uygulama alanı: Robolectric sistem çubuğu koymadığı için
  * `h640dp` 640 dp'lik bir uygulama alanı demek. Cihazda 360×640 dp bir ekranın
@@ -95,12 +96,26 @@ class ReyonShortScreenTest {
         rule.onAllNodesWithText(str(id))[0].getBoundsInRoot()
     }
 
-    /** Yerleşim garantisi: panelin boyu en az [PANEL_MIN] ve paneli ekranın içinde. */
-    private fun assertPanelHasItsFloor() {
+    /**
+     * Yerleşim garantisi: panel açlıktan ölmüyor.
+     *
+     * İki kolu var, çünkü panel `weight(1f, fill = false)` ile duruyor: kendisine
+     * bırakılan yerden fazlasını almıyor ama içeriğinden de büyümüyor. O yüzden ya
+     * tabanını ([PANEL_MIN]) almıştır — sığmayan satırlar kaydırmayla gelir — ya da
+     * içeriği tabandan kısa olduğu için kendi boyunda durur; o durumda kırpılan
+     * satır olmaz. Bozuk hâlde ikisi de yoktu: panel 26 dp'ydi ve satırlar
+     * kırpılıyordu.
+     */
+    private fun assertPanelIsNotStarved(label: String, rows: List<DpRect>) {
         val root = rule.onRoot().getBoundsInRoot()
         val panel = rule.onNodeWithTag(REYON_PANEL_TAG).getBoundsInRoot()
-        assertTrue("panel en az $PANEL_MIN olmalı, ölçülen ${panel.height}", panel.height >= PANEL_MIN - 1.dp)
-        assertTrue("panel ekranın içinde olmalı: $panel / $root", panel.bottom <= root.bottom + 1.dp)
+        assertTrue("$label: panel ekranın içinde olmalı: $panel / $root", panel.bottom <= root.bottom + 1.dp)
+        val clipped = rows.count { it.height <= 0.dp }
+        assertTrue(
+            "$label: panel ya en az $PANEL_MIN olmalı ya da hiçbir satırı kırpmamalı; " +
+                "ölçülen panel ${panel.height}, kırpılan $clipped/${rows.size} satır",
+            panel.height >= PANEL_MIN - 1.dp || clipped == 0,
+        )
     }
 
     /** Panelin en az [least] satırı [min] yüksekliğinde çizilmiş ve ekranın içinde olmalı. */
@@ -133,8 +148,8 @@ class ReyonShortScreenTest {
         startRound(str(R.string.reyon_kind_puzzle), str(R.string.reyon_start))
         val briefPrefix = str(R.string.reyon_brief_label) + ":"
         awaitNodes(briefPrefix)
-        assertPanelHasItsFloor()
         val brief = describedBounds(briefPrefix)
+        assertPanelIsNotStarved("brif", brief)
         // Kural satırı bir satırlık bodySmall metni + 3 dp dolgu, yani en az 20 dp;
         // bozukken 13 dp ölçülmüştü.
         assertTrue("brif boş olmamalı", brief.isNotEmpty())
@@ -156,7 +171,6 @@ class ReyonShortScreenTest {
     fun theSalesRulesPanelIsDrawnOnAShortPhone() {
         startRound(str(R.string.reyon_kind_sales), str(R.string.reyon_sales_start))
         awaitNodes(trayPrefix)
-        assertPanelHasItsFloor()
         val rules = textBounds(
             R.string.reyon_sales_rule_position,
             R.string.reyon_sales_rule_complement,
@@ -166,6 +180,7 @@ class ReyonShortScreenTest {
         )
         // Kural adı tek satırlık labelMedium; puan kuralları görünmezse oyuncu neyi
         // topladığını bilmiyor.
+        assertPanelIsNotStarved("satış kuralı", rules)
         assertRowsAreReadable("satış kuralı", rules, least = 3, min = 14.dp)
         val tray = describedBounds(trayPrefix).filter { it.height >= 20.dp }
         assertTrue("tepside okunur ürün olmalı", tray.isNotEmpty())
