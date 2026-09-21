@@ -3002,6 +3002,54 @@ konusu. Kırpılan ad, kaydırmanın son satırı olduğu için gözden kaçabil
 
 `logcat AndroidRuntime:E` boş; ekran ayarları geri alındı.
 
+### 411 dp'de `Marka bloğu` neden kırpılıyor · cihazda · 2026-09-21
+
+Önceki koşumda 411 dp'de beşinci kuralın adı iki kez 12,6 dp ölçülmüştü. Bakıldı:
+**tura bağlı değil, tepsinin payına bağlı — ve G4 çalışmasının getirdiği bir
+gerileme değil, tersine v0.43.3 burayı iyileştiriyor.**
+
+Ölçüm cihazın kendi ekranında (411 dp, uygulama alanı 833 dp), iki yapı
+kurularak; ikisinin de `base.apk` özeti yerel APK ile karşılaştırıldı
+(v0.43.3 `sha256=79cbcef9…`, v0.43.2 `sha256=004f628d…`).
+
+| Yapı | Tepsi | Panel görünümü | `Marka bloğu` adı |
+| --- | --- | --- | --- |
+| v0.43.2 | 167,2 dp (iki sıra) | **240,0 dp** | 17,9 dp — beşi de görünüyor |
+| v0.43.2 | 218,7 dp (üç sıra) | 208,0 dp | **5,7 dp** |
+| v0.43.3 | 218,7 dp (üç sıra) | 208,0 dp | **12,6 dp** |
+
+Aynı panel boyunda (208 dp) v0.43.3 beşinci kuralın adından 5,7 → 12,6 dp'ye
+çıkıyor: 1 dp'ye inen satır arası beş kuralda ~7 dp kazandırmış. Yani kırpılma
+düzeltmeden önce de vardı ve daha kötüydü.
+
+**Sebep — panel, tepsiden artanı alıyor.** `ReyonSalesScreen`'de panel ile tepsi
+`BoxWithConstraints`'in içinde aynı kalanı paylaşıyor (411 dp'de 426,7 dp).
+Tepsi ağırlıksız (`heightIn(max = trayH)`), yani **önce** ölçülüyor ve doğal
+boyunu alıyor; panel `weight(1f, fill = false)` ile **artandan** besleniyor.
+`trayHeight(rest) = rest − PANEL_MIN` tavanı 411 dp'de 286,7 dp ediyor, tepsinin
+doğal boyu (218,7 dp) bunun altında kaldığı için tavan hiç bağlamıyor. Sonuç:
+`PANEL_MIN` burada yalnız bir **taban**, "beş kural sığsın" güvencesi değil.
+
+Tepsinin doğal boyu turdan tura değişiyor — ürün adları sarınca iki sıra yerine
+üç sıra oluyor (167,2 ↔ 218,7 dp) — panel de onunla 240 ↔ 208 dp arasında
+gidiyor. Belgede "411 dp'de panel 240 dp ve beş kural da görünüyor" denmesinin
+sebebi bu: o okuma iki sıralık bir tepsiye denk gelmiş. Ürün **sayısı** belirleyici
+değil; altı üründe de üç sıra ölçüldü.
+
+**Ne kadar eksik.** Panel görünümü 208,0 dp, beş kuralın içeriği ~232 dp. Panel
+sonuna kadar kaydırılınca `Marka bloğu` tam çıkıyor (ad 17,9 + gövde 17,9) ve bu
+kez tepedeki `Konum`'un adı 5,3 dp kırpılıyor — yani taşan miktar ~24 dp, bir
+kuralın gövdesi kadar.
+
+**Durum.** Hata değil, paylaşım kuralının sonucu: beş kuralın beşine de panelin
+kendi kaydırmasıyla ulaşılıyor, kısa ekrandakiyle aynı durum. Kapatılacaksa kol
+tepsinin uzun ekrandaki tavanı — ama tepsiyi kısmak kısa ekranda sıra sayısından
+yer götürür (ürün seçilemeyen tepsi bulmacayı çözülemez yapar, `TRAY_MIN`
+bunun için var). Ölçüm bunu çözmez; tavan kararı ister.
+
+> Bu bölümün sorduğu karar verildi: tavan tepsiye kondu ve kalibrasyonsuz
+> hâle getirildi. Sonucu hemen aşağıda; kural v0.43.5'le çıktı.
+
 ### Tepsinin uzun ekrandaki tavanı · denendi, cihazda · 2026-09-21
 
 411 dp'de beşinci kuralın kırpılmasının sebebi panelin tepsiden artanı alması
