@@ -220,25 +220,38 @@ internal fun ReyonSalesContent(
                     // Kural paneli ile tepsi kalan yüksekliği paylaşıyor; "kalan"
                     // burada ölçülüyor, böylece üstteki döküm satırı da hesaba giriyor.
                     BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
-                        // Panel ağırlıksız, yani önce ölçülüyor: içeriği kadar yer alıyor,
-                        // en çok panelCap kadar. Tepsi kalanı alıyor. Ters kol (tepsi önce)
-                        // 411 dp'de beşinci kuralın adını kırpıyordu; tepsi tura göre iki ya
-                        // da üç sıra olduğu için panelin payı da 240 ↔ 208 dp arasında
-                        // oynuyordu. Tur bitince tepsi çizilmiyor, o yüzden tavan da
-                        // kalkıyor — yoksa panelin altında boşluk kalırdı.
-                        val panelH = if (st.finished) maxHeight else panelCap(maxHeight)
+                        // Kolu tepside yerleştirilecek ürün kalıp kalmadığı seçiyor.
+                        //
+                        // Ürün varken panel ağırlıksız, yani önce ölçülüyor: içeriği kadar
+                        // yer alıyor, en çok panelCap kadar; tepsi kalanı alıp kendi içinde
+                        // kayıyor. Ters kol (tepsi önce) 411 dp'de beşinci kuralın adını
+                        // kırpıyordu, çünkü tepsi tura göre iki ya da üç sıra oluyor ve
+                        // panelin payı onunla 240 ↔ 208 dp arasında oynuyordu.
+                        //
+                        // Ürün kalmayınca tepsi tek satırlık bir not ("Tüm ürünler rafta")
+                        // çiziyor; orada panele tavan koymak altında ~83 dp boşluk bırakıyordu
+                        // (cihazda ölçüldü, 480 ve 563 dp). O durumda kol Diziliş'inki gibi:
+                        // tepsi doğal boyunu alıyor, panel kalanı. Tur bitince tepsi hiç
+                        // çizilmiyor, o da bu kola düşüyor.
+                        val trayPending = st.sales.products.any { !st.isPlaced(it.id) }
+                        val panelModifier = if (trayPending) {
+                            Modifier.heightIn(max = panelCap(maxHeight))
+                        } else {
+                            Modifier.weight(1f, fill = false)
+                        }
                         Column(modifier = Modifier.fillMaxSize()) {
                             RulesPanel(
                                 score = score,
                                 target = st.sales.target,
-                                modifier = Modifier.heightIn(max = panelH).testTag(REYON_PANEL_TAG),
+                                modifier = panelModifier.testTag(REYON_PANEL_TAG),
                             )
                             if (!st.finished) {
                                 SalesTray(
                                     state = st,
                                     version = version,
                                     selected = selected,
-                                    modifier = Modifier.weight(1f, fill = false).testTag(REYON_TRAY_TAG),
+                                    modifier = (if (trayPending) Modifier.weight(1f, fill = false) else Modifier)
+                                        .testTag(REYON_TRAY_TAG),
                                 ) { id ->
                                     viewModel.select(id)
                                     haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)

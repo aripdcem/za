@@ -3180,8 +3180,27 @@ ayırmayı sürdürüyor. Ölçülen:
 | 480 dp | ~105 dp | 2/5, `Tamamlayıcı`'nın gövdesi ortadan kesik | ~83 dp |
 
 411 dp'de kural kaybı yok (içerik zaten sığıyor), yalnız aynı boşluk kalıyor.
-Oyuncunun kuralları okumak için en çok durduğu an tam bu. Koşul "tepside ürün
-kalmadı"ya bağlanırsa kapanır; denenmedi.
+Oyuncunun kuralları okumak için en çok durduğu an tam bu.
+
+**Düzeltildi (ölçüm bekliyor).** Kol artık `st.finished`'a değil "tepside
+yerleştirilecek ürün kaldı mı"ya bakıyor — tepsinin çizdiği şeyin ta kendisine:
+
+```kotlin
+val trayPending = st.sales.products.any { !st.isPlaced(it.id) }
+// ürün varsa  → panel ağırlıksız (heightIn(max = panelCap)), tepsi kalanı alır
+// ürün yoksa  → panel ağırlıklı (weight(1f, fill = false)), tepsi notu kadar yer
+```
+
+Ürün kalmayınca kol Diziliş'inkine dönüyor: tek satırlık not doğal boyunu alıyor,
+panel kalanın hepsini kullanabiliyor. Tur bitmiş hâl (tepsi hiç çizilmiyor) de
+aynı kola düşüyor, yani eski `st.finished` özel durumu ayrıca gerekmiyor.
+Beklenen: 563 dp'de panelin ~128,7 dp'den içeriğinin tam boyuna çıkması,
+480 dp'de ikiden fazla kuralın okunması ve iki ekranda da ~83 dp'lik boşluğun
+kapanması; ürün dururken hiçbir sayının değişmemesi.
+
+Bu durum CI'da sınanmıyor: bütün ürünleri rafa koymak için tuvale koordinat
+koordinat dokunmak gerekiyor ve o dokunuşlar raf geometrisine bağlı — kırılgan
+bir test olurdu. Doğrulaması cihazda.
 
 **Doğrulananlar.** 411 dp'de panel üç turda da 232,4 dp — tepsiye göre 240 ↔ 208
 salınımı bitti. Yazı ölçeği 1,3'te içerikten gelen pay 254,1 dp alıp beş kuralı
