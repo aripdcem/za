@@ -234,21 +234,25 @@ internal fun ReyonSalesContent(
                         // tepsi doğal boyunu alıyor, panel kalanı. Tur bitince tepsi hiç
                         // çizilmiyor, o da bu kola düşüyor.
                         val trayPending = st.sales.products.any { !st.isPlaced(it.id) }
-                        val panelModifier = if (trayPending) {
-                            Modifier.heightIn(max = panelCap(maxHeight))
-                        } else {
-                            Modifier.weight(1f, fill = false)
-                        }
+                        // maxHeight'a bağlı olan her şey sütunun dışında hesaplanmalı:
+                        // ColumnScope da @LayoutScopeMarker taşıdığı için içeride
+                        // BoxWithConstraintsScope örtülüyor. Modifier'ın kendisi ise
+                        // tersine, içeride kurulmalı — weight bir ColumnScope uzantısı.
+                        val panelMax = panelCap(maxHeight)
+                        // Gövdeler yalnız panel tabanına sıkışmışken tek satıra iniyor.
+                        // Tepsi boşalınca panel kalanın hepsini aldığından o sıkışma
+                        // kalmıyor, gövdeler iki satıra dönüyor: kuralların okunduğu an
+                        // orası.
+                        val compactRules = trayPending && rulesAreCompact(maxHeight)
                         Column(modifier = Modifier.fillMaxSize()) {
                             RulesPanel(
                                 score = score,
                                 target = st.sales.target,
-                                // Gövdeler yalnız panel tabanına sıkışmışken tek satıra
-                                // iniyor. Tepsi boşalınca panel kalanın hepsini
-                                // aldığından o sıkışma kalmıyor, gövdeler iki satıra
-                                // dönüyor: kuralların okunduğu an orası.
-                                compact = trayPending && rulesAreCompact(maxHeight),
-                                modifier = panelModifier.testTag(REYON_PANEL_TAG),
+                                compact = compactRules,
+                                modifier = (
+                                    if (trayPending) Modifier.heightIn(max = panelMax)
+                                    else Modifier.weight(1f, fill = false)
+                                    ).testTag(REYON_PANEL_TAG),
                             )
                             if (!st.finished) {
                                 SalesTray(
