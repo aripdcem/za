@@ -129,3 +129,25 @@ internal fun trayHeight(rest: Dp): Dp = (rest - PANEL_MIN).coerceAtLeast(TRAY_MI
  */
 internal fun panelCap(rest: Dp): Dp =
     minOf(maxOf(PANEL_MIN, rest - TRAY_KEEP), rest - TRAY_MIN).coerceAtLeast(0.dp)
+
+/**
+ * Satış'ın kural gövdeleri tek satıra inmeli mi?
+ *
+ * Tavan tabanda ([PANEL_MIN]) sıkışmışsa evet. Orada iki satırlık gövdeler
+ * panele ancak iki buçuk kural sığdırıyor ve kaç kuralın **adının** okunduğu
+ * dile bağlı hâle geliyor: cihazda 360×640 dp'de Türkçe üç, Almanca ve Fince
+ * iki kural veriyordu, çünkü o dillerde ikinci kuralın gövdesi de iki satıra
+ * sarıyor (`Paare wie Chips und Dip nebeneinander +6, / übereinander +3`).
+ * Ölçülen satır boyları: gövdesi iki satır olan kural 50,7 dp, tek satır olan
+ * 35,2 dp, panel başlığı ~36 dp.
+ *
+ * Tek satıra inince satır 35,2 dp oluyor ve üçüncü kuralın adı 106–124 dp'ye
+ * düşüyor — 140 dp'nin içinde, **dile bakmadan**. Bedeli, kısa ekranda her
+ * açıklamanın tek satıra inmesi; satıra dokunmak gövdeyi tam açtığı için metin
+ * kaybolmuyor, sıkışan yalnız kaydırmasız görünüm.
+ *
+ * Eşik ayrı bir sayı değil, [panelCap]'in kendisi: tavan tabana çakılıysa ekran
+ * kısadır (`rest` ≤ 308 dp). Uzun ekranda tavan yükseldiği için gövdeler iki
+ * satır kalıyor.
+ */
+internal fun rulesAreCompact(rest: Dp): Boolean = panelCap(rest) <= PANEL_MIN

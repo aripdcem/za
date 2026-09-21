@@ -114,6 +114,22 @@ class ReyonLayoutTest {
         assertEquals(TRAY_MIN, 100.dp - panelCap(100.dp))
     }
 
+    /**
+     * Gövdeler yalnız panel tabanına sıkışmışken tek satıra iniyor.
+     *
+     * Eşik ayrı bir sayı değil, tavanın kendisi: tabana çakılıysa ekran kısadır.
+     * 480 dp'lik uygulama alanında (kalan 177,5 dp) tavan tabanın altında, orada
+     * da sıkışma var. 411 dp'de (kalan 426 dp) tavan 258 dp, gövdeler iki satır.
+     */
+    @Test
+    fun rulesGoOneLineOnlyWhenThePanelIsAtItsFloor() {
+        assertTrue("177,5 dp: sıkışmalı", rulesAreCompact(177.5.dp))
+        assertTrue("226 dp: sıkışmalı", rulesAreCompact(226.dp))
+        assertTrue("308 dp (ayrım): sıkışmalı", rulesAreCompact(308.dp))
+        assertTrue("309 dp: sıkışma bitmeli", !rulesAreCompact(309.dp))
+        assertTrue("426 dp: sıkışma olmamalı", !rulesAreCompact(426.dp))
+    }
+
     /** Diziliş'in kolu (tepsi önce ölçülür) değişmedi. */
     @Test
     fun theBriefArmIsUnchanged() {

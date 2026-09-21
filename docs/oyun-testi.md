@@ -3169,6 +3169,22 @@ Planın "payı 2 dp, dar" uyarısı dilde gerçekleşmiş. Ok her iki dilde de d
 yerde çıkıyor ve dokununca gövde tam açılıyor, yani içerik ulaşılabilir; kayıp
 üçüncü kuralın **adının** kaydırmasız okunması.
 
+**Düzeltildi (ölçüm bekliyor): panel tabanına sıkışmışken gövdeler tek satır.**
+Satır sayısı artık panelin payına bağlı — `rulesAreCompact(rest)`, yani tavan
+tabana çakılı mı (`rest` ≤ 308 dp). Eşik ayrı bir sayı değil, `panelCap`'in
+kendisi; uzun ekranda gövdeler iki satır kalıyor, 411 dp'de hiçbir şey
+değişmiyor.
+
+Cihazın kendi sayılarıyla beklenen: gövdesi iki satır olan kural 50,7 dp yerine
+35,2 dp tutuyor, panel başlığı ~36 dp, yani üçüncü kuralın adı 106–124 dp'ye
+düşüyor — **dile bakmadan** 140 dp'nin içinde. Almanca ve Fince'de 2/5 olan
+sayının 3/5'e çıkması, Türkçe'de değişmemesi bekleniyor. Bedeli kısa ekranda
+her açıklamanın tek satıra inmesi; ok o satırlarda da çıkıyor ve dokunmak gövdeyi
+tam açıyor, yani metin kaybolmuyor.
+
+Tepsi boşalınca sıkışma kalkıyor (panel kalanın hepsini aldığı için gövdeler iki
+satıra dönüyor) — kuralların en çok okunduğu an orası.
+
 **Bulgu 2 — tepsi boşalınca tavan kalkmıyor.** Tavan `st.finished`'a bağlı, ama
 bütün ürünler rafa konduğunda tepsi yalnız tek satırlık `reyon_tray_empty`
 notunu çiziyor ve `st.finished` hâlâ `false`; `panelCap` tepsiye `TRAY_KEEP`

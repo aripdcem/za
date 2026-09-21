@@ -243,6 +243,11 @@ internal fun ReyonSalesContent(
                             RulesPanel(
                                 score = score,
                                 target = st.sales.target,
+                                // Gövdeler yalnız panel tabanına sıkışmışken tek satıra
+                                // iniyor. Tepsi boşalınca panel kalanın hepsini
+                                // aldığından o sıkışma kalmıyor, gövdeler iki satıra
+                                // dönüyor: kuralların okunduğu an orası.
+                                compact = trayPending && rulesAreCompact(maxHeight),
                                 modifier = panelModifier.testTag(REYON_PANEL_TAG),
                             )
                             if (!st.finished) {
@@ -451,7 +456,7 @@ private fun ReviewBar(review: SalesReview, target: Int, onReview: (SalesReview) 
 }
 
 @Composable
-private fun RulesPanel(score: SalesScore, target: Int, modifier: Modifier = Modifier) {
+private fun RulesPanel(score: SalesScore, target: Int, compact: Boolean, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -521,17 +526,18 @@ private fun RulesPanel(score: SalesScore, target: Int, modifier: Modifier = Modi
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(text = stringResource(name), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
-                    // Gövde iki satırla sınırlı: 360 dp'de Konum kuralının açıklaması üç
-                    // satıra sarıp tek başına 76 dp yiyor ve panelin tabanı (140 dp) iki
-                    // kurala ancak yetiyordu (cihazda G4). İki satır satırı ~52 dp'ye
-                    // indiriyor, üçüncü kuralın adı tabanın içinde kalıyor. Sınır beş
-                    // kuralın hepsine konuyor ki panel dile göre oynamasın; öbür dördü
-                    // zaten tek satır.
+                    // Gövdenin satır sayısı panelin payına bağlı. İki satır, uzun
+                    // ekranda beş kuralın hepsini sığdırıyor. Panel tabanına (140 dp)
+                    // sıkışmışsa tek satıra iniyor: iki satırla kaç kuralın adının
+                    // okunduğu dile bağlı hâle geliyordu (cihazda 360×640 dp'de Türkçe
+                    // üç, Almanca ve Fince iki kural), tek satırla üçüncü kuralın adı
+                    // her dilde tabanın içinde kalıyor. Sınır beş kuralın hepsine
+                    // konuyor ki panel dile göre oynamasın. Dokununca kalkıyor.
                     Text(
                         text = stringResource(desc),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                        maxLines = if (acik) Int.MAX_VALUE else 2,
+                        maxLines = if (acik) Int.MAX_VALUE else if (compact) 1 else 2,
                         overflow = TextOverflow.Ellipsis,
                         onTextLayout = { if (!acik) tasan = it.hasVisualOverflow },
                     )
