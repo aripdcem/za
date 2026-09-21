@@ -2,6 +2,14 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/aripd/zagames/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.43.5 (2026-09-21)
+- **Reyon · Satış: uzun telefonda beş puan kuralının beşi de görünüyor.** 411 dp'de panelin payı tepsiden artana bağlıydı; tepsi ürün adları sarınca iki sıra yerine üç sıra oluyor (167 ↔ 219 dp) ve panel onunla 240 ↔ 208 dp arasında gidip geliyordu. 208 dp'de beşinci kuralın adı kırpılıyordu — düzeltmeden önce de vardı, cihazda ölçüldü
+- Kol ters çevrildi: panel önce ölçülüyor ve **kendi içeriği kadar** yer alıyor, tavan yalnız tepsinin payını koruyor (`panelCap`). Sabit bir "istenen boy" denendi ve bilerek bırakıldı: o sayı ölçülen bir metnin boyu olurdu ve yazı ölçeği 1,3'te cihazda kırpıyordu (panel 240,0'a çakılı, beşinci kural 14,1 dp); içerikten gelen pay aynı ekranda 254,1 dp alıp beşini de tam tutuyor
+- **Dar ekranda üçüncü kural artık her dilde okunuyor.** Hedef yalnız Türkçe'de tutuyordu: Almanca ve Fince'de ikinci kuralın gövdesi de iki satıra sarıp 140 dp'lik tabanın 2 dp'lik payını bitiriyordu. Panel tabanına sıkışmışken gövdeler tek satıra iniyor (`rulesAreCompact`) ve üçüncü kuralın adı dile bakmadan tabanın içinde kalıyor. Cihazda: tr/de/fi üçünde de 3/5, sayılar birebir aynı
+- **Bütün ürünler rafa konunca panel boşalan yeri kullanıyor.** Tavan "tur bitti"ye bağlıydı, oysa tepsi o sırada hâlâ çiziliyor — yalnız "Tüm ürünler rafta" notunu. Panel 128,7 dp'de kalıyor ve altında ~83 dp boşluk duruyordu. Koşul artık tepsinin çizdiği şeye bakıyor; cihazda panel 198,0 dp'ye çıktı, okunan kural 3/5 kesikten 4/5 tama geçti, gövdeler iki satıra döndü. Oyuncunun kuralları okumak için durduğu an tam orası
+- Gizlilik politikasındaki geliştirici adı **aripdcom** oldu (14 dilde). Play Console'daki "Developer name" alanıyla birebir aynı olmak zorunda; depo taşınırken bilerek dokunulmamıştı, çünkü o alan adres değil yayımcı kimliği
+- Ölçüm araçları raporun ilk satırına kurulu yapının parmak izini (paket, sürüm, `base.apk` SHA256) basıyor. İki kez işe yaradı: bir ölçüm yanlış daldan kurulmuş yapıyla alınmıştı, bir kez de Gradle "84 up-to-date" deyip eski APK'yi bırakmıştı
+
 ## 0.43.4 (2026-09-20)
 - **Reyon · Satış: kırpılan puan kuralı dokununca açılıyor.** v0.43.3'ün iki satır sınırı 360×640 dp'de hedefini tutturdu — cihazda ölçüldü: üçüncü kuralın adı 0,3 → 17,7 dp, panel yine 140 dp, beş kuralın üçü okunuyor. Ama öngörülen bedel de ödendi: `Konum` kuralının gövdesi son parçasını, `★ yalnız göz hizasında ×4` kuralını, üç noktanın arkasında bırakıyordu
 - O çarpan uygulamada başka hiçbir yerde yazılı değil: kurulum kartının özeti kuralları sayıyor ama çarpan vermiyor ve ★ kuralını hiç anmıyor. Yani oyuncu kısa ekranda o kuralı hiçbir yerden öğrenemiyordu

@@ -288,7 +288,12 @@ def oyunu_ac(ad: str) -> bool:
             if not eslesen:
                 break
             aday = eslesen[0]
-            oynalar = [o for o in taze if o["t"] == "Oyna" and abs(o["cy"] - aday["cy"]) < 250]
+            # Yakınlık eşiği dp: piksel sabiti yoğunluğa göre anlam değiştiriyor.
+            # 320 dpi'de 250 px = 125 dp ediyor ve "son oynananlar" şeridindeki ada,
+            # ilk oyun kartının Oyna düğmesi 248 px uzakta düşüyordu — tarama Reyon
+            # yerine Blok'u açıp orada sıkışıyordu (`reyon --olcek 2.0`).
+            yakin = int(95 * yogunluk())
+            oynalar = [o for o in taze if o["t"] == "Oyna" and abs(o["cy"] - aday["cy"]) < yakin]
             dokun(oynalar[0] if oynalar else aday)
             ekran = arayuz()
             if oyun_ekraninda(ad, ekran) and any(o["t"] in ("Geri", "Duraklat") for o in ekran):

@@ -3002,6 +3002,292 @@ konusu. Kırpılan ad, kaydırmanın son satırı olduğu için gözden kaçabil
 
 `logcat AndroidRuntime:E` boş; ekran ayarları geri alındı.
 
+### Tepsinin uzun ekrandaki tavanı · denendi, cihazda · 2026-09-21
+
+411 dp'de beşinci kuralın kırpılmasının sebebi panelin tepsiden artanı alması
+olduğu için kol ters çevrildi: Satış'ta **panel önce ölçülüyor**, tepsi kalanı
+alıyor. Compose sütunda ağırlıksız çocukları önce ölçtüğü için kolu seçmek,
+tavanı hangi çocuğa koyduğumuzla oluyor.
+
+```kotlin
+internal fun panelCap(rest: Dp): Dp =
+    minOf(maxOf(PANEL_MIN, rest - TRAY_KEEP), rest - TRAY_MIN).coerceAtLeast(0.dp)
+
+// RulesPanel: Modifier.heightIn(max = panelCap(maxHeight))   // ağırlıksız → önce
+// SalesTray:  Modifier.weight(1f, fill = false)              // kalanı alır
+```
+
+`TRAY_KEEP` = 168 dp, yani başlık + iki sıra ürün (cihazda ölçülen 167 dp).
+Panel içeriği kadar yer alıyor, en çok bu tavana kadar; Diziliş ile Sipariş'in
+kolu (`trayHeight`) hiç değişmedi.
+
+İki sınır var ve ikisi de gerekli. `maxOf` tavanı kısa ekranda tabana çekiyor;
+`minOf` ise tepsinin tabanını (`TRAY_MIN` = 72 dp) koruyor, çünkü panel önce
+ölçülüyor ve tavan onu sınırlamazsa çok kısa ekranda tepsiye yer kalmaz — 480
+dp'lik uygulama alanında ölçülen kalan 177,5 dp ve `maxOf` tek başına 140 dp
+derdi, tepsiye 37,5 dp bırakırdı. İkisi birlikte, `rest` 308 dp'nin altında
+**eski kolun birebir aynısı**: `panelCap(rest) == rest - trayHeight(rest)`.
+Yani "kısa ekran etkilenmiyor" burada tahmin değil; `ReyonLayoutTest` bunu
+72–308 dp aralığının her değeri için doğruluyor.
+
+**Tavan neden panelin içeriğine göre yazılmadı.** İlk deneme tavanı sabit bir
+`PANEL_WANT` = 240 dp'ye bağlıyordu; o sayı, tepsinin iki sıra kaldığı turlarda
+ölçülen panel boyuydu. Ama panelin ihtiyacı sabit değil: her kural satırı ad
+(17,7 dp) + gövde (1–2 satır × 17,7 dp), yani bir gövdenin daha sarması 17,7 dp
+ekliyor. Cihazda beş kural 232,4 dp tuttu — 240'a payı **7,6 dp**, yani tek bir
+fazladan satır sığmaz. Bunu iki şey tetikler ve ikisi de sahada var: daha uzun
+bir dil (Almanca/Fransızca açıklamalar) ve kullanıcının büyüttüğü yazı ölçeği
+(`labelSmall` sp cinsinden, tavan dp cinsinden). Şimdiki hâlde panel kendi boyunu
+alıyor, tavan yalnız tepsiyi koruyor: uzun içerikte panel tavana dayanıyor, kısa
+içerikte artan tepsiye kalıyor. Kalibre edilecek bir sayı kalmadı.
+
+**411 dp'de sonuç — üç turda da beş kural tam.**
+
+| | Tepsi | Panel | `Marka bloğu` adı |
+| --- | --- | --- | --- |
+| önce (tepsi üç sıra) | 218,7 dp | 208,0 dp | 12,6 dp — kırpık |
+| önce (tepsi iki sıra) | 167,2 dp | 240,0 dp | 17,9 dp |
+| **sonra** | 194,3 / 167,2 dp | **232,4 dp** | **17,9 dp** |
+
+Panel artık tura göre 240 ↔ 208 arasında gidip gelmiyor: üç turda da 232,4 dp,
+yani içeriğinin tam boyu (`fill = false` olduğu için ayrılan 240 dp'nin hepsini
+almıyor). Tepsi doğal boyu tavanın altındaysa (iki sıra, 167,2 dp) tavan
+bağlamıyor.
+
+**Bedeli: 411 dp'de tepsinin son sırası bir sürükleme uzağa gidiyor.** Ölçüldü:
+yedi ürünün altısı tam görünüyor, yedincisi 3,0 dp'lik şeride iniyor; tek
+sürüklemeyle tam geliyor (30,1 dp) ve dokunuş seçimi alıyor (döküm satırı
+"Bir ürüne dokun"dan çıkıyor). Yani tepsi kullanılabilir kalıyor — `TRAY_MIN`'in
+koruduğu şey bozulmuyor.
+
+**Kısa ekran birebir aynı.** 360×640 dp'de Satış: `Konum` 17,7 · `Tamamlayıcı`
+17,7 · `Çakışma` 17,7 dp, gövde 31,0 dp, dokununca 48,7 dp, ikinci dokunuş
+kapatıyor — değişiklikten önceki sayıların aynısı. Üç modun rafı da aynı
+(167,3 · 167,3 · 156,3 dp).
+
+Kural saf bir işlev olduğu için aritmetiği `ReyonLayoutTest` koruyor: kısa ekranda
+tavan tabanda (226 ve 308 dp), ayrım noktası 308/309 dp, uzun ekranda tepsiye her
+hâlükârda `TRAY_KEEP`, kısa içerikte tepsiye ondan fazlası, uzun içerikte panel
+tavanda duruyor ve Diziliş'in kolu değişmiyor.
+
+**Ölçüm tekrarı gerekiyor.** Yukarıdaki tablo `PANEL_WANT` = 240 dp'li ilk
+denemeden; kolun son hâli panelde aynı sayıyı (232,4 dp — panel zaten içeriği
+kadar yer alıyordu) ama tepside biraz fazlasını veriyor: 426 dp'lik kalanda
+tepsiye 186 dp yerine 193,6 dp kalıyor. Beklenen: beş kural yine tam, tepsinin
+son sırası yine bir sürükleme uzağında ama şeridi biraz daha geniş. 360×640
+dp'deki sayılar değişmemeli.
+
+### v0.43.4 · İçerikten gelen pay cihazda · 2026-09-21
+
+`panelCap` kolu (panel önce ölçülüyor, tavan yalnız tepsiyi koruyor) ölçüldü.
+Yapı: `1c1432b`, `com.aripd.zagames 0.43.4 sha256=27f8d21f…`, yerel APK ile
+birebir. Cihazın yazı ölçeği **1,1** (bu belgedeki bütün Reyon sayıları o
+ölçekte alınmıştır).
+
+**Beklenen üç sayı da tuttu.**
+
+| Ölçü | Beklenen | Ölçülen |
+| --- | --- | --- |
+| 411 dp panel | 232,4 dp | **232,4 dp** (üç turda da) |
+| 411 dp `Marka bloğu` | tam | **17,9 dp**, beş kuralın beşi de tam |
+| 360×640 dp | hiçbir sayı değişmemeli | **değişmedi** |
+
+411 dp'de panel artık tura göre 240 ↔ 208 arasında gidip gelmiyor; tepsi 194,3
+dp alıyor. 360×640 dp'de Satış: `Konum` · `Tamamlayıcı` · `Çakışma` 17,7 dp,
+gövde 31,0 dp, dokununca 48,7 dp, ikinci dokunuş kapatıyor — önceki koşumun
+sayılarının aynısı.
+
+**Kalibrasyonu kaldırmak ölçülebilir bir kazanç.** Savın sınandığı yer yazı
+ölçeği: gövde sp, tavan dp. 411 dp'de ölçek 1,3'e alındı ve iki yapı yan yana
+kuruldu:
+
+| Yapı | Panel | `Marka bloğu` adı |
+| --- | --- | --- |
+| sabit `PANEL_WANT` = 240 dp | **240,0 dp** (tavana çakılı) | **14,1 dp — kırpık** |
+| içerikten gelen pay | **254,1 dp** | **21,0 dp — tam** |
+
+Yani sabit sayı sahada gerçekten kırpıyordu; yeni kol aynı ekranda beş kuralı
+tam tutuyor.
+
+**Tepsinin tabanı çok kısa ekranda duruyor.** 480 dp'lik uygulama alanında raf
+134,3 dp, panel 108,0 dp, tepside iki ürün (29,7 dp) ve dokunuş seçimi alıyor —
+`minOf(…, rest − TRAY_MIN)` sınırı cihazda da tutuyor. O sınır olmasaydı panel
+140 dp alıp tepsiye 37,5 dp bırakacaktı.
+
+**Yeni bulgu — tavan `st.finished`'a bağlı, ama asıl durum "tepsi boş".**
+Bütün ürünler rafa konunca tepsi yalnız tek satırlık `reyon_tray_empty`
+("Tüm ürünler rafta") notunu çiziyor; `st.finished` hâlâ `false` olduğu için
+`panelCap` tepsiye `TRAY_KEEP` ayırmayı sürdürüyor. Cihazda 480 dp'lik uygulama
+alanında ölçülen: panel ~105 dp'de kalıyor, **beş kuralın ikisi** okunuyor,
+`Tamamlayıcı`'nın gövdesi satırın ortasından kesiliyor ve hemen altında **~83 dp
+boş alan** duruyor. 411 dp'de kural kaybı yok (içerik zaten sığıyor), yalnız aynı
+boşluk kalıyor.
+
+Bu, oyuncunun puan kurallarını okumak için en çok durduğu an: ürünler yerleşmiş,
+puan oluşmuş, karar veriliyor. Kol doğru, koşul dar — tavanın kalkması
+`st.finished` yerine "tepside ürün kalmadı"ya bağlanırsa kapanır. Bu koşumda
+denenmedi.
+
+Ölçülmeyenler: uzun bir arayüz dili (aynı mekanizmayı yazı ölçeği zaten zorladı)
+ve tur bitmiş hâlde 360×640 dp. `logcat AndroidRuntime:E` boş; ekran ayarları ve
+yazı ölçeği (1,1) geri alındı.
+
+### Reyon Satış paneli · toplu cihaz raporu · 2026-09-21
+
+Bu bölüm G4 çevresindeki bütün cihaz koşumlarını tek yerde topluyor; ayrıntılar
+yukarıdaki tarihli bölümlerde. Cihaz **SM-A515F**, yazı ölçeği **1,1** (aksi
+yazmadıkça), kısa ekran `wm size 1080x1920` + `wm density 480`. Her koşumda
+ölçülen yapının `base.apk` özeti yerel APK ile karşılaştırıldı.
+
+**Nereden nereye.**
+
+| Yapı | 360×640 dp'de okunan kural | 411 dp'de okunan kural |
+| --- | --- | --- |
+| v0.43.1 | panel çizilmiyor (26 dp) | 5/5 |
+| v0.43.2 | 2/5 | 5/5 ya da 4,5/5 (tepsiye göre) |
+| v0.43.3 (`maxLines = 2`) | **3/5**, `Konum` gövdesi üç noktalı | aynı |
+| + açılan satır | 3/5, kesilen gövde dokununca tam | aynı |
+| + tepsi tavanı / içerikten pay | 3/5 | **5/5, tura ve yazı ölçeğine bakmadan** |
+
+**Bugünkü yapı** (`1c1432b`, `sha256=27f8d21f…`) üç dilde ölçüldü.
+
+| Ekran | Dil | Panel | 1. kuralın gövdesi | Okunan kural |
+| --- | --- | --- | --- | --- |
+| 411 dp | tr | 232,4 dp | 32,0 dp | **5/5** |
+| 411 dp | de | 232,4 dp | 32,0 dp | **5/5** |
+| 411 dp | fi | 232,4 dp | 32,0 dp | **5/5** |
+| 360×640 dp | tr | 140,0 dp | 31,0 dp | **3/5** |
+| 360×640 dp | de | 140,0 dp | 35,3 dp | **2/5** |
+| 360×640 dp | fi | 140,0 dp | 35,3 dp | **2/5** |
+
+**Bulgu 1 — G4'ün hedefi yalnız Türkçe'de tutuyor.** Kısa ekranda Almanca ve
+Fince'de üçüncü kuralın adı 5,3 dp'ye iniyor. Sebep ekran görüntüsünde görünüyor:
+Almanca'da **ikinci** kuralın gövdesi de iki satıra sarıyor (`Paare wie Chips und
+Dip nebeneinander +6, / übereinander +3`), Türkçe'de tek satır. Buna birinci
+kuralın gövdesindeki 4,3 dp eklenince 140 dp'lik tabanın 2 dp'lik payı bitiyor.
+Planın "payı 2 dp, dar" uyarısı dilde gerçekleşmiş. Ok her iki dilde de doğru
+yerde çıkıyor ve dokununca gövde tam açılıyor, yani içerik ulaşılabilir; kayıp
+üçüncü kuralın **adının** kaydırmasız okunması.
+
+**Düzeltildi (ölçüm bekliyor): panel tabanına sıkışmışken gövdeler tek satır.**
+Satır sayısı artık panelin payına bağlı — `rulesAreCompact(rest)`, yani tavan
+tabana çakılı mı (`rest` ≤ 308 dp). Eşik ayrı bir sayı değil, `panelCap`'in
+kendisi; uzun ekranda gövdeler iki satır kalıyor, 411 dp'de hiçbir şey
+değişmiyor.
+
+Cihazın kendi sayılarıyla beklenen: gövdesi iki satır olan kural 50,7 dp yerine
+35,2 dp tutuyor, panel başlığı ~36 dp, yani üçüncü kuralın adı 106–124 dp'ye
+düşüyor — **dile bakmadan** 140 dp'nin içinde. Almanca ve Fince'de 2/5 olan
+sayının 3/5'e çıkması, Türkçe'de değişmemesi bekleniyor. Bedeli kısa ekranda
+her açıklamanın tek satıra inmesi; ok o satırlarda da çıkıyor ve dokunmak gövdeyi
+tam açıyor, yani metin kaybolmuyor.
+
+Tepsi boşalınca sıkışma kalkıyor (panel kalanın hepsini aldığı için gövdeler iki
+satıra dönüyor) — kuralların en çok okunduğu an orası.
+
+**Bulgu 2 — tepsi boşalınca tavan kalkmıyor.** Tavan `st.finished`'a bağlı, ama
+bütün ürünler rafa konduğunda tepsi yalnız tek satırlık `reyon_tray_empty`
+notunu çiziyor ve `st.finished` hâlâ `false`; `panelCap` tepsiye `TRAY_KEEP`
+ayırmayı sürdürüyor. Ölçülen:
+
+| Uygulama alanı | Panel | Okunan kural | Altındaki boşluk |
+| --- | --- | --- | --- |
+| 563 dp (360×640) | ~128,7 dp | 3/5, `Çakışma`'nın gövdesi ortadan kesik | ~83 dp |
+| 480 dp | ~105 dp | 2/5, `Tamamlayıcı`'nın gövdesi ortadan kesik | ~83 dp |
+
+411 dp'de kural kaybı yok (içerik zaten sığıyor), yalnız aynı boşluk kalıyor.
+Oyuncunun kuralları okumak için en çok durduğu an tam bu.
+
+**Düzeltildi (ölçüm bekliyor).** Kol artık `st.finished`'a değil "tepside
+yerleştirilecek ürün kaldı mı"ya bakıyor — tepsinin çizdiği şeyin ta kendisine:
+
+```kotlin
+val trayPending = st.sales.products.any { !st.isPlaced(it.id) }
+// ürün varsa  → panel ağırlıksız (heightIn(max = panelCap)), tepsi kalanı alır
+// ürün yoksa  → panel ağırlıklı (weight(1f, fill = false)), tepsi notu kadar yer
+```
+
+Ürün kalmayınca kol Diziliş'inkine dönüyor: tek satırlık not doğal boyunu alıyor,
+panel kalanın hepsini kullanabiliyor. Tur bitmiş hâl (tepsi hiç çizilmiyor) de
+aynı kola düşüyor, yani eski `st.finished` özel durumu ayrıca gerekmiyor.
+Beklenen: 563 dp'de panelin ~128,7 dp'den içeriğinin tam boyuna çıkması,
+480 dp'de ikiden fazla kuralın okunması ve iki ekranda da ~83 dp'lik boşluğun
+kapanması; ürün dururken hiçbir sayının değişmemesi.
+
+Bu durum CI'da sınanmıyor: bütün ürünleri rafa koymak için tuvale koordinat
+koordinat dokunmak gerekiyor ve o dokunuşlar raf geometrisine bağlı — kırılgan
+bir test olurdu. Doğrulaması cihazda.
+
+**Doğrulananlar.** 411 dp'de panel üç turda da 232,4 dp — tepsiye göre 240 ↔ 208
+salınımı bitti. Yazı ölçeği 1,3'te içerikten gelen pay 254,1 dp alıp beş kuralı
+tam tutuyor, sabit `PANEL_WANT` = 240'lı yapı ise 240,0'a çakılıp beşinci kuralı
+14,1 dp'ye indiriyordu. 480 dp'lik uygulama alanında tepsi tabanını koruyor (iki
+ürün, 29,7 dp, dokunuş seçimi alıyor). Kısa ekranda Türkçe sayılar değişiklik
+boyunca hiç kıpırdamadı: 17,7 · 17,7 · 17,7 dp, gövde 31,0 → dokununca 48,7 →
+ikinci dokunuş kapatıyor.
+
+**Araç düzeltmesi — `reyon --olcek 2.0` artık çalışıyor.** Varsayılan ölçek üç
+türde de "Reyon açılamadı" veriyordu. Sebep `oyunu_ac`'taki 250 **piksel**lik
+yakınlık eşiği: 320 dpi'de 125 dp ediyor ve "son oynananlar" şeridindeki Reyon
+adı ile ilk oyun kartının Oyna düğmesi 248 px uzakta düşüyor, yani tarama Reyon
+yerine Blok'u açıyor; Blok'ta geri tuşu duraklatma katmanını açtığı için 14
+denemenin hepsi orada sıkışıyordu. Eşik dp'ye çevrildi (95 dp). Ölçek 2.0 ile
+alınan sayılar 3.0'la aynı çıkıyor (raf 167,0 / 156,0 dp).
+
+`logcat AndroidRuntime:E` bütün koşumlarda boş. Ekran ayarları, yazı ölçeği ve
+arayüz dili koşumlardan sonra geri alındı.
+
+### Dört işin cihaz ölçümü · 2026-09-21
+
+`e65c028` derlenip kuruldu (`sha256=cef84e80…`, yerel APK ile birebir). Bakılan
+üç şeyin üçü de tuttu.
+
+> Dalın bir önceki tepesi (`0eb9e5b`) **derlenmiyordu**: `weight` bir `ColumnScope`
+> uzantısı olduğu için modifier sütunun dışında kurulamıyor, `maxHeight` ise
+> tersine sütunun içinde okunamıyor. Ölçüm o yüzden `e65c028` ile alındı.
+> Bir tuzak daha: değişiklikten sonraki ilk derleme Gradle'da "84 up-to-date"
+> deyip eski APK'yi bıraktı ve `kurulu_yapi` özeti bir önceki ölçümünkiyle aynı
+> çıktı. `--rerun-tasks` gerekti. Özet karşılaştırması olmasa eski yapı yeni
+> sanılacaktı.
+
+**1 — Kısa ekranda hedef artık her dilde tutuyor.** 360×640 dp, panel 140,0 dp:
+
+| Dil | 1. kuralın gövdesi | Okunan kural | Önceki yapı |
+| --- | --- | --- | --- |
+| tr | 13,3 dp (tek satır) | **3/5** | 3/5 |
+| de | 13,3 dp (tek satır) | **3/5** | 2/5 |
+| fi | 13,3 dp (tek satır) | **3/5** | 2/5 |
+
+Üç dilde de sayılar birebir aynı çıkıyor: `Konum`/`Tamamlayıcı`/`Çakışma`
+17,7 dp, dördüncü kuralın adı 3,3 dp'lik şeride iniyor. Yani dil artık sonucu
+değiştirmiyor — bulgunun kendisi kapandı.
+
+**2 — 411 dp'de hiçbir sayı değişmedi.** Panel 232,4 dp, gövde 32,0 dp (iki
+satır), beş kuralın beşi de 17,9 dp; tr ve de aynı. Sıkışma yalnız tavan tabana
+çakılıyken devreye girdiği için uzun ekran dokunulmamış durumda.
+
+**3 — Tepsi boşalınca boşluk kapandı.** 360×640 dp'de bütün ürünler rafa
+konduktan sonra:
+
+| | Önceki yapı | `e65c028` |
+| --- | --- | --- |
+| Panel | ~128,7 dp | **198,0 dp** |
+| Okunan kural | 3/5, `Çakışma` gövdesi ortadan kesik | **4/5 tam**, beşincinin adı 12,3 dp |
+| Gövdeler | tek satır | **iki satır** (sıkışma kalkıyor) |
+| Altındaki boşluk | ~83 dp | **yok** — "Tüm ürünler rafta" panelin hemen altında |
+
+480 dp'lik uygulama alanında da aynı yönde: panel ~105 → **128,7 dp**, okunan
+kural 2 → **3/5**, boşluk kalmıyor.
+
+**Kenar not — 480 dp oyun sırasında.** Orada panel 108,0 dp'de kalıyor ve iki
+kural okunuyor (`Çakışma` 8,7 dp; önceki yapıda 5,3 dp'ydi). Kalan 177,5 dp
+`PANEL_MIN`'in altında olduğu için tepsinin tabanı kazanıyor — belgedeki
+ölçülmüş durumun aynısı ve G4 hedefi 360×640 dp için konmuştu. Tek satırlık
+gövdeler burada da 3,4 dp kazandırmış ama eşiği geçirmiyor.
+
+Birim testlerinin tamamı geçiyor. `logcat AndroidRuntime:E` boş; ekran ayarları,
+yazı ölçeği (1,1) ve arayüz dili (Türkçe) geri alındı.
+
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
 Bu belgenin ilk hâlinde "uygulama geneli kare hızı sorunu" diye bir açık konu

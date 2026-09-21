@@ -31,7 +31,7 @@ def add(tag, name, title, meta, short_label, short, sections, contact, contact_i
 
 
 add("tr", "Türkçe", "Gizlilik politikası",
-    "ZA Games (Android) · Yürürlük: 8 Eylül 2026 · Geliştirici: aripdcem",
+    "ZA Games (Android) · Yürürlük: 8 Eylül 2026 · Geliştirici: aripdcom",
     "Kısaca:",
     "ZA Games hiçbir kişisel veri toplamaz, saklamaz, paylaşmaz ya da satmaz. Uygulama hiçbir izin "
     "istemez, reklam ya da izleme kütüphanesi içermez ve ağa bağlanmaz. Skorlar ve ayarlar yalnızca "
@@ -58,7 +58,7 @@ add("tr", "Türkçe", "Gizlilik politikası",
     "İletişim", "Sorular ve bildirimler için:")
 
 add("en", "English", "Privacy policy",
-    "ZA Games for Android · Effective 8 September 2026 · Developer: aripdcem",
+    "ZA Games for Android · Effective 8 September 2026 · Developer: aripdcom",
     "In short:",
     "ZA Games collects, stores, shares or sells no personal data. The app requests no permissions, "
     "contains no ads or tracking libraries, and never connects to the network. Scores and settings stay "
@@ -85,7 +85,7 @@ add("en", "English", "Privacy policy",
     "Contact", "Questions and reports:")
 
 add("de", "Deutsch", "Datenschutzerklärung",
-    "ZA Games für Android · Gültig ab 8. September 2026 · Entwickler: aripdcem",
+    "ZA Games für Android · Gültig ab 8. September 2026 · Entwickler: aripdcom",
     "Kurz gesagt:",
     "ZA Games erhebt, speichert, teilt und verkauft keine personenbezogenen Daten. Die App verlangt keine "
     "Berechtigungen, enthält weder Werbung noch Tracking-Bibliotheken und verbindet sich nie mit dem Netz. "
@@ -113,7 +113,7 @@ add("de", "Deutsch", "Datenschutzerklärung",
     "Kontakt", "Fragen und Meldungen:")
 
 add("fr", "Français", "Politique de confidentialité",
-    "ZA Games pour Android · En vigueur le 8 septembre 2026 · Développeur : aripdcem",
+    "ZA Games pour Android · En vigueur le 8 septembre 2026 · Développeur : aripdcom",
     "En bref :",
     "ZA Games ne collecte, ne conserve, ne partage ni ne vend aucune donnée personnelle. L'appli ne "
     "demande aucune autorisation, ne contient ni publicité ni bibliothèque de suivi, et ne se connecte "
@@ -141,7 +141,7 @@ add("fr", "Français", "Politique de confidentialité",
     "Contact", "Questions et signalements :")
 
 add("nl", "Nederlands", "Privacybeleid",
-    "ZA Games voor Android · Geldig vanaf 8 september 2026 · Ontwikkelaar: aripdcem",
+    "ZA Games voor Android · Geldig vanaf 8 september 2026 · Ontwikkelaar: aripdcom",
     "Kort gezegd:",
     "ZA Games verzamelt, bewaart, deelt of verkoopt geen persoonsgegevens. De app vraagt geen rechten, "
     "bevat geen advertenties of trackingbibliotheken en maakt nooit verbinding met het netwerk. Scores en "
@@ -169,7 +169,7 @@ add("nl", "Nederlands", "Privacybeleid",
     "Contact", "Vragen en meldingen:")
 
 add("es", "Español", "Política de privacidad",
-    "ZA Games para Android · En vigor el 8 de septiembre de 2026 · Desarrollador: aripdcem",
+    "ZA Games para Android · En vigor el 8 de septiembre de 2026 · Desarrollador: aripdcom",
     "En resumen:",
     "ZA Games no recopila, guarda, comparte ni vende ningún dato personal. La app no pide permisos, no "
     "contiene anuncios ni bibliotecas de seguimiento y nunca se conecta a la red. Las puntuaciones y los "
@@ -197,7 +197,7 @@ add("es", "Español", "Política de privacidad",
     "Contacto", "Preguntas y avisos:")
 
 add("pt", "Português", "Política de privacidade",
-    "ZA Games para Android · Em vigor em 8 de setembro de 2026 · Desenvolvedor: aripdcem",
+    "ZA Games para Android · Em vigor em 8 de setembro de 2026 · Desenvolvedor: aripdcom",
     "Em resumo:",
     "O ZA Games não coleta, guarda, compartilha nem vende nenhum dado pessoal. O app não pede permissões, "
     "não tem anúncios nem bibliotecas de rastreamento e nunca se conecta à rede. Os recordes e as "
@@ -225,7 +225,7 @@ add("pt", "Português", "Política de privacidade",
     "Contato", "Dúvidas e avisos:")
 
 add("it", "Italiano", "Informativa sulla privacy",
-    "ZA Games per Android · In vigore dall'8 settembre 2026 · Sviluppatore: aripdcem",
+    "ZA Games per Android · In vigore dall'8 settembre 2026 · Sviluppatore: aripdcom",
     "In breve:",
     "ZA Games non raccoglie, conserva, condivide né vende alcun dato personale. L'app non chiede "
     "permessi, non contiene pubblicità né librerie di tracciamento e non si collega mai alla rete. "
@@ -253,7 +253,7 @@ add("it", "Italiano", "Informativa sulla privacy",
     "Contatti", "Domande e segnalazioni:")
 
 add("da", "Dansk", "Privatlivspolitik",
-    "ZA Games til Android · Gælder fra 8. september 2026 · Udvikler: aripdcem",
+    "ZA Games til Android · Gælder fra 8. september 2026 · Udvikler: aripdcom",
     "Kort sagt:",
     "ZA Games indsamler, gemmer, deler eller sælger ingen personlige data. Appen beder ikke om "
     "tilladelser, indeholder hverken reklamer eller sporingsbiblioteker og forbinder aldrig til nettet. "
@@ -280,7 +280,7 @@ add("da", "Dansk", "Privatlivspolitik",
     "Kontakt", "Spørgsmål og henvendelser:")
 
 add("sv", "Svenska", "Integritetspolicy",
-    "ZA Games för Android · Gäller från 8 september 2026 · Utvecklare: aripdcem",
+    "ZA Games för Android · Gäller från 8 september 2026 · Utvecklare: aripdcom",
     "Kort sagt:",
     "ZA Games samlar inte in, lagrar, delar eller säljer några personuppgifter. Appen begär inga "
     "behörigheter, innehåller varken annonser eller spårningsbibliotek och ansluter aldrig till nätet. "
@@ -306,7 +306,7 @@ add("sv", "Svenska", "Integritetspolicy",
     "Kontakt", "Frågor och synpunkter:")
 
 add("nb", "Norsk bokmål", "Personvernerklæring",
-    "ZA Games for Android · Gjelder fra 8. september 2026 · Utvikler: aripdcem",
+    "ZA Games for Android · Gjelder fra 8. september 2026 · Utvikler: aripdcom",
     "Kort sagt:",
     "ZA Games samler ikke inn, lagrer, deler eller selger personopplysninger. Appen ber ikke om "
     "tillatelser, inneholder verken reklame eller sporingsbiblioteker og kobler seg aldri til nettet. "
@@ -333,7 +333,7 @@ add("nb", "Norsk bokmål", "Personvernerklæring",
     "Kontakt", "Spørsmål og meldinger:")
 
 add("fi", "Suomi", "Tietosuojakäytäntö",
-    "ZA Games Androidille · Voimassa 8. syyskuuta 2026 alkaen · Kehittäjä: aripdcem",
+    "ZA Games Androidille · Voimassa 8. syyskuuta 2026 alkaen · Kehittäjä: aripdcom",
     "Lyhyesti:",
     "ZA Games ei kerää, säilytä, jaa eikä myy henkilötietoja. Sovellus ei pyydä käyttöoikeuksia, siinä ei "
     "ole mainoksia eikä seurantakirjastoja, eikä se ota koskaan yhteyttä verkkoon. Ennätykset ja "
@@ -360,7 +360,7 @@ add("fi", "Suomi", "Tietosuojakäytäntö",
     "Yhteystiedot", "Kysymykset ja ilmoitukset:")
 
 add("ru", "Русский", "Политика конфиденциальности",
-    "ZA Games для Android · Действует с 8 сентября 2026 года · Разработчик: aripdcem",
+    "ZA Games для Android · Действует с 8 сентября 2026 года · Разработчик: aripdcom",
     "Коротко:",
     "ZA Games не собирает, не хранит, не передаёт и не продаёт персональные данные. Приложение не "
     "запрашивает разрешений, не содержит рекламы и библиотек слежения и никогда не выходит в сеть. "
@@ -388,7 +388,7 @@ add("ru", "Русский", "Политика конфиденциальност
     "Связь", "Вопросы и сообщения:")
 
 add("ar", "العربية", "سياسة الخصوصية",
-    "ZA Games لأندرويد · سارية من 8 سبتمبر 2026 · المطوّر: aripdcem",
+    "ZA Games لأندرويد · سارية من 8 سبتمبر 2026 · المطوّر: aripdcom",
     "باختصار:",
     "لا يجمع ZA Games أي بيانات شخصية ولا يخزّنها ولا يشاركها ولا يبيعها. لا يطلب التطبيق أي أذونات، ولا "
     "يحتوي إعلانات ولا مكتبات تتبّع، ولا يتصل بالشبكة أبدًا. تبقى النتائج والإعدادات على جهازك وحده.",

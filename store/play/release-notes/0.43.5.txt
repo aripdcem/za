@@ -1,0 +1,70 @@
+<tr-TR>
+• Reyon · Satış: uzun telefonda beş puan kuralının beşi de görünüyor.
+• Dar ekranda üçüncü kural her dilde okunuyor; satıra dokununca açıklama tam açılıyor.
+• Bütün ürünler rafa konunca panel boşalan yeri kullanıyor.
+</tr-TR>
+<en-US>
+• Reyon · Sales: all five scoring rules are visible on a tall phone.
+• On a narrow screen the third rule is readable in every language; tapping a row opens its description in full.
+• When every product is on the shelf the panel uses the freed space.
+</en-US>
+<de-DE>
+• Reyon · Verkauf: Auf einem hohen Display sind alle fünf Punkteregeln sichtbar.
+• Auf schmalen Bildschirmen ist die dritte Regel in jeder Sprache lesbar; ein Tippen öffnet die Beschreibung vollständig.
+• Sobald alle Produkte im Regal stehen, nutzt das Panel den frei gewordenen Platz.
+</de-DE>
+<fr-FR>
+• Reyon · Ventes : les cinq règles de score sont visibles sur un écran haut.
+• Sur un écran étroit, la troisième règle est lisible dans toutes les langues ; un appui ouvre la description en entier.
+• Quand tous les produits sont en rayon, le panneau occupe la place libérée.
+</fr-FR>
+<nl-NL>
+• Reyon · Verkoop: op een hoog scherm zijn alle vijf scoreregels zichtbaar.
+• Op een smal scherm is de derde regel in elke taal leesbaar; een tik opent de beschrijving volledig.
+• Zodra alle producten in het schap staan, gebruikt het paneel de vrijgekomen ruimte.
+</nl-NL>
+<es-ES>
+• Reyon · Ventas: en una pantalla alta se ven las cinco reglas de puntuación.
+• En pantallas estrechas la tercera regla se lee en todos los idiomas; al tocar la fila la descripción se abre completa.
+• Cuando todos los productos están en el estante, el panel usa el espacio liberado.
+</es-ES>
+<pt-BR>
+• Reyon · Vendas: em uma tela alta as cinco regras de pontuação aparecem.
+• Em telas estreitas a terceira regra é legível em todos os idiomas; tocar na linha abre a descrição completa.
+• Quando todos os produtos estão na prateleira, o painel usa o espaço livre.
+</pt-BR>
+<it-IT>
+• Reyon · Vendite: su uno schermo alto si vedono tutte e cinque le regole di punteggio.
+• Su schermi stretti la terza regola è leggibile in ogni lingua; toccando la riga la descrizione si apre per intero.
+• Quando tutti i prodotti sono a scaffale il pannello usa lo spazio liberato.
+</it-IT>
+<da-DK>
+• Reyon · Salg: på en høj skærm ses alle fem pointregler.
+• På en smal skærm kan den tredje regel læses på alle sprog; et tryk åbner beskrivelsen helt.
+• Når alle varer står på hylden, bruger panelet den frigjorte plads.
+</da-DK>
+<sv-SE>
+• Reyon · Försäljning: på en hög skärm syns alla fem poängregler.
+• På en smal skärm går den tredje regeln att läsa på alla språk; ett tryck öppnar beskrivningen helt.
+• När alla varor står i hyllan använder panelen det frigjorda utrymmet.
+</sv-SE>
+<no-NO>
+• Reyon · Salg: på en høy skjerm vises alle fem poengregler.
+• På en smal skjerm er den tredje regelen lesbar på alle språk; et trykk åpner beskrivelsen helt.
+• Når alle varene står i hyllen, bruker panelet den frigjorte plassen.
+</no-NO>
+<fi-FI>
+• Reyon · Myynti: korkealla näytöllä kaikki viisi pisteytyssääntöä näkyvät.
+• Kapealla näytöllä kolmas sääntö on luettavissa kaikilla kielillä; riviä napauttamalla kuvaus avautuu kokonaan.
+• Kun kaikki tuotteet ovat hyllyssä, paneeli käyttää vapautuneen tilan.
+</fi-FI>
+<ru-RU>
+• Reyon · Продажи: на высоком экране видны все пять правил начисления.
+• На узком экране третье правило читается на всех языках; нажатие на строку раскрывает описание полностью.
+• Когда все товары на полке, панель занимает освободившееся место.
+</ru-RU>
+<ar>
+• Reyon · البيع: على الشاشة الطويلة تظهر قواعد النقاط الخمس كلها.
+• في الشاشة الضيقة تُقرأ القاعدة الثالثة بكل اللغات؛ ولمس الصف يفتح الشرح كاملًا.
+• حين تستقر كل المنتجات على الرف تستفيد اللوحة من المساحة المتحررة.
+</ar>

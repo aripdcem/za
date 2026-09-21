@@ -220,15 +220,47 @@ internal fun ReyonSalesContent(
                     // Kural paneli ile tepsi kalan yüksekliği paylaşıyor; "kalan"
                     // burada ölçülüyor, böylece üstteki döküm satırı da hesaba giriyor.
                     BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
-                        val trayH = trayHeight(maxHeight)
+                        // Kolu tepside yerleştirilecek ürün kalıp kalmadığı seçiyor.
+                        //
+                        // Ürün varken panel ağırlıksız, yani önce ölçülüyor: içeriği kadar
+                        // yer alıyor, en çok panelCap kadar; tepsi kalanı alıp kendi içinde
+                        // kayıyor. Ters kol (tepsi önce) 411 dp'de beşinci kuralın adını
+                        // kırpıyordu, çünkü tepsi tura göre iki ya da üç sıra oluyor ve
+                        // panelin payı onunla 240 ↔ 208 dp arasında oynuyordu.
+                        //
+                        // Ürün kalmayınca tepsi tek satırlık bir not ("Tüm ürünler rafta")
+                        // çiziyor; orada panele tavan koymak altında ~83 dp boşluk bırakıyordu
+                        // (cihazda ölçüldü, 480 ve 563 dp). O durumda kol Diziliş'inki gibi:
+                        // tepsi doğal boyunu alıyor, panel kalanı. Tur bitince tepsi hiç
+                        // çizilmiyor, o da bu kola düşüyor.
+                        val trayPending = st.sales.products.any { !st.isPlaced(it.id) }
+                        // maxHeight'a bağlı olan her şey sütunun dışında hesaplanmalı:
+                        // ColumnScope da @LayoutScopeMarker taşıdığı için içeride
+                        // BoxWithConstraintsScope örtülüyor. Modifier'ın kendisi ise
+                        // tersine, içeride kurulmalı — weight bir ColumnScope uzantısı.
+                        val panelMax = panelCap(maxHeight)
+                        // Gövdeler yalnız panel tabanına sıkışmışken tek satıra iniyor.
+                        // Tepsi boşalınca panel kalanın hepsini aldığından o sıkışma
+                        // kalmıyor, gövdeler iki satıra dönüyor: kuralların okunduğu an
+                        // orası.
+                        val compactRules = trayPending && rulesAreCompact(maxHeight)
                         Column(modifier = Modifier.fillMaxSize()) {
-                            RulesPanel(score = score, target = st.sales.target, modifier = Modifier.weight(1f, fill = false).testTag(REYON_PANEL_TAG))
+                            RulesPanel(
+                                score = score,
+                                target = st.sales.target,
+                                compact = compactRules,
+                                modifier = (
+                                    if (trayPending) Modifier.heightIn(max = panelMax)
+                                    else Modifier.weight(1f, fill = false)
+                                    ).testTag(REYON_PANEL_TAG),
+                            )
                             if (!st.finished) {
                                 SalesTray(
                                     state = st,
                                     version = version,
                                     selected = selected,
-                                    modifier = Modifier.heightIn(max = trayH).testTag(REYON_TRAY_TAG),
+                                    modifier = (if (trayPending) Modifier.weight(1f, fill = false) else Modifier)
+                                        .testTag(REYON_TRAY_TAG),
                                 ) { id ->
                                     viewModel.select(id)
                                     haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
@@ -428,7 +460,7 @@ private fun ReviewBar(review: SalesReview, target: Int, onReview: (SalesReview) 
 }
 
 @Composable
-private fun RulesPanel(score: SalesScore, target: Int, modifier: Modifier = Modifier) {
+private fun RulesPanel(score: SalesScore, target: Int, compact: Boolean, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -498,17 +530,18 @@ private fun RulesPanel(score: SalesScore, target: Int, modifier: Modifier = Modi
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(text = stringResource(name), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
-                    // Gövde iki satırla sınırlı: 360 dp'de Konum kuralının açıklaması üç
-                    // satıra sarıp tek başına 76 dp yiyor ve panelin tabanı (140 dp) iki
-                    // kurala ancak yetiyordu (cihazda G4). İki satır satırı ~52 dp'ye
-                    // indiriyor, üçüncü kuralın adı tabanın içinde kalıyor. Sınır beş
-                    // kuralın hepsine konuyor ki panel dile göre oynamasın; öbür dördü
-                    // zaten tek satır.
+                    // Gövdenin satır sayısı panelin payına bağlı. İki satır, uzun
+                    // ekranda beş kuralın hepsini sığdırıyor. Panel tabanına (140 dp)
+                    // sıkışmışsa tek satıra iniyor: iki satırla kaç kuralın adının
+                    // okunduğu dile bağlı hâle geliyordu (cihazda 360×640 dp'de Türkçe
+                    // üç, Almanca ve Fince iki kural), tek satırla üçüncü kuralın adı
+                    // her dilde tabanın içinde kalıyor. Sınır beş kuralın hepsine
+                    // konuyor ki panel dile göre oynamasın. Dokununca kalkıyor.
                     Text(
                         text = stringResource(desc),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                        maxLines = if (acik) Int.MAX_VALUE else 2,
+                        maxLines = if (acik) Int.MAX_VALUE else if (compact) 1 else 2,
                         overflow = TextOverflow.Ellipsis,
                         onTextLayout = { if (!acik) tasan = it.hasVisualOverflow },
                     )
