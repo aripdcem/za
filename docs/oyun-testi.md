@@ -3132,6 +3132,76 @@ denenmedi.
 ve tur bitmiş hâlde 360×640 dp. `logcat AndroidRuntime:E` boş; ekran ayarları ve
 yazı ölçeği (1,1) geri alındı.
 
+### Reyon Satış paneli · toplu cihaz raporu · 2026-09-21
+
+Bu bölüm G4 çevresindeki bütün cihaz koşumlarını tek yerde topluyor; ayrıntılar
+yukarıdaki tarihli bölümlerde. Cihaz **SM-A515F**, yazı ölçeği **1,1** (aksi
+yazmadıkça), kısa ekran `wm size 1080x1920` + `wm density 480`. Her koşumda
+ölçülen yapının `base.apk` özeti yerel APK ile karşılaştırıldı.
+
+**Nereden nereye.**
+
+| Yapı | 360×640 dp'de okunan kural | 411 dp'de okunan kural |
+| --- | --- | --- |
+| v0.43.1 | panel çizilmiyor (26 dp) | 5/5 |
+| v0.43.2 | 2/5 | 5/5 ya da 4,5/5 (tepsiye göre) |
+| v0.43.3 (`maxLines = 2`) | **3/5**, `Konum` gövdesi üç noktalı | aynı |
+| + açılan satır | 3/5, kesilen gövde dokununca tam | aynı |
+| + tepsi tavanı / içerikten pay | 3/5 | **5/5, tura ve yazı ölçeğine bakmadan** |
+
+**Bugünkü yapı** (`1c1432b`, `sha256=27f8d21f…`) üç dilde ölçüldü.
+
+| Ekran | Dil | Panel | 1. kuralın gövdesi | Okunan kural |
+| --- | --- | --- | --- | --- |
+| 411 dp | tr | 232,4 dp | 32,0 dp | **5/5** |
+| 411 dp | de | 232,4 dp | 32,0 dp | **5/5** |
+| 411 dp | fi | 232,4 dp | 32,0 dp | **5/5** |
+| 360×640 dp | tr | 140,0 dp | 31,0 dp | **3/5** |
+| 360×640 dp | de | 140,0 dp | 35,3 dp | **2/5** |
+| 360×640 dp | fi | 140,0 dp | 35,3 dp | **2/5** |
+
+**Bulgu 1 — G4'ün hedefi yalnız Türkçe'de tutuyor.** Kısa ekranda Almanca ve
+Fince'de üçüncü kuralın adı 5,3 dp'ye iniyor. Sebep ekran görüntüsünde görünüyor:
+Almanca'da **ikinci** kuralın gövdesi de iki satıra sarıyor (`Paare wie Chips und
+Dip nebeneinander +6, / übereinander +3`), Türkçe'de tek satır. Buna birinci
+kuralın gövdesindeki 4,3 dp eklenince 140 dp'lik tabanın 2 dp'lik payı bitiyor.
+Planın "payı 2 dp, dar" uyarısı dilde gerçekleşmiş. Ok her iki dilde de doğru
+yerde çıkıyor ve dokununca gövde tam açılıyor, yani içerik ulaşılabilir; kayıp
+üçüncü kuralın **adının** kaydırmasız okunması.
+
+**Bulgu 2 — tepsi boşalınca tavan kalkmıyor.** Tavan `st.finished`'a bağlı, ama
+bütün ürünler rafa konduğunda tepsi yalnız tek satırlık `reyon_tray_empty`
+notunu çiziyor ve `st.finished` hâlâ `false`; `panelCap` tepsiye `TRAY_KEEP`
+ayırmayı sürdürüyor. Ölçülen:
+
+| Uygulama alanı | Panel | Okunan kural | Altındaki boşluk |
+| --- | --- | --- | --- |
+| 563 dp (360×640) | ~128,7 dp | 3/5, `Çakışma`'nın gövdesi ortadan kesik | ~83 dp |
+| 480 dp | ~105 dp | 2/5, `Tamamlayıcı`'nın gövdesi ortadan kesik | ~83 dp |
+
+411 dp'de kural kaybı yok (içerik zaten sığıyor), yalnız aynı boşluk kalıyor.
+Oyuncunun kuralları okumak için en çok durduğu an tam bu. Koşul "tepside ürün
+kalmadı"ya bağlanırsa kapanır; denenmedi.
+
+**Doğrulananlar.** 411 dp'de panel üç turda da 232,4 dp — tepsiye göre 240 ↔ 208
+salınımı bitti. Yazı ölçeği 1,3'te içerikten gelen pay 254,1 dp alıp beş kuralı
+tam tutuyor, sabit `PANEL_WANT` = 240'lı yapı ise 240,0'a çakılıp beşinci kuralı
+14,1 dp'ye indiriyordu. 480 dp'lik uygulama alanında tepsi tabanını koruyor (iki
+ürün, 29,7 dp, dokunuş seçimi alıyor). Kısa ekranda Türkçe sayılar değişiklik
+boyunca hiç kıpırdamadı: 17,7 · 17,7 · 17,7 dp, gövde 31,0 → dokununca 48,7 →
+ikinci dokunuş kapatıyor.
+
+**Araç düzeltmesi — `reyon --olcek 2.0` artık çalışıyor.** Varsayılan ölçek üç
+türde de "Reyon açılamadı" veriyordu. Sebep `oyunu_ac`'taki 250 **piksel**lik
+yakınlık eşiği: 320 dpi'de 125 dp ediyor ve "son oynananlar" şeridindeki Reyon
+adı ile ilk oyun kartının Oyna düğmesi 248 px uzakta düşüyor, yani tarama Reyon
+yerine Blok'u açıyor; Blok'ta geri tuşu duraklatma katmanını açtığı için 14
+denemenin hepsi orada sıkışıyordu. Eşik dp'ye çevrildi (95 dp). Ölçek 2.0 ile
+alınan sayılar 3.0'la aynı çıkıyor (raf 167,0 / 156,0 dp).
+
+`logcat AndroidRuntime:E` bütün koşumlarda boş. Ekran ayarları, yazı ölçeği ve
+arayüz dili koşumlardan sonra geri alındı.
+
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
 Bu belgenin ilk hâlinde "uygulama geneli kare hızı sorunu" diye bir açık konu
