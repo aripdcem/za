@@ -3077,6 +3077,61 @@ tepsiye 186 dp yerine 193,6 dp kalıyor. Beklenen: beş kural yine tam, tepsinin
 son sırası yine bir sürükleme uzağında ama şeridi biraz daha geniş. 360×640
 dp'deki sayılar değişmemeli.
 
+### v0.43.4 · İçerikten gelen pay cihazda · 2026-09-21
+
+`panelCap` kolu (panel önce ölçülüyor, tavan yalnız tepsiyi koruyor) ölçüldü.
+Yapı: `1c1432b`, `com.aripd.zagames 0.43.4 sha256=27f8d21f…`, yerel APK ile
+birebir. Cihazın yazı ölçeği **1,1** (bu belgedeki bütün Reyon sayıları o
+ölçekte alınmıştır).
+
+**Beklenen üç sayı da tuttu.**
+
+| Ölçü | Beklenen | Ölçülen |
+| --- | --- | --- |
+| 411 dp panel | 232,4 dp | **232,4 dp** (üç turda da) |
+| 411 dp `Marka bloğu` | tam | **17,9 dp**, beş kuralın beşi de tam |
+| 360×640 dp | hiçbir sayı değişmemeli | **değişmedi** |
+
+411 dp'de panel artık tura göre 240 ↔ 208 arasında gidip gelmiyor; tepsi 194,3
+dp alıyor. 360×640 dp'de Satış: `Konum` · `Tamamlayıcı` · `Çakışma` 17,7 dp,
+gövde 31,0 dp, dokununca 48,7 dp, ikinci dokunuş kapatıyor — önceki koşumun
+sayılarının aynısı.
+
+**Kalibrasyonu kaldırmak ölçülebilir bir kazanç.** Savın sınandığı yer yazı
+ölçeği: gövde sp, tavan dp. 411 dp'de ölçek 1,3'e alındı ve iki yapı yan yana
+kuruldu:
+
+| Yapı | Panel | `Marka bloğu` adı |
+| --- | --- | --- |
+| sabit `PANEL_WANT` = 240 dp | **240,0 dp** (tavana çakılı) | **14,1 dp — kırpık** |
+| içerikten gelen pay | **254,1 dp** | **21,0 dp — tam** |
+
+Yani sabit sayı sahada gerçekten kırpıyordu; yeni kol aynı ekranda beş kuralı
+tam tutuyor.
+
+**Tepsinin tabanı çok kısa ekranda duruyor.** 480 dp'lik uygulama alanında raf
+134,3 dp, panel 108,0 dp, tepside iki ürün (29,7 dp) ve dokunuş seçimi alıyor —
+`minOf(…, rest − TRAY_MIN)` sınırı cihazda da tutuyor. O sınır olmasaydı panel
+140 dp alıp tepsiye 37,5 dp bırakacaktı.
+
+**Yeni bulgu — tavan `st.finished`'a bağlı, ama asıl durum "tepsi boş".**
+Bütün ürünler rafa konunca tepsi yalnız tek satırlık `reyon_tray_empty`
+("Tüm ürünler rafta") notunu çiziyor; `st.finished` hâlâ `false` olduğu için
+`panelCap` tepsiye `TRAY_KEEP` ayırmayı sürdürüyor. Cihazda 480 dp'lik uygulama
+alanında ölçülen: panel ~105 dp'de kalıyor, **beş kuralın ikisi** okunuyor,
+`Tamamlayıcı`'nın gövdesi satırın ortasından kesiliyor ve hemen altında **~83 dp
+boş alan** duruyor. 411 dp'de kural kaybı yok (içerik zaten sığıyor), yalnız aynı
+boşluk kalıyor.
+
+Bu, oyuncunun puan kurallarını okumak için en çok durduğu an: ürünler yerleşmiş,
+puan oluşmuş, karar veriliyor. Kol doğru, koşul dar — tavanın kalkması
+`st.finished` yerine "tepside ürün kalmadı"ya bağlanırsa kapanır. Bu koşumda
+denenmedi.
+
+Ölçülmeyenler: uzun bir arayüz dili (aynı mekanizmayı yazı ölçeği zaten zorladı)
+ve tur bitmiş hâlde 360×640 dp. `logcat AndroidRuntime:E` boş; ekran ayarları ve
+yazı ölçeği (1,1) geri alındı.
+
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
 Bu belgenin ilk hâlinde "uygulama geneli kare hızı sorunu" diye bir açık konu
