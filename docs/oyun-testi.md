@@ -3237,6 +3237,57 @@ alınan sayılar 3.0'la aynı çıkıyor (raf 167,0 / 156,0 dp).
 `logcat AndroidRuntime:E` bütün koşumlarda boş. Ekran ayarları, yazı ölçeği ve
 arayüz dili koşumlardan sonra geri alındı.
 
+### Dört işin cihaz ölçümü · 2026-09-21
+
+`e65c028` derlenip kuruldu (`sha256=cef84e80…`, yerel APK ile birebir). Bakılan
+üç şeyin üçü de tuttu.
+
+> Dalın bir önceki tepesi (`0eb9e5b`) **derlenmiyordu**: `weight` bir `ColumnScope`
+> uzantısı olduğu için modifier sütunun dışında kurulamıyor, `maxHeight` ise
+> tersine sütunun içinde okunamıyor. Ölçüm o yüzden `e65c028` ile alındı.
+> Bir tuzak daha: değişiklikten sonraki ilk derleme Gradle'da "84 up-to-date"
+> deyip eski APK'yi bıraktı ve `kurulu_yapi` özeti bir önceki ölçümünkiyle aynı
+> çıktı. `--rerun-tasks` gerekti. Özet karşılaştırması olmasa eski yapı yeni
+> sanılacaktı.
+
+**1 — Kısa ekranda hedef artık her dilde tutuyor.** 360×640 dp, panel 140,0 dp:
+
+| Dil | 1. kuralın gövdesi | Okunan kural | Önceki yapı |
+| --- | --- | --- | --- |
+| tr | 13,3 dp (tek satır) | **3/5** | 3/5 |
+| de | 13,3 dp (tek satır) | **3/5** | 2/5 |
+| fi | 13,3 dp (tek satır) | **3/5** | 2/5 |
+
+Üç dilde de sayılar birebir aynı çıkıyor: `Konum`/`Tamamlayıcı`/`Çakışma`
+17,7 dp, dördüncü kuralın adı 3,3 dp'lik şeride iniyor. Yani dil artık sonucu
+değiştirmiyor — bulgunun kendisi kapandı.
+
+**2 — 411 dp'de hiçbir sayı değişmedi.** Panel 232,4 dp, gövde 32,0 dp (iki
+satır), beş kuralın beşi de 17,9 dp; tr ve de aynı. Sıkışma yalnız tavan tabana
+çakılıyken devreye girdiği için uzun ekran dokunulmamış durumda.
+
+**3 — Tepsi boşalınca boşluk kapandı.** 360×640 dp'de bütün ürünler rafa
+konduktan sonra:
+
+| | Önceki yapı | `e65c028` |
+| --- | --- | --- |
+| Panel | ~128,7 dp | **198,0 dp** |
+| Okunan kural | 3/5, `Çakışma` gövdesi ortadan kesik | **4/5 tam**, beşincinin adı 12,3 dp |
+| Gövdeler | tek satır | **iki satır** (sıkışma kalkıyor) |
+| Altındaki boşluk | ~83 dp | **yok** — "Tüm ürünler rafta" panelin hemen altında |
+
+480 dp'lik uygulama alanında da aynı yönde: panel ~105 → **128,7 dp**, okunan
+kural 2 → **3/5**, boşluk kalmıyor.
+
+**Kenar not — 480 dp oyun sırasında.** Orada panel 108,0 dp'de kalıyor ve iki
+kural okunuyor (`Çakışma` 8,7 dp; önceki yapıda 5,3 dp'ydi). Kalan 177,5 dp
+`PANEL_MIN`'in altında olduğu için tepsinin tabanı kazanıyor — belgedeki
+ölçülmüş durumun aynısı ve G4 hedefi 360×640 dp için konmuştu. Tek satırlık
+gövdeler burada da 3,4 dp kazandırmış ama eşiği geçirmiyor.
+
+Birim testlerinin tamamı geçiyor. `logcat AndroidRuntime:E` boş; ekran ayarları,
+yazı ölçeği (1,1) ve arayüz dili (Türkçe) geri alındı.
+
 ## Kare gecikmesi: kapanan bir konu ve kalan bir nüans
 
 Bu belgenin ilk hâlinde "uygulama geneli kare hızı sorunu" diye bir açık konu
