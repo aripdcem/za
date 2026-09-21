@@ -56,7 +56,16 @@ import com.aripd.zagames.ui.common.ShareButton
 import com.aripd.zagames.platform.zaString
 
 private val TaxColor = Color(0xFFF87171)
-private val CoinColor = Color(0xFFFBBF24)
+internal val CoinColor = Color(0xFFFBBF24)
+
+/**
+ * Seçili sayının zemin saydamlığı. Koyu mürekkep (0xFF1C1917) koyu zemin
+ * üzerindeki soluk sarıda okunmuyordu (0,45 ile 2,8:1); Toplam'daki sahipli
+ * pulla aynı doygunluk WCAG AA eşiğini (4,5:1) rahat geçer.
+ * `VergiciCellContrastTest` bunu korur.
+ */
+internal const val SelectedFillAlpha = 0.85f
+internal val SelectedInk = Color(0xFF1C1917)
 
 @Composable
 fun VergiciScreen(
@@ -298,7 +307,7 @@ private fun NumberCell(
     }
     val bg = when {
         !onBoard -> Color.Transparent
-        selected -> CoinColor.copy(alpha = 0.45f)
+        selected -> CoinColor.copy(alpha = SelectedFillAlpha)
         taxed -> TaxColor.copy(alpha = 0.30f)
         takeable -> MaterialTheme.colorScheme.surfaceVariant
         else -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f)
@@ -325,7 +334,7 @@ private fun NumberCell(
                     fontSize = 18.sp,
                     fontWeight = if (takeable || taxed) FontWeight.Bold else FontWeight.Normal,
                     color = when {
-                        selected -> Color(0xFF1C1917)
+                        selected -> SelectedInk
                         taxed -> TaxColor
                         takeable -> MaterialTheme.colorScheme.onSurfaceVariant
                         else -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
