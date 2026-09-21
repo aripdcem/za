@@ -52,6 +52,81 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.43.5", "2026-09-21",
+            tr = listOf(
+                "Reyon · Satış: uzun telefonda beş puan kuralının beşi de görünüyor — panelin payı artık tepsinin kaç sıra tuttuğuna değil kuralların kendi boyuna bağlı",
+                "Dar ekranda üçüncü kural her dilde okunuyor: kural açıklamaları orada tek satıra iniyor, satıra dokununca tam açılıyor",
+                "Bütün ürünler rafa konunca panel boşalan yeri kullanıyor; puan kurallarını okumak için durulan an tam orası",
+            ),
+            en = listOf(
+                "Reyon · Sales: all five scoring rules are visible on a tall phone — the panel's share now follows the rules' own height, not how many rows the tray takes",
+                "On a narrow screen the third rule is readable in every language: rule descriptions drop to one line there, and tapping a row opens it in full",
+                "When every product is on the shelf the panel uses the freed space — that is exactly when you stop to read the scoring rules",
+            ),
+            others = mapOf(
+                "de" to listOf(
+                    "Reyon · Verkauf: Auf einem hohen Display sind alle fünf Punkteregeln sichtbar — der Anteil des Panels richtet sich jetzt nach der Höhe der Regeln, nicht nach den Reihen im Tablett",
+                    "Auf schmalen Bildschirmen ist die dritte Regel in jeder Sprache lesbar: Regelbeschreibungen stehen dort in einer Zeile, ein Tippen öffnet sie vollständig",
+                    "Sobald alle Produkte im Regal stehen, nutzt das Panel den frei gewordenen Platz — genau dann liest man die Punkteregeln",
+                ),
+                "fr" to listOf(
+                    "Reyon · Ventes : les cinq règles de score sont visibles sur un écran haut — la part du panneau suit désormais la hauteur des règles, pas le nombre de rangées du plateau",
+                    "Sur un écran étroit, la troisième règle est lisible dans toutes les langues : les descriptions tiennent sur une ligne et un appui les ouvre entièrement",
+                    "Quand tous les produits sont en rayon, le panneau occupe la place libérée — c'est justement le moment où l'on lit les règles",
+                ),
+                "nl" to listOf(
+                    "Reyon · Verkoop: op een hoog scherm zijn alle vijf scoreregels zichtbaar — het aandeel van het paneel volgt nu de hoogte van de regels, niet het aantal rijen in de lade",
+                    "Op een smal scherm is de derde regel in elke taal leesbaar: regelbeschrijvingen staan daar op één regel en een tik opent ze volledig",
+                    "Zodra alle producten in het schap staan, gebruikt het paneel de vrijgekomen ruimte — juist dan lees je de scoreregels",
+                ),
+                "es" to listOf(
+                    "Reyon · Ventas: en una pantalla alta se ven las cinco reglas de puntuación; la parte del panel sigue ahora la altura de las reglas y no las filas de la bandeja",
+                    "En pantallas estrechas la tercera regla se lee en todos los idiomas: allí las descripciones ocupan una línea y al tocar la fila se abren completas",
+                    "Cuando todos los productos están en el estante, el panel usa el espacio liberado: justo el momento en que se leen las reglas",
+                ),
+                "pt" to listOf(
+                    "Reyon · Vendas: em uma tela alta as cinco regras de pontuação aparecem; a parte do painel agora acompanha a altura das regras, não as linhas da bandeja",
+                    "Em telas estreitas a terceira regra é legível em todos os idiomas: ali as descrições ficam em uma linha e tocar na linha abre o texto completo",
+                    "Quando todos os produtos estão na prateleira, o painel usa o espaço livre — é exatamente quando se lê as regras",
+                ),
+                "it" to listOf(
+                    "Reyon · Vendite: su uno schermo alto si vedono tutte e cinque le regole di punteggio; la quota del pannello segue ora l'altezza delle regole, non le righe del vassoio",
+                    "Su schermi stretti la terza regola è leggibile in ogni lingua: lì le descrizioni stanno su una riga e toccando la riga si aprono per intero",
+                    "Quando tutti i prodotti sono a scaffale il pannello usa lo spazio liberato: è proprio il momento in cui si leggono le regole",
+                ),
+                "da" to listOf(
+                    "Reyon · Salg: på en høj skærm ses alle fem pointregler — panelets andel følger nu reglernes egen højde, ikke antallet af rækker i bakken",
+                    "På en smal skærm kan den tredje regel læses på alle sprog: beskrivelserne fylder én linje, og et tryk åbner dem helt",
+                    "Når alle varer står på hylden, bruger panelet den frigjorte plads — præcis når man læser pointreglerne",
+                ),
+                "sv" to listOf(
+                    "Reyon · Försäljning: på en hög skärm syns alla fem poängregler — panelens andel följer nu reglernas egen höjd, inte hur många rader brickan tar",
+                    "På en smal skärm går den tredje regeln att läsa på alla språk: beskrivningarna ryms på en rad och ett tryck öppnar dem helt",
+                    "När alla varor står i hyllan använder panelen det frigjorda utrymmet — precis då läser man poängreglerna",
+                ),
+                "nb" to listOf(
+                    "Reyon · Salg: på en høy skjerm vises alle fem poengregler — panelets andel følger nå reglenes egen høyde, ikke hvor mange rader brettet tar",
+                    "På en smal skjerm er den tredje regelen lesbar på alle språk: beskrivelsene står på én linje, og et trykk åpner dem helt",
+                    "Når alle varene står i hyllen, bruker panelet den frigjorte plassen — nettopp da leser man poengreglene",
+                ),
+                "fi" to listOf(
+                    "Reyon · Myynti: korkealla näytöllä kaikki viisi pisteytyssääntöä näkyvät — paneelin osuus seuraa nyt sääntöjen omaa korkeutta, ei tarjottimen rivimäärää",
+                    "Kapealla näytöllä kolmas sääntö on luettavissa kaikilla kielillä: kuvaukset mahtuvat siellä yhdelle riville ja riviä napauttamalla ne avautuvat kokonaan",
+                    "Kun kaikki tuotteet ovat hyllyssä, paneeli käyttää vapautuneen tilan — juuri silloin sääntöjä luetaan",
+                ),
+                "ru" to listOf(
+                    "Reyon · Продажи: на высоком экране видны все пять правил начисления — доля панели теперь зависит от высоты самих правил, а не от числа рядов в лотке",
+                    "На узком экране третье правило читается на всех языках: описания занимают там одну строку, а нажатие на строку раскрывает текст полностью",
+                    "Когда все товары на полке, панель занимает освободившееся место — именно тогда читают правила",
+                ),
+                "ar" to listOf(
+                    "Reyon · البيع: على الشاشة الطويلة تظهر قواعد النقاط الخمس كلها؛ صار نصيب اللوحة يتبع ارتفاع القواعد نفسها لا عدد صفوف الصينية",
+                    "في الشاشة الضيقة تُقرأ القاعدة الثالثة بكل اللغات: الشروح هناك في سطر واحد، ولمس الصف يفتحها كاملة",
+                    "حين تستقر كل المنتجات على الرف تستفيد اللوحة من المساحة المتحررة، وهي لحظة قراءة القواعد",
+                ),
+            ),
+        ),
+        ReleaseNote(
             "0.43.4", "2026-09-20",
             tr = listOf(
                 "Reyon · Satış: dar ekranda kırpılan puan kuralı açıklaması, satıra dokununca tam açılıyor; kırpılan satırın sağında küçük bir ok duruyor",
