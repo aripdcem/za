@@ -69,7 +69,7 @@ asistan (depo, metin, görsel üretimi).
 | [ ] | **Dahili test kanalına AAB yükle**; Play'in ön lansman raporu (robot testi) gerçek cihazlarda koşar | C |
 | [ ] | Android Vitals: çökme ve ANR verisini izle. Uygulamaya izleyici koymadan en büyük kör noktayı kapatır | C |
 | [ ] | **Cihaz matrisi**: en az üç ekran boyutu, üç Android sürümü, büyük yazı ölçeği ve hareket navigasyonu ile her oyunda tam bir tur | C |
-| [x] | Cihaz protokolü A–E ve eşikler: [`docs/oyun-testi.md`](../docs/oyun-testi.md); 27 oyunun A aşaması, sürekli çizenlerin B, sürüklemelilerin C aşaması SM-A515F'te yapıldı | A + C |
+| [x] | Cihaz protokolü A–E ve eşikler: [`docs/oyun-testi.md`](../docs/oyun-testi.md); 26 oyunun A aşaması, sürekli çizenlerin B, sürüklemelilerin C aşaması SM-A515F'te yapıldı | A + C |
 | [ ] | Vitals'ta beklenen uyarı: "yavaş çizim". Kare düşmüyor ama kare gecikmesi Viraj 34 ms, Filo 31 ms, jank %100/%81. Engel değil, sürpriz olmasın | A izler |
 
 ### Cihaz matrisinin bugünkü durumu
@@ -114,7 +114,7 @@ temsil etmez.
 
 - [ ] Sürüm derlemesini gerçek cihaza kur (hata ayıklama derlemesiyle ölçme):
       `./gradlew :app:assembleRelease` → `apksigner sign` → `adb install -r`
-- [ ] **A · koşum:** `python3 tools/cihaz_testi.py tarama` — 27 oyun açılıyor,
+- [ ] **A · koşum:** `python3 tools/cihaz_testi.py tarama` — 26 oyun açılıyor,
       oynanıyor, `logcat` temiz
 - [ ] **B · kare hızı:** sürekli çizen oyunlarda (Yılan, Kuyu, Geçit, Balkon,
       Viraj, Filo) `python3 tools/cihaz_testi.py kare --sure 15`; kare/s ≥ 58

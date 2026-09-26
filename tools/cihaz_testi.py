@@ -11,7 +11,6 @@ sürükleme hassasiyeti, oyun alanının piksel karşılığı. Kullanımı ve e
     python3 tools/cihaz_testi.py erisim
     python3 tools/cihaz_testi.py alan
     python3 tools/cihaz_testi.py surukle --y 1500 --mesafeler 20,40,80,160
-    python3 tools/cihaz_testi.py reyon --apk za-v0.43.2.apk   # G1-G6, 360x640 dp
 
 Gereksinim: adb (ANDROID_HOME/platform-tools ya da PATH), Pillow, numpy.
 """
@@ -38,7 +37,7 @@ PAKET = "com.aripd.zagames"
 OYUNLAR = [
     "Blok", "2048", "Yılan", "Sudoku", "Mayın Tarlası", "Beş Harf", "Kıskaç",
     "Türetme", "Dizgi", "Kuyu", "Geçit", "Tavla", "Balkon", "Kakuro",
-    "Vergici", "Toplam Kapma", "Viraj", "Filo", "Reyon",
+    "Vergici", "Toplam Kapma", "Viraj", "Filo",
 ]
 
 
@@ -493,29 +492,6 @@ def komut_erisim(args) -> None:
             print(f"  {o['t'] or '(etiketsiz)'}")
 
 
-# Reyon'un kısa ekran yerleşimi: docs/oyun-testi.md, "v0.43.2" bölümü G1-G6.
-# Etiketler arayüz dilinden geliyor; cihaz Türkçe ya da İngilizce olabilir diye
-# ikisi de aranıyor. Başka bir dildeyse --brif/--tepsi/--artir ile verilebilir.
-REYON_ETIKET = {
-    "diziliş": ["Diziliş", "Arrange"],
-    "satış": ["Satış", "Sales"],
-    "sipariş": ["Sipariş", "Ordering"],
-    "serbest": ["Serbest", "Free play"],
-    "kolay": ["Kolay", "Easy"],
-    "brif": ["Planogram brifi", "Planogram brief"],
-    "tepsi": ["Tepsi", "Tray"],
-    "artır": ["Artır", "More"],
-    "raf": ["Reyon ", "Satış rafı ", "Sipariş rafı ", "Sales shelf ", "Order shelf "],
-    "kural": ["Satış kuralları", "Sales rules"],
-    "basa": ["Başa dön", "Back to start"],
-}
-REYON_BASLAT = {
-    "diziliş": ["Başla", "Start"],
-    "satış": ["Dizmeye başla", "Start arranging"],
-    "sipariş": ["Haftaya başla", "Start the week"],
-}
-
-
 def yogunluk() -> float:
     """Ekranın dp ölçeği: önce geçici (override) yoğunluk, yoksa fiziksel."""
     cikti = kabuk("wm density")
@@ -523,132 +499,6 @@ def yogunluk() -> float:
     fiziksel = re.search(r"Physical density:\s*(\d+)", cikti)
     dpi = int((gecici or fiziksel).group(1)) if (gecici or fiziksel) else 160
     return dpi / 160.0
-
-
-def dp_kutu(oge: dict, olcek: float) -> dict:
-    return {"x": round(oge["x1"] / olcek, 1), "y": round(oge["y1"] / olcek, 1),
-            "g": round((oge["x2"] - oge["x1"]) / olcek, 1),
-            "b": round((oge["y2"] - oge["y1"]) / olcek, 1)}
-
-
-def on_ekli(ogeler: list[dict], anahtar: str, ek: str = ": ") -> list[dict]:
-    """Etiketi verilen ön eklerden biriyle başlayan öğeler."""
-    onler = [a + ek for a in REYON_ETIKET[anahtar]]
-    return [o for o in ogeler if any(o["t"].startswith(p) for p in onler)]
-
-
-def reyon_kurulum_karti() -> None:
-    """Sürmekte olan turdan kurulum kartına döner.
-
-    Reyon yarım kalan turu saklıyor: oyundan çıkıp yeniden girince tur
-    kaldığı yerden açılıyor ve mod çipleri ekranda olmuyor.
-    """
-    for _ in range(3):
-        ogeler = arayuz()
-        if any(o["t"] in REYON_ETIKET["diziliş"] for o in ogeler):
-            return
-        geri = next((o for o in ogeler if o["t"] in REYON_ETIKET["basa"]), None)
-        if not geri:
-            return
-        dokun(geri)
-
-
-def reyon_turu_ac(tur: str) -> bool:
-    """Reyon menüsünde türü, serbest modu ve Kolay'ı seçip turu başlatır."""
-    for grup, hedefler in (("tur", REYON_ETIKET[tur]), ("mod", REYON_ETIKET["serbest"]),
-                           ("zorluk", REYON_ETIKET["kolay"]), ("baslat", REYON_BASLAT[tur])):
-        for deneme in range(6):
-            ogeler = arayuz()
-            oge = next((o for o in ogeler if o["t"] in hedefler), None)
-            if oge:
-                dokun(oge)
-                break
-            # Mod çipine dokunmak o modun yarım turunu açabiliyor: kurulum
-            # kartına dönülür. Kısa ekranda kart kaydığı için de aranır.
-            reyon_kurulum_karti()
-            if any(o["t"] in hedefler for o in arayuz()):
-                continue
-            kaydir()
-        else:
-            print(f"    {tur}: {grup} düğmesi bulunamadı ({'/'.join(hedefler)})")
-            return False
-    # Bulmaca arka planda üretiliyor; raf gelene dek bekle.
-    for _ in range(20):
-        if on_ekli(arayuz(), "raf", ek=""):
-            return True
-        time.sleep(1.5)
-    print(f"    {tur}: raf tuvali gelmedi (üretim uzun sürdü ya da tur açılmadı)")
-    return False
-
-
-def reyon_olc(tur: str, olcek: float) -> dict:
-    """Bir turu açıp panelin, rafın ve tepsinin kutularını dp olarak döndürür."""
-    hub_ac(PAKET)
-    if not oyunu_ac("Reyon"):
-        print("    Reyon açılamadı")
-        return {}
-    reyon_kurulum_karti()
-    if not reyon_turu_ac(tur):
-        return {}
-    ogeler = arayuz(hepsi=True)
-    raf = on_ekli(ogeler, "raf", ek="")
-    panel = {"diziliş": on_ekli(ogeler, "brif"),
-             "sipariş": on_ekli(ogeler, "artır")}.get(tur)
-    if tur == "satış":
-        # Kural adları content-desc taşımıyor; panelin başlığından aşağısı ölçülür.
-        baslik = next((o for o in ogeler if o["t"] in REYON_ETIKET["kural"]), None)
-        panel = [baslik] if baslik else []
-    tepsi = on_ekli(ogeler, "tepsi")
-    return {"raf": [dp_kutu(o, olcek) for o in raf],
-            "panel": [dp_kutu(o, olcek) for o in (panel or [])],
-            "tepsi": [dp_kutu(o, olcek) for o in tepsi]}
-
-
-def komut_reyon(args) -> None:
-    cihaz_var()
-    if args.apk:
-        print(f"Kuruluyor: {args.apk}")
-        print("   ", adb("install", "-r", args.apk).strip() or "(çıktı yok)")
-    print("Ölçülen yapı:", kurulu_yapi(PAKET))
-    onceki = kabuk("wm size") + kabuk("wm density")
-    print("Önceki ekran:", " ".join(onceki.split()))
-    try:
-        for dp_g, dp_y in [tuple(int(x) for x in args.ekran.split("x")), (0, 0)]:
-            if dp_g:
-                olcek = args.olcek
-                kabuk(f"wm size {int(dp_g * olcek)}x{int(dp_y * olcek)}")
-                kabuk(f"wm density {int(olcek * 160)}")
-                time.sleep(1.5)
-                print(f"\n=== {dp_g}x{dp_y} dp (ölçek {olcek}) ===")
-            else:
-                kabuk("wm size reset")
-                kabuk("wm density reset")
-                time.sleep(1.5)
-                olcek = yogunluk()
-                print(f"\n=== cihazın kendi ekranı (ölçek {olcek}) — G6 ===")
-            for tur in ("diziliş", "satış", "sipariş"):
-                print(f"\n  {tur}")
-                o = reyon_olc(tur, olcek)
-                if not o:
-                    continue
-                for ad in ("raf", "panel", "tepsi"):
-                    kutular = o[ad]
-                    if not kutular:
-                        print(f"    {ad:6s}: bulunamadı")
-                        continue
-                    boylar = [k["b"] for k in kutular]
-                    gorunen = [b for b in boylar if b > 0]
-                    print(f"    {ad:6s}: {len(kutular)} düğüm, boylar {boylar}")
-                    if ad == "panel":
-                        print(f"            görünen {len(gorunen)}/{len(kutular)}, "
-                              f"ilk kutu y={kutular[0]['y']} dp")
-                    if ad == "raf":
-                        print(f"            genişlik {kutular[0]['g']} dp, "
-                              f"yükseklik {kutular[0]['b']} dp")
-    finally:
-        kabuk("wm size reset")
-        kabuk("wm density reset")
-        print("\nEkran ayarları sıfırlandı.")
 
 
 def komut_tarama(args) -> None:
@@ -725,12 +575,6 @@ def main() -> None:
 
     e = alt.add_parser("erisim", help="etkileşimli öğelerin ekran okuyucu etiketi")
     e.set_defaults(func=komut_erisim)
-
-    r = alt.add_parser("reyon", help="Reyon kısa ekran yerleşimi (G1-G6)")
-    r.add_argument("--apk", help="önce kurulacak APK (adb install -r)")
-    r.add_argument("--ekran", default="360x640", help="dp cinsinden ekran (varsayılan 360x640)")
-    r.add_argument("--olcek", type=float, default=2.0, help="dp ölçeği (varsayılan 2.0 = 320 dpi)")
-    r.set_defaults(func=komut_reyon)
 
     t = alt.add_parser("tarama", help="tüm oyunları açıp A+B aşamalarını koşar")
     t.add_argument("oyunlar", nargs="*", help="oyun adları; boşsa hepsi")

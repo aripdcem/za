@@ -2,7 +2,7 @@
 
 > **Sıfır reklam. Sıfır izleyici. Sıfır izin. Saf oyun.**
 
-ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Reyon**, **Raket**, **Tuşe**, **Uçurtma**, **Dalgıç**, **Bostan**, **Sincap**, **Çekirge**, **Cici**.
+ZA, Android telefonlar için **"zero ad game play"** konseptiyle geliştirilen bir mobil oyun platformudur. Çatı altındaki her oyun tamamen reklamsızdır; uygulama hiçbir izin istemez (İNTERNET izni dahil), hiçbir veri toplamaz ve hiçbir şey satmaz. Uygulama tam ekran açılır; sistem çubukları kenardan kaydırınca geçici görünür. Oyunlar: **Blok**, **2048**, **Yılan**, **Sudoku**, **Mayın Tarlası**, **Beş Harf**, **Kıskaç**, **Türetme**, **Dizgi**, **Kuyu**, **Geçit**, **Tavla**, **Balkon**, **Kakuro**, **Vergici**, **Toplam Kapma**, **Viraj**, **Filo**, **Raket**, **Tuşe**, **Uçurtma**, **Dalgıç**, **Bostan**, **Sincap**, **Çekirge**, **Cici**.
 
 Ana menüde oyunlar gruplara ayrılır (Kelime, Bulmaca, Arcade, Masa; süzgeç çipleri, seçim kalıcı) ve en üstte son oynanan dört oyun için hızlı erişim şeridi bulunur.
 
@@ -33,7 +33,7 @@ za/
 │       └── ui/theme/             # ZA teması
 ├── games/
 │   ├── blok/    g2048/  snake/   # Oyun motorları: saf Kotlin/JVM, Android'e
-│   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ kuyu/ gecit/ tavla/ balkon/ kakuro/ sayi/ viraj/ filo/ reyon/ # bağımsız, her biri kendi birim testleriyle
+│   └── sudoku/ mines/ besharf/ kiskac/ turetme/ dizgi/ kuyu/ gecit/ tavla/ balkon/ kakuro/ sayi/ viraj/ filo/ # bağımsız, her biri kendi birim testleriyle
 ├── tools/                        # gen_sfx.py (sesler), gen_words.py + gen_turetme.py + gen_dizgi.py (kelime listeleri)
 │                                 # cihaz_testi.py (cihaz üstü kare hızı / giriş ölçümü)
 └── docs/oyun-testi.md            # her oyunun geçmesi gereken test protokolü ve sonuç kütüğü
@@ -237,53 +237,9 @@ Tüm motorlar deterministiktir: aynı tohumla (seed) başlayan iki oyun, aynı h
   (`games/kakuro`, 8 test)
 
 ### Reyon
-- **Planogram mantık bulmacası** (kendi tasarımımız): bir raf ünitesi (3×4, 4×5 ya da 4×6 göz), rafı tam dolduran
-  ürünler (1–3 yüz, boy, marka, kategori, ★ yüksek marj, ▼ ağır) ve bir planogram brifi. Brifteki kurallar gerçek
-  yerleşim ilkeleridir: göz hizası (yüksek marjlılar 2. rafta), ağırlar en alta, kategori bloğu, kategoriler ayrı,
-  marka dikey bloğu, boy akışı (soldan sağa büyür); ayrıca raf/göz/kenar, yan yana, solunda, aynı/farklı raf, üstünde
-- Ürüne dokun, göze dokun: blok oturur; uzun basınca tepsiye döner. Blok adı göze sığdırılır (tek satır, gerekirse
-  boşluktan iki satır ya da hafif daraltma; kırpma en son çare). Brif satırları tutunca ✓, çelişince ✗ olur ve
-  ilgili ürünler kırmızı çerçevelenir; satıra dokununca ilgili ürünler vurgulanır. Geri alma; ipucu önce yanlış
-  duranı gösterir, sonra mevcut yerleşimlerden mantıkla çıkan sıradaki adımı yerleştirir (ipucusuz çözümler rekor)
-- **Tek çözüm ve tahminsizlik garantisi**: üretici planogram yapısında bir düzen örnekler (kategori bantları, marka
-  blokları), doğru olan tüm ipucu adaylarını türetir, ağırlıklı sırayla tek çözüm sağlanana dek ekler, sonra
-  oyuncunun gördüğü bilgiyle çalışan çıkarım çözücüsü (tekil, ikili, örtü, kapasite, çoklu teknikleri) sonuna kadar
-  gidebildiği sürece ipuçlarını atar: en küçük, çıkarılabilir brif. Günlük mod herkese aynı rafı verir; yarım kalan
-  bulmaca cihazda saklanır
-- **Denetim modu** (planogram uyum kontrolü): üstte referans plan, altta gerçek raf. Raf plandan K yerde sapar
-  (Kolay 2, Orta 3, Zor 5): yer değişimi, boş göz (bir yüz ya da ürün eksik), yabancı ürün, yanlış marka, yanlış boy,
-  komşu göze taşma; ince sapmalar (marka/boy) yalnızca üst zorluklarda. Sapmalara dokunulur, yanlış dokunuş hata
-  sayılır; bulunanlar açıklamasıyla (en yeni üstte) listelenir. Plan ve raf her ekranda aynı genişlikte kalır
-  (yükseklik bütçesine göre boyutlanır), plana dokununca büyütülmüş plan açılır. Üretici sapmaları ayrık tutar ve plan ile rafın **yalnızca** sapma
-  gözlerinde ayrıştığını doğrular (gizli fark yok, sahte fark yok). Süre, hata ve ipucu; günlük raf, en iyi süre
-- **Satış modu** (açık uçlu diziliş): aynı ürün seti, brif yok; puan beş satış kuralından gelir ve oyuncuya aynen
-  anlatılır: konum (talep × yüz × raf çarpanı; göz hizası ×3, alt ×1, ▼ ağır yalnız altta ×3, ★ yalnız göz hizasında
-  ×4), tamamlayıcı komşuluk (cips–sos gibi 20 çift; yan yana +6, üst üste +3), çakışma (temizlik gıdanın yanında
-  −8), kategori bloğu (+4), marka bloğu (yan yana +3, üst üste +3). Hedef, tavlamalı yerel aramanın (eşit genişlik
-  takası, raf içi komşu takası, raf takası, ürün↔eşit genişlikli koşu takası; 4 yeniden başlatma) bulduğu en iyi
-  puandır; ≥ hedef 3 yıldız, ≥ %90 2, ≥ %75 1. Canlı puan ve kural dökümü, seçili ürünün katkısı, bloklarda puan
-  rozeti; tamamlayınca hedef dizilişi görme ve düzenlemeye dönme; günlük ürün seti (günün en iyi puanı), serbest modda
-  hedef yüzdesi rekoru
-- **Sipariş modu** (stok devri): raf planı sabit, iş stok. Beş–yedi gün boyunca her gün ürün başına kaç koli
-  sipariş edileceğine karar verilir: talep aralık olarak görünür (gerçekleşen talep tohumdan gelir), siparişler ertesi
-  sabah gelir (Zor'da ağırlar iki gün sonra), rafa sığmayan iade olur (−1/birim); satış marj kazandırır (+4, ★ +6),
-  akşam rafta kalan her birim bekleme öder (−1), raf ömrü dolan fire olur (−2, ★ −4; süt/ayran 2, yumurta/peynir 3,
-  tereyağı 4 gün); hafta sonu içecek ve atıştırmalık ×1,4, promosyon günü ×2,5 (menüde duyurulur). Hedef, aynı
-  tahminleri gören uzman politikanın (teslim günü talebini emniyet payıyla karşılayan sipariş-üstü düzeyi) aynı
-  haftadaki kârı; ≥ hedef 3 yıldız, ≥ %90 2, ≥ %75 1. Raf tuvali stok doluluğunu gösterir; ürün satırlarında stok,
-  bugünün ve teslim gününün tahmini, gelen teslimat, bozulacak birimler ve koli adımlayıcısı; ipucu uzmanın önerisini
-  yazar; gün kapanış dökümü (satış, kayıp, bekleme, fire, iade, sabah teslimatı); hafta sonunda stok devri ve hizmet
-  düzeyi uzmanla karşılaştırılır; günlük hafta (günün en iyi kârı), serbest modda hedef yüzdesi rekoru
-- Motor `games/reyon`: `OrderRules`/`OrderExpert`/`ReyonOrderGenerator`/`ReyonOrderState` (sipariş kuralları, uzman
-  politika, hafta üretimi, gün kapanışı, kayıt); `SalesRules`/`SalesScorer`/`SalesOptimizer`/`ReyonSalesState` (puan tabloları, kısmi
-  puanlama, iyileştirici, satış durumu); `ReyonAuditGenerator`/`ReyonAuditState` (sapma üretimi ve doğrulama, dokunma, ipucu, kayıt);
-  `ReyonGenerator` (düzen örnekleme, aday ipuçları, seçim/küçültme, iş
-  sayaçları), `Propagator`/`ReyonSolver`/`ReyonDeducer` (kısıt yayılımı, geri izleme, çıkarım izi), `ReyonState`
-  (yerleştirme, geri alma, durum, ipucu, kayıt); 46 test: kural değerlendirme, kaba kuvvetle çapraz doğrulama,
-  çözümü düşürmeyen yayılım, determinizm, tek çözüm, tahminsizlik, brif uzunluğu, üretim bütçesi, denetim
-  değişmezleri (ayrık ve görünür sapmalar, tür kapsamı, dokunma mekaniği), satış puanlaması (elle hesaplı
-  örnek), hedef ≥ taban ve geçerli tam doluluk, iyileştirici bütçesi, sipariş gün kuralları (elle izlenen hafta),
-  tahmin aralığı, uzman siparişlerinin tekrar oynanışının hedefi birebir vermesi, kayıt tur dönüşü; `ReyonBalanceProbe`
+Reyon v0.44.0'da ayrı bir uygulama oldu: motoru, arayüzü, testleri ve cihaz kütükleri
+[aripdcom/reyon](https://github.com/aripdcom/reyon) deposunda. Bu depodaki geçmiş kayıtlar
+(`CHANGELOG.md`, sürüm notları, `docs/oyun-testi.md` kütükleri) olduğu gibi duruyor.
 
 ### Raket
 - **Raket oyunu** (Pong türü, kendi tasarımımız): dikey kort, altta ve üstte yatay raketler; raket parmakla
@@ -496,7 +452,7 @@ kullanıcıya İngilizce açılırdı.
 ## Derleme
 
 Arayüz testleri JVM'de koşar, emülatör gerekmez: `./gradlew :app:testDebugUnitTest` (Robolectric + Compose test kuralı;
-ana menü, gezinme, Sudoku/Kakuro/Mayın Tarlası/Beş Harf etkileşimleri, Hakkında ve 19 oyun ekranının duman testi).
+ana menü, gezinme, Sudoku/Kakuro/Mayın Tarlası/Beş Harf etkileşimleri, Hakkında ve 26 oyun ekranının duman testi).
 CI her itmede motor testleriyle birlikte koşturur; sürüm iş akışı da bunlar geçmeden APK üretmez.
 
 Gereksinimler: JDK 17+, Android SDK (compileSdk 36). Android Studio ile açıp çalıştırabilir veya komut satırından derleyebilirsiniz:
@@ -574,4 +530,4 @@ Sürüm çıkarmak: `git tag v0.1.0 && git push origin v0.1.0`
 
 ### English summary
 
-**ZA** is an Android platform for truly ad-free games ("zero ad game play"): no ads, no trackers, no permissions (not even INTERNET), no purchases. It ships 27 games — arcade, puzzle, word and board — in 14 languages, following the phone's language with an in-app picker. Game rules live in deterministic, fully unit-tested pure Kotlin modules under `games/`; the Compose UI lives in `app`. Sound effects are tiny procedurally generated WAVs (`tools/gen_sfx.py`) and can be muted from the hub. Add a game by writing an engine module, a Compose screen, and one `GameEntry` in `GameRegistry`. Build with `./gradlew :app:assembleDebug`, test engines with `./gradlew :games:engineTests`. Licensed under GPL-3.0-or-later; the "ZA Games" name and logo are not part of the license.
+**ZA** is an Android platform for truly ad-free games ("zero ad game play"): no ads, no trackers, no permissions (not even INTERNET), no purchases. It ships 26 games — arcade, puzzle, word and board — in 14 languages, following the phone's language with an in-app picker. Game rules live in deterministic, fully unit-tested pure Kotlin modules under `games/`; the Compose UI lives in `app`. Sound effects are tiny procedurally generated WAVs (`tools/gen_sfx.py`) and can be muted from the hub. Add a game by writing an engine module, a Compose screen, and one `GameEntry` in `GameRegistry`. Build with `./gradlew :app:assembleDebug`, test engines with `./gradlew :games:engineTests`. Licensed under GPL-3.0-or-later; the "ZA Games" name and logo are not part of the license.

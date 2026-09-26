@@ -17,7 +17,6 @@ import com.aripd.zagames.ui.hub.KakuroArt
 import com.aripd.zagames.ui.hub.VergiciArt
 import com.aripd.zagames.ui.hub.ToplamArt
 import com.aripd.zagames.ui.hub.FiloArt
-import com.aripd.zagames.ui.hub.ReyonArt
 import com.aripd.zagames.ui.hub.SincapArt
 import com.aripd.zagames.ui.hub.RaketArt
 import com.aripd.zagames.ui.hub.TuseArt
@@ -43,7 +42,6 @@ import com.aripd.zagames.ui.vergici.VergiciScreen
 import com.aripd.zagames.ui.toplam.ToplamScreen
 import com.aripd.zagames.ui.filo.FiloScreen
 import com.aripd.zagames.ui.sincap.SincapScreen
-import com.aripd.zagames.ui.reyon.ReyonScreen
 import com.aripd.zagames.ui.raket.RaketScreen
 import com.aripd.zagames.ui.tuse.TuseScreen
 import com.aripd.zagames.ui.ucurtma.UcurtmaScreen
@@ -278,18 +276,6 @@ object GameRegistry {
             art = { modifier -> FiloArt(modifier) },
             screen = { highScore, onScore, onExit ->
                 FiloScreen(highScore = highScore, onScore = onScore, onExit = onExit)
-            },
-        ),
-        GameEntry(
-            id = "reyon",
-            since = "0.25.0",
-            titleRes = R.string.game_reyon,
-            taglineRes = R.string.game_reyon_tagline,
-            category = GameCategory.PUZZLE,
-            accent = Color(0xFF60A5FA),
-            art = { modifier -> ReyonArt(modifier) },
-            screen = { highScore, onScore, onExit ->
-                ReyonScreen(highScore = highScore, onScore = onScore, onExit = onExit)
             },
         ),
         GameEntry(

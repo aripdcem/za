@@ -45,7 +45,7 @@ Anket kategorisi: **Oyun**.
 | Cici | Uzay kedisi ve kırmızı top kuşa çarpar, can gider | Karikatür şiddet, hafif |
 | Uçurtma | Rakip uçurtmanın ipini kesme | Karikatür şiddet, hafif |
 | Viraj | Araç çarpışmaları; hasar ya da yaralanma gösterimi yok | Karikatür şiddet, hafif |
-| Blok, 2048, Yılan, Sudoku, Mayın Tarlası, Kakuro, Reyon, Tavla, Raket, Tuşe, Vergici, Toplam Kapma, Beş Harf, Kıskaç, Türetme, Dizgi | Çatışma ögesi yok | Hepsine hayır |
+| Blok, 2048, Yılan, Sudoku, Mayın Tarlası, Kakuro, Tavla, Raket, Tuşe, Vergici, Toplam Kapma, Beş Harf, Kıskaç, Türetme, Dizgi | Çatışma ögesi yok | Hepsine hayır |
 
 ## Beklenen sonuç
 

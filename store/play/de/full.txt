@@ -1,4 +1,4 @@
-ZA ist eine werbefreie Spieleplattform: 27 Spiele in einer App. Keines zeigt Werbung, keines verlangt Berechtigungen, keines sammelt Daten. Es gibt nicht einmal die Internet-Berechtigung; alles läuft offline.
+ZA ist eine werbefreie Spieleplattform: 26 Spiele in einer App. Keines zeigt Werbung, keines verlangt Berechtigungen, keines sammelt Daten. Es gibt nicht einmal die Internet-Berechtigung; alles läuft offline.
 
 UNSER VERSPRECHEN
 • 0 Werbung: kein Werbe-SDK
@@ -8,7 +8,7 @@ UNSER VERSPRECHEN
 
 SPIELE
 Arcade: Blok (fallende Blöcke), Snake, Kuyu (Abstieg in den Brunnen, täglicher Brunnen), Geçit (Straße überqueren, täglicher Modus), Balkon (vom Balkon zielen: Kürbiskerne, Wasserbomben oder Spucke), Viraj (Pseudo-3D-Rennen, tägliche Strecke), Filo (vertikaler Weltraum-Shooter, tägliche Flotte), Raket (Paddle-Spiel: gegen den Computer, einen Freund oder die Wand; tägliche Wand), Tuşe (Klaviertasten: sieben gemeinfreie Melodien; tägliches Stück), Uçurtma (halten und steigen; Dächer, Leitungen und Rivalendrachen; Missionen und Ausrüstung; täglicher Himmel), Dalgıç (Taucher mit dem U-Boot retten; Sauerstoff, Haie, Minen, Strömungen; tägliches Meer), Bostan (Spurverteidigung: Brunnen, Sprinkler, Vogelscheuchen, Bienenstöcke, Fallen; jedes Level ist gewinnbar erzeugt; drei Schwierigkeiten, täglicher Garten), Sincap (Platane hinauf: links/rechts tippen, zum nächsten Ast springen; trockene Äste, Schlangen, Krähen und eine Katze, die aufholt; täglicher Baum), Çekirge (Formations-Shooter: ziehen zum Gehen, tippen zum Sprühen, Ein-Schuss-Regel; Heuballen, die Königin; tägliches Feld), Cici (Kapitel 1: Im Weltraum — den weißen Wellensittich ziehen: Honigkolben 7, Körner 5, Wasser 2 Punkte; Weltraumkatzen und ein springender roter Ball; wer stillsitzt, langweilt sich; täglicher Weltraum)
-Rätsel: 2048, Sudoku (drei Stufen, Notizen, eindeutige Lösung), Minesweeper, Kakuro (drei Größen, eindeutige Lösung), Reyon (Planogramm-Rätsel, Compliance-Prüfung und Verkaufslayout; tägliches Regal)
+Rätsel: 2048, Sudoku (drei Stufen, Notizen, eindeutige Lösung), Minesweeper, Kakuro (drei Größen, eindeutige Lösung)
 Wörter: Beş Harf (tägliches Fünf-Buchstaben-Wort), Kıskaç (alphabetische Zange), Türetme (Wörter aus Buchstaben), Dizgi (Wortbrett zum Weitergeben, 2-4 Spieler) — alle vier in deiner Sprache, je mit eigenem Wörterbuch und täglichem Rätsel
 Brett und Zahlen: Tavla (Backgammon: Klassisch, Tapa, Hapis; gegen Computer oder Freund), Vergici (Taxman), Toplam Kapma (Number Scrabble)
 

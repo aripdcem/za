@@ -48,12 +48,6 @@ CI'daki `probe` adımı geçme/kalma vermez; amacı **ölçüm koşumlarının
 | Rastgele ellerin çoğu kelime kurar | `DizgiStateTest` |
 | Kolay tahtalar en basit teknikle çözülür | `SudokuStateTest` |
 | Üretim iş bütçesini aşmaz | `KakuroTest` |
-| Her bulmaca tahminsiz çözülür, brif kısa kalır, üretim bütçede | `ReyonGeneratorTest` |
-| Denetim sapmaları ayrık ve görünür; plan ile raf yalnızca sapma gözlerinde ayrışır | `ReyonAuditTest` |
-| Satış hedefi tabanı geçer, geçerli tam doluluktur; iyileştirici bütçede | `ReyonSalesTest` |
-| Sipariş: gerçekleşen talep tahmin aralığında; uzman siparişlerinin tekrar oynanışı hedefi birebir verir; gün kuralları elle izlenen haftayla eşleşir; kayıt tur dönüşü | `ReyonOrderTest` |
-| Reyon blok adları en dar gerçek gözde kırpılmaz (35 ad, TR ve EN; 360 dp telefonda Zor planı, tek yüz) | `ReyonBlockLabelTest` |
-| Denetimde plan ve raf 360×640'ta da aynı genişlikte ve ekran içinde; plan büyütme açılıp kapanır | `ReyonAuditLayoutTest` |
 | Raket: orta bir oyuncu botu kolay bilgisayarı yener, zora yenilir, seviyeler sıralı ve her maç biter; tavan hızda vuruş kaçmaz (tünelleme yok) | `RaketWorldTest` |
 | Tuşe: şerit dizisi tohumdan deterministik, her şerit kullanılır, tekrar payı sınırlı; Sonsuz'da sıradaki karo tamamen çıkana dek vurulabilir; parçalar aralıkta ve oktav sıçramasız; sentez notanın frekansını %3 içinde tutar | `TuseWorldTest` |
 | Uçurtma: üretilen dünya her sütunda ≥ 0,3 birim boşluk bırakır (tavan zorlukta da); rakibin üstünden geçen keser, altından geçen kesilir; dikkatli pilot 12 uçuşun en az 8'inde 300 m'yi geçer | `UcurtmaWorldTest` |
@@ -102,8 +96,8 @@ tek parmakla sınırlı).
 
 ### Her ölçüm hangi yapıda alındığını yazar
 
-`cihaz_testi.py reyon` ve `... tarama` raporun ilk satırına kurulu yapının
-parmak izini basar:
+`cihaz_testi.py tarama` raporun ilk satırına kurulu yapının parmak izini
+basar:
 
 ```
 Ölçülen yapı: com.aripd.zagames 0.43.3 sha256=00bfb833…
@@ -467,6 +461,12 @@ olduğundan fazla gösterir.
 ---
 
 ## Sonuç kütüğü
+
+> **Reyon v0.44.0'da ayrı bir uygulama oldu** ([aripdcom/reyon](https://github.com/aripdcom/reyon)).
+> Aşağıdaki Reyon kütükleri geçmiş kayıttır ve o depoda `docs/cihaz-testi.md` içinde de duruyor.
+> Burada kalmalarının nedeni: TalkBack alt payı (`MainActivity.ExplorationInset`) ve kısa ekranda
+> kayan kart (`OverlayCard`) Reyon'da bulunan ama bütün oyunlara uygulanan düzeltmeler; gerekçeleri
+> bu kütüklerde.
 
 Ölçüm cihazı: SM-A515F (Galaxy A51), Android 13, 1080×2400 @420 dpi, 60 Hz,
 sürüm derlemesi. A: açılış/oynanış/çökme. B: 12 s pencerede kare ölçümü.

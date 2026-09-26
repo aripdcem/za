@@ -52,6 +52,67 @@ object Changelog {
 
     val entries: List<ReleaseNote> = listOf(
         ReleaseNote(
+            "0.44.0", "2026-09-26",
+            tr = listOf(
+                "Reyon artık ayrı bir uygulama: Google Play'de Reyon adıyla, ücretsiz ve yine reklamsız; ZA Games'ten bu sürümle çıktı",
+                "Reyon'daki ilerleme yeni uygulamaya taşınmıyor: Android iki uygulamanın verisini birbirinden ayrı tutuyor",
+            ),
+            en = listOf(
+                "Reyon is now its own app: find it on Google Play as Reyon, free and still ad-free; it leaves ZA Games with this version",
+                "Progress in Reyon does not carry over to the new app: Android keeps each app's data separate",
+            ),
+            others = mapOf(
+                "de" to listOf(
+                    "Reyon ist jetzt eine eigene App: bei Google Play unter dem Namen Reyon, kostenlos und weiterhin werbefrei; mit dieser Version verlässt sie ZA Games",
+                    "Der Fortschritt in Reyon wird nicht in die neue App übernommen: Android hält die Daten jeder App getrennt",
+                ),
+                "fr" to listOf(
+                    "Reyon devient une appli à part : sur Google Play sous le nom Reyon, gratuite et toujours sans publicité ; elle quitte ZA Games avec cette version",
+                    "La progression dans Reyon ne passe pas dans la nouvelle appli : Android garde les données de chaque appli séparées",
+                ),
+                "nl" to listOf(
+                    "Reyon is nu een eigen app: op Google Play onder de naam Reyon, gratis en nog steeds zonder advertenties; met deze versie verdwijnt hij uit ZA Games",
+                    "Voortgang in Reyon gaat niet mee naar de nieuwe app: Android houdt de gegevens van elke app gescheiden",
+                ),
+                "es" to listOf(
+                    "Reyon es ahora una app propia: en Google Play con el nombre Reyon, gratis y sigue sin anuncios; con esta versión sale de ZA Games",
+                    "El progreso de Reyon no pasa a la nueva app: Android mantiene separados los datos de cada app",
+                ),
+                "pt" to listOf(
+                    "O Reyon agora é um app próprio: no Google Play com o nome Reyon, grátis e ainda sem anúncios; com esta versão ele sai do ZA Games",
+                    "O progresso no Reyon não passa para o novo app: o Android mantém os dados de cada app separados",
+                ),
+                "it" to listOf(
+                    "Reyon ora è un'app a sé: su Google Play con il nome Reyon, gratuita e sempre senza pubblicità; con questa versione lascia ZA Games",
+                    "I progressi in Reyon non passano alla nuova app: Android tiene separati i dati di ogni app",
+                ),
+                "da" to listOf(
+                    "Reyon er nu sin egen app: på Google Play under navnet Reyon, gratis og stadig uden reklamer; med denne version forlader den ZA Games",
+                    "Fremskridt i Reyon følger ikke med til den nye app: Android holder hver apps data adskilt",
+                ),
+                "sv" to listOf(
+                    "Reyon är nu en egen app: på Google Play under namnet Reyon, gratis och fortfarande reklamfri; med den här versionen lämnar den ZA Games",
+                    "Framsteg i Reyon följer inte med till den nya appen: Android håller varje apps data åtskilda",
+                ),
+                "nb" to listOf(
+                    "Reyon er nå en egen app: på Google Play under navnet Reyon, gratis og fortsatt reklamefri; med denne versjonen forlater den ZA Games",
+                    "Fremgang i Reyon blir ikke med over til den nye appen: Android holder dataene til hver app atskilt",
+                ),
+                "fi" to listOf(
+                    "Reyon on nyt oma sovelluksensa: Google Playssa nimellä Reyon, ilmainen ja edelleen mainokseton; tämän version myötä se poistuu ZA Gamesista",
+                    "Reyonin edistyminen ei siirry uuteen sovellukseen: Android pitää jokaisen sovelluksen tiedot erillään",
+                ),
+                "ru" to listOf(
+                    "Reyon теперь отдельное приложение: в Google Play под названием Reyon, бесплатно и по-прежнему без рекламы; с этой версией он уходит из ZA Games",
+                    "Прогресс в Reyon не переносится в новое приложение: Android хранит данные каждого приложения отдельно",
+                ),
+                "ar" to listOf(
+                    "أصبح Reyon تطبيقاً مستقلاً: على Google Play باسم Reyon، مجاني ولا يزال بلا إعلانات؛ ويغادر ZA Games مع هذا الإصدار",
+                    "لا ينتقل التقدّم في Reyon إلى التطبيق الجديد: يبقي أندرويد بيانات كل تطبيق منفصلة",
+                ),
+            ),
+        ),
+        ReleaseNote(
             "0.43.5", "2026-09-21",
             tr = listOf(
                 "Reyon · Satış: uzun telefonda beş puan kuralının beşi de görünüyor — panelin payı artık tepsinin kaç sıra tuttuğuna değil kuralların kendi boyuna bağlı",

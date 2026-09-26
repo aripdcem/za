@@ -2,6 +2,12 @@
 
 Uygulama içindeki sürüm notlarının (`app/src/main/kotlin/com/aripd/zagames/platform/Changelog.kt`) depo kopyası. En yeni en üstte.
 
+## 0.44.0 (2026-09-26)
+- **Reyon ayrı bir uygulama oldu** ([aripdcom/reyon](https://github.com/aripdcom/reyon)) ve ZA Games'ten çıktı. Motor (`games/reyon`), 13 arayüz dosyası, 6 test ve 14 dilde 215 metin anahtarı kaldırıldı; ana menüde 26 oyun, Bulmaca grubunda 4 oyun kaldı. Uygulama içi "Yenilikler" kartı kullanıcıya yeni uygulamayı haber veriyor.
+- Reyon'daki ilerleme yeni uygulamaya taşınmıyor: Android iki uygulamanın verisini ayrı tutuyor. Cihazdaki eski `za_reyon` kaydı birkaç KB; silmek için göç kodu eklenmedi.
+- Reyon'da bulunan iki genel düzeltme kalıyor: TalkBack açıkken en alttaki düğmelere inilebilmesi (`ExplorationInset`) ve kısa ekranda kayan menü/bitiş kartları (`OverlayCard`). Gerekçeleri `docs/oyun-testi.md`'deki Reyon kütüklerinde; kütükler geçmiş kayıt olarak duruyor.
+- Raket, Tuşe, Uçurtma ve Dalgıç'ın metinleri kendi bölüm başlığını aldı: 14 dilde de Reyon'un "Satış" başlığının altında duruyorlardı, Reyon'un satırları giderken birlikte gitmemeleri için sınır tek tek doğrulandı.
+
 ## 0.43.5 (2026-09-21)
 - **Reyon · Satış: uzun telefonda beş puan kuralının beşi de görünüyor.** 411 dp'de panelin payı tepsiden artana bağlıydı; tepsi ürün adları sarınca iki sıra yerine üç sıra oluyor (167 ↔ 219 dp) ve panel onunla 240 ↔ 208 dp arasında gidip geliyordu. 208 dp'de beşinci kuralın adı kırpılıyordu — düzeltmeden önce de vardı, cihazda ölçüldü
 - Kol ters çevrildi: panel önce ölçülüyor ve **kendi içeriği kadar** yer alıyor, tavan yalnız tepsinin payını koruyor (`panelCap`). Sabit bir "istenen boy" denendi ve bilerek bırakıldı: o sayı ölçülen bir metnin boyu olurdu ve yazı ölçeği 1,3'te cihazda kırpıyordu (panel 240,0'a çakılı, beşinci kural 14,1 dp); içerikten gelen pay aynı ekranda 254,1 dp alıp beşini de tam tutuyor
